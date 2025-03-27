@@ -1,0 +1,255 @@
+﻿Fibonacci sequence up to 10 numbers: [0, 1, 1, 2, 3, 5, 8, 13, 21, 34]
+{
+  "model": "qwen2.5-coder:32b",
+  "test_type": "continuous",
+  "timestamp": "2025-03-27T21:06:09.993619",
+  "test_results": [
+    {
+      "scenario_id": "code-completion",
+      "result": {
+        "success": true,
+        "response": "Certainly! To calculate the Fibonacci sequence up to the nth number, you can use various approaches such as recursion, iteration, or dynamic programming. Below is an example using an iterative approach, which is generally more efficient than a simple recursive approach due to avoiding redundant calculations.\n\nHere's how you can define the `calculate_fibonacci` function:\n\n```python\ndef calculate_fibonacci(n):\n    if n <= 0:\n        return \"Input should be a positive integer.\"\n    elif n == 1:\n        return [0]\n    elif n == 2:\n        return [0, 1]\n    \n    # Start the list with the first two Fibonacci numbers\n    fib_sequence = [0, 1]\n    \n    for i in range(2, n):\n        next_fib = fib_sequence[-1] + fib_sequence[-2]\n        fib_sequence.append(next_fib)\n    \n    return fib_sequence\n\n# Example usage:\nn = 10\nprint(f\"Fibonacci sequence up to {n} numbers: {calculate_fibonacci(n)}\")\n```\n\nThis function will return a list containing the Fibonacci sequence up to the nth number. For example, if you call `calculate_fibonacci(10)`, it will return `[0, 1, 1, 2, 3, 5, 8, 13, 21, 34]`.\n\nIf you need a different approach (like recursion or dynamic programming), let me know!",
+        "metrics": {
+          "total_time": 15.301389455795288,
+          "time_to_first_token": 2.5169217586517334,
+          "generated_tokens": 305,
+          "generation_time": 12.784467697143555,
+          "tokens_per_second_calculated": 23.857074633474685,
+          "ollama_eval_count": 306,
+          "ollama_eval_duration_sec": 12.8169155,
+          "ollama_tokens_per_second": 23.874699025674314,
+          "ollama_load_duration_sec": 0.0113423,
+          "ollama_prompt_eval_count": 27,
+          "ollama_prompt_eval_duration_sec": 0.2334255,
+          "gpu_stats_start": [
+            {
+              "id": 0,
+              "memory_used": 3707.0,
+              "memory_total": 24576.0,
+              "memory_util": 15.083821614583334,
+              "gpu_util": 31.0
+            },
+            {
+              "id": 1,
+              "memory_used": 22240.0,
+              "memory_total": 24576.0,
+              "memory_util": 90.49479166666666,
+              "gpu_util": 10.0
+            }
+          ],
+          "gpu_stats_end": [
+            {
+              "id": 0,
+              "memory_used": 3555.0,
+              "memory_total": 24576.0,
+              "memory_util": 14.46533203125,
+              "gpu_util": 5.0
+            },
+            {
+              "id": 1,
+              "memory_used": 22240.0,
+              "memory_total": 24576.0,
+              "memory_util": 90.49479166666666,
+              "gpu_util": 95.0
+            }
+          ]
+        }
+      }
+    },
+    {
+      "scenario_id": "code-review",
+      "result": {
+        "success": true,
+        "response": "It looks like you've started defining a function named `process_data` that takes one argument, `data`. To provide a more specific implementation, I'll need to know what kind of processing you want to perform on the data. However, I can give you some examples based on common data processing tasks.\n\n### Example 1: Cleaning and Transforming Numerical Data\nIf your data is numerical and you want to clean it (e.g., remove missing values) and apply a transformation (e.g., normalize or standardize), here's how you might do it:\n\n```python\nimport numpy as np\n\ndef process_data(data):\n    # Remove NaN values\n    cleaned_data = np.nan_to_num(data)\n    \n    # Normalize the data\n    normalized_data = (cleaned_data - np.mean(cleaned_data)) / np.std(cleaned_data)\n    \n    return normalized_data\n\n# Example usage:\ndata = [10, 20, np.nan, 40, 50]\nprocessed_data = process_data(data)\nprint(processed_data)\n```\n\n### Example 2: Processing Text Data\nIf your data consists of text and you want to preprocess it (e.g., tokenize and remove stopwords), here's how you might do it:\n\n```python\nimport re\nfrom nltk.corpus import stopwords\n\ndef process_data(text):\n    # Convert to lowercase\n    text = text.lower()\n    \n    # Remove punctuation using regex\n    text = re.sub(r'[^\\w\\s]', '', text)\n    \n    # Tokenize the text (split into words)\n    tokens = text.split()\n    \n    # Remove stopwords\n    stop_words = set(stopwords.words('english'))\n    filtered_tokens = [word for word in tokens if word not in stop_words]\n    \n    return ' '.join(filtered_tokens)\n\n# Example usage:\ntext_data = \"Hello, this is a sample text with some STOPWORDS.\"\nprocessed_text = process_data(text_data)\nprint(processed_text)\n```\n\n### Example 3: Handling Categorical Data\nIf your data includes categorical variables and you want to encode them (e.g., one-hot encoding), here's how you might do it:\n\n```python\nfrom sklearn.preprocessing import OneHotEncoder\n\ndef process_data(categories):\n    # Reshape the categories for the encoder\n    reshaped_categories = np.array(categories).reshape(-1, 1)\n    \n    # Initialize and fit the OneHotEncoder\n    encoder = OneHotEncoder(sparse=False)\n    encoded_data = encoder.fit_transform(reshaped_categories)\n    \n    return encoded_data\n\n# Example usage:\ncategories = ['cat', 'dog', 'fish', 'bird']\nprocessed_categories = process_data(categories)\nprint(processed_categories)\n```\n\nPlease specify the type of data and the processing you need, so I can tailor the function to your requirements!",
+        "metrics": {
+          "total_time": 26.8409481048584,
+          "time_to_first_token": 2.399099826812744,
+          "generated_tokens": 576,
+          "generation_time": 24.441848278045654,
+          "tokens_per_second_calculated": 23.566139248044475,
+          "ollama_eval_count": 577,
+          "ollama_eval_duration_sec": 24.5167368,
+          "ollama_tokens_per_second": 23.53494287216886,
+          "ollama_load_duration_sec": 0.028262,
+          "ollama_prompt_eval_count": 25,
+          "ollama_prompt_eval_duration_sec": 0.1532742,
+          "gpu_stats_start": [
+            {
+              "id": 0,
+              "memory_used": 3555.0,
+              "memory_total": 24576.0,
+              "memory_util": 14.46533203125,
+              "gpu_util": 4.0
+            },
+            {
+              "id": 1,
+              "memory_used": 22240.0,
+              "memory_total": 24576.0,
+              "memory_util": 90.49479166666666,
+              "gpu_util": 35.0
+            }
+          ],
+          "gpu_stats_end": [
+            {
+              "id": 0,
+              "memory_used": 3591.0,
+              "memory_total": 24576.0,
+              "memory_util": 14.61181640625,
+              "gpu_util": 32.0
+            },
+            {
+              "id": 1,
+              "memory_used": 22250.0,
+              "memory_total": 24576.0,
+              "memory_util": 90.53548177083334,
+              "gpu_util": 96.0
+            }
+          ]
+        }
+      }
+    },
+    {
+      "scenario_id": "architecture-design",
+      "result": {
+        "success": true,
+        "response": "Todo \uc571 \ubc31\uc5d4\ub4dc\ub97c \uc124\uacc4\ud560 \ub54c \uace0\ub824\ud574\uc57c \ud558\ub294 \uc8fc\uc694 \uad6c\uc131 \uc694\uc18c\uc640 \ub2e8\uacc4\ub4e4\uc744 \uc0b4\ud3b4\ubcf4\uaca0\uc2b5\ub2c8\ub2e4.\n\n### 1. \uc694\uad6c\uc0ac\ud56d \ubd84\uc11d\n\n\uba3c\uc800, \uc0ac\uc6a9\uc790\uc758 \uae30\ub2a5 \uc694\uad6c\uc0ac\ud56d\uc744 \uc774\ud574\ud569\ub2c8\ub2e4. \uc77c\ubc18\uc801\uc778 Todo \uc571\uc5d0\uc11c\ub294 \ub2e4\uc74c\uacfc \uac19\uc740 \uae30\ub2a5\ub4e4\uc774 \ud3ec\ud568\ub420 \uc218 \uc788\uc2b5\ub2c8\ub2e4:\n- \uc720\uc800 \uacc4\uc815 \uc0dd\uc131 \ubc0f \ub85c\uadf8\uc778\n- \ud560 \uc77c \ubaa9\ub85d \uad00\ub9ac (\uc0dd\uc131, \uc218\uc815, \uc0ad\uc81c)\n- \ud560 \uc77c\uc758 \uc644\ub8cc \uc0c1\ud0dc \ubcc0\uacbd\n- \uce74\ud14c\uace0\ub9ac\ubcc4\ub85c \ud560 \uc77c \ubd84\ub958\n\n### 2. \ub370\uc774\ud130 \ubaa8\ub378\ub9c1\n\n\uc0ac\uc6a9\uc790\uc640 \ud560 \uc77c\uc5d0 \ub300\ud55c \ub370\uc774\ud130 \ubaa8\ub378\uc744 \uc124\uacc4\ud569\ub2c8\ub2e4.\n\n#### User Model\n```json\n{\n    \"id\": \"unique user identifier\",\n    \"email\": \"user's email address\",\n    \"password\": \"hashed password\",\n    \"createdAt\": \"timestamp of account creation\"\n}\n```\n\n#### Todo Item Model\n```json\n{\n    \"id\": \"unique todo item identifier\",\n    \"userId\": \"foreign key referencing the User model\",\n    \"title\": \"title of the todo item\",\n    \"description\": \"optional description of the todo item\",\n    \"status\": \"completed or not completed\",\n    \"dueDate\": \"optional due date for the todo item\",\n    \"createdAt\": \"timestamp of when the item was created\"\n}\n```\n\n### 3. \ub370\uc774\ud130\ubca0\uc774\uc2a4 \uc120\ud0dd\n\n\uad00\uacc4\ud615 \ub370\uc774\ud130\ubca0\uc774\uc2a4(RDBMS)\uc640 \ube44\uad00\uacc4\ud615 \ub370\uc774\ud130\ubca0\uc774\uc2a4(NOSQL) \uc911\uc5d0\uc11c \uc801\ud569\ud55c \uac83\uc744 \uc120\ud0dd\ud569\ub2c8\ub2e4.\n\n- **RDBMS \uc608\uc2dc:** MySQL, PostgreSQL\n- **NOSQL \uc608\uc2dc:** MongoDB\n\n\uc120\ud0dd\ud55c \ub370\uc774\ud130\ubca0\uc774\uc2a4\uc5d0 \ub530\ub77c \ubaa8\ub378\ub9c1 \ubc29\uc2dd\uc774 \ub2ec\ub77c\uc9d1\ub2c8\ub2e4. RDBMS\ub294 \uc8fc\ub85c \uad00\uacc4\ud615 \ub370\uc774\ud130\ub97c \ub2e4\ub8e8\uae30 \uc27d\uc9c0\ub9cc, NOSQL\uc740 \uaddc\ubaa8\uac00 \ud070 \ub370\uc774\ud130\ub098 \ubcf5\uc7a1\ud55c \ucffc\ub9ac\uac00 \ud544\uc694\ud55c \uacbd\uc6b0 \uc720\uc6a9\ud560 \uc218 \uc788\uc2b5\ub2c8\ub2e4.\n\n### 4. API \uc124\uacc4\n\nRESTful API\ub97c \uc774\uc6a9\ud558\uc5ec \ud074\ub77c\uc774\uc5b8\ud2b8\uc640 \uc11c\ubc84 \uac04\uc758 \ud1b5\uc2e0\uc744 \uc124\uacc4\ud569\ub2c8\ub2e4.\n\n#### Endpoints \uc608\uc2dc\n- `POST /users`: \uc2e0\uaddc \uc0ac\uc6a9\uc790 \ub4f1\ub85d\n- `GET /users/{id}`: \ud2b9\uc815 \uc0ac\uc6a9\uc790 \uc815\ubcf4 \uc870\ud68c\n- `POST /todos`: \uc0c8\ub85c\uc6b4 \ud560 \uc77c \uc0dd\uc131\n- `GET /todos`: \uc804\uccb4 \ud560 \uc77c \ubaa9\ub85d \uc870\ud68c\n- `GET /todos/{id}`: \ud2b9\uc815 \ud560 \uc77c \uc0c1\uc138 \uc870\ud68c\n- `PUT /todos/{id}`: \ud560 \uc77c \uc218\uc815\n- `DELETE /todos/{id}`: \ud560 \uc77c \uc0ad\uc81c\n\n### 5. \ubcf4\uc548 \uace0\ub824\uc0ac\ud56d\n\n\uc0ac\uc6a9\uc790 \uc778\uc99d \ubc0f \ub370\uc774\ud130 \uc554\ud638\ud654\ub97c \uace0\ub824\ud569\ub2c8\ub2e4.\n- **\uc778\uc99d:** JWT(JSON Web Token) \ub4f1\uc744 \uc0ac\uc6a9\ud55c \uc0ac\uc6a9\uc790 \uc778\uc99d \uad6c\ud604\n- **\uc554\ud638\ud654:** \ube44\ubc00\ubc88\ud638\ub294 \ubc18\ub4dc\uc2dc \ud574\uc2dc \ud568\uc218\ub85c \uc800\uc7a5\n\n### 6. \uc11c\ubc84 \uc124\uc815 \ubc0f \ubc30\ud3ec\n\n\uc11c\ubc84 \ud658\uacbd\uc744 \uc124\uc815\ud558\uace0 \uc571\uc744 \ubc30\ud3ec\ud569\ub2c8\ub2e4.\n- **\uac1c\ubc1c \uc5b8\uc5b4\uc640 \ud504\ub808\uc784\uc6cc\ud06c \uc120\ud0dd:** Node.js, Python(Django/Flask), Java(Spring Boot) \ub4f1\n- **\uc11c\ubc84 \ud638\uc2a4\ud305:** AWS, Google Cloud Platform(GCP), Heroku \ub4f1\uc758 \ud074\ub77c\uc6b0\ub4dc \uc11c\ube44\uc2a4 \uc0ac\uc6a9\n\n### 7. \ud14c\uc2a4\ud2b8 \ubc0f \uc720\uc9c0\ubcf4\uc218\n\n\ud14c\uc2a4\ud2b8\ub97c \uc218\ud589\ud558\uace0 \ubb38\uc81c \ud574\uacb0\uc744 \uc704\ud55c \ub85c\uae45\uacfc \ubaa8\ub2c8\ud130\ub9c1 \uc2dc\uc2a4\ud15c\uc744 \uad6c\ucd95\ud569\ub2c8\ub2e4.\n- **\uc720\ub2db \ud14c\uc2a4\ud2b8:** \uac1c\ubcc4 \ud568\uc218\ub098 \ud074\ub798\uc2a4\uc758 \uae30\ub2a5 \uac80\uc99d\n- **\ud1b5\ud569 \ud14c\uc2a4\ud2b8:** \uc5ec\ub7ec \uad6c\uc131 \uc694\uc18c\uac00 \uc5b4\ub5bb\uac8c \uc0c1\ud638\uc791\uc6a9\ud558\ub294\uc9c0 \ud655\uc778\n\n\uc774\ub7ec\ud55c \ub2e8\uacc4\ub4e4\uc744 \uac70\uccd0 Todo \uc571 \ubc31\uc5d4\ub4dc\ub97c \uc124\uacc4\ud558\uace0 \uad6c\ud604\ud560 \uc218 \uc788\uc2b5\ub2c8\ub2e4. \uac01 \ub2e8\uacc4\ub294 \uc0c1\ud669\uc5d0 \ub530\ub77c \uc870\uc815\ub420 \uc218 \uc788\uc73c\uba70, \uae30\ub2a5 \uc694\uad6c\uc0ac\ud56d\uc774\ub098 \uc0ac\uc6a9\uc790 \ud53c\ub4dc\ubc31\uc744 \ubc18\uc601\ud558\uc5ec \uc9c0\uc18d\uc801\uc73c\ub85c \uac1c\uc120\ub420 \ud544\uc694\uac00 \uc788\uc2b5\ub2c8\ub2e4.",
+        "metrics": {
+          "total_time": 34.30782198905945,
+          "time_to_first_token": 2.4453392028808594,
+          "generated_tokens": 1030,
+          "generation_time": 31.86248278617859,
+          "tokens_per_second_calculated": 32.326419975244264,
+          "ollama_eval_count": 828,
+          "ollama_eval_duration_sec": 31.9257167,
+          "ollama_tokens_per_second": 25.935204768637192,
+          "ollama_load_duration_sec": 0.0248413,
+          "ollama_prompt_eval_count": 29,
+          "ollama_prompt_eval_duration_sec": 0.2028012,
+          "gpu_stats_start": [
+            {
+              "id": 0,
+              "memory_used": 3641.0,
+              "memory_total": 24576.0,
+              "memory_util": 14.815266927083334,
+              "gpu_util": 40.0
+            },
+            {
+              "id": 1,
+              "memory_used": 22250.0,
+              "memory_total": 24576.0,
+              "memory_util": 90.53548177083334,
+              "gpu_util": 21.0
+            }
+          ],
+          "gpu_stats_end": [
+            {
+              "id": 0,
+              "memory_used": 3549.0,
+              "memory_total": 24576.0,
+              "memory_util": 14.44091796875,
+              "gpu_util": 20.0
+            },
+            {
+              "id": 1,
+              "memory_used": 22250.0,
+              "memory_total": 24576.0,
+              "memory_util": 90.53548177083334,
+              "gpu_util": 51.0
+            }
+          ]
+        }
+      }
+    },
+    {
+      "scenario_id": "debugging",
+      "result": {
+        "success": true,
+        "response": "It looks like you're starting to define a class called `UserManager`. This class could be responsible for managing user data in an application, such as creating, updating, deleting, and retrieving user information. Below is a basic implementation of what the `UserManager` class might look like:\n\n```python\nclass User:\n    def __init__(self, user_id, name, email):\n        self.user_id = user_id\n        self.name = name\n        self.email = email\n\n    def __repr__(self):\n        return f\"User(id={self.user_id}, name='{self.name}', email='{self.email}')\"\n\nclass UserManager:\n    def __init__(self):\n        # Initialize an empty dictionary to store users\n        self.users = {}\n\n    def add_user(self, user_id, name, email):\n        if user_id in self.users:\n            print(f\"User with ID {user_id} already exists.\")\n            return False\n        new_user = User(user_id, name, email)\n        self.users[user_id] = new_user\n        print(f\"Added user: {new_user}\")\n        return True\n\n    def get_user(self, user_id):\n        return self.users.get(user_id)\n\n    def update_user(self, user_id, name=None, email=None):\n        if user_id not in self.users:\n            print(f\"No user found with ID {user_id}.\")\n            return False\n        user = self.users[user_id]\n        if name is not None:\n            user.name = name\n        if email is not None:\n            user.email = email\n        print(f\"Updated user: {user}\")\n        return True\n\n    def delete_user(self, user_id):\n        if user_id in self.users:\n            del self.users[user_id]\n            print(f\"Deleted user with ID {user_id}.\")\n            return True\n        else:\n            print(f\"No user found with ID {user_id}.\")\n            return False\n\n    def list_users(self):\n        for user in self.users.values():\n            print(user)\n\n# Example usage:\nif __name__ == \"__main__\":\n    manager = UserManager()\n    manager.add_user(1, \"Alice\", \"alice@example.com\")\n    manager.add_user(2, \"Bob\", \"bob@example.com\")\n    manager.update_user(1, email=\"alice_new@example.com\")\n    print(manager.get_user(1))\n    manager.delete_user(2)\n    manager.list_users()\n```\n\n### Explanation:\n- **User Class**: Represents a user with an ID, name, and email. It includes a `__repr__` method for easy representation.\n- **UserManager Class**: Manages multiple users using a dictionary where the key is the user ID and the value is a `User` object.\n  - `add_user`: Adds a new user to the manager.\n  - `get_user`: Retrieves a user by their ID.\n  - `update_user`: Updates a user's name or email based on the provided parameters.\n  - `delete_user`: Removes a user from the manager.\n  - `list_users`: Prints all users managed by the `UserManager`.\n\nThis is a simple example and can be expanded with additional features such as validation, persistence to a database, error handling, etc.",
+        "metrics": {
+          "total_time": 27.114093780517578,
+          "time_to_first_token": 2.471512794494629,
+          "generated_tokens": 660,
+          "generation_time": 24.64258098602295,
+          "tokens_per_second_calculated": 26.782908834685216,
+          "ollama_eval_count": 661,
+          "ollama_eval_duration_sec": 24.7033849,
+          "ollama_tokens_per_second": 26.75746674699628,
+          "ollama_load_duration_sec": 0.0198595,
+          "ollama_prompt_eval_count": 23,
+          "ollama_prompt_eval_duration_sec": 0.2514033,
+          "gpu_stats_start": [
+            {
+              "id": 0,
+              "memory_used": 3548.0,
+              "memory_total": 24576.0,
+              "memory_util": 14.436848958333334,
+              "gpu_util": 20.0
+            },
+            {
+              "id": 1,
+              "memory_used": 22250.0,
+              "memory_total": 24576.0,
+              "memory_util": 90.53548177083334,
+              "gpu_util": 51.0
+            }
+          ],
+          "gpu_stats_end": [
+            {
+              "id": 0,
+              "memory_used": 3646.0,
+              "memory_total": 24576.0,
+              "memory_util": 14.835611979166666,
+              "gpu_util": 8.0
+            },
+            {
+              "id": 1,
+              "memory_used": 22250.0,
+              "memory_total": 24576.0,
+              "memory_util": 90.53548177083334,
+              "gpu_util": 78.0
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "context_length": 76800,
+  "quality_evaluation": {
+    "code-completion": {
+      "detailed_scores": {
+        "accuracy": 0.0,
+        "consistency": 0.0,
+        "code_quality": 6.0,
+        "clarity": 2.0
+      },
+      "total_score": 1.6
+    },
+    "code-review": {
+      "detailed_scores": {
+        "accuracy": 0.0,
+        "consistency": 0.0,
+        "code_quality": 8.0,
+        "clarity": 2.0
+      },
+      "total_score": 2.0
+    },
+    "architecture-design": {
+      "detailed_scores": {
+        "accuracy": 6.0,
+        "consistency": 0.0,
+        "code_quality": 6.0,
+        "clarity": 6.0
+      },
+      "total_score": 4.800000000000001
+    },
+    "debugging": {
+      "detailed_scores": {
+        "accuracy": 0.0,
+        "consistency": 0.0,
+        "code_quality": 6.0,
+        "clarity": 4.0
+      },
+      "total_score": 2.0
+    }
+  }
+}

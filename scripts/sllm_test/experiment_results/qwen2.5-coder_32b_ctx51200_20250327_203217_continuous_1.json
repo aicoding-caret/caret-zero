@@ -1,0 +1,255 @@
+﻿The 10th Fibonacci number is: 34
+{
+  "model": "qwen2.5-coder:32b",
+  "test_type": "continuous",
+  "timestamp": "2025-03-27T20:58:09.472717",
+  "test_results": [
+    {
+      "scenario_id": "code-completion",
+      "result": {
+        "success": true,
+        "response": "Certainly! The Fibonacci sequence is a series of numbers where each number is the sum of the two preceding ones, usually starting with 0 and 1. Here's a simple Python function to calculate the nth Fibonacci number:\n\n```python\ndef calculate_fibonacci(n):\n    if n <= 0:\n        return \"Input should be a positive integer.\"\n    elif n == 1:\n        return 0\n    elif n == 2:\n        return 1\n\n    a, b = 0, 1\n    for _ in range(2, n):\n        a, b = b, a + b\n    return b\n\n# Example usage:\nn = 10\nprint(f\"The {n}th Fibonacci number is: {calculate_fibonacci(n)}\")\n```\n\nThis function uses an iterative approach to calculate the nth Fibonacci number. It starts with the first two numbers in the sequence (0 and 1) and iteratively computes the next numbers by summing up the last two numbers until it reaches the desired position.\n\nIf you need a recursive version or have any other specific requirements, feel free to ask!",
+        "metrics": {
+          "total_time": 12.849559545516968,
+          "time_to_first_token": 2.346177101135254,
+          "generated_tokens": 231,
+          "generation_time": 10.503382444381714,
+          "tokens_per_second_calculated": 21.992915255938577,
+          "ollama_eval_count": 232,
+          "ollama_eval_duration_sec": 10.6564353,
+          "ollama_tokens_per_second": 21.770882426321304,
+          "ollama_load_duration_sec": 0.0182406,
+          "ollama_prompt_eval_count": 27,
+          "ollama_prompt_eval_duration_sec": 0.0040946,
+          "gpu_stats_start": [
+            {
+              "id": 0,
+              "memory_used": 3626.0,
+              "memory_total": 24576.0,
+              "memory_util": 14.754231770833334,
+              "gpu_util": 65.0
+            },
+            {
+              "id": 1,
+              "memory_used": 22228.0,
+              "memory_total": 24576.0,
+              "memory_util": 90.44596354166666,
+              "gpu_util": 6.0
+            }
+          ],
+          "gpu_stats_end": [
+            {
+              "id": 0,
+              "memory_used": 3604.0,
+              "memory_total": 24576.0,
+              "memory_util": 14.664713541666666,
+              "gpu_util": 6.0
+            },
+            {
+              "id": 1,
+              "memory_used": 22228.0,
+              "memory_total": 24576.0,
+              "memory_util": 90.44596354166666,
+              "gpu_util": 61.0
+            }
+          ]
+        }
+      }
+    },
+    {
+      "scenario_id": "code-review",
+      "result": {
+        "success": true,
+        "response": "It looks like you've started defining a function named `process_data` that takes one argument, `data`. However, the function body is empty. Could you please provide more details on what kind of data processing you want to perform? This will help me give you a more specific implementation.\n\nFor example:\n- Are you dealing with numerical data and need to perform some statistical operations?\n- Is it text data that needs cleaning or transformation?\n- Or perhaps some other type of data?\n\nWith more information, I can offer a tailored solution for your `process_data` function.",
+        "metrics": {
+          "total_time": 8.378455400466919,
+          "time_to_first_token": 2.41690993309021,
+          "generated_tokens": 114,
+          "generation_time": 5.961545467376709,
+          "tokens_per_second_calculated": 19.12255817284977,
+          "ollama_eval_count": 115,
+          "ollama_eval_duration_sec": 5.9909474,
+          "ollama_tokens_per_second": 19.195628390928622,
+          "ollama_load_duration_sec": 0.0237209,
+          "ollama_prompt_eval_count": 25,
+          "ollama_prompt_eval_duration_sec": 0.23124,
+          "gpu_stats_start": [
+            {
+              "id": 0,
+              "memory_used": 3604.0,
+              "memory_total": 24576.0,
+              "memory_util": 14.664713541666666,
+              "gpu_util": 5.0
+            },
+            {
+              "id": 1,
+              "memory_used": 22228.0,
+              "memory_total": 24576.0,
+              "memory_util": 90.44596354166666,
+              "gpu_util": 61.0
+            }
+          ],
+          "gpu_stats_end": [
+            {
+              "id": 0,
+              "memory_used": 3591.0,
+              "memory_total": 24576.0,
+              "memory_util": 14.61181640625,
+              "gpu_util": 7.000000000000001
+            },
+            {
+              "id": 1,
+              "memory_used": 22228.0,
+              "memory_total": 24576.0,
+              "memory_util": 90.44596354166666,
+              "gpu_util": 94.0
+            }
+          ]
+        }
+      }
+    },
+    {
+      "scenario_id": "architecture-design",
+      "result": {
+        "success": true,
+        "response": "Todo \uc571\uc758 \ubc31\uc5d4\ub4dc\ub97c \uc124\uacc4\ud560 \ub54c \uace0\ub824\ud574\uc57c \ud560 \uc8fc\uc694 \uad6c\uc131 \uc694\uc18c\uc640 \uae30\ub2a5\ub4e4\uc744 \ub2e4\uc74c\uacfc \uac19\uc774 \ub098\uc5f4\ud574 \ubcf4\uc558\uc2b5\ub2c8\ub2e4.\n\n### 1. \uc0ac\uc6a9\uc790 \uc778\uc99d \ubc0f \uad8c\ud55c \uad00\ub9ac\n- **\ud68c\uc6d0\uac00\uc785/\ub85c\uadf8\uc778**: \uc0c8\ub85c\uc6b4 \uc0ac\uc6a9\uc790\ub97c \ub4f1\ub85d\ud558\uace0 \uae30\uc874 \uc0ac\uc6a9\uc790\uac00 \ub85c\uadf8\uc778\ud560 \uc218 \uc788\ub3c4\ub85d \ud558\ub294 \uae30\ub2a5.\n- **\ube44\ubc00\ubc88\ud638 \ubcf5\uad6c**: \ube44\ubc00\ubc88\ud638\ub97c \uc78a\uc5c8\uc744 \ub54c \ube44\ubc00\ubc88\ud638\ub97c \uc7ac\uc124\uc815\ud560 \uc218 \uc788\ub294 \uae30\ub2a5.\n- **OAuth/Social Login**: Facebook, Google \ub4f1 \uc678\ubd80 \uc11c\ube44\uc2a4\ub85c\uc758 \ub85c\uadf8\uc778\uc774 \uac00\ub2a5\ud558\ub3c4\ub85d \ud558\ub294 \uae30\ub2a5.\n\n### 2. \ub370\uc774\ud130\ubca0\uc774\uc2a4 \uc124\uacc4\nTodo \uc571\uc5d0\uc11c\ub294 \uc8fc\uc694 \ub370\uc774\ud130 \uad6c\uc870\ub85c\ub294 \uc0ac\uc6a9\uc790 \uc815\ubcf4\uc640 \ud560 \uc77c \ubaa9\ub85d \ub4f1\uc774 \uc788\uc2b5\ub2c8\ub2e4.\n\n- **\uc0ac\uc6a9\uc790 \ud14c\uc774\ube14(User)**: `userId`, `email`, `passwordHash`, `createdAt` \ub4f1\uc73c\ub85c \uad6c\uc131\ub420 \uc218 \uc788\uc74c.\n- **\ud560 \uc77c \ud14c\uc774\ube14(Todo)**: `todoId`, `userId`(\uc678\ub798\ud0a4), `title`, `description`, `dueDate`, `status(completed, pending)` \ub4f1\uc73c\ub85c \uad6c\uc131\ub420 \uc218 \uc788\uc74c.\n\n### 3. API \uc124\uacc4\nAPI\ub294 \uc77c\ubc18\uc801\uc73c\ub85c RESTful \ubc29\uc2dd\uc73c\ub85c \uad6c\ud604\ub418\uba70, CRUD(Create, Read, Update, Delete) \uc791\uc5c5\uc744 \ucc98\ub9ac\ud569\ub2c8\ub2e4.\n- **\uc0ac\uc6a9\uc790 \uad00\ub828 API**:\n  - POST `/signup`: \uc0c8\ub85c\uc6b4 \uc0ac\uc6a9\uc790\ub97c \uc0dd\uc131\ud569\ub2c8\ub2e4.\n  - POST `/login`: \uae30\uc874 \uc0ac\uc6a9\uc790\uc758 \ub85c\uadf8\uc778 \uc815\ubcf4\ub97c \ud655\uc778\ud558\uace0 \ud1a0\ud070\uc744 \ubc1c\uae09\ud569\ub2c8\ub2e4.\n  - GET `/user/me`: \ud604\uc7ac \ub85c\uadf8\uc778\ud55c \uc0ac\uc6a9\uc790\uc758 \uc815\ubcf4\ub97c \uac00\uc838\uc635\ub2c8\ub2e4.\n- **\ud560 \uc77c \uad00\ub828 API**:\n  - POST `/todos`: \uc0c8\ub85c\uc6b4 \ud560 \uc77c\uc744 \uc0dd\uc131\ud569\ub2c8\ub2e4.\n  - GET `/todos`: \uc0ac\uc6a9\uc790\uc758 \ubaa8\ub4e0 \ud560 \uc77c \ubaa9\ub85d\uc744 \uac00\uc838\uc635\ub2c8\ub2e4.\n  - PUT `/todos/:todoId`: \ud2b9\uc815 \ud560 \uc77c\uc758 \uc815\ubcf4\ub97c \uc5c5\ub370\uc774\ud2b8\ud569\ub2c8\ub2e4.\n  - DELETE `/todos/:todoId`: \ud2b9\uc815 \ud560 \uc77c\uc744 \uc0ad\uc81c\ud569\ub2c8\ub2e4.\n\n### 4. \ubcf4\uc548 \ubc0f \uc131\ub2a5 \ucd5c\uc801\ud654\n- **HTTPS**: \uc571\uc758 \ubaa8\ub4e0 \ud1b5\uc2e0\uc774 HTTPS\ub97c \ud1b5\ud574 \uc774\ub8e8\uc5b4\uc9c0\ub3c4\ub85d \ud574\uc57c \ud569\ub2c8\ub2e4.\n- **\ud1a0\ud070 \uae30\ubc18 \uc778\uc99d**: JWT(JSON Web Token) \ub4f1 \ud1a0\ud070 \uae30\ubc18\uc758 \uc548\uc804\ud55c \uc778\uc99d \ubc29\uc2dd\uc744 \uc0ac\uc6a9\ud560 \uc218 \uc788\uc2b5\ub2c8\ub2e4.\n- **\uc131\ub2a5 \ucd5c\uc801\ud654**: \uce90\uc2f1, \ub370\uc774\ud130\ubca0\uc774\uc2a4 \uc778\ub371\uc2f1 \ub4f1\uc744 \ud1b5\ud574 \uc571\uc758 \uc131\ub2a5\uc744 \uac1c\uc120\ud560 \uc218 \uc788\uc2b5\ub2c8\ub2e4.\n\n### 5. \uc624\ub958 \ucc98\ub9ac \ubc0f \ub85c\uae45\n- **\uc624\ub958 \ucc98\ub9ac**: \ud074\ub77c\uc774\uc5b8\ud2b8\uc5d0\uac8c \uc720\uc6a9\ud55c \uc624\ub958 \uba54\uc2dc\uc9c0\ub97c \uc81c\uacf5\ud558\ub3c4\ub85d \uc124\uacc4\ud574\uc57c \ud569\ub2c8\ub2e4.\n- **\ub85c\uadf8 \uae30\ub85d**: \ubaa8\ub4e0 \uc911\uc694\ud55c \uc774\ubca4\ud2b8(\uc608: \uc0ac\uc6a9\uc790 \uc778\uc99d, \ub370\uc774\ud130 \ubcc0\uacbd \ub4f1)\uc5d0 \ub300\ud574 \ub85c\uadf8\ub97c \ub0a8\uaca8\uc57c \ud569\ub2c8\ub2e4. \uc774\ub97c \ud1b5\ud574 \ubb38\uc81c \ud574\uacb0 \ubc0f \ubd84\uc11d\uc774 \uc6a9\uc774\ud574\uc9d1\ub2c8\ub2e4.\n\n### 6. \ubc30\ud3ec\uc640 \uc720\uc9c0 \uad00\ub9ac\n- **\ubc30\ud3ec \uc790\ub3d9\ud654**: CI/CD \ud30c\uc774\ud504\ub77c\uc778\uc744 \uc124\uc815\ud558\uc5ec \ucf54\ub4dc\uac00 \ubcc0\uacbd\ub420 \ub54c\ub9c8\ub2e4 \uc790\ub3d9\uc73c\ub85c \uc571\uc774 \ubc30\ud3ec\ub418\ub3c4\ub85d \ud560 \uc218 \uc788\uc2b5\ub2c8\ub2e4.\n- **\ubaa8\ub2c8\ud130\ub9c1**: \uc0ac\uc6a9\uc790\uc758 \uacbd\ud5d8\uacfc \uc560\ud50c\ub9ac\ucf00\uc774\uc158 \uc131\ub2a5\uc744 \uc9c0\uc18d\uc801\uc73c\ub85c \ubaa8\ub2c8\ud130\ub9c1\ud574\uc57c \ud569\ub2c8\ub2e4.\n\n\uc774\ub7ec\ud55c \uc694\uc18c\ub4e4\uc744 \uace0\ub824\ud558\uc5ec Todo \uc571\uc758 \ubc31\uc5d4\ub4dc\ub97c \uc124\uacc4\ud558\uba74 \ub354\uc6b1 \uc548\uc815\uc801\uc774\uace0 \ud6a8\uc728\uc801\uc778 \uc11c\ube44\uc2a4\uac00 \uad6c\ucd95\ub420 \uc218 \uc788\uc2b5\ub2c8\ub2e4. \ub610\ud55c, \uac1c\ubc1c \uacfc\uc815\uc5d0\uc11c \uc694\uad6c\uc0ac\ud56d\uc774\ub098 \uc0ac\uc6a9\uc790\uc758 \ud53c\ub4dc\ubc31\uc5d0 \ub530\ub77c \uc720\uc5f0\ud558\uac8c \uc870\uc815\ud558\uace0 \ud655\uc7a5\ud560 \uc218\ub3c4 \uc788\uc5b4\uc57c \ud569\ub2c8\ub2e4.",
+        "metrics": {
+          "total_time": 32.16322684288025,
+          "time_to_first_token": 2.3768599033355713,
+          "generated_tokens": 993,
+          "generation_time": 29.786366939544678,
+          "tokens_per_second_calculated": 33.337399019337376,
+          "ollama_eval_count": 771,
+          "ollama_eval_duration_sec": 29.8631594,
+          "ollama_tokens_per_second": 25.817763943623458,
+          "ollama_load_duration_sec": 0.0113097,
+          "ollama_prompt_eval_count": 29,
+          "ollama_prompt_eval_duration_sec": 0.1552631,
+          "gpu_stats_start": [
+            {
+              "id": 0,
+              "memory_used": 3589.0,
+              "memory_total": 24576.0,
+              "memory_util": 14.603678385416666,
+              "gpu_util": 7.000000000000001
+            },
+            {
+              "id": 1,
+              "memory_used": 22228.0,
+              "memory_total": 24576.0,
+              "memory_util": 90.44596354166666,
+              "gpu_util": 24.0
+            }
+          ],
+          "gpu_stats_end": [
+            {
+              "id": 0,
+              "memory_used": 3690.0,
+              "memory_total": 24576.0,
+              "memory_util": 15.0146484375,
+              "gpu_util": 8.0
+            },
+            {
+              "id": 1,
+              "memory_used": 22228.0,
+              "memory_total": 24576.0,
+              "memory_util": 90.44596354166666,
+              "gpu_util": 70.0
+            }
+          ]
+        }
+      }
+    },
+    {
+      "scenario_id": "debugging",
+      "result": {
+        "success": true,
+        "response": "Certainly! It looks like you're starting to define a class for managing users. Below is a simple example of what the `UserManager` class might look like in Python, including some basic functionalities such as adding, removing, and listing users:\n\n```python\nclass User:\n    def __init__(self, user_id, name, email):\n        self.user_id = user_id\n        self.name = name\n        self.email = email\n\n    def __repr__(self):\n        return f\"User({self.user_id}, {self.name}, {self.email})\"\n\n\nclass UserManager:\n    def __init__(self):\n        self.users = {}\n\n    def add_user(self, user_id, name, email):\n        if user_id in self.users:\n            print(f\"User with ID {user_id} already exists.\")\n            return False\n        new_user = User(user_id, name, email)\n        self.users[user_id] = new_user\n        print(f\"User added: {new_user}\")\n        return True\n\n    def remove_user(self, user_id):\n        if user_id in self.users:\n            removed_user = self.users.pop(user_id)\n            print(f\"User removed: {removed_user}\")\n            return True\n        else:\n            print(f\"No user found with ID {user_id}.\")\n            return False\n\n    def get_user(self, user_id):\n        return self.users.get(user_id)\n\n    def list_users(self):\n        if not self.users:\n            print(\"No users in the system.\")\n        for user in self.users.values():\n            print(user)\n\n\n# Example usage\nif __name__ == \"__main__\":\n    manager = UserManager()\n    manager.add_user(1, \"Alice\", \"alice@example.com\")\n    manager.add_user(2, \"Bob\", \"bob@example.com\")\n    manager.list_users()\n    manager.remove_user(1)\n    manager.list_users()\n```\n\n### Explanation:\n\n- **User Class**: Represents an individual user with attributes `user_id`, `name`, and `email`.\n- **UserManager Class**: Manages a collection of `User` objects.\n  - `add_user`: Adds a new user to the system if the `user_id` does not already exist.\n  - `remove_user`: Removes a user from the system using their `user_id`.\n  - `get_user`: Retrieves a user by their `user_id`.\n  - `list_users`: Prints all users in the system.\n\nThis is a basic implementation and can be expanded with more features such as updating user details, searching for users by name or email, handling duplicates in names/emails, etc.",
+        "metrics": {
+          "total_time": 23.88748788833618,
+          "time_to_first_token": 2.4550695419311523,
+          "generated_tokens": 530,
+          "generation_time": 21.43241834640503,
+          "tokens_per_second_calculated": 24.728893932256582,
+          "ollama_eval_count": 531,
+          "ollama_eval_duration_sec": 21.4942741,
+          "ollama_tokens_per_second": 24.704253678424994,
+          "ollama_load_duration_sec": 0.0226283,
+          "ollama_prompt_eval_count": 23,
+          "ollama_prompt_eval_duration_sec": 0.2464028,
+          "gpu_stats_start": [
+            {
+              "id": 0,
+              "memory_used": 3690.0,
+              "memory_total": 24576.0,
+              "memory_util": 15.0146484375,
+              "gpu_util": 7.000000000000001
+            },
+            {
+              "id": 1,
+              "memory_used": 22228.0,
+              "memory_total": 24576.0,
+              "memory_util": 90.44596354166666,
+              "gpu_util": 70.0
+            }
+          ],
+          "gpu_stats_end": [
+            {
+              "id": 0,
+              "memory_used": 3577.0,
+              "memory_total": 24576.0,
+              "memory_util": 14.554850260416666,
+              "gpu_util": 18.0
+            },
+            {
+              "id": 1,
+              "memory_used": 22230.0,
+              "memory_total": 24576.0,
+              "memory_util": 90.4541015625,
+              "gpu_util": 83.0
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "context_length": 51200,
+  "quality_evaluation": {
+    "code-completion": {
+      "detailed_scores": {
+        "accuracy": 0.0,
+        "consistency": 0.0,
+        "code_quality": 6.0,
+        "clarity": 2.0
+      },
+      "total_score": 1.6
+    },
+    "code-review": {
+      "detailed_scores": {
+        "accuracy": 0.0,
+        "consistency": 0.0,
+        "code_quality": 0.0,
+        "clarity": 4.0
+      },
+      "total_score": 0.8
+    },
+    "architecture-design": {
+      "detailed_scores": {
+        "accuracy": 6.0,
+        "consistency": 0.0,
+        "code_quality": 0.0,
+        "clarity": 4.0
+      },
+      "total_score": 3.2
+    },
+    "debugging": {
+      "detailed_scores": {
+        "accuracy": 0.0,
+        "consistency": 0.0,
+        "code_quality": 6.0,
+        "clarity": 4.0
+      },
+      "total_score": 2.0
+    }
+  }
+}

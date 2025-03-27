@@ -1,0 +1,60 @@
+﻿{
+	"model": "qwen2.5-coder:14b",
+	"test_type": "initial",
+	"timestamp": "2025-03-27T20:32:19.886474",
+	"test_results": [
+		{
+			"scenario_id": "code-completion",
+			"result": {
+				"success": true,
+				"response": "To calculate the Fibonacci sequence, you can use either an iterative or recursive approach. Below is an example of both methods to compute the nth Fibonacci number.\n\n### Iterative Approach\n\n```python\ndef calculate_fibonacci_iterative(n):\n    if n <= 0:\n        return \"Input should be a positive integer.\"\n    elif n == 1:\n        return 0\n    elif n == 2:\n        return 1\n    \n    a, b = 0, 1\n    for _ in range(2, n):\n        a, b = b, a + b\n    return b\n\n# Example usage:\nn = 10\nprint(f\"The {n}th Fibonacci number is: {calculate_fibonacci_iterative(n)}\")\n```\n\n### Recursive Approach\n\n```python\ndef calculate_fibonacci_recursive(n):\n    if n <= 0:\n        return \"Input should be a positive integer.\"\n    elif n == 1:\n        return 0\n    elif n == 2:\n        return 1\n    \n    return calculate_fibonacci_recursive(n - 1) + calculate_fibonacci_recursive(n - 2)\n\n# Example usage:\nn = 10\nprint(f\"The {n}th Fibonacci number is: {calculate_fibonacci_recursive(n)}\")\n```\n\n### Explanation\n\n- **Iterative Approach**: This method uses a loop to calculate the Fibonacci sequence. It starts with the first two numbers of the sequence (0 and 1) and iteratively calculates the next number by summing the previous two numbers. This approach is more efficient in terms of time and space complexity, especially for larger values of `n`.\n\n- **Recursive Approach**: This method involves a function calling itself to calculate the Fibonacci sequence. It is simpler and easier to understand but can be inefficient for large values of `n` due to its exponential time complexity.\n\nChoose the approach that best fits your needs based on performance requirements and readability.",
+				"metrics": {
+					"total_time": 12.775429248809814,
+					"time_to_first_token": 5.2487242221832275,
+					"generated_tokens": 398,
+					"generation_time": 7.526705026626587,
+					"tokens_per_second_calculated": 52.87838417900384,
+					"ollama_eval_count": 399,
+					"ollama_eval_duration_sec": 7.5278045,
+					"ollama_tokens_per_second": 53.003501884247925,
+					"ollama_load_duration_sec": 2.8875007,
+					"ollama_prompt_eval_count": 27,
+					"ollama_prompt_eval_duration_sec": 0.1226091,
+					"gpu_stats_start": [
+						{
+							"id": 0,
+							"memory_used": 3433.0,
+							"memory_total": 24576.0,
+							"memory_util": 13.968912760416666,
+							"gpu_util": 23.0
+						},
+						{
+							"id": 1,
+							"memory_used": 620.0,
+							"memory_total": 24576.0,
+							"memory_util": 2.522786458333333,
+							"gpu_util": 38.0
+						}
+					],
+					"gpu_stats_end": [
+						{
+							"id": 0,
+							"memory_used": 3348.0,
+							"memory_total": 24576.0,
+							"memory_util": 13.623046875,
+							"gpu_util": 7.000000000000001
+						},
+						{
+							"id": 1,
+							"memory_used": 11317.0,
+							"memory_total": 24576.0,
+							"memory_util": 46.04899088541667,
+							"gpu_util": 60.0
+						}
+					]
+				}
+			}
+		}
+	],
+	"context_length": 12800
+}

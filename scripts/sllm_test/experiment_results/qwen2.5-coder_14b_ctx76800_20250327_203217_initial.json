@@ -1,0 +1,60 @@
+﻿{
+	"model": "qwen2.5-coder:14b",
+	"test_type": "initial",
+	"timestamp": "2025-03-27T20:43:18.639868",
+	"test_results": [
+		{
+			"scenario_id": "code-completion",
+			"result": {
+				"success": true,
+				"response": "It looks like you want to define a function to calculate the Fibonacci sequence up to the nth number. The Fibonacci sequence is a series of numbers where each number is the sum of the two preceding ones, usually starting with 0 and 1. Here's a simple implementation in Python:\n\n```python\ndef calculate_fibonacci(n):\n    if n <= 0:\n        return []\n    elif n == 1:\n        return [0]\n    elif n == 2:\n        return [0, 1]\n    \n    fibonacci_sequence = [0, 1]\n    for i in range(2, n):\n        next_number = fibonacci_sequence[-1] + fibonacci_sequence[-2]\n        fibonacci_sequence.append(next_number)\n    \n    return fibonacci_sequence\n\n# Example usage:\nn = 10\nprint(f\"Fibonacci sequence up to {n}: {calculate_fibonacci(n)}\")\n```\n\nThis function will return a list containing the Fibonacci sequence up to the nth number. For example, `calculate_fibonacci(10)` will return `[0, 1, 1, 2, 3, 5, 8, 13, 21, 34]`.",
+				"metrics": {
+					"total_time": 8.971379518508911,
+					"time_to_first_token": 4.931109666824341,
+					"generated_tokens": 248,
+					"generation_time": 4.04026985168457,
+					"tokens_per_second_calculated": 61.38203860234673,
+					"ollama_eval_count": 249,
+					"ollama_eval_duration_sec": 4.0422243,
+					"ollama_tokens_per_second": 61.59974843553338,
+					"ollama_load_duration_sec": 2.621232,
+					"ollama_prompt_eval_count": 27,
+					"ollama_prompt_eval_duration_sec": 0.1179529,
+					"gpu_stats_start": [
+						{
+							"id": 0,
+							"memory_used": 3418.0,
+							"memory_total": 24576.0,
+							"memory_util": 13.907877604166666,
+							"gpu_util": 6.0
+						},
+						{
+							"id": 1,
+							"memory_used": 632.0,
+							"memory_total": 24576.0,
+							"memory_util": 2.571614583333333,
+							"gpu_util": 38.0
+						}
+					],
+					"gpu_stats_end": [
+						{
+							"id": 0,
+							"memory_used": 3441.0,
+							"memory_total": 24576.0,
+							"memory_util": 14.00146484375,
+							"gpu_util": 7.000000000000001
+						},
+						{
+							"id": 1,
+							"memory_used": 11329.0,
+							"memory_total": 24576.0,
+							"memory_util": 46.09781901041667,
+							"gpu_util": 49.0
+						}
+					]
+				}
+			}
+		}
+	],
+	"context_length": 76800
+}

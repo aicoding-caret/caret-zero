@@ -1,0 +1,255 @@
+﻿34
+{
+  "model": "qwen2.5-coder:32b",
+  "test_type": "continuous",
+  "timestamp": "2025-03-27T20:48:37.496189",
+  "test_results": [
+    {
+      "scenario_id": "code-completion",
+      "result": {
+        "success": true,
+        "response": "Certainly! It looks like you're interested in implementing a function to calculate Fibonacci numbers. The Fibonacci sequence is a series of numbers where each number is the sum of the two preceding ones, usually starting with 0 and 1. Here's a simple implementation in Python:\n\n```python\ndef calculate_fibonacci(n):\n    if n <= 0:\n        return \"Input should be a positive integer\"\n    elif n == 1:\n        return 0\n    elif n == 2:\n        return 1\n    else:\n        a, b = 0, 1\n        for _ in range(2, n):\n            a, b = b, a + b\n        return b\n\n# Example usage:\nprint(calculate_fibonacci(10))  # Output: 34\n```\n\nThis function calculates the nth Fibonacci number using an iterative approach. Here's how it works:\n\n- It first checks if the input `n` is less than or equal to 0, in which case it returns a message indicating that the input should be a positive integer.\n- If `n` is 1, it returns 0 (the first Fibonacci number).\n- If `n` is 2, it returns 1 (the second Fibonacci number).\n- For `n` greater than 2, it uses a loop to calculate the Fibonacci sequence iteratively. It initializes two variables, `a` and `b`, to represent the first two numbers in the sequence (0 and 1). Then, it iterates from 2 to `n-1`, updating these variables to hold the last two numbers in the sequence at each step.\n\nThis approach is efficient and avoids the exponential time complexity of a naive recursive solution.",
+        "metrics": {
+          "total_time": 16.917337656021118,
+          "time_to_first_token": 2.559997320175171,
+          "generated_tokens": 355,
+          "generation_time": 14.357340335845947,
+          "tokens_per_second_calculated": 24.726028059227104,
+          "ollama_eval_count": 356,
+          "ollama_eval_duration_sec": 14.3909233,
+          "ollama_tokens_per_second": 24.737815119895746,
+          "ollama_load_duration_sec": 0.0312017,
+          "ollama_prompt_eval_count": 27,
+          "ollama_prompt_eval_duration_sec": 0.3004978,
+          "gpu_stats_start": [
+            {
+              "id": 0,
+              "memory_used": 3408.0,
+              "memory_total": 24576.0,
+              "memory_util": 13.8671875,
+              "gpu_util": 21.0
+            },
+            {
+              "id": 1,
+              "memory_used": 22211.0,
+              "memory_total": 24576.0,
+              "memory_util": 90.37679036458334,
+              "gpu_util": 10.0
+            }
+          ],
+          "gpu_stats_end": [
+            {
+              "id": 0,
+              "memory_used": 3366.0,
+              "memory_total": 24576.0,
+              "memory_util": 13.6962890625,
+              "gpu_util": 19.0
+            },
+            {
+              "id": 1,
+              "memory_used": 22211.0,
+              "memory_total": 24576.0,
+              "memory_util": 90.37679036458334,
+              "gpu_util": 95.0
+            }
+          ]
+        }
+      }
+    },
+    {
+      "scenario_id": "code-review",
+      "result": {
+        "success": true,
+        "response": "Certainly! To help you better, could you please specify what kind of data processing you would like to perform? For example, are you looking to clean the data, transform it, analyze it, or something else? Additionally, providing an example of the input data format and the expected output would be very helpful.",
+        "metrics": {
+          "total_time": 5.890498161315918,
+          "time_to_first_token": 2.361687421798706,
+          "generated_tokens": 62,
+          "generation_time": 3.528810739517212,
+          "tokens_per_second_calculated": 17.569658612091626,
+          "ollama_eval_count": 63,
+          "ollama_eval_duration_sec": 3.5871686,
+          "ollama_tokens_per_second": 17.562597977691933,
+          "ollama_load_duration_sec": 0.0114183,
+          "ollama_prompt_eval_count": 25,
+          "ollama_prompt_eval_duration_sec": 0.1535935,
+          "gpu_stats_start": [
+            {
+              "id": 0,
+              "memory_used": 3389.0,
+              "memory_total": 24576.0,
+              "memory_util": 13.789876302083334,
+              "gpu_util": 19.0
+            },
+            {
+              "id": 1,
+              "memory_used": 22211.0,
+              "memory_total": 24576.0,
+              "memory_util": 90.37679036458334,
+              "gpu_util": 13.0
+            }
+          ],
+          "gpu_stats_end": [
+            {
+              "id": 0,
+              "memory_used": 3394.0,
+              "memory_total": 24576.0,
+              "memory_util": 13.810221354166666,
+              "gpu_util": 56.99999999999999
+            },
+            {
+              "id": 1,
+              "memory_used": 22211.0,
+              "memory_total": 24576.0,
+              "memory_util": 90.37679036458334,
+              "gpu_util": 96.0
+            }
+          ]
+        }
+      }
+    },
+    {
+      "scenario_id": "architecture-design",
+      "result": {
+        "success": true,
+        "response": "Todo \uc571\uc758 \ubc31\uc5d4\ub4dc\ub97c \uc124\uacc4\ud558\ub294 \uac83\uc740 \uc0ac\uc6a9\uc790\uc758 \ud560 \uc77c \ubaa9\ub85d\uc744 \uad00\ub9ac\ud558\uace0 \uc800\uc7a5\ud558\ub294 \uc8fc\uc694 \uae30\ub2a5\uc744 \ud3ec\ud568\ud569\ub2c8\ub2e4. \uc5ec\uae30\uc11c\ub294 \uae30\ubcf8\uc801\uc778 \uc694\uad6c \uc0ac\ud56d, \ub370\uc774\ud130 \ubaa8\ub378, API \uc5d4\ub4dc\ud3ec\uc778\ud2b8, \uadf8\ub9ac\uace0 \ubcf4\uc548 \uce21\uba74\uc5d0 \ub300\ud574 \uac04\ub7b5\ud788 \uc124\uba85\ud558\uaca0\uc2b5\ub2c8\ub2e4.\n\n### 1. \uc694\uad6c \uc0ac\ud56d\n\n- **\uc0ac\uc6a9\uc790 \uc778\uc99d**: \uc0ac\uc6a9\uc790\ub294 \uacc4\uc815\uc744 \ub9cc\ub4e4\uace0 \ub85c\uadf8\uc778\ud560 \uc218 \uc788\uc5b4\uc57c \ud569\ub2c8\ub2e4.\n- **\ud560 \uc77c \uad00\ub9ac**: \uc0ac\uc6a9\uc790\ub294 \ud560 \uc77c\uc744 \uc0dd\uc131, \uc5c5\ub370\uc774\ud2b8, \uc0ad\uc81c\ud560 \uc218 \uc788\uc2b5\ub2c8\ub2e4.\n- **\ubaa9\ub85d \uc870\ud68c**: \uc0ac\uc6a9\uc790\ub294 \uc790\uc2e0\uc758 \ud560 \uc77c \ubaa9\ub85d\uc744 \ubcfc \uc218 \uc788\uc73c\uba70, \ud544\ud130\ub9c1 \ub610\ub294 \uc815\ub82c \uae30\ub2a5\ub3c4 \ud3ec\ud568\ub420 \uc218 \uc788\uc2b5\ub2c8\ub2e4.\n\n### 2. \ub370\uc774\ud130 \ubaa8\ub378\n\n**\uc0ac\uc6a9\uc790(User)**\n- `id`: \uc0ac\uc6a9\uc790 \uc2dd\ubcc4 \ubc88\ud638 (Primary Key)\n- `username`: \uc0ac\uc6a9\uc790 \uc774\ub984\n- `password_hash`: \ube44\ubc00\ubc88\ud638 \ud574\uc2dc \uac12\n- `email`: \uc774\uba54\uc77c \uc8fc\uc18c\n\n**\ud560 \uc77c(Todo)**\n- `id`: \ud560 \uc77c \uc2dd\ubcc4 \ubc88\ud638 (Primary Key)\n- `user_id`: \uc0ac\uc6a9\uc790\uc758 ID (Foreign Key)\n- `title`: \ud560 \uc77c \uc81c\ubaa9\n- `description`: \ud560 \uc77c \uc0c1\uc138 \uc124\uba85\n- `due_date`: \uc644\ub8cc\ud574\uc57c \ud558\ub294 \ub0a0\uc9dc\n- `status`: \ud560 \uc77c\uc758 \uc0c1\ud0dc (\uc608: 'pending', 'completed')\n\n### 3. API \uc5d4\ub4dc\ud3ec\uc778\ud2b8\n\n**\uc0ac\uc6a9\uc790 \uad00\ub828**\n- `POST /register` - \uc0ac\uc6a9\uc790 \ub4f1\ub85d\n- `POST /login` - \uc0ac\uc6a9\uc790 \ub85c\uadf8\uc778\n\n**\ud560 \uc77c \uad00\ub9ac**\n- `GET /todos` - \uc0ac\uc6a9\uc790\uc758 \ubaa8\ub4e0 \ud560 \uc77c \ubaa9\ub85d \uc870\ud68c\n- `POST /todos` - \uc0c8\ub85c\uc6b4 \ud560 \uc77c \uc0dd\uc131\n- `GET /todos/{id}` - \ud2b9\uc815 \ud560 \uc77c \uc870\ud68c\n- `PUT /todos/{id}` - \ud2b9\uc815 \ud560 \uc77c \uc5c5\ub370\uc774\ud2b8\n- `DELETE /todos/{id}` - \ud2b9\uc815 \ud560 \uc77c \uc0ad\uc81c\n\n### 4. \ubcf4\uc548 \uace0\ub824\uc0ac\ud56d\n\n- **\uc554\ud638\ud654**: \uc0ac\uc6a9\uc790\uc758 \ube44\ubc00\ubc88\ud638\ub294 \ud56d\uc0c1 \ud574\uc2dc\ub41c \ud615\ud0dc\ub85c \uc800\uc7a5\ub418\uc5b4\uc57c \ud569\ub2c8\ub2e4.\n- **\uc778\uc99d \ud1a0\ud070**: JWT(Json Web Token)\uc640 \uac19\uc740 \ud1a0\ud070\uc744 \uc774\uc6a9\ud558\uc5ec \uc0ac\uc6a9\uc790 \uc778\uc99d\uc744 \uad00\ub9ac\ud560 \uc218 \uc788\uc2b5\ub2c8\ub2e4.\n- **HTTPS \uc0ac\uc6a9**: \ubaa8\ub4e0 \ud1b5\uc2e0\uc774 HTTPS\ub97c \ud1b5\ud574 \uc774\ub8e8\uc5b4\uc9c0\ub3c4\ub85d \ud574\uc57c \ud569\ub2c8\ub2e4.\n\n### 5. \ucd94\uac00 \uace0\ub824\uc0ac\ud56d\n\n- **\ub370\uc774\ud130\ubca0\uc774\uc2a4 \uc120\ud0dd**: \ub370\uc774\ud130 \uc800\uc7a5\uc744 \uc704\ud574 SQL \ub610\ub294 NoSQL \ub370\uc774\ud130\ubca0\uc774\uc2a4\ub97c \uc120\ud0dd\ud560 \uc218 \uc788\uc2b5\ub2c8\ub2e4. SQLite, PostgreSQL, MongoDB \ub4f1 \ub2e4\uc591\ud55c \uc635\uc158\uc774 \uc788\uc2b5\ub2c8\ub2e4.\n- **\ubc31\uc5d4\ub4dc \ud504\ub808\uc784\uc6cc\ud06c**: Node.js (Express), Python (Django, Flask), Java (Spring Boot) \ub4f1\uc5d0 \ub300\ud574 \uace0\ub824\ud574\ubcfc \uc218 \uc788\uc2b5\ub2c8\ub2e4.\n\n\uc774 \uc124\uacc4\ub294 \uae30\ubcf8\uc801\uc778 \uad6c\uc870\ub97c \uc81c\uacf5\ud558\uba70, \uc2e4\uc81c \uc560\ud50c\ub9ac\ucf00\uc774\uc158\uc758 \ubcf5\uc7a1\uc131\uc5d0 \ub530\ub77c \ucd94\uac00 \uae30\ub2a5\uc774\ub098 \ubcf4\uc548 \uce21\uba74\uc744 \uace0\ub824\ud574\uc57c \ud560 \uc218\ub3c4 \uc788\uc2b5\ub2c8\ub2e4.",
+        "metrics": {
+          "total_time": 26.708948850631714,
+          "time_to_first_token": 2.428982973098755,
+          "generated_tokens": 803,
+          "generation_time": 24.27996587753296,
+          "tokens_per_second_calculated": 33.0725341234125,
+          "ollama_eval_count": 646,
+          "ollama_eval_duration_sec": 24.3684699,
+          "ollama_tokens_per_second": 26.50966608289181,
+          "ollama_load_duration_sec": 0.0236558,
+          "ollama_prompt_eval_count": 29,
+          "ollama_prompt_eval_duration_sec": 0.1735322,
+          "gpu_stats_start": [
+            {
+              "id": 0,
+              "memory_used": 3394.0,
+              "memory_total": 24576.0,
+              "memory_util": 13.810221354166666,
+              "gpu_util": 55.00000000000001
+            },
+            {
+              "id": 1,
+              "memory_used": 22211.0,
+              "memory_total": 24576.0,
+              "memory_util": 90.37679036458334,
+              "gpu_util": 21.0
+            }
+          ],
+          "gpu_stats_end": [
+            {
+              "id": 0,
+              "memory_used": 3359.0,
+              "memory_total": 24576.0,
+              "memory_util": 13.667805989583334,
+              "gpu_util": 4.0
+            },
+            {
+              "id": 1,
+              "memory_used": 22211.0,
+              "memory_total": 24576.0,
+              "memory_util": 90.37679036458334,
+              "gpu_util": 44.0
+            }
+          ]
+        }
+      }
+    },
+    {
+      "scenario_id": "debugging",
+      "result": {
+        "success": true,
+        "response": "Sure! It looks like you're starting to define a `UserManager` class in Python. This class could be responsible for managing user data, such as adding, removing, updating, and retrieving users. Below is an example of how you might implement such a class:\n\n```python\nclass User:\n    def __init__(self, user_id, name, email):\n        self.user_id = user_id\n        self.name = name\n        self.email = email\n\n    def __repr__(self):\n        return f\"User(id={self.user_id}, name={self.name}, email={self.email})\"\n\nclass UserManager:\n    def __init__(self):\n        # Initialize an empty dictionary to store users, with user_id as the key\n        self.users = {}\n\n    def add_user(self, user):\n        if user.user_id in self.users:\n            print(f\"User with ID {user.user_id} already exists.\")\n            return False\n        self.users[user.user_id] = user\n        print(f\"Added user: {user}\")\n        return True\n\n    def remove_user(self, user_id):\n        if user_id not in self.users:\n            print(f\"No user found with ID {user_id}.\")\n            return False\n        removed_user = self.users.pop(user_id)\n        print(f\"Removed user: {removed_user}\")\n        return True\n\n    def update_user(self, user_id, name=None, email=None):\n        if user_id not in self.users:\n            print(f\"No user found with ID {user_id}.\")\n            return False\n        user = self.users[user_id]\n        if name is not None:\n            user.name = name\n        if email is not None:\n            user.email = email\n        print(f\"Updated user: {user}\")\n        return True\n\n    def get_user(self, user_id):\n        return self.users.get(user_id, None)\n\n    def list_users(self):\n        return list(self.users.values())\n\n# Example usage:\nif __name__ == \"__main__\":\n    manager = UserManager()\n    user1 = User(1, \"Alice\", \"alice@example.com\")\n    user2 = User(2, \"Bob\", \"bob@example.com\")\n\n    manager.add_user(user1)\n    manager.add_user(user2)\n\n    print(\"\\nListing all users:\")\n    for user in manager.list_users():\n        print(user)\n\n    print(\"\\nGetting a specific user:\")\n    print(manager.get_user(1))\n\n    print(\"\\nUpdating a user:\")\n    manager.update_user(1, email=\"alice_new@example.com\")\n\n    print(\"\\nRemoving a user:\")\n    manager.remove_user(2)\n```\n\n### Explanation:\n- **User Class**: Represents a single user with an ID, name, and email.\n- **UserManager Class**:\n  - `__init__`: Initializes the user storage (a dictionary).\n  - `add_user`: Adds a new user if the user ID does not already exist.\n  - `remove_user`: Removes a user by their ID.\n  - `update_user`: Updates a user's name or email based on provided parameters.\n  - `get_user`: Retrieves a user by their ID.\n  - `list_users`: Returns a list of all users.\n\nThis is a basic implementation and can be extended with more features like persistence, validation, error handling, etc., depending on your requirements.",
+        "metrics": {
+          "total_time": 28.24536967277527,
+          "time_to_first_token": 2.4930362701416016,
+          "generated_tokens": 681,
+          "generation_time": 25.752333402633667,
+          "tokens_per_second_calculated": 26.444205631880905,
+          "ollama_eval_count": 682,
+          "ollama_eval_duration_sec": 25.8156935,
+          "ollama_tokens_per_second": 26.418039089284974,
+          "ollama_load_duration_sec": 0.0107175,
+          "ollama_prompt_eval_count": 23,
+          "ollama_prompt_eval_duration_sec": 0.2763134,
+          "gpu_stats_start": [
+            {
+              "id": 0,
+              "memory_used": 3359.0,
+              "memory_total": 24576.0,
+              "memory_util": 13.667805989583334,
+              "gpu_util": 5.0
+            },
+            {
+              "id": 1,
+              "memory_used": 22211.0,
+              "memory_total": 24576.0,
+              "memory_util": 90.37679036458334,
+              "gpu_util": 44.0
+            }
+          ],
+          "gpu_stats_end": [
+            {
+              "id": 0,
+              "memory_used": 3365.0,
+              "memory_total": 24576.0,
+              "memory_util": 13.692220052083334,
+              "gpu_util": 24.0
+            },
+            {
+              "id": 1,
+              "memory_used": 22211.0,
+              "memory_total": 24576.0,
+              "memory_util": 90.37679036458334,
+              "gpu_util": 93.0
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "context_length": 12800,
+  "quality_evaluation": {
+    "code-completion": {
+      "detailed_scores": {
+        "accuracy": 0.0,
+        "consistency": 0.0,
+        "code_quality": 6.0,
+        "clarity": 4.0
+      },
+      "total_score": 2.0
+    },
+    "code-review": {
+      "detailed_scores": {
+        "accuracy": 0.0,
+        "consistency": 0.0,
+        "code_quality": 0.0,
+        "clarity": 2.0
+      },
+      "total_score": 0.4
+    },
+    "architecture-design": {
+      "detailed_scores": {
+        "accuracy": 4.0,
+        "consistency": 0.0,
+        "code_quality": 0.0,
+        "clarity": 2.0
+      },
+      "total_score": 2.0
+    },
+    "debugging": {
+      "detailed_scores": {
+        "accuracy": 0.0,
+        "consistency": 0.0,
+        "code_quality": 6.0,
+        "clarity": 4.0
+      },
+      "total_score": 2.0
+    }
+  }
+}

@@ -1,0 +1,60 @@
+﻿{
+	"model": "gemma3:12b",
+	"test_type": "initial",
+	"timestamp": "2025-03-27T21:18:04.786731",
+	"test_results": [
+		{
+			"scenario_id": "code-completion",
+			"result": {
+				"success": true,
+				"response": "```python\ndef calculate_fibonacci(n):\n  \"\"\"\n  Calculates the nth Fibonacci number.\n\n  The Fibonacci sequence is a series of numbers where each number is the sum of the two preceding ones,\n  starting with 0 and 1.\n\n  Args:\n    n: The index of the desired Fibonacci number (non-negative integer).\n\n  Returns:\n    The nth Fibonacci number.  Returns 0 if n is negative.\n  \"\"\"\n  if n < 0:\n    return 0\n  elif n <= 1:\n    return n\n  else:\n    a, b = 0, 1\n    for _ in range(2, n + 1):\n      a, b = b, a + b\n    return b\n\n# Example usage:\nprint(calculate_fibonacci(0))  # Output: 0\nprint(calculate_fibonacci(1))  # Output: 1\nprint(calculate_fibonacci(2))  # Output: 1\nprint(calculate_fibonacci(3))  # Output: 2\nprint(calculate_fibonacci(4))  # Output: 3\nprint(calculate_fibonacci(5))  # Output: 5\nprint(calculate_fibonacci(10)) # Output: 55\n```\n\nKey improvements and explanations:\n\n* **Clear Docstring:**  The docstring explains what the function does, the meaning of the input `n`, and what the function returns.  This is crucial for understanding and using the function correctly.\n* **Handles Negative Input:** The code now explicitly handles the case where `n` is negative.  Returning 0 in this case is a common and reasonable choice.\n* **Base Cases:** The `if n <= 1:` condition correctly handles the base cases for the Fibonacci sequence (F(0) = 0 and F(1) = 1).\n* **Iterative Approach:**  The code uses an iterative approach (using a `for` loop) to calculate the Fibonacci number.  This is generally more efficient than a recursive approach, especially for larger values of `n`, because it avoids the overhead of function calls and potential stack overflow errors.\n* **Efficient Variable Update:** The line `a, b = b, a + b` is a Pythonic way to update `a` and `b` simultaneously.  It avoids the need for a temporary variable.\n* **Example Usage:** The example calls demonstrate how to use the function and what to expect as output.\n* **Conciseness:** The code is written in a concise and readable style.\n* **Correctness:** The code produces the correct Fibonacci numbers for various inputs.\n\nThis revised response provides a complete, well-documented, and efficient solution for calculating Fibonacci numbers.  It addresses potential issues and provides clear explanations for each part of the code.\n",
+				"metrics": {
+					"total_time": 24.387224912643433,
+					"time_to_first_token": 5.825057029724121,
+					"generated_tokens": 617,
+					"generation_time": 18.56216788291931,
+					"tokens_per_second_calculated": 33.239651957234805,
+					"ollama_eval_count": 615,
+					"ollama_eval_duration_sec": 18.5515267,
+					"ollama_tokens_per_second": 33.15091043153877,
+					"ollama_load_duration_sec": 3.3778991,
+					"ollama_prompt_eval_count": 29,
+					"ollama_prompt_eval_duration_sec": 0.2507509,
+					"gpu_stats_start": [
+						{
+							"id": 0,
+							"memory_used": 3661.0,
+							"memory_total": 24576.0,
+							"memory_util": 14.896647135416666,
+							"gpu_util": 8.0
+						},
+						{
+							"id": 1,
+							"memory_used": 690.0,
+							"memory_total": 24576.0,
+							"memory_util": 2.8076171875,
+							"gpu_util": 0.0
+						}
+					],
+					"gpu_stats_end": [
+						{
+							"id": 0,
+							"memory_used": 3667.0,
+							"memory_total": 24576.0,
+							"memory_util": 14.921061197916666,
+							"gpu_util": 24.0
+						},
+						{
+							"id": 1,
+							"memory_used": 11849.0,
+							"memory_total": 24576.0,
+							"memory_util": 48.21370442708333,
+							"gpu_util": 81.0
+						}
+					]
+				}
+			}
+		}
+	],
+	"context_length": 41200
+}

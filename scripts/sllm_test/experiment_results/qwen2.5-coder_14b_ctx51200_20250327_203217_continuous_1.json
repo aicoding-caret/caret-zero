@@ -1,0 +1,255 @@
+﻿The 10th Fibonacci number is: 34
+{
+  "model": "qwen2.5-coder:14b",
+  "test_type": "continuous",
+  "timestamp": "2025-03-27T20:39:54.305087",
+  "test_results": [
+    {
+      "scenario_id": "code-completion",
+      "result": {
+        "success": true,
+        "response": "To calculate the Fibonacci sequence, you can use either an iterative or a recursive approach. Below is an example of both methods to calculate the nth Fibonacci number in Python.\n\n### Iterative Approach\n\n```python\ndef calculate_fibonacci_iterative(n):\n    if n <= 0:\n        return \"Input should be a positive integer.\"\n    elif n == 1:\n        return 0\n    elif n == 2:\n        return 1\n    \n    a, b = 0, 1\n    for _ in range(2, n):\n        a, b = b, a + b\n    return b\n\n# Example usage:\nn = 10\nprint(f\"The {n}th Fibonacci number is: {calculate_fibonacci_iterative(n)}\")\n```\n\n### Recursive Approach\n\n```python\ndef calculate_fibonacci_recursive(n):\n    if n <= 0:\n        return \"Input should be a positive integer.\"\n    elif n == 1:\n        return 0\n    elif n == 2:\n        return 1\n    \n    return calculate_fibonacci_recursive(n - 1) + calculate_fibonacci_recursive(n - 2)\n\n# Example usage:\nn = 10\nprint(f\"The {n}th Fibonacci number is: {calculate_fibonacci_recursive(n)}\")\n```\n\n### Explanation\n\n- **Iterative Approach**: This method uses a loop to calculate the Fibonacci sequence. It starts with the first two numbers of the sequence (0 and 1) and iteratively calculates the next numbers until it reaches the nth number.\n  \n- **Recursive Approach**: This method calls itself to calculate the previous two Fibonacci numbers until it reaches the base cases (n = 1 or n = 2). While this approach is more intuitive, it can be inefficient for large values of n due to repeated calculations.\n\nChoose the method that best fits your needs. The iterative approach is generally more efficient in terms of time complexity and avoids potential issues with recursion depth limits in Python.",
+        "metrics": {
+          "total_time": 14.768798351287842,
+          "time_to_first_token": 2.2793631553649902,
+          "generated_tokens": 408,
+          "generation_time": 12.489435195922852,
+          "tokens_per_second_calculated": 32.667610152074026,
+          "ollama_eval_count": 409,
+          "ollama_eval_duration_sec": 12.5620722,
+          "ollama_tokens_per_second": 32.5583226627212,
+          "ollama_load_duration_sec": 0.0251564,
+          "ollama_prompt_eval_count": 27,
+          "ollama_prompt_eval_duration_sec": 0.0035524,
+          "gpu_stats_start": [
+            {
+              "id": 0,
+              "memory_used": 3547.0,
+              "memory_total": 24576.0,
+              "memory_util": 14.432779947916666,
+              "gpu_util": 9.0
+            },
+            {
+              "id": 1,
+              "memory_used": 11329.0,
+              "memory_total": 24576.0,
+              "memory_util": 46.09781901041667,
+              "gpu_util": 8.0
+            }
+          ],
+          "gpu_stats_end": [
+            {
+              "id": 0,
+              "memory_used": 3529.0,
+              "memory_total": 24576.0,
+              "memory_util": 14.359537760416666,
+              "gpu_util": 17.0
+            },
+            {
+              "id": 1,
+              "memory_used": 11329.0,
+              "memory_total": 24576.0,
+              "memory_util": 46.09781901041667,
+              "gpu_util": 47.0
+            }
+          ]
+        }
+      }
+    },
+    {
+      "scenario_id": "code-review",
+      "result": {
+        "success": true,
+        "response": "It looks like you have the beginning of a function definition in Python, but it's incomplete. The `process_data` function is meant to take some data as input and perform some operations on it. However, without any code inside the function, it doesn't do anything.\n\nTo help you better, I'll need more information about what kind of data you're working with and what specific processing you want to perform. Here are a few examples of how this function might be implemented for different types of data:\n\n### Example 1: Processing a list of numbers\nIf `data` is a list of numbers, you might want to calculate their average.\n\n```python\ndef process_data(data):\n    if not data:\n        return None  # Return None if the list is empty\n    total = sum(data)\n    count = len(data)\n    average = total / count\n    return average\n\n# Example usage:\nnumbers = [1, 2, 3, 4, 5]\nresult = process_data(numbers)\nprint(\"Average:\", result)  # Output: Average: 3.0\n```\n\n### Example 2: Processing a string\nIf `data` is a string, you might want to count the number of words.\n\n```python\ndef process_data(data):\n    if not data:\n        return 0  # Return 0 if the string is empty\n    words = data.split()\n    return len(words)\n\n# Example usage:\ntext = \"Hello world! This is a test.\"\nresult = process_data(text)\nprint(\"Number of words:\", result)  # Output: Number of words: 6\n```\n\n### Example 3: Processing a dictionary\nIf `data` is a dictionary, you might want to find the sum of all values.\n\n```python\ndef process_data(data):\n    if not data:\n        return 0  # Return 0 if the dictionary is empty\n    total = sum(data.values())\n    return total\n\n# Example usage:\nscores = {'Alice': 85, 'Bob': 92, 'Charlie': 78}\nresult = process_data(scores)\nprint(\"Total scores:\", result)  # Output: Total scores: 255\n```\n\nPlease provide more details about the type of data you're working with and what specific processing you need. This will help me give you a more tailored solution.",
+        "metrics": {
+          "total_time": 17.20837664604187,
+          "time_to_first_token": 2.306563138961792,
+          "generated_tokens": 485,
+          "generation_time": 14.901813507080078,
+          "tokens_per_second_calculated": 32.546374289919086,
+          "ollama_eval_count": 486,
+          "ollama_eval_duration_sec": 14.9710302,
+          "ollama_tokens_per_second": 32.46269585375628,
+          "ollama_load_duration_sec": 0.0193346,
+          "ollama_prompt_eval_count": 25,
+          "ollama_prompt_eval_duration_sec": 0.0870683,
+          "gpu_stats_start": [
+            {
+              "id": 0,
+              "memory_used": 3526.0,
+              "memory_total": 24576.0,
+              "memory_util": 14.347330729166666,
+              "gpu_util": 89.0
+            },
+            {
+              "id": 1,
+              "memory_used": 11329.0,
+              "memory_total": 24576.0,
+              "memory_util": 46.09781901041667,
+              "gpu_util": 47.0
+            }
+          ],
+          "gpu_stats_end": [
+            {
+              "id": 0,
+              "memory_used": 3516.0,
+              "memory_total": 24576.0,
+              "memory_util": 14.306640625,
+              "gpu_util": 19.0
+            },
+            {
+              "id": 1,
+              "memory_used": 11329.0,
+              "memory_total": 24576.0,
+              "memory_util": 46.09781901041667,
+              "gpu_util": 94.0
+            }
+          ]
+        }
+      }
+    },
+    {
+      "scenario_id": "architecture-design",
+      "result": {
+        "success": true,
+        "response": "Todo \uc571\uc758 \ubc31\uc5d4\ub4dc\ub97c \uc124\uacc4\ud560 \ub54c \uace0\ub824\ud574\uc57c \ud560 \uc8fc\uc694 \uc694\uc18c\ub4e4:\n\n1. \uae30\ub2a5 \uc694\uad6c\uc0ac\ud56d:\n- \uc0ac\uc6a9\uc790 \uacc4\uc815 \uad00\ub9ac (\ud68c\uc6d0\uac00\uc785, \ub85c\uadf8\uc778)\n- \ud560 \uc77c \ucd94\uac00/\uc218\uc815/\uc0ad\uc81c\n- \ud560 \uc77c \uce74\ud14c\uace0\ub9ac\ud654\n- \ud560 \uc77c \uc644\ub8cc \uc0c1\ud0dc \ud45c\uc2dc\n\n2. \ub370\uc774\ud130\ubca0\uc774\uc2a4 \uc124\uacc4:\n- \uc0ac\uc6a9\uc790 \ud14c\uc774\ube14\n- \ud560 \uc77c \ud14c\uc774\ube14\n  - \uc678\ub798\ud0a4\ub85c \uc0ac\uc6a9\uc790 ID \ucc38\uc870\n  - \uc0dd\uc131\uc77c, \uc218\uc815\uc77c \ub4f1 \uae30\ub85d \ud544\ub4dc\n\n3. API \uc5d4\ub4dc\ud3ec\uc778\ud2b8:\n- GET /users: \ubaa8\ub4e0 \uc0ac\uc6a9\uc790 \ubaa9\ub85d \uc870\ud68c\n- POST /users: \uc2e0\uaddc \uc0ac\uc6a9\uc790 \ub4f1\ub85d\n- GET /todos: \ud2b9\uc815 \uc0ac\uc6a9\uc790\uc758 \ud560 \uc77c \ubaa9\ub85d \uc870\ud68c\n- POST /todos: \uc0c8\ub85c\uc6b4 \ud560 \uc77c \ucd94\uac00\n- PUT/PATCH /todos/{id}: \ud560 \uc77c \uc218\uc815\n- DELETE /todos/{id}: \ud560 \uc77c \uc0ad\uc81c\n\n4. \uc778\uc99d \ubc0f \uad8c\ud55c:\n- JWT (JSON Web Token)\ub97c \uc774\uc6a9\ud55c \uc138\uc158 \uad00\ub9ac\n- \uc0ac\uc6a9\uc790\ubcc4 \ub370\uc774\ud130 \uc811\uadfc \uc81c\uc5b4\n\n5. \ubcf4\uc548 \uace0\ub824\uc0ac\ud56d:\n- \uc785\ub825 \ub370\uc774\ud130 \uac80\uc99d\n- SQL/NoSQL \uc8fc\uc785 \uacf5\uaca9 \ub300\ube44\n- \ub370\uc774\ud130 \uc554\ud638\ud654 (\ud544\uc694\uc2dc)\n\n6. \uc2a4\ucf00\uc77c\ub9c1 \ubc0f \uc131\ub2a5 \ucd5c\uc801\ud654:\n- DB \uc778\ub371\uc2f1 \ucd5c\uc801\ud654\n- \uce90\uc2f1 \uc804\ub7b5\n- \ub85c\ub4dc \ubc38\ub7f0\uc11c \uc0ac\uc6a9\n\n7. \ubc30\ud3ec \ud658\uacbd:\n- Docker\ub97c \uc774\uc6a9\ud55c \ucee8\ud14c\uc774\ub108\ud654\n- CI/CD \ud30c\uc774\ud504\ub77c\uc778 \uad6c\ucd95\n\n8. \uae30\uc220 \uc2a4\ud0dd \uc120\ud0dd:\n- \uc5b8\uc5b4: Node.js, Python, Java \ub4f1\n- \ud504\ub808\uc784\uc6cc\ud06c: Express, Django, Spring Boot \ub4f1\n- DBMS: MySQL, PostgreSQL, MongoDB \ub4f1\n\n9. \ubaa8\ub2c8\ud130\ub9c1 \ubc0f \ub85c\uae45:\n- \uc560\ud50c\ub9ac\ucf00\uc774\uc158 \uc131\ub2a5 \ubaa8\ub2c8\ud130\ub9c1 \ub3c4\uad6c \uc0ac\uc6a9\n- \uc0c1\uc138\ud55c \ub85c\uadf8 \uae30\ub85d \ubc0f \ubd84\uc11d \uc2dc\uc2a4\ud15c \uad6c\ucd95\n\n10. \ud14c\uc2a4\ud2b8 \uc804\ub7b5:\n- \ub2e8\uc704 \ud14c\uc2a4\ud2b8, \ud1b5\ud569 \ud14c\uc2a4\ud2b8, \uae30\ub2a5 \ud14c\uc2a4\ud2b8\n- API \uc2a4\ud399 \ubb38\uc11c\ud654 (Swagger \ub4f1)\n\n\uc774\ub7ec\ud55c \uc694\uc18c\ub4e4\uc744 \uace0\ub824\ud558\uc5ec Todo \uc571\uc758 \ubc31\uc5d4\ub4dc\ub97c \uc124\uacc4\ud558\uba74 \ud655\uc7a5\uc131\uacfc \uc548\uc815\uc131\uc744 \uac16\ucd98 \uc2dc\uc2a4\ud15c\uc744 \uad6c\ucd95\ud560 \uc218 \uc788\uc744 \uac83\uc785\ub2c8\ub2e4.",
+        "metrics": {
+          "total_time": 18.40578532218933,
+          "time_to_first_token": 2.307512044906616,
+          "generated_tokens": 633,
+          "generation_time": 16.098273277282715,
+          "tokens_per_second_calculated": 39.320987356654335,
+          "ollama_eval_count": 525,
+          "ollama_eval_duration_sec": 16.1621712,
+          "ollama_tokens_per_second": 32.48325942742149,
+          "ollama_load_duration_sec": 0.021512,
+          "ollama_prompt_eval_count": 29,
+          "ollama_prompt_eval_duration_sec": 0.0807879,
+          "gpu_stats_start": [
+            {
+              "id": 0,
+              "memory_used": 3516.0,
+              "memory_total": 24576.0,
+              "memory_util": 14.306640625,
+              "gpu_util": 18.0
+            },
+            {
+              "id": 1,
+              "memory_used": 11329.0,
+              "memory_total": 24576.0,
+              "memory_util": 46.09781901041667,
+              "gpu_util": 24.0
+            }
+          ],
+          "gpu_stats_end": [
+            {
+              "id": 0,
+              "memory_used": 3482.0,
+              "memory_total": 24576.0,
+              "memory_util": 14.168294270833334,
+              "gpu_util": 21.0
+            },
+            {
+              "id": 1,
+              "memory_used": 11329.0,
+              "memory_total": 24576.0,
+              "memory_util": 46.09781901041667,
+              "gpu_util": 83.0
+            }
+          ]
+        }
+      }
+    },
+    {
+      "scenario_id": "debugging",
+      "result": {
+        "success": true,
+        "response": "Certainly! Below is an example of a `UserManager` class in Python. This class can be used to manage user data, such as adding, updating, deleting, and retrieving users.\n\n```python\nclass User:\n    def __init__(self, user_id, username, email):\n        self.user_id = user_id\n        self.username = username\n        self.email = email\n\n    def __repr__(self):\n        return f\"User(user_id={self.user_id}, username='{self.username}', email='{self.email}')\"\n\n\nclass UserManager:\n    def __init__(self):\n        self.users = {}\n\n    def add_user(self, user):\n        if user.user_id in self.users:\n            raise ValueError(f\"User with ID {user.user_id} already exists.\")\n        self.users[user.user_id] = user\n\n    def update_user(self, user_id, username=None, email=None):\n        if user_id not in self.users:\n            raise ValueError(f\"User with ID {user_id} does not exist.\")\n        \n        if username is not None:\n            self.users[user_id].username = username\n        if email is not None:\n            self.users[user_id].email = email\n\n    def delete_user(self, user_id):\n        if user_id not in self.users:\n            raise ValueError(f\"User with ID {user_id} does not exist.\")\n        del self.users[user_id]\n\n    def get_user(self, user_id):\n        return self.users.get(user_id, None)\n\n    def list_users(self):\n        return list(self.users.values())\n\n# Example usage\nif __name__ == \"__main__\":\n    manager = UserManager()\n\n    # Create some users\n    user1 = User(1, \"alice\", \"alice@example.com\")\n    user2 = User(2, \"bob\", \"bob@example.com\")\n\n    # Add users to the manager\n    manager.add_user(user1)\n    manager.add_user(user2)\n\n    # List all users\n    print(\"All Users:\", manager.list_users())\n\n    # Update a user's email\n    manager.update_user(1, email=\"alice_new@example.com\")\n    print(\"Updated User 1:\", manager.get_user(1))\n\n    # Delete a user\n    manager.delete_user(2)\n    print(\"All Users After Deletion:\", manager.list_users())\n```\n\n### Explanation:\n- **User Class**: Represents a single user with attributes `user_id`, `username`, and `email`.\n- **UserManager Class**: Manages a collection of users.\n  - `add_user`: Adds a new user to the manager.\n  - `update_user`: Updates an existing user's information.\n  - `delete_user`: Removes a user from the manager.\n  - `get_user`: Retrieves a user by their ID.\n  - `list_users`: Returns a list of all users.\n\nThis example provides a basic structure for managing user data. You can extend this class with additional features such as persistent storage, authentication, or more complex validation logic as needed.",
+        "metrics": {
+          "total_time": 21.112579584121704,
+          "time_to_first_token": 2.473445415496826,
+          "generated_tokens": 609,
+          "generation_time": 18.639134168624878,
+          "tokens_per_second_calculated": 32.67319149540354,
+          "ollama_eval_count": 610,
+          "ollama_eval_duration_sec": 18.7876735,
+          "ollama_tokens_per_second": 32.468096701808236,
+          "ollama_load_duration_sec": 0.0234778,
+          "ollama_prompt_eval_count": 23,
+          "ollama_prompt_eval_duration_sec": 0.1572417,
+          "gpu_stats_start": [
+            {
+              "id": 0,
+              "memory_used": 3482.0,
+              "memory_total": 24576.0,
+              "memory_util": 14.168294270833334,
+              "gpu_util": 21.0
+            },
+            {
+              "id": 1,
+              "memory_used": 11329.0,
+              "memory_total": 24576.0,
+              "memory_util": 46.09781901041667,
+              "gpu_util": 83.0
+            }
+          ],
+          "gpu_stats_end": [
+            {
+              "id": 0,
+              "memory_used": 3492.0,
+              "memory_total": 24576.0,
+              "memory_util": 14.208984375,
+              "gpu_util": 44.0
+            },
+            {
+              "id": 1,
+              "memory_used": 11331.0,
+              "memory_total": 24576.0,
+              "memory_util": 46.10595703125,
+              "gpu_util": 94.0
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "context_length": 51200,
+  "quality_evaluation": {
+    "code-completion": {
+      "detailed_scores": {
+        "accuracy": 0.0,
+        "consistency": 0.0,
+        "code_quality": 6.0,
+        "clarity": 4.0
+      },
+      "total_score": 2.0
+    },
+    "code-review": {
+      "detailed_scores": {
+        "accuracy": 0.0,
+        "consistency": 0.0,
+        "code_quality": 8.0,
+        "clarity": 2.0
+      },
+      "total_score": 2.0
+    },
+    "architecture-design": {
+      "detailed_scores": {
+        "accuracy": 4.0,
+        "consistency": 0.0,
+        "code_quality": 0.0,
+        "clarity": 2.0
+      },
+      "total_score": 2.0
+    },
+    "debugging": {
+      "detailed_scores": {
+        "accuracy": 0.0,
+        "consistency": 0.0,
+        "code_quality": 6.0,
+        "clarity": 4.0
+      },
+      "total_score": 2.0
+    }
+  }
+}

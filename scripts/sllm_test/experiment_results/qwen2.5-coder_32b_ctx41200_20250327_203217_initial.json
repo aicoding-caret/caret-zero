@@ -1,0 +1,60 @@
+﻿{
+	"model": "qwen2.5-coder:32b",
+	"test_type": "initial",
+	"timestamp": "2025-03-27T20:52:12.257244",
+	"test_results": [
+		{
+			"scenario_id": "code-completion",
+			"result": {
+				"success": true,
+				"response": "Certainly! The Fibonacci sequence is a series of numbers where each number is the sum of the two preceding ones, usually starting with 0 and 1. Here's a simple Python function to calculate the nth Fibonacci number using an iterative approach:\n\n```python\ndef calculate_fibonacci(n):\n    if n <= 0:\n        return \"Input should be a positive integer.\"\n    elif n == 1:\n        return 0\n    elif n == 2:\n        return 1\n    \n    a, b = 0, 1\n    for _ in range(2, n):\n        a, b = b, a + b\n    return b\n\n# Example usage:\nprint(calculate_fibonacci(10))  # Output: 34\n```\n\nThis function first checks if the input `n` is valid (a positive integer). It then handles the base cases for the first two Fibonacci numbers. For other values, it uses a loop to calculate the Fibonacci number iteratively, which is efficient in terms of both time and space complexity.\n\nIf you prefer a recursive approach (though less efficient for large `n` due to repeated calculations), here's how you could do it:\n\n```python\ndef calculate_fibonacci(n):\n    if n <= 0:\n        return \"Input should be a positive integer.\"\n    elif n == 1:\n        return 0\n    elif n == 2:\n        return 1\n    else:\n        return calculate_fibonacci(n - 1) + calculate_fibonacci(n - 2)\n\n# Example usage:\nprint(calculate_fibonacci(10))  # Output: 34\n```\n\nFor large values of `n`, consider using memoization or an iterative approach to avoid excessive computation time.",
+				"metrics": {
+					"total_time": 19.999762773513794,
+					"time_to_first_token": 7.268143177032471,
+					"generated_tokens": 365,
+					"generation_time": 12.731619596481323,
+					"tokens_per_second_calculated": 28.668779901409884,
+					"ollama_eval_count": 366,
+					"ollama_eval_duration_sec": 12.7333555,
+					"ollama_tokens_per_second": 28.743405459778455,
+					"ollama_load_duration_sec": 4.8969702,
+					"ollama_prompt_eval_count": 27,
+					"ollama_prompt_eval_duration_sec": 0.1543304,
+					"gpu_stats_start": [
+						{
+							"id": 0,
+							"memory_used": 3370.0,
+							"memory_total": 24576.0,
+							"memory_util": 13.712565104166666,
+							"gpu_util": 32.0
+						},
+						{
+							"id": 1,
+							"memory_used": 632.0,
+							"memory_total": 24576.0,
+							"memory_util": 2.571614583333333,
+							"gpu_util": 37.0
+						}
+					],
+					"gpu_stats_end": [
+						{
+							"id": 0,
+							"memory_used": 3373.0,
+							"memory_total": 24576.0,
+							"memory_util": 13.724772135416666,
+							"gpu_util": 6.0
+						},
+						{
+							"id": 1,
+							"memory_used": 22209.0,
+							"memory_total": 24576.0,
+							"memory_util": 90.36865234375,
+							"gpu_util": 68.0
+						}
+					]
+				}
+			}
+		}
+	],
+	"context_length": 41200
+}

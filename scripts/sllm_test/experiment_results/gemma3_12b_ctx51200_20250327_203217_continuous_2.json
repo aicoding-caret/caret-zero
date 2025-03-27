@@ -1,0 +1,261 @@
+﻿0
+1
+1
+2
+3
+5
+55
+{
+  "model": "gemma3:12b",
+  "test_type": "continuous",
+  "timestamp": "2025-03-27T21:31:45.366117",
+  "test_results": [
+    {
+      "scenario_id": "code-completion",
+      "result": {
+        "success": true,
+        "response": "```python\ndef calculate_fibonacci(n):\n  \"\"\"\n  Calculates the nth Fibonacci number.\n\n  The Fibonacci sequence is a series of numbers where each number is the sum of the two preceding ones,\n  starting with 0 and 1.\n\n  Args:\n    n: The index of the desired Fibonacci number (non-negative integer).\n\n  Returns:\n    The nth Fibonacci number.  Returns 0 if n is negative.\n  \"\"\"\n  if n < 0:\n    return 0\n  elif n <= 1:\n    return n\n  else:\n    a, b = 0, 1\n    for _ in range(2, n + 1):\n      a, b = b, a + b\n    return b\n\n# Example usage:\nprint(calculate_fibonacci(0))  # Output: 0\nprint(calculate_fibonacci(1))  # Output: 1\nprint(calculate_fibonacci(2))  # Output: 1\nprint(calculate_fibonacci(3))  # Output: 2\nprint(calculate_fibonacci(4))  # Output: 3\nprint(calculate_fibonacci(5))  # Output: 5\nprint(calculate_fibonacci(10)) # Output: 55\n```\n\nKey improvements and explanations:\n\n* **Clear Docstring:**  The docstring explains what the function does, the Fibonacci sequence, the argument `n`, and what the function returns.  This is crucial for understanding and using the function correctly.\n* **Handles Negative Input:** The code now explicitly handles negative input values for `n`.  It returns 0 in this case, which is a reasonable default behavior.  This prevents errors and makes the function more robust.\n* **Base Cases:** The code correctly handles the base cases for `n = 0` and `n = 1`.  These are essential for the Fibonacci sequence definition.\n* **Iterative Approach:**  The code uses an iterative approach (using a `for` loop) to calculate the Fibonacci number.  This is generally more efficient than a recursive approach, especially for larger values of `n`, because it avoids the overhead of function calls.  Recursive Fibonacci calculations can lead to stack overflow errors for large `n`.\n* **Efficient Variable Update:** The line `a, b = b, a + b` is a Pythonic way to update `a` and `b` simultaneously.  It's more concise and efficient than using temporary variables.\n* **Example Usage:** The example calls demonstrate how to use the function and what to expect as output.  This helps users quickly understand how to apply the function.\n* **Conciseness:** The code is written in a clear and concise manner, making it easy to read and understand.\n* **Correctness:** The code produces the correct Fibonacci numbers for various input values.\n\nThis revised response provides a complete, well-documented, and efficient solution for calculating Fibonacci numbers.  It addresses potential issues and provides clear instructions for use.\n",
+        "metrics": {
+          "total_time": 26.014845609664917,
+          "time_to_first_token": 2.4926068782806396,
+          "generated_tokens": 655,
+          "generation_time": 23.522238731384277,
+          "tokens_per_second_calculated": 27.84598895878366,
+          "ollama_eval_count": 653,
+          "ollama_eval_duration_sec": 23.5221639,
+          "ollama_tokens_per_second": 27.76105135463324,
+          "ollama_load_duration_sec": 0.0556116,
+          "ollama_prompt_eval_count": 29,
+          "ollama_prompt_eval_duration_sec": 0.2410643,
+          "gpu_stats_start": [
+            {
+              "id": 0,
+              "memory_used": 3909.0,
+              "memory_total": 24576.0,
+              "memory_util": 15.90576171875,
+              "gpu_util": 26.0
+            },
+            {
+              "id": 1,
+              "memory_used": 11886.0,
+              "memory_total": 24576.0,
+              "memory_util": 48.3642578125,
+              "gpu_util": 9.0
+            }
+          ],
+          "gpu_stats_end": [
+            {
+              "id": 0,
+              "memory_used": 3892.0,
+              "memory_total": 24576.0,
+              "memory_util": 15.836588541666666,
+              "gpu_util": 40.0
+            },
+            {
+              "id": 1,
+              "memory_used": 11886.0,
+              "memory_total": 24576.0,
+              "memory_util": 48.3642578125,
+              "gpu_util": 42.0
+            }
+          ]
+        }
+      }
+    },
+    {
+      "scenario_id": "code-review",
+      "result": {
+        "success": true,
+        "response": "Okay, I'm ready to help you complete the `process_data(data)` function.  I need to know what you want it to *do* with the `data`.  \n\nHere's a breakdown of how I can help, and the kinds of information I need from you:\n\n**1. Understanding the `data`:**\n\n*   **What is the data type?** Is it a list, a dictionary, a string, a number, or something else?\n*   **What does the data represent?**  (e.g., a list of numbers, a list of names, a dictionary of user information, a CSV file, etc.)\n*   **What is the structure of the data?**  (e.g., If it's a list, what's inside each element? If it's a dictionary, what are the keys and values?)\n*   **Are there any assumptions about the data?** (e.g., \"The list will always contain positive integers,\" or \"The dictionary will always have a 'name' key.\")\n\n**2. Desired Functionality:**\n\n*   **What should the function do with the data?**  (e.g., calculate the sum, find the maximum value, sort the data, transform the data into a different format, filter the data, etc.)\n*   **What should the function return?** (e.g., a single value, a modified list, a new dictionary, etc.)\n*   **Are there any specific requirements or constraints?** (e.g., \"Must use a specific algorithm,\" or \"Must handle errors gracefully.\")\n\n**Example Scenarios and Possible Implementations**\n\nHere are a few examples to illustrate how I can help, assuming different data types and desired outcomes:\n\n**Scenario 1: `data` is a list of numbers, and you want to calculate the sum.**\n\n```python\ndef process_data(data):\n  \"\"\"Calculates the sum of a list of numbers.\n\n  Args:\n    data: A list of numbers.\n\n  Returns:\n    The sum of the numbers in the list.\n  \"\"\"\n  total = 0\n  for number in data:\n    total += number\n  return total\n```\n\n**Scenario 2: `data` is a list of strings, and you want to convert them to uppercase.**\n\n```python\ndef process_data(data):\n  \"\"\"Converts a list of strings to uppercase.\n\n  Args:\n    data: A list of strings.\n\n  Returns:\n    A new list containing the uppercase versions of the strings.\n  \"\"\"\n  uppercase_data = []\n  for string in data:\n    uppercase_data.append(string.upper())\n  return uppercase_data\n```\n\n**Scenario 3: `data` is a dictionary, and you want to extract specific values.**\n\n```python\ndef process_data(data):\n  \"\"\"Extracts the 'name' and 'age' from a dictionary.\n\n  Args:\n    data: A dictionary containing 'name' and 'age' keys.\n\n  Returns:\n    A tuple containing the name and age.  Returns None if keys are missing.\n  \"\"\"\n  if 'name' in data and 'age' in data:\n    return (data['name'], data['age'])\n  else:\n    return None\n```\n\n**To help me write the best possible `process_data` function, please provide the following information:**\n\n1.  **What is the data type of `data`?**\n2.  **What do you want the function to do with the data?**\n3.  **What should the function return?**\n\nI'm looking forward to your response so I can help you complete the function!",
+        "metrics": {
+          "total_time": 31.51146101951599,
+          "time_to_first_token": 2.3132081031799316,
+          "generated_tokens": 811,
+          "generation_time": 29.19825291633606,
+          "tokens_per_second_calculated": 27.775634464288636,
+          "ollama_eval_count": 809,
+          "ollama_eval_duration_sec": 29.1982529,
+          "ollama_tokens_per_second": 27.707137230803287,
+          "ollama_load_duration_sec": 0.0489714,
+          "ollama_prompt_eval_count": 28,
+          "ollama_prompt_eval_duration_sec": 0.1385791,
+          "gpu_stats_start": [
+            {
+              "id": 0,
+              "memory_used": 3890.0,
+              "memory_total": 24576.0,
+              "memory_util": 15.828450520833334,
+              "gpu_util": 81.0
+            },
+            {
+              "id": 1,
+              "memory_used": 11886.0,
+              "memory_total": 24576.0,
+              "memory_util": 48.3642578125,
+              "gpu_util": 42.0
+            }
+          ],
+          "gpu_stats_end": [
+            {
+              "id": 0,
+              "memory_used": 3891.0,
+              "memory_total": 24576.0,
+              "memory_util": 15.83251953125,
+              "gpu_util": 7.000000000000001
+            },
+            {
+              "id": 1,
+              "memory_used": 11886.0,
+              "memory_total": 24576.0,
+              "memory_util": 48.3642578125,
+              "gpu_util": 67.0
+            }
+          ]
+        }
+      }
+    },
+    {
+      "scenario_id": "architecture-design",
+      "result": {
+        "success": true,
+        "response": "## Todo \uc571 \ubc31\uc5d4\ub4dc \uc124\uacc4\n\nTodo \uc571 \ubc31\uc5d4\ub4dc \uc124\uacc4\ub97c \uc704\ud55c \uac00\uc774\ub4dc\uc785\ub2c8\ub2e4. \uc694\uad6c\uc0ac\ud56d, \uae30\uc220 \uc2a4\ud0dd, \uc544\ud0a4\ud14d\ucc98, API \uc124\uacc4, \ub370\uc774\ud130\ubca0\uc774\uc2a4 \uc2a4\ud0a4\ub9c8, \ubc30\ud3ec \ubc0f \ubaa8\ub2c8\ud130\ub9c1 \ub4f1\uc744 \ud3ec\ud568\ud569\ub2c8\ub2e4.\n\n**1. \uc694\uad6c\uc0ac\ud56d \ubd84\uc11d**\n\n*   **\uae30\ub2a5 \uc694\uad6c\uc0ac\ud56d:**\n    *   Todo \ud56d\ubaa9 \uc0dd\uc131 (\uc81c\ubaa9, \ub0b4\uc6a9, \ub9c8\uac10\uc77c, \uc6b0\uc120\uc21c\uc704)\n    *   Todo \ud56d\ubaa9 \uc870\ud68c (\uc804\uccb4, \ud2b9\uc815 ID, \ub9c8\uac10\uc77c, \uc6b0\uc120\uc21c\uc704 \ub4f1)\n    *   Todo \ud56d\ubaa9 \uc218\uc815 (\uc81c\ubaa9, \ub0b4\uc6a9, \ub9c8\uac10\uc77c, \uc6b0\uc120\uc21c\uc704)\n    *   Todo \ud56d\ubaa9 \uc0ad\uc81c\n    *   Todo \ud56d\ubaa9 \uc644\ub8cc/\ubbf8\uc644\ub8cc \uc0c1\ud0dc \ubcc0\uacbd\n    *   \uc0ac\uc6a9\uc790 \uc778\uc99d \ubc0f \uad8c\ud55c \ubd80\uc5ec (\uc120\ud0dd \uc0ac\ud56d)\n    *   Todo \ud56d\ubaa9 \uac80\uc0c9 (\uc120\ud0dd \uc0ac\ud56d)\n    *   \uce74\ud14c\uace0\ub9ac \uad00\ub9ac (\uc120\ud0dd \uc0ac\ud56d)\n*   **\ube44\uae30\ub2a5 \uc694\uad6c\uc0ac\ud56d:**\n    *   **\uc131\ub2a5:** \ube60\ub978 \uc751\ub2f5 \uc2dc\uac04, \ub192\uc740 \ucc98\ub9ac\ub7c9\n    *   **\ud655\uc7a5\uc131:** \uc0ac\uc6a9\uc790 \uc99d\uac00\uc5d0 \ub530\ub978 \uc2dc\uc2a4\ud15c \ud655\uc7a5 \uc6a9\uc774\uc131\n    *   **\uc548\uc815\uc131:** \uc7a5\uc560 \ubc1c\uc0dd \uc2dc \ube60\ub978 \ubcf5\uad6c\n    *   **\ubcf4\uc548:** \ub370\uc774\ud130 \ubcf4\ud638, \ubb34\ub2e8 \uc811\uadfc \ubc29\uc9c0\n    *   **\uc0ac\uc6a9 \ud3b8\uc758\uc131:** API \uc0ac\uc6a9\uc758 \uc6a9\uc774\uc131\n\n**2. \uae30\uc220 \uc2a4\ud0dd**\n\n*   **\ud504\ub85c\uadf8\ub798\ubc0d \uc5b8\uc5b4:** Python, Node.js, Java, Go \ub4f1 (Python (Django/Flask), Node.js (Express) \ucd94\ucc9c)\n*   **\ud504\ub808\uc784\uc6cc\ud06c:** Django, Flask, Express \ub4f1 (Django \ucd94\ucc9c - ORM, RESTful API \uc9c0\uc6d0)\n*   **\ub370\uc774\ud130\ubca0\uc774\uc2a4:** PostgreSQL, MySQL, MongoDB \ub4f1 (PostgreSQL \ucd94\ucc9c - \uad00\uacc4\ud615 \ub370\uc774\ud130\ubca0\uc774\uc2a4)\n*   **API:** RESTful API\n*   **\uc778\uc99d:** JWT (JSON Web Token)\n*   **\uce90\uc2f1:** Redis, Memcached (\uc120\ud0dd \uc0ac\ud56d)\n*   **\uba54\uc2dc\uc9c0 \ud050:** RabbitMQ, Kafka (\uc120\ud0dd \uc0ac\ud56d - \ube44\ub3d9\uae30 \uc791\uc5c5 \ucc98\ub9ac)\n*   **\ucee8\ud14c\uc774\ub108:** Docker\n*   **\uc624\ucf00\uc2a4\ud2b8\ub808\uc774\uc158:** Kubernetes (\uc120\ud0dd \uc0ac\ud56d)\n*   **\ud074\ub77c\uc6b0\ub4dc \ud50c\ub7ab\ud3fc:** AWS, Google Cloud, Azure (\uc120\ud0dd \uc0ac\ud56d)\n\n**3. \uc544\ud0a4\ud14d\ucc98**\n\n*   **3-Tier \uc544\ud0a4\ud14d\ucc98:**\n    *   **Presentation Tier (API Layer):** \ud074\ub77c\uc774\uc5b8\ud2b8 \uc694\uccad\uc744 \ubc1b\uc544\ub4e4\uc774\uace0 \uc751\ub2f5\uc744 \ubc18\ud658\ud558\ub294 API \uc11c\ubc84\n    *   **Business Logic Tier (Service Layer):** \ube44\uc988\ub2c8\uc2a4 \ub85c\uc9c1 \ucc98\ub9ac (Todo \ud56d\ubaa9 \uc0dd\uc131, \uc870\ud68c, \uc218\uc815, \uc0ad\uc81c \ub4f1)\n    *   **Data Access Tier (Repository Layer):** \ub370\uc774\ud130\ubca0\uc774\uc2a4\uc640 \uc0c1\ud638 \uc791\uc6a9 (CRUD \uc791\uc5c5)\n*   **\ub9c8\uc774\ud06c\ub85c\uc11c\ube44\uc2a4 \uc544\ud0a4\ud14d\ucc98 (\uc120\ud0dd \uc0ac\ud56d):** Todo \uc11c\ube44\uc2a4, \uc0ac\uc6a9\uc790 \uc11c\ube44\uc2a4, \uc778\uc99d \uc11c\ube44\uc2a4 \ub4f1\uc73c\ub85c \ubd84\ub9ac (\ubcf5\uc7a1\ub3c4 \uc99d\uac00)\n\n**4. API \uc124\uacc4 (RESTful API)**\n\n*   **Base URL:** `/api/todos`\n*   **Endpoints:**\n    *   `GET /api/todos`: \ubaa8\ub4e0 Todo \ud56d\ubaa9 \uc870\ud68c\n    *   `GET /api/todos/{id}`: \ud2b9\uc815 ID\uc758 Todo \ud56d\ubaa9 \uc870\ud68c\n    *   `POST /api/todos`: \uc0c8\ub85c\uc6b4 Todo \ud56d\ubaa9 \uc0dd\uc131\n    *   `PUT /api/todos/{id}`: \ud2b9\uc815 ID\uc758 Todo \ud56d\ubaa9 \uc218\uc815\n    *   `DELETE /api/todos/{id}`: \ud2b9\uc815 ID\uc758 Todo \ud56d\ubaa9 \uc0ad\uc81c\n    *   `PATCH /api/todos/{id}/complete`: \ud2b9\uc815 ID\uc758 Todo \ud56d\ubaa9 \uc644\ub8cc \uc0c1\ud0dc \ubcc0\uacbd\n*   **Request/Response Format:** JSON\n*   **HTTP Status Codes:** 200 OK, 201 Created, 204 No Content, 400 Bad Request, 401 Unauthorized, 404 Not Found, 500 Internal Server Error\n\n**5. \ub370\uc774\ud130\ubca0\uc774\uc2a4 \uc2a4\ud0a4\ub9c8 (PostgreSQL)**\n\n```sql\nCREATE TABLE users (\n    id SERIAL PRIMARY KEY,\n    username VARCHAR(255) UNIQUE NOT NULL,\n    password VARCHAR(255) NOT NULL\n);\n\nCREATE TABLE todos (\n    id SERIAL PRIMARY KEY,\n    user_id INTEGER REFERENCES users(id),\n    title VARCHAR(255) NOT NULL,\n    content TEXT,\n    due_date TIMESTAMP,\n    priority INTEGER,\n    completed BOOLEAN DEFAULT FALSE\n);\n```\n\n**6. \uc778\uc99d \ubc0f \uad8c\ud55c \ubd80\uc5ec**\n\n*   **\uc778\uc99d:** \uc0ac\uc6a9\uc790 \uc774\ub984\uacfc \ube44\ubc00\ubc88\ud638\ub97c \uc0ac\uc6a9\ud558\uc5ec \uc778\uc99d\n*   **\uad8c\ud55c \ubd80\uc5ec:** JWT (JSON Web Token) \uc0ac\uc6a9\n    *   \uc0ac\uc6a9\uc790\uac00 \ub85c\uadf8\uc778\ud558\uba74 \uc11c\ubc84\ub294 JWT\ub97c \ubc1c\uae09\n    *   \ud074\ub77c\uc774\uc5b8\ud2b8\ub294 \uc774\ud6c4 \uc694\uccad\uc5d0 JWT\ub97c \ud3ec\ud568\n    *   \uc11c\ubc84\ub294 JWT\ub97c \uac80\uc99d\ud558\uc5ec \uc0ac\uc6a9\uc790\uc758 \uad8c\ud55c\uc744 \ud655\uc778\n\n**7. \ubc30\ud3ec \ubc0f \ubaa8\ub2c8\ud130\ub9c1**\n\n*   **\ucee8\ud14c\uc774\ub108\ud654:** Docker\ub97c \uc0ac\uc6a9\ud558\uc5ec \uc560\ud50c\ub9ac\ucf00\uc774\uc158 \ucee8\ud14c\uc774\ub108\ud654\n*   **\uc624\ucf00\uc2a4\ud2b8\ub808\uc774\uc158:** Kubernetes\ub97c \uc0ac\uc6a9\ud558\uc5ec \ucee8\ud14c\uc774\ub108 \uad00\ub9ac (\uc120\ud0dd \uc0ac\ud56d)\n*   **\ud074\ub77c\uc6b0\ub4dc \ud50c\ub7ab\ud3fc:** AWS, Google Cloud, Azure \ub4f1 (\uc120\ud0dd \uc0ac\ud56d)\n*   **\ubaa8\ub2c8\ud130\ub9c1:** Prometheus, Grafana \ub4f1\uc744 \uc0ac\uc6a9\ud558\uc5ec \uc2dc\uc2a4\ud15c \ubaa8\ub2c8\ud130\ub9c1\n*   **\ub85c\uae45:** ELK Stack (Elasticsearch, Logstash, Kibana) \ub4f1\uc744 \uc0ac\uc6a9\ud558\uc5ec \ub85c\uadf8 \ubd84\uc11d\n\n**8. \ucd94\uac00 \uace0\ub824 \uc0ac\ud56d**\n\n*   **\uce90\uc2f1:** \uc790\uc8fc \uc0ac\uc6a9\ub418\ub294 \ub370\uc774\ud130\ub97c \uce90\uc2f1\ud558\uc5ec \uc131\ub2a5 \ud5a5\uc0c1\n*   **\ube44\ub3d9\uae30 \uc791\uc5c5 \ucc98\ub9ac:** \uc774\uba54\uc77c \ubc1c\uc1a1, \uc774\ubbf8\uc9c0 \ucc98\ub9ac \ub4f1 \uc2dc\uac04\uc774 \uc624\ub798 \uac78\ub9ac\ub294 \uc791\uc5c5\uc740 \uba54\uc2dc\uc9c0 \ud050\ub97c \uc0ac\uc6a9\ud558\uc5ec \ube44\ub3d9\uae30\uc801\uc73c\ub85c \ucc98\ub9ac\n*   **\ud14c\uc2a4\ud2b8:** \ub2e8\uc704 \ud14c\uc2a4\ud2b8, \ud1b5\ud569 \ud14c\uc2a4\ud2b8, E2E \ud14c\uc2a4\ud2b8\ub97c \ud1b5\ud574 \ucf54\ub4dc \ud488\uc9c8 \ud655\ubcf4\n*   **\ubcf4\uc548:** SQL Injection, XSS \ub4f1 \ubcf4\uc548 \ucde8\uc57d\uc810 \ubc29\uc9c0\n*   **\ud655\uc7a5\uc131:** \ud2b8\ub798\ud53d \uc99d\uac00\uc5d0 \ub300\ube44\ud558\uc5ec \uc2dc\uc2a4\ud15c \ud655\uc7a5 \uac00\ub2a5\ud558\ub3c4\ub85d \uc124\uacc4\n\n**\uc608\uc2dc (Python, Django)**\n\n```python\n# models.py\nfrom django.db import models\n\nclass User(models.Model):\n    username = models.CharField(max_length=255, unique=True)\n    password = models.CharField(max_length=255)\n\nclass Todo(models.Model):\n    user = models.ForeignKey(User, on_delete=models.CASCADE)\n    title = models.CharField(max_length=255)\n    content = models.TextField(blank=True, null=True)\n    due_date = models.DateTimeField(blank=True, null=True)\n    priority = models.IntegerField(default=0)\n    completed = models.BooleanField(default=False)\n\n# serializers.py\nfrom rest_framework import serializers\nfrom .models import User, Todo\n\nclass UserSerializer(serializers.ModelSerializer):\n    class Meta:\n        model = User\n        fields = ['id', 'username']\n\nclass TodoSerializer(serializers.ModelSerializer):\n    class Meta:\n        model = Todo\n        fields = ['id', 'user', 'title', 'content', 'due_date', 'priority', 'completed']\n\n# views.py\nfrom rest_framework import viewsets\nfrom .models import Todo\nfrom .serializers import TodoSerializer\n\nclass TodoViewSet(viewsets.ModelViewSet):\n    queryset = Todo.objects.all()\n    serializer_class = TodoSerializer\n```\n\n\uc774 \uac00\uc774\ub4dc\ub294 Todo \uc571 \ubc31\uc5d4\ub4dc \uc124\uacc4\ub97c \uc704\ud55c \uae30\ubcf8\uc801\uc778 \ud2c0\uc744 \uc81c\uacf5\ud569\ub2c8\ub2e4. \uc2e4\uc81c \uad6c\ud604 \uc2dc\uc5d0\ub294 \uc694\uad6c\uc0ac\ud56d\uacfc \ud658\uacbd\uc5d0 \ub9de\uac8c \uc124\uacc4\ub97c \uc870\uc815\ud574\uc57c \ud569\ub2c8\ub2e4.  \uad81\uae08\ud55c \uc810\uc774 \uc788\ub2e4\uba74 \uc5b8\uc81c\ub4e0\uc9c0 \uc9c8\ubb38\ud574\uc8fc\uc138\uc694.",
+        "metrics": {
+          "total_time": 62.306108236312866,
+          "time_to_first_token": 2.3134958744049072,
+          "generated_tokens": 2201,
+          "generation_time": 59.99261236190796,
+          "tokens_per_second_calculated": 36.687850609377946,
+          "ollama_eval_count": 1644,
+          "ollama_eval_duration_sec": 59.9909669,
+          "ollama_tokens_per_second": 27.40412573680322,
+          "ollama_load_duration_sec": 0.0422498,
+          "ollama_prompt_eval_count": 27,
+          "ollama_prompt_eval_duration_sec": 0.1440316,
+          "gpu_stats_start": [
+            {
+              "id": 0,
+              "memory_used": 3892.0,
+              "memory_total": 24576.0,
+              "memory_util": 15.836588541666666,
+              "gpu_util": 13.0
+            },
+            {
+              "id": 1,
+              "memory_used": 11886.0,
+              "memory_total": 24576.0,
+              "memory_util": 48.3642578125,
+              "gpu_util": 67.0
+            }
+          ],
+          "gpu_stats_end": [
+            {
+              "id": 0,
+              "memory_used": 3882.0,
+              "memory_total": 24576.0,
+              "memory_util": 15.7958984375,
+              "gpu_util": 5.0
+            },
+            {
+              "id": 1,
+              "memory_used": 11888.0,
+              "memory_total": 24576.0,
+              "memory_util": 48.37239583333333,
+              "gpu_util": 91.0
+            }
+          ]
+        }
+      }
+    },
+    {
+      "scenario_id": "debugging",
+      "result": {
+        "success": true,
+        "response": "Okay, let's outline a `UserManager` class. Here's a breakdown of what it could do, along with a Python implementation. I'll include explanations and considerations for different levels of complexity.\n\n**Purpose:**\n\nThe `UserManager` class is designed to manage user data. This could involve:\n\n*   Creating new users\n*   Retrieving user information\n*   Updating user information\n*   Deleting users\n*   Authenticating users (checking passwords)\n*   Potentially, handling user roles or permissions.\n\n**Basic Implementation (with in-memory storage):**\n\nThis is a simple example that stores users in a Python list.  It's good for demonstration but *not* suitable for production (data will be lost when the program ends).\n\n```python\nclass UserManager:\n    def __init__(self):\n        self.users = []  # In-memory storage (not persistent)\n\n    def create_user(self, username, password, email):\n        \"\"\"Creates a new user.\n\n        Args:\n            username: The user's username.\n            password: The user's password (should be hashed in a real application!).\n            email: The user's email address.\n\n        Returns:\n            True if the user was created successfully, False otherwise (e.g., username already exists).\n        \"\"\"\n        if self.user_exists(username):\n            return False  # Username already exists\n\n        user = {\n            'username': username,\n            'password': password,  # Insecure!  See notes below.\n            'email': email\n        }\n        self.users.append(user)\n        return True\n\n    def get_user(self, username):\n        \"\"\"Retrieves a user by username.\n\n        Args:\n            username: The username of the user to retrieve.\n\n        Returns:\n            A dictionary representing the user, or None if the user doesn't exist.\n        \"\"\"\n        for user in self.users:\n            if user['username'] == username:\n                return user\n        return None\n\n    def update_user(self, username, new_email=None, new_password=None):\n        \"\"\"Updates a user's email or password.\n\n        Args:\n            username: The username of the user to update.\n            new_email: The new email address (optional).\n            new_password: The new password (optional).  Should be hashed.\n\n        Returns:\n            True if the user was updated successfully, False otherwise.\n        \"\"\"\n        user = self.get_user(username)\n        if not user:\n            return False\n\n        if new_email:\n            user['email'] = new_email\n        if new_password:\n            user['password'] = new_password  # Insecure!\n\n        return True\n\n    def delete_user(self, username):\n        \"\"\"Deletes a user.\n\n        Args:\n            username: The username of the user to delete.\n\n        Returns:\n            True if the user was deleted successfully, False otherwise.\n        \"\"\"\n        user = self.get_user(username)\n        if not user:\n            return False\n\n        self.users.remove(user)\n        return True\n\n    def user_exists(self, username):\n        \"\"\"Checks if a user with the given username already exists.\"\"\"\n        for user in self.users:\n            if user['username'] == username:\n                return True\n        return False\n\n    def authenticate_user(self, username, password):\n        \"\"\"Authenticates a user (checks password).  INSECURE!\"\"\"\n        user = self.get_user(username)\n        if user and user['password'] == password:  # Direct password comparison!\n            return True\n        return False\n```\n\n**Important Considerations and Improvements:**\n\n1.  **Password Hashing:**  *Never* store passwords in plain text.  Use a proper password hashing algorithm like bcrypt, scrypt, or Argon2.  Python's `hashlib` and `bcrypt` libraries are good choices.\n\n2.  **Data Persistence:** The in-memory storage is lost when the program ends.  Use a database (e.g., SQLite, PostgreSQL, MySQL, MongoDB) to store user data persistently.\n\n3.  **Error Handling:** Add more robust error handling (e.g., `try...except` blocks) to catch potential issues like database connection errors or invalid input.\n\n4.  **Input Validation:** Validate user input to prevent security vulnerabilities (e.g., SQL injection, cross-site scripting).\n\n5.  **User Roles/Permissions:**  If your application requires different user roles (e.g., administrator, regular user), add a `role` field to the user data and implement logic to control access based on roles.\n\n6.  **Email Verification:**  Implement email verification to ensure that users provide valid email addresses.\n\n7.  **Security:**  Consider security best practices throughout the design and implementation of the `UserManager` class.\n\n**Example using `bcrypt` for password hashing:**\n\n```python\nimport bcrypt\n\nclass UserManager:\n    def __init__(self):\n        self.users = []\n\n    def create_user(self, username, password, email):\n        if self.user_exists(username):\n            return False\n\n        # Hash the password using bcrypt\n        hashed_password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())\n\n        user = {\n            'username': username,\n            'password': hashed_password,  # Store the HASHED password\n            'email': email\n        }\n        self.users.append(user)\n        return True\n\n    def authenticate_user(self, username, password):\n        user = self.get_user(username)\n        if user:\n            # Check if the provided password matches the stored hash\n            if bcrypt.checkpw(password.encode('utf-8'), user['password']):\n                return True\n        return False\n```\n\n**Example using a simple dictionary for storage (for demonstration only):**\n\n```python\nclass UserManager:\n    def __init__(self):\n        self.users = {}  # Use a dictionary: {username: user_data}\n\n    def create_user(self, username, password, email):\n        if username in self.users:\n            return False\n\n        user = {\n            'password': password,\n            'email': email\n        }\n        self.users[username] = user\n        return True\n\n    def get_user(self, username):\n        return self.users.get(username)  # Use .get() for safe retrieval\n\n    # ... (other methods similar to the dictionary example)\n```\n\n**How to Use:**\n\n```python\n# Example Usage (with in-memory storage)\nuser_manager = UserManager()\n\n# Create a user\nif user_manager.create_user(\"testuser\", \"password123\", \"test@example.com\"):\n    print(\"User created successfully.\")\nelse:\n    print(\"Failed to create user.\")\n\n# Get the user\nuser = user_manager.get_user(\"testuser\")\nif user:\n    print(f\"User: {user}\")\n\n# Update the user's email\nif user_manager.update_user(\"testuser\", new_email=\"newemail@example.com\"):\n    print(\"User updated successfully.\")\n\n# Delete the user\nif user_manager.delete_user(\"testuser\"):\n    print(\"User deleted successfully.\")\n```\n\n**To help me tailor the `UserManager` class even better, could you tell me:**\n\n*   What kind of application is this for? (e.g., web application, desktop application, game)\n*   What database (if any) are you planning to use?\n*   What level of security is required?\n*   Are there any specific features you need (e.g., user roles, email verification)?",
+        "metrics": {
+          "total_time": 64.91992139816284,
+          "time_to_first_token": 2.405184507369995,
+          "generated_tokens": 1749,
+          "generation_time": 62.51473689079285,
+          "tokens_per_second_calculated": 27.977403201029745,
+          "ollama_eval_count": 1737,
+          "ollama_eval_duration_sec": 62.5114501,
+          "ollama_tokens_per_second": 27.786909393740014,
+          "ollama_load_duration_sec": 0.0520565,
+          "ollama_prompt_eval_count": 24,
+          "ollama_prompt_eval_duration_sec": 0.2178593,
+          "gpu_stats_start": [
+            {
+              "id": 0,
+              "memory_used": 3879.0,
+              "memory_total": 24576.0,
+              "memory_util": 15.78369140625,
+              "gpu_util": 5.0
+            },
+            {
+              "id": 1,
+              "memory_used": 11888.0,
+              "memory_total": 24576.0,
+              "memory_util": 48.37239583333333,
+              "gpu_util": 7.000000000000001
+            }
+          ],
+          "gpu_stats_end": [
+            {
+              "id": 0,
+              "memory_used": 3896.0,
+              "memory_total": 24576.0,
+              "memory_util": 15.852864583333334,
+              "gpu_util": 10.0
+            },
+            {
+              "id": 1,
+              "memory_used": 11888.0,
+              "memory_total": 24576.0,
+              "memory_util": 48.37239583333333,
+              "gpu_util": 89.0
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "context_length": 51200,
+  "quality_evaluation": {
+    "code-completion": {
+      "detailed_scores": {
+        "accuracy": 0.0,
+        "consistency": 0.0,
+        "code_quality": 4.0,
+        "clarity": 4.0
+      },
+      "total_score": 1.6
+    },
+    "code-review": {
+      "detailed_scores": {
+        "accuracy": 0.0,
+        "consistency": 0.0,
+        "code_quality": 6.0,
+        "clarity": 4.0
+      },
+      "total_score": 2.0
+    },
+    "architecture-design": {
+      "detailed_scores": {
+        "accuracy": 8.0,
+        "consistency": 0.0,
+        "code_quality": 0.0,
+        "clarity": 6.0
+      },
+      "total_score": 4.4
+    },
+    "debugging": {
+      "detailed_scores": {
+        "accuracy": 0.0,
+        "consistency": 0.0,
+        "code_quality": 6.0,
+        "clarity": 6.0
+      },
+      "total_score": 2.4000000000000004
+    }
+  }
+}

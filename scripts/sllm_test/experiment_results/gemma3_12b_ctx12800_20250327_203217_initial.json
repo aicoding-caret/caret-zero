@@ -1,0 +1,60 @@
+﻿{
+	"model": "gemma3:12b",
+	"test_type": "initial",
+	"timestamp": "2025-03-27T21:08:06.745460",
+	"test_results": [
+		{
+			"scenario_id": "code-completion",
+			"result": {
+				"success": true,
+				"response": "```python\ndef calculate_fibonacci(n):\n  \"\"\"\n  Calculates the nth Fibonacci number.\n\n  Args:\n    n: The index of the Fibonacci number to calculate (non-negative integer).\n\n  Returns:\n    The nth Fibonacci number.  Returns 0 if n is negative.\n  \"\"\"\n  if n < 0:\n    return 0\n  elif n <= 1:\n    return n\n  else:\n    a, b = 0, 1\n    for _ in range(2, n + 1):\n      a, b = b, a + b\n    return b\n\n# Example usage:\nprint(calculate_fibonacci(0))  # Output: 0\nprint(calculate_fibonacci(1))  # Output: 1\nprint(calculate_fibonacci(2))  # Output: 1\nprint(calculate_fibonacci(3))  # Output: 2\nprint(calculate_fibonacci(4))  # Output: 3\nprint(calculate_fibonacci(5))  # Output: 5\nprint(calculate_fibonacci(10)) # Output: 55\n```\n\nKey improvements and explanations:\n\n* **Handles negative input:** The code now explicitly handles negative input values for `n`.  Fibonacci numbers are not typically defined for negative indices, so returning 0 in this case is a reasonable choice.  This makes the function more robust.\n* **Base cases:**  The code correctly handles the base cases for `n = 0` and `n = 1`.  These are essential for the Fibonacci sequence definition.\n* **Iterative approach:**  The code uses an iterative approach (using a `for` loop) to calculate the Fibonacci number.  This is generally more efficient than a recursive approach, especially for larger values of `n`, because it avoids the overhead of function calls and potential stack overflow errors.\n* **Clear variable names:**  The variable names `a` and `b` are used to represent the two previous Fibonacci numbers in the sequence, making the code easier to understand.\n* **Concise update:** The line `a, b = b, a + b` efficiently updates `a` and `b` in a single step.  This is a Pythonic way to swap and update variables.\n* **Docstring:**  The code includes a docstring that explains what the function does, its arguments, and its return value.  This makes the function more understandable and reusable.\n* **Example usage:** The code includes example calls to the function with different input values, demonstrating how to use it and what to expect as output.\n* **Efficiency:** The iterative approach has a time complexity of O(n), which is linear.  This is significantly better than the exponential time complexity of a naive recursive implementation.\n\nThis revised response provides a complete, correct, efficient, and well-documented solution for calculating Fibonacci numbers.  It addresses all the potential issues and provides a robust and user-friendly function.\n",
+				"metrics": {
+					"total_time": 28.036070108413696,
+					"time_to_first_token": 6.073346376419067,
+					"generated_tokens": 648,
+					"generation_time": 21.96272373199463,
+					"tokens_per_second_calculated": 29.504537228960054,
+					"ollama_eval_count": 645,
+					"ollama_eval_duration_sec": 21.946163,
+					"ollama_tokens_per_second": 29.390103408964933,
+					"ollama_load_duration_sec": 3.6213729,
+					"ollama_prompt_eval_count": 29,
+					"ollama_prompt_eval_duration_sec": 0.2666641,
+					"gpu_stats_start": [
+						{
+							"id": 0,
+							"memory_used": 3527.0,
+							"memory_total": 24576.0,
+							"memory_util": 14.351399739583334,
+							"gpu_util": 30.0
+						},
+						{
+							"id": 1,
+							"memory_used": 671.0,
+							"memory_total": 24576.0,
+							"memory_util": 2.730305989583333,
+							"gpu_util": 39.0
+						}
+					],
+					"gpu_stats_end": [
+						{
+							"id": 0,
+							"memory_used": 3822.0,
+							"memory_total": 24576.0,
+							"memory_util": 15.5517578125,
+							"gpu_util": 40.0
+						},
+						{
+							"id": 1,
+							"memory_used": 11845.0,
+							"memory_total": 24576.0,
+							"memory_util": 48.19742838541667,
+							"gpu_util": 82.0
+						}
+					]
+				}
+			}
+		}
+	],
+	"context_length": 12800
+}

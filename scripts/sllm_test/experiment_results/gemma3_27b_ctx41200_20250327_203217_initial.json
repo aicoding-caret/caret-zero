@@ -1,0 +1,60 @@
+﻿{
+	"model": "gemma3:27b",
+	"test_type": "initial",
+	"timestamp": "2025-03-27T22:04:18.916945",
+	"test_results": [
+		{
+			"scenario_id": "code-completion",
+			"result": {
+				"success": true,
+				"response": "```python\ndef calculate_fibonacci(n):\n  \"\"\"\n  Calculates the nth Fibonacci number.\n\n  Args:\n    n: The index of the desired Fibonacci number (non-negative integer).\n\n  Returns:\n    The nth Fibonacci number.  Returns 0 if n is negative.\n  \"\"\"\n  if n < 0:\n    return 0  # Handle negative input\n  elif n <= 1:\n    return n\n  else:\n    a, b = 0, 1\n    for _ in range(2, n + 1):\n      a, b = b, a + b\n    return b\n```\n\n**Explanation:**\n\n1. **Base Cases:**\n   - `if n < 0:`:  Handles negative input.  Fibonacci numbers are not defined for negative indices, so we return 0.\n   - `elif n <= 1:`:  The first two Fibonacci numbers are defined as F(0) = 0 and F(1) = 1.  This handles these base cases directly.\n\n2. **Iterative Calculation:**\n   - `a, b = 0, 1`: Initializes `a` and `b` to the first two Fibonacci numbers.\n   - `for _ in range(2, n + 1):`:  This loop iterates from 2 up to `n` (inclusive).  We start at 2 because we've already handled the cases for 0 and 1.\n   - `a, b = b, a + b`: This is the core of the Fibonacci calculation.  It simultaneously updates `a` and `b` to the next two Fibonacci numbers in the sequence.  `a` becomes the previous `b`, and `b` becomes the sum of the previous `a` and `b`.\n\n3. **Return Value:**\n   - `return b`: After the loop completes, `b` holds the nth Fibonacci number, which is returned.\n\n**Example Usage:**\n\n```python\nprint(calculate_fibonacci(0))  # Output: 0\nprint(calculate_fibonacci(1))  # Output: 1\nprint(calculate_fibonacci(2))  # Output: 1\nprint(calculate_fibonacci(5))  # Output: 5\nprint(calculate_fibonacci(10)) # Output: 55\nprint(calculate_fibonacci(-1)) # Output: 0\n```\n\n**Why this is a good solution:**\n\n* **Iterative Approach:**  This solution uses an iterative approach, which is generally more efficient than a recursive approach for calculating Fibonacci numbers.  Recursive solutions can lead to redundant calculations and stack overflow errors for larger values of `n`.\n* **Clear and Readable:** The code is well-structured and easy to understand.\n* **Handles Edge Cases:** It correctly handles negative input and the base cases for 0 and 1.\n* **Efficient:**  The iterative approach has a time complexity of O(n), which is optimal for calculating the nth Fibonacci number.  It uses constant extra space (O(1)).\n",
+				"metrics": {
+					"total_time": 50.1960551738739,
+					"time_to_first_token": 8.833465576171875,
+					"generated_tokens": 672,
+					"generation_time": 41.362589597702026,
+					"tokens_per_second_calculated": 16.24656498870018,
+					"ollama_eval_count": 669,
+					"ollama_eval_duration_sec": 41.3331626,
+					"ollama_tokens_per_second": 16.185550727734537,
+					"ollama_load_duration_sec": 6.3803014,
+					"ollama_prompt_eval_count": 29,
+					"ollama_prompt_eval_duration_sec": 0.2194163,
+					"gpu_stats_start": [
+						{
+							"id": 0,
+							"memory_used": 3975.0,
+							"memory_total": 24576.0,
+							"memory_util": 16.17431640625,
+							"gpu_util": 16.0
+						},
+						{
+							"id": 1,
+							"memory_used": 880.0,
+							"memory_total": 24576.0,
+							"memory_util": 3.5807291666666665,
+							"gpu_util": 35.0
+						}
+					],
+					"gpu_stats_end": [
+						{
+							"id": 0,
+							"memory_used": 3969.0,
+							"memory_total": 24576.0,
+							"memory_util": 16.14990234375,
+							"gpu_util": 16.0
+						},
+						{
+							"id": 1,
+							"memory_used": 18784.0,
+							"memory_total": 24576.0,
+							"memory_util": 76.43229166666666,
+							"gpu_util": 41.0
+						}
+					]
+				}
+			}
+		}
+	],
+	"context_length": 41200
+}
