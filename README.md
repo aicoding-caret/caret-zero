@@ -1,190 +1,74 @@
-<div align="center"><sub>
-English | <a href="https://github.com/cline/cline/blob/main/locales/es/README.md" target="_blank">Español</a> | <a href="https://github.com/cline/cline/blob/main/locales/de/README.md" target="_blank">Deutsch</a> | <a href="https://github.com/cline/cline/blob/main/locales/ja/README.md" target="_blank">日本語</a> | <a href="https://github.com/cline/cline/blob/main/locales/zh-cn/README.md" target="_blank">简体中文</a> | <a href="https://github.com/cline/cline/blob/main/locales/zh-tw/README.md" target="_blank">繁體中文</a> | <a href="https://github.com/cline/cline/blob/main/locales/ko/README.md" target="_blank">한국어</a>
-</sub></div>
+# Cline-Alpha
 
-# Cline – \#1 on OpenRouter
+**이 저장소는 [fstory97](https://github.com/fstory97)이 원본 [Cline](https://github.com/cline/cline) 프로젝트를 개인적으로 포크한 버전입니다.**
 
-<p align="center">
-  <img src="https://media.githubusercontent.com/media/cline/cline/main/assets/docs/demo.gif" width="100%" />
-</p>
+원본 Cline은 훌륭한 AI 코딩 비서이지만, 이 포크는 "알파"라는 가칭 하에, 보다 개인화되고 유능한 AI 개발 파트너를 구축하기 위한 구체적이고 진보된 개념들을 탐구합니다. 
 
-<div align="center">
-<table>
-<tbody>
-<td align="center">
-<a href="https://marketplace.visualstudio.com/items?itemName=saoudrizwan.claude-dev" target="_blank"><strong>Download on VS Marketplace</strong></a>
-</td>
-<td align="center">
-<a href="https://discord.gg/cline" target="_blank"><strong>Discord</strong></a>
-</td>
-<td align="center">
-<a href="https://www.reddit.com/r/cline/" target="_blank"><strong>r/cline</strong></a>
-</td>
-<td align="center">
-<a href="https://github.com/cline/cline/discussions/categories/feature-requests?discussions_q=is%3Aopen+category%3A%22Feature+Requests%22+sort%3Atop" target="_blank"><strong>Feature Requests</strong></a>
-</td>
-<td align="center">
-<a href="https://docs.cline.bot/getting-started/getting-started-new-coders" target="_blank"><strong>Getting Started</strong></a>
-</td>
-</tbody>
-</table>
-</div>
+주요 목표는 다음과 같은 기능을 실험하고 구현하는 것입니다:
 
-Meet Cline, an AI assistant that can use your **CLI** a**N**d **E**ditor.
+1.  **메타인지 에이전트:** 자신의 능력, 한계, 학습 과정을 이해하고 개발자와 함께 진화하는 AI.
+2.  **멀티 에이전트 시스템:** 인간 팀의 역학을 모방하여, 각기 다른 역할과 관점(예: 아키텍트, 개발자, 테스터)을 가진 여러 AI 에이전트를 활용하여 복잡한 문제를 협력적으로 해결.
+3.  **고급 태스크 관리:** AI 에이전트가 관련된 복잡한 개발 작업을 분해, 추적, 관리하기 위한 견고한 시스템.
+4.  **프로젝트 컨텍스트를 위한 RAG:** 대규모 프로젝트 코드베이스 내에서 효율적이고 정확한 정보 검색을 위한 검색 증강 생성(Retrieval-Augmented Generation) 구현.
+5.  **로컬 LLM에 대한 비용 최적화:** 로컬 sLLM을 사용하기 위한 비용 최적화 구조를 탐구합니다.
+6.  **대화 아카이브 및 파인튜닝:** 상호작용을 체계적으로 아카이브하고 이를 사용하여 프로젝트별 로컬 LLM을 파인튜닝하여 시간이 지남에 따라 개인화 및 성능을 향상.
 
-Thanks to [Claude 3.7 Sonnet's agentic coding capabilities](https://www.anthropic.com/claude/sonnet), Cline can handle complex software development tasks step-by-step. With tools that let him create & edit files, explore large projects, use the browser, and execute terminal commands (after you grant permission), he can assist you in ways that go beyond code completion or tech support. Cline can even use the Model Context Protocol (MCP) to create new tools and extend his own capabilities. While autonomous AI scripts traditionally run in sandboxed environments, this extension provides a human-in-the-loop GUI to approve every file change and terminal command, providing a safe and accessible way to explore the potential of agentic AI.
+이 포크는 이러한 아이디어들을 위한 개인적인 실험 공간 역할을 합니다. 실험적인 성격과 개인 워크플로우 통합으로 인해 독립적인 탐구에 주력하지만, 여기서 개발된 가치 있는 발견이나 기능은 향후 Pull Request를 통해 원본 Cline 프로젝트에 다시 기여될 가능성이 있습니다.
 
-1. Enter your task and add images to convert mockups into functional apps or fix bugs with screenshots.
-2. Cline starts by analyzing your file structure & source code ASTs, running regex searches, and reading relevant files to get up to speed in existing projects. By carefully managing what information is added to context, Cline can provide valuable assistance even for large, complex projects without overwhelming the context window.
-3. Once Cline has the information he needs, he can:
-    - Create and edit files + monitor linter/compiler errors along the way, letting him proactively fix issues like missing imports and syntax errors on his own.
-    - Execute commands directly in your terminal and monitor their output as he works, letting him e.g., react to dev server issues after editing a file.
-    - For web development tasks, Cline can launch the site in a headless browser, click, type, scroll, and capture screenshots + console logs, allowing him to fix runtime errors and visual bugs.
-4. When a task is completed, Cline will present the result to you with a terminal command like `open -a "Google Chrome" index.html`, which you run with a click of a button.
+*(원본 Cline README 내용은 삭제되었습니다. 필요하다면 [원본 저장소](https://github.com/cline/cline)를 참조하세요.)*
 
-> [!TIP]
-> Use the `CMD/CTRL + Shift + P` shortcut to open the command palette and type "Cline: Open In New Tab" to open the extension as a tab in your editor. This lets you use Cline side-by-side with your file explorer, and see how he changes your workspace more clearly.
+
+# 목표별 주요 변경사항
+이 Cline-Alpha 포크는 원본 Cline에 몇 가지 중요한 변경 사항과 새로운 기능을 도입했습니다. 주요 내용은 다음과 같습니다.
+
+## 1. 메타인지 에이전트 기능 개선
+ * 메타인지는 현재 `.clinerules` 의 개선을 통해 이루어지고 있습니다. 특히 아래의 변경 사항중 rule모드를 통해 사용자와 함께 스스로의 프로세스를 교정합니다.
+ 
+ 1 `.clinerules` Json변경 및 프로젝트에 의존성이 없는 업무 프로세스 위주의 구성으로 변경
+
+*   **형식 변경:** 에이전트의 행동 규칙을 정의하는 [`.clinerules`](/.clinerules) 파일이 기존의 텍스트 기반 형식에서 **JSON 형식**으로 변경되었습니다. 이를 통해 토큰의 소비가 최소화 되었으며, 규칙 구조가 더 명확해졌습니다. 수정시에는 AI에이전트에게 룰모드 활성화를 요청하시고 규칙 개선을 요구하시기를 바랍니다.
+*   **4가지 작동 모드:** 알파는 상황에 따라 다른 역할과 권한을 가지는 4가지 모드로 작동합니다 ([`.clinerules`](/.clinerules) 파일 내 `agent.modes` 참조).
+    *   `plan`: 작업을 분석하고 계획하는 단계입니다. 파일 읽기/쓰기는 `/docs/` 디렉토리로 제한되며, `execute_command` 등 일부 도구 사용이 제한됩니다.
+    *   `act`: 계획에 따라 실제 작업을 수행하는 단계입니다. 모든 도구를 사용할 수 있으며, 모든 파일에 접근 가능합니다. 단계별 작업 수행 및 확인이 강조됩니다.
+    *   `rule`: `.clinerules` 파일 자체를 수정하고 관리하는 모드입니다. 알파와 함께 규칙 변경을 진행하며, 변경 후에는 마스터께서 실제 동작을 검증하고 필요시 롤백을 요청하실 수 있습니다. 규칙 버전 관리 및 변경 로그 작성도 이 모드에서 이루어집니다.
+    *   `talk`: 자유로운 대화를 위한 모드입니다. 파일 접근 및 도구 사용이 제한됩니다.
+
+*   * Cline의 global rules에 해당되는 Custom Instructions에 적었던 내용은 여기(`/agents-rules/alpha/global-rules.json`)에서 확인이 가능합니다. AI에이전트의 말투나 성격을 적용한 예시로 본 프로젝트에는 Luke의 Alpha의 Custom Intstruction이 공개되어 있습니다. 필요에 따라 복사해서 사용해보시면 좋습니다.
+
+## 2. 멀티 에이전트 시스템
+  * 작업 사항 없음
+
+## 3. 고급 태스크 관리
+
+*   **`.clinerules` 기반 정의:** 복잡한 개발 작업을 효과적으로 관리하기 위한 규칙들이 [`.clinerules`](/.clinerules) 파일 내 `project_reference.documentation` (작업 로그 관련) 및 `development.git_rules` (Git 커밋 관련) 섹션에 명확하게 정의되어 있습니다. 이를 통해 AI 에이전트와 사용자 간의 협업 및 작업 추적을 체계화합니다.
+*   **작업 로그 시스템:**
+    *   **목적:** AI 에이전트가 작업 중 컨텍스트를 잃지 않도록 돕고, 사용자가 진행 상황을 쉽게 추적하며 관련 논의를 이어갈 수 있도록 지원합니다.
+    *   **구성:**
+        *   **위치:** 모든 관련 로그는 [`docs/work-logs/`](/docs/work-logs/) 디렉토리에 저장됩니다.
+        *   **일일 로그:** [`docs/work-logs/{date}.md`](/docs/work-logs/) 형식으로 매일의 작업 계획, 진행 상황, 주요 노트 등을 기록합니다. (예: [`docs/work-logs/2025-03-27.md`](/docs/work-logs/2025-03-27.md))
+        *   **개별 작업 로그:** [`docs/work-logs/tasks/{task-number}-{task-name}.md`](/docs/work-logs/luke-and-alpha/tasks/) 형식으로 특정 작업에 대한 상세 정보(목적, 실행 단계, 참고 자료 등)를 기록합니다. (예: [`docs/work-logs/luke-and-alpha/tasks/001-cline-rule-syste-modify.md`](/docs/work-logs/luke-and-alpha/tasks/001-cline-rule-syste-modify.md))
+    *   **참조:** 로그 형식 및 구조에 대한 자세한 내용은 [`.clinerules`](/.clinerules) 파일의 `project_reference.documentation.work_logs` 섹션에서 확인할 수 있습니다.
+*   **Git 커밋 규칙:** [`.clinerules`](/.clinerules) 파일의 `development.git_rules.commit_format`에 정의된 표준 형식([`[type]: [description]`](/.clinerules))에 따라 커밋 메시지를 작성합니다. 이는 변경 이력을 명확하게 관리하고 작업 단위별 추적을 용이하게 합니다.
+
+## 4. 프로젝트 컨텍스트를 위한 RAG (Retrieval-Augmented Generation)
+
+*   **구현 방식:** 현재 RAG 기능은 AI 에이전트가 프로젝트의 핵심 정보를 효과적으로 검색하고 활용할 수 있도록, [`.clinerules`](/.clinerules) 파일의 `project_reference.guide` 섹션에 명시된 **아키텍처 가이드** ([`docs/architecture/project-guide.md`](/docs/architecture/project-guide.md)) 문서를 참조하는 방식으로 구현되어 있습니다.
+*   **핵심 개선 사항:** `.clinerules` 시스템 개선을 통해, AI 에이전트가 개발 작업을 수행할 때 이 **아키텍처 가이드 문서를 최우선적으로 참조**하도록 규칙이 강화되었습니다.
+*   **기대 효과:** 이 개선된 규칙은 AI 에이전트에게 프로젝트 아키텍처 및 개발 표준에 대한 명확하고 일관된 지침을 제공하여, 보다 정확하고 표준에 부합하는 작업을 수행하도록 유도합니다.
+*   **다른 프로젝트 적용:** 이 `.clinerules` 파일을 다른 프로젝트에 적용할 경우, 해당 프로젝트의 아키텍처 및 개발 가이드라인을 담은 문서를 동일한 상대 경로 (`docs/architecture/project-guide.md`)에 위치시키면, AI 에이전트가 동일한 방식으로 프로젝트 컨텍스트를 파악하고 작업을 수행할 수 있습니다.
+
+5.  **로컬 LLM에 대한 비용 최적화:** 로컬 sLLM을 사용하기 위한 비용 최적화 구조를 탐구합니다.
+*   **사용 가능한 주요 sLLM 성능과 가격 비교** : `docs/sLLM/benchmark.md`
+
+6.  **대화 아카이브 및 파인튜닝:** 상호작용을 체계적으로 아카이브하고 이를 사용하여 프로젝트별 로컬 LLM을 파인튜닝하여 시간이 지남에 따라 개인화 및 성능을 향상.
+ * 작업사항 없음
+
+
+
+
+
 
 ---
-
-<img align="right" width="340" src="https://github.com/user-attachments/assets/3cf21e04-7ce9-4d22-a7b9-ba2c595e88a4">
-
-### Use any API and Model
-
-Cline supports API providers like OpenRouter, Anthropic, OpenAI, Google Gemini, AWS Bedrock, Azure, and GCP Vertex. You can also configure any OpenAI compatible API, or use a local model through LM Studio/Ollama. If you're using OpenRouter, the extension fetches their latest model list, allowing you to use the newest models as soon as they're available.
-
-The extension also keeps track of total tokens and API usage cost for the entire task loop and individual requests, keeping you informed of spend every step of the way.
-
-<!-- Transparent pixel to create line break after floating image -->
-
-<img width="2000" height="0" src="https://github.com/user-attachments/assets/ee14e6f7-20b8-4391-9091-8e8e25561929"><br>
-
-<img align="left" width="370" src="https://github.com/user-attachments/assets/81be79a8-1fdb-4028-9129-5fe055e01e76">
-
-### Run Commands in Terminal
-
-Thanks to the new [shell integration updates in VSCode v1.93](https://code.visualstudio.com/updates/v1_93#_terminal-shell-integration-api), Cline can execute commands directly in your terminal and receive the output. This allows him to perform a wide range of tasks, from installing packages and running build scripts to deploying applications, managing databases, and executing tests, all while adapting to your dev environment & toolchain to get the job done right.
-
-For long running processes like dev servers, use the "Proceed While Running" button to let Cline continue in the task while the command runs in the background. As Cline works he’ll be notified of any new terminal output along the way, letting him react to issues that may come up, such as compile-time errors when editing files.
-
-<!-- Transparent pixel to create line break after floating image -->
-
-<img width="2000" height="0" src="https://github.com/user-attachments/assets/ee14e6f7-20b8-4391-9091-8e8e25561929"><br>
-
-<img align="right" width="400" src="https://github.com/user-attachments/assets/c5977833-d9b8-491e-90f9-05f9cd38c588">
-
-### Create and Edit Files
-
-Cline can create and edit files directly in your editor, presenting you a diff view of the changes. You can edit or revert Cline's changes directly in the diff view editor, or provide feedback in chat until you're satisfied with the result. Cline also monitors linter/compiler errors (missing imports, syntax errors, etc.) so he can fix issues that come up along the way on his own.
-
-All changes made by Cline are recorded in your file's Timeline, providing an easy way to track and revert modifications if needed.
-
-<!-- Transparent pixel to create line break after floating image -->
-
-<img width="2000" height="0" src="https://github.com/user-attachments/assets/ee14e6f7-20b8-4391-9091-8e8e25561929"><br>
-
-<img align="left" width="370" src="https://github.com/user-attachments/assets/bc2e85ba-dfeb-4fe6-9942-7cfc4703cbe5">
-
-### Use the Browser
-
-With Claude 3.5 Sonnet's new [Computer Use](https://www.anthropic.com/news/3-5-models-and-computer-use) capability, Cline can launch a browser, click elements, type text, and scroll, capturing screenshots and console logs at each step. This allows for interactive debugging, end-to-end testing, and even general web use! This gives him autonomy to fixing visual bugs and runtime issues without you needing to handhold and copy-pasting error logs yourself.
-
-Try asking Cline to "test the app", and watch as he runs a command like `npm run dev`, launches your locally running dev server in a browser, and performs a series of tests to confirm that everything works. [See a demo here.](https://x.com/sdrzn/status/1850880547825823989)
-
-<!-- Transparent pixel to create line break after floating image -->
-
-<img width="2000" height="0" src="https://github.com/user-attachments/assets/ee14e6f7-20b8-4391-9091-8e8e25561929"><br>
-
-<img align="right" width="350" src="https://github.com/user-attachments/assets/ac0efa14-5c1f-4c26-a42d-9d7c56f5fadd">
-
-### "add a tool that..."
-
-Thanks to the [Model Context Protocol](https://github.com/modelcontextprotocol), Cline can extend his capabilities through custom tools. While you can use [community-made servers](https://github.com/modelcontextprotocol/servers), Cline can instead create and install tools tailored to your specific workflow. Just ask Cline to "add a tool" and he will handle everything, from creating a new MCP server to installing it into the extension. These custom tools then become part of Cline's toolkit, ready to use in future tasks.
-
--   "add a tool that fetches Jira tickets": Retrieve ticket ACs and put Cline to work
--   "add a tool that manages AWS EC2s": Check server metrics and scale instances up or down
--   "add a tool that pulls the latest PagerDuty incidents": Fetch details and ask Cline to fix bugs
-
-<!-- Transparent pixel to create line break after floating image -->
-
-<img width="2000" height="0" src="https://github.com/user-attachments/assets/ee14e6f7-20b8-4391-9091-8e8e25561929"><br>
-
-<img align="left" width="360" src="https://github.com/user-attachments/assets/7fdf41e6-281a-4b4b-ac19-020b838b6970">
-
-### Add Context
-
-**`@url`:** Paste in a URL for the extension to fetch and convert to markdown, useful when you want to give Cline the latest docs
-
-**`@problems`:** Add workspace errors and warnings ('Problems' panel) for Cline to fix
-
-**`@file`:** Adds a file's contents so you don't have to waste API requests approving read file (+ type to search files)
-
-**`@folder`:** Adds folder's files all at once to speed up your workflow even more
-
-<!-- Transparent pixel to create line break after floating image -->
-
-<img width="2000" height="0" src="https://github.com/user-attachments/assets/ee14e6f7-20b8-4391-9091-8e8e25561929"><br>
-
-<img align="right" width="350" src="https://github.com/user-attachments/assets/140c8606-d3bf-41b9-9a1f-4dbf0d4c90cb">
-
-### Checkpoints: Compare and Restore
-
-As Cline works through a task, the extension takes a snapshot of your workspace at each step. You can use the 'Compare' button to see a diff between the snapshot and your current workspace, and the 'Restore' button to roll back to that point.
-
-For example, when working with a local web server, you can use 'Restore Workspace Only' to quickly test different versions of your app, then use 'Restore Task and Workspace' when you find the version you want to continue building from. This lets you safely explore different approaches without losing progress.
-
-<!-- Transparent pixel to create line break after floating image -->
-
-<img width="2000" height="0" src="https://github.com/user-attachments/assets/ee14e6f7-20b8-4391-9091-8e8e25561929"><br>
-
-## Contributing
-
-To contribute to the project, start with our [Contributing Guide](CONTRIBUTING.md) to learn the basics. You can also join our [Discord](https://discord.gg/cline) to chat with other contributors in the `#contributors` channel. If you're looking for full-time work, check out our open positions on our [careers page](https://cline.bot/join-us)!
-
-<details>
-<summary>Local Development Instructions</summary>
-
-1. Clone the repository _(Requires [git-lfs](https://git-lfs.com/))_:
-    ```bash
-    git clone https://github.com/cline/cline.git
-    ```
-2. Open the project in VSCode:
-    ```bash
-    code cline
-    ```
-3. Install the necessary dependencies for the extension and webview-gui:
-    ```bash
-    npm run install:all
-    ```
-4. Launch by pressing `F5` (or `Run`->`Start Debugging`) to open a new VSCode window with the extension loaded. (You may need to install the [esbuild problem matchers extension](https://marketplace.visualstudio.com/items?itemName=connor4312.esbuild-problem-matchers) if you run into issues building the project.)
-
-</details>
-
-<details>
-<summary>Creating a Pull Request</summary>
-
-1. Before creating a PR, generate a changeset entry:
-    ```bash
-    npm run changeset
-    ```
-   This will prompt you for:
-   - Type of change (major, minor, patch)
-     - `major` → breaking changes (1.0.0 → 2.0.0)
-     - `minor` → new features (1.0.0 → 1.1.0)
-     - `patch` → bug fixes (1.0.0 → 1.0.1)
-   - Description of your changes
-
-2. Commit your changes and the generated `.changeset` file
-
-3. Push your branch and create a PR on GitHub. Our CI will:
-   - Run tests and checks
-   - Changesetbot will create a comment showing the version impact
-   - When merged to main, changesetbot will create a Version Packages PR
-   - When the Version Packages PR is merged, a new release will be published
-
-</details>
-
-
 ## License
 
 [Apache 2.0 © 2025 Cline Bot Inc.](./LICENSE)

@@ -1,0 +1,17 @@
+
+Plan for calculate_fibonacci(n):
+
+1. Handle Base Cases:
+   - If n is 0, return 0.
+   - If n is 1, return 1.
+
+2. Iterative Calculation:
+   - Initialize a = 0, b = 1.
+   - Iterate from 2 up to n (inclusive).
+   - In each iteration:
+     - next_fib = a + b
+     - a = b
+     - b = next_fib
+
+3. Return Result:
+   - Return b.

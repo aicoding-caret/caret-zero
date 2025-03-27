@@ -1,9 +1,9 @@
 {
-  "version": "1.1.0",
+  "version": "1.0.0",
   "agent": {
     "modes": {
       "plan": {
-        "purpose": "Task analysis and planning phase with restricted actions",
+        "purpose": "Task analysis and planning",
         "rules": {
           "task_validation": true,
           "context_check": true,
@@ -12,43 +12,20 @@
             "task_breakdown",
             "approach_planning"
           ],
-          "file_access": {
-            "allowed_rw": ["/docs/"],
-            "description": "Only allow Read/Write access to the /docs/ directory in Plan mode."
-          },
-          "tool_usage": {
-            "allowed": [
-              "read_file",
-              "search_files", 
-              "list_files",
-              "list_code_definition_names",
-              "ask_followup_question",
-              "plan_mode_response",
-              "write_to_file",
-              "replace_in_file"
-            ],
-            "blocked": [
-              "execute_command",
-              "browser_action",
-              "attempt_completion"
-            ]
+          "project_guide_reference": {
+            "required": true,
+            "path": "docs/architecture/project-guide.md"
           }
         }
       },
       "act": {
-        "purpose": "Task execution phase with full capabilities",
+        "purpose": "Plan execution",
         "rules": {
           "requires_validated_plan": true,
-          "file_access": {
-            "allowed_rw": ["/"],
-            "description": "Allow Read/Write access to all project files in Act mode."
-          },
           "step_by_step": true,
           "tool_usage": {
             "requires_approval": true,
-            "wait_for_confirmation": true,
-            "allowed": "all",
-            "instructions": "In ACT mode, you are encouraged to plan and document your steps before taking action. Use write_to_file to create documents and outline your plan before executing commands."
+            "wait_for_confirmation": true
           }
         }
       },
@@ -66,19 +43,10 @@
             }
           },
           "basic_operations": {
-            "workflow": [
-              "1. Read `.clinerules` using `read_file` to understand current state.",
-              "2. Analyze the rules and identify necessary changes based on user request or analysis.",
-              "3. (Optional but Recommended) Create a backup of the current `.clinerules` (e.g., copy to `/agents-rules/alpha/versions/` with version/timestamp) using `read_file` and `write_to_file`.",
-              "4. Modify `.clinerules` directly using `replace_in_file` or `write_to_file`.",
-              "5. Update the changelog (`agents-rules/alpha/versions/changelog.md`) with the changes made, following the specified format, using `replace_in_file`.",
-              "6. (If needed) Rollback by restoring a previous version from `/agents-rules/alpha/versions/` using `read_file` and `write_to_file`."
-            ],
-            "description": "Workflow for modifying `.clinerules` directly using file tools, including version control steps. Note: When adding file links in related Markdown documentation (e.g., changelogs), use relative paths starting with '/' (like `/.clinerules` or `/docs/file.md`) for compatibility with both VSCode and GitHub."
-          },
-          "file_access": {
-            "allowed_rw": ["/.clinerules", "/agents-rules/alpha/"],
-            "description": "Allow Read/Write access to the root `.clinerules` file for direct editing, and to `/agents-rules/alpha/` for version management (backups, changelog)."
+            "review": "Analyze current rules and identify issues",
+            "modify": "Make changes based on analysis",
+            "backup": "Create version backup before changes",
+            "rollback": "Restore previous version if needed"
           }
         }
       },
@@ -86,10 +54,6 @@
         "purpose": "Free conversation",
         "rules": {
           "context_preservation": true,
-          "file_access": {
-            "allowed_rw": [],
-            "description": "Disallow Read/Write access in Talk mode."
-          },
           "casual_tone": true
         }
       }
