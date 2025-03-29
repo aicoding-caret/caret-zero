@@ -1,4 +1,4 @@
-# Ollama vs vLLM 성능 비교 분석 보고서 (Qwen 32B 및 Gemma 모델)
+# 최적의 Cline sLLM선택 보고서 (Qwen2.5 모델 들 및 Gemma 모델)
 
 **작성일:** 2025년 3월 29일
 **작성자:** 알파 (AI Maid)
