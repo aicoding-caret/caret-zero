@@ -1,0 +1,289 @@
+﻿34
+{
+  "api_type": "vllm",
+  "api_url": "http://localhost:8000",
+  "model": "Qwen/Qwen2.5-Coder-32B-Instruct-AWQ",
+  "test_type": "continuous",
+  "timestamp": "2025-03-28T16:46:58.746600",
+  "test_results": [
+    {
+      "scenario_id": "code-completion",
+      "result": {
+        "success": true,
+        "response": "Certainly! To calculate the Fibonacci sequence, you can define a function `calculate_fibonacci(n)` that returns the nth Fibonacci number. There are several ways to implement this function, such as using iteration, recursion, or dynamic programming. Below are examples of each method:\n\n### Iterative Approach\nThis approach uses a loop to calculate the Fibonacci numbers up to the nth number.\n\n```python\ndef calculate_fibonacci(n):\n    if n <= 0:\n        return \"Input should be a positive integer\"\n    elif n == 1:\n        return 0\n    elif n == 2:\n        return 1\n\n    a, b = 0, 1\n    for _ in range(2, n):\n        a, b = b, a + b\n    return b\n\n# Example usage:\nprint(calculate_fibonacci(10))  # Output: 34\n```\n\n### Recursive Approach\nThis approach uses recursion to calculate the Fibonacci number. Note that this method can be inefficient for large `n` due to repeated calculations.\n\n```python\ndef calculate_fibonacci(n):\n    if n <= 0:\n        return \"Input should be a positive integer\"\n    elif n == 1:\n        return 0\n    elif n == 2:\n        return 1\n    else:\n        return calculate_fibonacci(n-1) + calculate_fibonacci(n-2)\n\n# Example usage:\nprint(calculate_fibonacci(10))  # Output: 34\n```\n\n### Dynamic Programming Approach (Memoization)\nThis approach uses memoization to store previously calculated Fibonacci numbers, making it more efficient than the simple recursive approach.\n\n```python\ndef calculate_fibonacci(n, memo={}):\n    if n <= 0:\n        return \"Input should be a positive integer\"\n    elif n == 1:\n        return 0\n    elif n == 2:\n        return 1\n    if n not in memo:\n        memo[n] = calculate_fibonacci(n-1, memo) + calculate_fibonacci(n-2, memo)\n    return memo[n]\n\n# Example usage:\nprint(calculate_fibonacci(10))  # Output: 34\n```\n\n### Dynamic Programming Approach (Bottom-Up)\nThis approach builds up the solution from the base cases using a bottom-up dynamic programming strategy.\n\n```python\ndef calculate_fibonacci(n):\n    if n <= 0:\n        return \"Input should be a positive integer\"\n    elif n == 1:\n        return 0\n    elif n == 2:\n        return 1\n\n    fib = [0] * n\n    fib[0], fib[1] = 0, 1\n    for i in range(2, n):\n        fib[i] = fib[i-1] + fib[i-2]\n    return fib[-1]\n\n# Example usage:\nprint(calculate_fibonacci(10))  # Output: 34\n```\n\nChoose the method that best fits your needs based on the constraints and requirements of your problem.",
+        "metrics": {
+          "total_time": 32.174837827682495,
+          "time_to_first_token": 0.528672456741333,
+          "generated_tokens": 636,
+          "generation_time": 31.646165370941162,
+          "tokens_per_second_calculated": 20.097221655297357,
+          "gpu_stats_start": [
+            {
+              "id": 0,
+              "memory_used": 23711.0,
+              "memory_total": 24576.0,
+              "memory_util": 96.48030598958334,
+              "gpu_util": 7.000000000000001
+            },
+            {
+              "id": 1,
+              "memory_used": 20442.0,
+              "memory_total": 24576.0,
+              "memory_util": 83.1787109375,
+              "gpu_util": 7.000000000000001
+            }
+          ],
+          "gpu_stats_end": [
+            {
+              "id": 0,
+              "memory_used": 23670.0,
+              "memory_total": 24576.0,
+              "memory_util": 96.3134765625,
+              "gpu_util": 84.0
+            },
+            {
+              "id": 1,
+              "memory_used": 20442.0,
+              "memory_total": 24576.0,
+              "memory_util": 83.1787109375,
+              "gpu_util": 90.0
+            }
+          ],
+          "ram_stats_start": {
+            "total_gb": 127.82979965209961,
+            "available_gb": 66.2065315246582,
+            "percent_used": 48.2,
+            "used_gb": 61.623268127441406,
+            "free_gb": 66.2065315246582
+          },
+          "ram_stats_end": {
+            "total_gb": 127.82979965209961,
+            "available_gb": 66.29751205444336,
+            "percent_used": 48.1,
+            "used_gb": 61.53228759765625,
+            "free_gb": 66.29751205444336
+          }
+        }
+      }
+    },
+    {
+      "scenario_id": "code-review",
+      "result": {
+        "success": true,
+        "response": "To provide a more specific and helpful response, I need to know what kind of data you are working with and what kind of processing you want to perform. However, I can give you a general template for a `process_data` function that you can adapt to your specific needs. Here's an example:\n\n```python\ndef process_data(data):\n    \"\"\"\n    Process the input data.\n\n    Parameters:\n    data (list, DataFrame, dict, etc.): The data to be processed.\n\n    Returns:\n    processed_data (list, DataFrame, dict, etc.): The processed data.\n    \"\"\"\n    # Check the type of data and perform initial validation\n    if not isinstance(data, (list, dict, pd.DataFrame)):\n        raise ValueError(\"Data must be of type list, dict, or pandas DataFrame\")\n\n    # Example processing steps:\n    # 1. Clean the data (remove duplicates, handle missing values, etc.)\n    # 2. Transform the data (normalize, categorize, etc.)\n    # 3. Aggregate the data (sum, average, count, etc.)\n    # 4. Filter the data based on certain conditions\n\n    # Example: Convert all strings in a list to uppercase\n    if isinstance(data, list):\n        processed_data = [item.upper() for item in data if isinstance(item, str)]\n\n    # Example: Process a pandas DataFrame\n    elif isinstance(data, pd.DataFrame):\n        # Example transformation: Convert all string columns to uppercase\n        processed_data = data.applymap(lambda x: x.upper() if isinstance(x, str) else x)\n\n    # Example: Process a dictionary (assuming all values are lists of strings)\n    elif isinstance(data, dict):\n        processed_data = {key: [item.upper() for item in value if isinstance(item, str)] for key, value in data.items()}\n\n    return processed_data\n\n# Example usage:\n# processed = process_data([\"apple\", \"banana\", \"cherry\"])\n# print(processed)\n```\n\n### Explanation:\n- **Input Validation**: The function first checks if the input data is of an expected type (list, dict, or pandas DataFrame). If not, it raises a `ValueError`.\n- **Processing Steps**: Depending on the type of data, it performs some example processing steps. These steps can be customized based on your specific requirements.\n- **Return**: The function returns the processed data.\n\nIf you provide more details about your data and the specific processing you need, I can tailor the function more closely to your needs.",
+        "metrics": {
+          "total_time": 26.40436291694641,
+          "time_to_first_token": 0.42699122428894043,
+          "generated_tokens": 513,
+          "generation_time": 25.97737169265747,
+          "tokens_per_second_calculated": 19.74795626244975,
+          "gpu_stats_start": [
+            {
+              "id": 0,
+              "memory_used": 23666.0,
+              "memory_total": 24576.0,
+              "memory_util": 96.29720052083334,
+              "gpu_util": 84.0
+            },
+            {
+              "id": 1,
+              "memory_used": 20442.0,
+              "memory_total": 24576.0,
+              "memory_util": 83.1787109375,
+              "gpu_util": 8.0
+            }
+          ],
+          "gpu_stats_end": [
+            {
+              "id": 0,
+              "memory_used": 23702.0,
+              "memory_total": 24576.0,
+              "memory_util": 96.44368489583334,
+              "gpu_util": 94.0
+            },
+            {
+              "id": 1,
+              "memory_used": 20442.0,
+              "memory_total": 24576.0,
+              "memory_util": 83.1787109375,
+              "gpu_util": 67.0
+            }
+          ],
+          "ram_stats_start": {
+            "total_gb": 127.82979965209961,
+            "available_gb": 66.30111312866211,
+            "percent_used": 48.1,
+            "used_gb": 61.5286865234375,
+            "free_gb": 66.30111312866211
+          },
+          "ram_stats_end": {
+            "total_gb": 127.82979965209961,
+            "available_gb": 66.09796142578125,
+            "percent_used": 48.3,
+            "used_gb": 61.73183822631836,
+            "free_gb": 66.09796142578125
+          }
+        }
+      }
+    },
+    {
+      "scenario_id": "architecture-design",
+      "result": {
+        "success": true,
+        "response": "Todo \uc571 \ubc31\uc5d4\ub4dc\ub97c \uc124\uacc4\ud560 \ub54c \uace0\ub824\ud574\uc57c \ud560 \uc8fc\uc694 \uc694\uc18c\ub4e4\uc744 \uc0b4\ud3b4\ubcf4\uaca0\uc2b5\ub2c8\ub2e4. \uc774 \uc124\uacc4\ub294 \uae30\ubcf8\uc801\uc778 \uae30\ub2a5\uc744 \ud3ec\ud568\ud558\uba70, \ud544\uc694\uc5d0 \ub530\ub77c \ud655\uc7a5\ub420 \uc218 \uc788\uc2b5\ub2c8\ub2e4.\n\n### 1. \uae30\uc220 \uc2a4\ud0dd \uacb0\uc815\n- **\ud504\ub85c\uadf8\ub798\ubc0d \uc5b8\uc5b4**: Node.js, Python(Django/Flask), Java(Spring Boot), Go \ub4f1\n- **\ub370\uc774\ud130\ubca0\uc774\uc2a4**: MySQL, PostgreSQL, MongoDB \ub4f1\n- **\uc11c\ubc84**: Nginx, Apache \ub4f1\n- **API \ubb38\uc11c\ud654 \ub3c4\uad6c**: Swagger, Postman \ub4f1\n\n### 2. \ub370\uc774\ud130 \ubaa8\ub378\ub9c1\n- **User (\uc0ac\uc6a9\uc790)**\n  - `id` (Primary Key)\n  - `username` (\uc0ac\uc6a9\uc790 \uc774\ub984)\n  - `email` (\uc774\uba54\uc77c)\n  - `password` (\ube44\ubc00\ubc88\ud638)\n  - `created_at` (\uacc4\uc815 \uc0dd\uc131 \uc77c\uc790)\n  - `updated_at` (\uacc4\uc815 \uc218\uc815 \uc77c\uc790)\n\n- **Todo (\ud560 \uc77c)**\n  - `id` (Primary Key)\n  - `user_id` (\uc678\ub798\ud0a4, User.id)\n  - `title` (\ud560 \uc77c \uc81c\ubaa9)\n  - `description` (\ud560 \uc77c \uc124\uba85)\n  - `status` (\uc0c1\ud0dc: \ubbf8\uc644\ub8cc, \uc644\ub8cc)\n  - `due_date` (\ub9c8\uac10\uc77c)\n  - `created_at` (\uc0dd\uc131 \uc77c\uc790)\n  - `updated_at` (\uc218\uc815 \uc77c\uc790)\n\n### 3. API \uc124\uacc4\n- **\ud68c\uc6d0\uac00\uc785 (`POST /api/register`)**: \uc0c8\ub85c\uc6b4 \uc0ac\uc6a9\uc790\ub97c \ub4f1\ub85d\ud569\ub2c8\ub2e4.\n  - \uc694\uccad \ubc14\ub514: `username`, `email`, `password`\n- **\ub85c\uadf8\uc778 (`POST /api/login`)**: \uc0ac\uc6a9\uc790 \uc778\uc99d\uc744 \ucc98\ub9ac\ud569\ub2c8\ub2e4.\n  - \uc694\uccad \ubc14\ub514: `email`, `password`\n- **\ud560 \uc77c \ubaa9\ub85d (`GET /api/todos`)**: \uc0ac\uc6a9\uc790\uc758 \ubaa8\ub4e0 \ud560 \uc77c\uc744 \uac00\uc838\uc635\ub2c8\ub2e4.\n  - \ucffc\ub9ac \ud30c\ub77c\ubbf8\ud130: `status`, `due_date` (\ud544\ud130\ub9c1\uc744 \uc704\ud55c)\n- **\ud560 \uc77c \uc0dd\uc131 (`POST /api/todos`)**: \uc0c8\ub85c\uc6b4 \ud560 \uc77c\uc744 \uc0dd\uc131\ud569\ub2c8\ub2e4.\n  - \uc694\uccad \ubc14\ub514: `title`, `description`, `due_date`, `status`\n- **\ud560 \uc77c \uc218\uc815 (`PUT /api/todos/{id}`)**: \ud2b9\uc815 \ud560 \uc77c\uc744 \uc218\uc815\ud569\ub2c8\ub2e4.\n  - \uc694\uccad \ubc14\ub514: `title`, `description`, `due_date`, `status`\n- **\ud560 \uc77c \uc0ad\uc81c (`DELETE /api/todos/{id}`)**: \ud2b9\uc815 \ud560 \uc77c\uc744 \uc0ad\uc81c\ud569\ub2c8\ub2e4.\n\n### 4. \ubcf4\uc548 \uace0\ub824\uc0ac\ud56d\n- **\ube44\ubc00\ubc88\ud638 \uc554\ud638\ud654**: BCrypt\ub098 Argon2\uc640 \uac19\uc740 \uac15\ub825\ud55c \ud574\uc2dc \uc54c\uace0\ub9ac\uc998 \uc0ac\uc6a9.\n- **JWT(JSON Web Token)**: \uc0ac\uc6a9\uc790 \uc778\uc99d \ubc0f \uc138\uc158 \uad00\ub9ac.\n- **CORS(Cross-Origin Resource Sharing)**: \ud544\uc694\ud55c \ucd9c\ucc98\uc5d0\ub9cc \ub9ac\uc18c\uc2a4 \uacf5\uc720 \ud5c8\uc6a9.\n\n### 5. \uc5d0\ub7ec \ucc98\ub9ac\n- \ud074\ub77c\uc774\uc5b8\ud2b8 \uce21\uc5d0\uc11c \ubc1c\uc0dd\ud55c \uc624\ub958 \ucc98\ub9ac.\n- \uc11c\ubc84 \uce21\uc5d0\uc11c \ubc1c\uc0dd\ud55c \uc624\ub958 \ucc98\ub9ac (\uc608: \ub370\uc774\ud130\ubca0\uc774\uc2a4 \uc5f0\uacb0 \uc624\ub958, \uad8c\ud55c \ubd80\uc871 \ub4f1).\n\n### 6. \ud14c\uc2a4\ud2b8\n- **\ub2e8\uc704 \ud14c\uc2a4\ud2b8(Unit Test)**: \uac1c\ubcc4 \ud568\uc218\ub098 \uba54\uc18c\ub4dc\uc758 \ub3d9\uc791\uc744 \uac80\uc99d.\n- **\ud1b5\ud569 \ud14c\uc2a4\ud2b8(Integration Test)**: \uc5ec\ub7ec \ubaa8\ub4c8\uc774 \ud568\uaed8 \uc791\ub3d9\ud558\ub294\uc9c0 \ud655\uc778.\n- **API \ud14c\uc2a4\ud2b8**: Postman, Jest \ub4f1\uc744 \uc0ac\uc6a9\ud558\uc5ec API\uc758 \uc815\uc0c1\uc801\uc778 \uc791\ub3d9\uc744 \ud655\uc778.\n\n\uc774\ub7ec\ud55c \uad6c\uc131 \uc694\uc18c\ub4e4\uc744 \ubc14\ud0d5\uc73c\ub85c Todo \uc571 \ubc31\uc5d4\ub4dc\ub97c \uc124\uacc4\ud558\uba74 \uae30\ubcf8\uc801\uc778 \uae30\ub2a5\uc744 \ucda9\uc871\ud560 \uc218 \uc788\uc2b5\ub2c8\ub2e4. \ud544\uc694\uc5d0 \ub530\ub77c \uae30\ub2a5\uc744 \ucd94\uac00\ud558\uac70\ub098 \uc218\uc815\ud560 \uc218 \uc788\uc2b5\ub2c8\ub2e4.",
+        "metrics": {
+          "total_time": 39.92130255699158,
+          "time_to_first_token": 0.41224169731140137,
+          "generated_tokens": 945,
+          "generation_time": 39.509060859680176,
+          "tokens_per_second_calculated": 23.91856398096246,
+          "gpu_stats_start": [
+            {
+              "id": 0,
+              "memory_used": 23698.0,
+              "memory_total": 24576.0,
+              "memory_util": 96.42740885416666,
+              "gpu_util": 60.0
+            },
+            {
+              "id": 1,
+              "memory_used": 20442.0,
+              "memory_total": 24576.0,
+              "memory_util": 83.1787109375,
+              "gpu_util": 67.0
+            }
+          ],
+          "gpu_stats_end": [
+            {
+              "id": 0,
+              "memory_used": 23641.0,
+              "memory_total": 24576.0,
+              "memory_util": 96.19547526041666,
+              "gpu_util": 90.0
+            },
+            {
+              "id": 1,
+              "memory_used": 20442.0,
+              "memory_total": 24576.0,
+              "memory_util": 83.1787109375,
+              "gpu_util": 91.0
+            }
+          ],
+          "ram_stats_start": {
+            "total_gb": 127.82979965209961,
+            "available_gb": 66.0890884399414,
+            "percent_used": 48.3,
+            "used_gb": 61.7407112121582,
+            "free_gb": 66.0890884399414
+          },
+          "ram_stats_end": {
+            "total_gb": 127.82979965209961,
+            "available_gb": 66.03284072875977,
+            "percent_used": 48.3,
+            "used_gb": 61.796958923339844,
+            "free_gb": 66.03284072875977
+          }
+        }
+      }
+    },
+    {
+      "scenario_id": "debugging",
+      "result": {
+        "success": true,
+        "response": "Certainly! Below is a simple implementation of a `UserManager` class in Python. This class can be used to manage user accounts, including adding, removing, and updating user information. For simplicity, the user data is stored in a dictionary.\n\n```python\nclass UserManager:\n    def __init__(self):\n        # Initialize an empty dictionary to store user data\n        self.users = {}\n\n    def add_user(self, user_id, user_info):\n        \"\"\"Add a new user to the system.\"\"\"\n        if user_id in self.users:\n            print(f\"User with ID {user_id} already exists.\")\n        else:\n            self.users[user_id] = user_info\n            print(f\"User with ID {user_id} added successfully.\")\n\n    def remove_user(self, user_id):\n        \"\"\"Remove a user from the system.\"\"\"\n        if user_id in self.users:\n            del self.users[user_id]\n            print(f\"User with ID {user_id} removed successfully.\")\n        else:\n            print(f\"User with ID {user_id} not found.\")\n\n    def update_user(self, user_id, user_info):\n        \"\"\"Update information for an existing user.\"\"\"\n        if user_id in self.users:\n            self.users[user_id] = user_info\n            print(f\"User with ID {user_id} updated successfully.\")\n        else:\n            print(f\"User with ID {user_id} not found.\")\n\n    def get_user(self, user_id):\n        \"\"\"Retrieve information for a specific user.\"\"\"\n        return self.users.get(user_id, f\"User with ID {user_id} not found.\")\n\n    def list_users(self):\n        \"\"\"List all users in the system.\"\"\"\n        if self.users:\n            for user_id, user_info in self.users.items():\n                print(f\"User ID: {user_id}, Info: {user_info}\")\n        else:\n            print(\"No users found.\")\n\n# Example usage:\nif __name__ == \"__main__\":\n    manager = UserManager()\n    manager.add_user(1, {'name': 'Alice', 'email': 'alice@example.com'})\n    manager.add_user(2, {'name': 'Bob', 'email': 'bob@example.com'})\n    manager.list_users()\n    print(manager.get_user(1))\n    manager.update_user(1, {'name': 'Alice Smith', 'email': 'alice.smith@example.com'})\n    manager.list_users()\n    manager.remove_user(2)\n    manager.list_users()\n```\n\n### Explanation:\n- **Initialization**: The `__init__` method initializes an empty dictionary `self.users` to store user data.\n- **Add User**: The `add_user` method adds a new user to the dictionary if the user ID does not already exist.\n- **Remove User**: The `remove_user` method deletes a user from the dictionary if the user ID exists.\n- **Update User**: The `update_user` method updates the information of an existing user.\n- **Get User**: The `get_user` method retrieves the information of a specific user.\n- **List Users**: The `list_users` method prints all users in the dictionary.\n\nThis is a basic implementation and can be extended with more features such as password management, permissions, and more complex data storage solutions.",
+        "metrics": {
+          "total_time": 32.785788774490356,
+          "time_to_first_token": 0.412609338760376,
+          "generated_tokens": 654,
+          "generation_time": 32.37317943572998,
+          "tokens_per_second_calculated": 20.201908227716004,
+          "gpu_stats_start": [
+            {
+              "id": 0,
+              "memory_used": 23641.0,
+              "memory_total": 24576.0,
+              "memory_util": 96.19547526041666,
+              "gpu_util": 90.0
+            },
+            {
+              "id": 1,
+              "memory_used": 20442.0,
+              "memory_total": 24576.0,
+              "memory_util": 83.1787109375,
+              "gpu_util": 14.000000000000002
+            }
+          ],
+          "gpu_stats_end": [
+            {
+              "id": 0,
+              "memory_used": 23635.0,
+              "memory_total": 24576.0,
+              "memory_util": 96.17106119791666,
+              "gpu_util": 93.0
+            },
+            {
+              "id": 1,
+              "memory_used": 20442.0,
+              "memory_total": 24576.0,
+              "memory_util": 83.1787109375,
+              "gpu_util": 67.0
+            }
+          ],
+          "ram_stats_start": {
+            "total_gb": 127.82979965209961,
+            "available_gb": 66.02339172363281,
+            "percent_used": 48.4,
+            "used_gb": 61.8064079284668,
+            "free_gb": 66.02339172363281
+          },
+          "ram_stats_end": {
+            "total_gb": 127.82979965209961,
+            "available_gb": 65.97594833374023,
+            "percent_used": 48.4,
+            "used_gb": 61.853851318359375,
+            "free_gb": 65.97594833374023
+          }
+        }
+      }
+    }
+  ],
+  "context_length": 76800,
+  "quality_evaluation": {
+    "code-completion": {
+      "detailed_scores": {
+        "accuracy": 0.0,
+        "consistency": 0.0,
+        "code_quality": 6.0,
+        "clarity": 4.0
+      },
+      "total_score": 2.0
+    },
+    "code-review": {
+      "detailed_scores": {
+        "accuracy": 0.0,
+        "consistency": 0.0,
+        "code_quality": 6.0,
+        "clarity": 4.0
+      },
+      "total_score": 2.0
+    },
+    "architecture-design": {
+      "detailed_scores": {
+        "accuracy": 4.0,
+        "consistency": 0.0,
+        "code_quality": 0.0,
+        "clarity": 4.0
+      },
+      "total_score": 2.4000000000000004
+    },
+    "debugging": {
+      "detailed_scores": {
+        "accuracy": 0.0,
+        "consistency": 0.0,
+        "code_quality": 6.0,
+        "clarity": 4.0
+      },
+      "total_score": 2.0
+    }
+  }
+}

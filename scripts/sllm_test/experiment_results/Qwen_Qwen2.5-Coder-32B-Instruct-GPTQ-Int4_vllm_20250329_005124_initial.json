@@ -1,0 +1,195 @@
+﻿{
+  "api_type": "vllm",
+  "api_url": "http://localhost:8000",
+  "model": "Qwen/Qwen2.5-Coder-32B-Instruct-GPTQ-Int4",
+  "test_type": "initial",
+  "timestamp": "2025-03-29T01:14:50.260242",
+  "test_results": [
+    {
+      "scenario_id": "code-completion",
+      "prompt_index": 0,
+      "prompt": "Complete the following Python function to calculate the nth Fibonacci number:\n```python\ndef calculate_fibonacci(n):\n    # Your code here\n```",
+      "result": {
+        "success": true,
+        "response": "Certainly! There are several ways to calculate the nth Fibonacci number, including iterative, recursive, and using dynamic programming. Here, I'll provide you with an iterative approach, which is efficient in terms of both time and space complexity:\n\n```python\ndef calculate_fibonacci(n):\n    if n <= 0:\n        return \"Input should be a positive integer.\"\n    elif n == 1:\n        return 0\n    elif n == 2:\n        return 1\n\n    a, b = 0, 1\n    for _ in range(2, n):\n        a, b = b, a + b\n    return b\n\n# Example usage:\n# print(calculate_fibonacci(10))  # Output: 34\n```\n\n### Explanation:\n- The function first checks if the input `n` is less than or equal to 0, in which case it returns a message indicating that the input should be a positive integer.\n- If `n` is 1, it returns 0 because the first Fibonacci number is 0.\n- If `n` is 2, it returns 1 because the second Fibonacci number is 1.\n- For `n` greater than 2, it uses a loop to calculate the Fibonacci numbers iteratively. It initializes two variables, `a` and `b`, to represent the first two Fibonacci numbers (0 and 1, respectively).\n- In each iteration of the loop, it updates `a` and `b` to the next two Fibonacci numbers until it reaches the nth number.\n- Finally, it returns the nth Fibonacci number stored in `b`.",
+        "metrics": {
+          "total_time": 7.386199951171875,
+          "time_to_first_token": 0.6987037658691406,
+          "generated_tokens": 335,
+          "generation_time": 6.687496185302734,
+          "tokens_per_second_calculated": 50.09348651835305,
+          "gpu_stats_start": [
+            {
+              "id": 0,
+              "memory_used": 20514.0,
+              "memory_total": 24576.0,
+              "memory_util": 83.4716796875,
+              "gpu_util": 4.0
+            },
+            {
+              "id": 1,
+              "memory_used": 19437.0,
+              "memory_total": 24576.0,
+              "memory_util": 79.08935546875,
+              "gpu_util": 0.0
+            }
+          ],
+          "gpu_stats_end": [
+            {
+              "id": 0,
+              "memory_used": 20856.0,
+              "memory_total": 24576.0,
+              "memory_util": 84.86328125,
+              "gpu_util": 83.0
+            },
+            {
+              "id": 1,
+              "memory_used": 19745.0,
+              "memory_total": 24576.0,
+              "memory_util": 80.34261067708334,
+              "gpu_util": 79.0
+            }
+          ],
+          "ram_stats_start": {
+            "total_gb": 127.82979965209961,
+            "available_gb": 94.61745071411133,
+            "percent_used": 26.0,
+            "used_gb": 33.21234893798828,
+            "free_gb": 94.61745071411133
+          },
+          "ram_stats_end": {
+            "total_gb": 127.82979965209961,
+            "available_gb": 94.65666961669922,
+            "percent_used": 26.0,
+            "used_gb": 33.17313003540039,
+            "free_gb": 94.65666961669922
+          }
+        }
+      }
+    },
+    {
+      "scenario_id": "code-completion",
+      "prompt_index": 1,
+      "prompt": "Provide a Python function `factorial(n)` that calculates the factorial of a non-negative integer n.",
+      "result": {
+        "success": true,
+        "response": "Certainly! The factorial of a non-negative integer \\( n \\) is the product of all positive integers less than or equal to \\( n \\). It is denoted by \\( n! \\). Here's a Python function to calculate the factorial of a non-negative integer \\( n \\):\n\n```python\ndef factorial(n):\n    if n < 0:\n        raise ValueError(\"Factorial is not defined for negative numbers\")\n    elif n == 0 or n == 1:\n        return 1\n    else:\n        result = 1\n        for i in range(2, n + 1):\n            result *= i\n        return result\n\n# Example usage:\n# print(factorial(5))  # Output: 120\n```\n\n### Explanation:\n- The function first checks if \\( n \\) is a negative number. If it is, it raises a `ValueError` because the factorial is not defined for negative numbers.\n- If \\( n \\) is 0 or 1, the function returns 1, since \\( 0! = 1! = 1 \\).\n- For other positive integers, the function initializes a variable `result` to 1 and then iteratively multiplies it by each integer from 2 up to \\( n \\). This loop effectively calculates the product of all integers from 1 to \\( n \\), which is the definition of the factorial.\n\nYou can test this function with various non-negative integers to see how it works.",
+        "metrics": {
+          "total_time": 6.406466007232666,
+          "time_to_first_token": 0.34810614585876465,
+          "generated_tokens": 303,
+          "generation_time": 6.058359861373901,
+          "tokens_per_second_calculated": 50.013536160476,
+          "gpu_stats_start": [
+            {
+              "id": 0,
+              "memory_used": 20856.0,
+              "memory_total": 24576.0,
+              "memory_util": 84.86328125,
+              "gpu_util": 83.0
+            },
+            {
+              "id": 1,
+              "memory_used": 19745.0,
+              "memory_total": 24576.0,
+              "memory_util": 80.34261067708334,
+              "gpu_util": 28.000000000000004
+            }
+          ],
+          "gpu_stats_end": [
+            {
+              "id": 0,
+              "memory_used": 20856.0,
+              "memory_total": 24576.0,
+              "memory_util": 84.86328125,
+              "gpu_util": 84.0
+            },
+            {
+              "id": 1,
+              "memory_used": 19745.0,
+              "memory_total": 24576.0,
+              "memory_util": 80.34261067708334,
+              "gpu_util": 59.0
+            }
+          ],
+          "ram_stats_start": {
+            "total_gb": 127.82979965209961,
+            "available_gb": 94.65646362304688,
+            "percent_used": 26.0,
+            "used_gb": 33.173336029052734,
+            "free_gb": 94.65646362304688
+          },
+          "ram_stats_end": {
+            "total_gb": 127.82979965209961,
+            "available_gb": 94.6627426147461,
+            "percent_used": 25.9,
+            "used_gb": 33.167057037353516,
+            "free_gb": 94.6627426147461
+          }
+        }
+      }
+    },
+    {
+      "scenario_id": "code-completion",
+      "prompt_index": 2,
+      "prompt": "Write a Python function `is_prime(num)` that checks if a given number `num` is a prime number.",
+      "result": {
+        "success": true,
+        "response": "Certainly! A prime number is a natural number greater than 1 that has no positive divisors other than 1 and itself. Here's a Python function `is_prime(num)` that checks if a given number `num` is a prime number:\n\n```python\ndef is_prime(num):\n    \"\"\"Check if a number is a prime number.\"\"\"\n    if num <= 1:\n        return False\n    if num <= 3:\n        return True\n    if num % 2 == 0 or num % 3 == 0:\n        return False\n    i = 5\n    while i * i <= num:\n        if num % i == 0 or num % (i + 2) == 0:\n            return False\n        i += 6\n    return True\n\n# Example usage:\nprint(is_prime(11))  # Output: True\nprint(is_prime(4))   # Output: False\n```\n\n### Explanation:\n1. **Initial Checks**:\n   - Numbers less than or equal to 1 are not prime.\n   - Numbers 2 and 3 are prime.\n   - Any number divisible by 2 or 3 is not prime.\n\n2. **Loop through Potential Divisors**:\n   - We start checking from 5 and increment by 6 (i.e., check 5, 11, 17, ...) because any prime number greater than 3 can be written in the form of 6k \u00b1 1.\n   - For each number `i`, we check if `num` is divisible by `i` or `i + 2`.\n   - We only need to check up to the square root of `num` because if `num` is divisible by any number greater than its square root, it must also be divisible by a number smaller than its square root.\n\nThis function efficiently determines if a number is prime by reducing the number of checks needed.",
+        "metrics": {
+          "total_time": 8.31270956993103,
+          "time_to_first_token": 0.3527059555053711,
+          "generated_tokens": 395,
+          "generation_time": 7.960003614425659,
+          "tokens_per_second_calculated": 49.623093045354175,
+          "gpu_stats_start": [
+            {
+              "id": 0,
+              "memory_used": 20856.0,
+              "memory_total": 24576.0,
+              "memory_util": 84.86328125,
+              "gpu_util": 44.0
+            },
+            {
+              "id": 1,
+              "memory_used": 19745.0,
+              "memory_total": 24576.0,
+              "memory_util": 80.34261067708334,
+              "gpu_util": 59.0
+            }
+          ],
+          "gpu_stats_end": [
+            {
+              "id": 0,
+              "memory_used": 20858.0,
+              "memory_total": 24576.0,
+              "memory_util": 84.87141927083334,
+              "gpu_util": 82.0
+            },
+            {
+              "id": 1,
+              "memory_used": 19745.0,
+              "memory_total": 24576.0,
+              "memory_util": 80.34261067708334,
+              "gpu_util": 61.0
+            }
+          ],
+          "ram_stats_start": {
+            "total_gb": 127.82979965209961,
+            "available_gb": 94.66188430786133,
+            "percent_used": 25.9,
+            "used_gb": 33.16791534423828,
+            "free_gb": 94.66188430786133
+          },
+          "ram_stats_end": {
+            "total_gb": 127.82979965209961,
+            "available_gb": 94.78902053833008,
+            "percent_used": 25.8,
+            "used_gb": 33.04077911376953,
+            "free_gb": 94.78902053833008
+          }
+        }
+      }
+    }
+  ]
+}

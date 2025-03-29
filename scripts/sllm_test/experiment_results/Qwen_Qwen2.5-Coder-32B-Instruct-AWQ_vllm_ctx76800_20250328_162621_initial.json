@@ -1,0 +1,70 @@
+﻿{
+  "api_type": "vllm",
+  "api_url": "http://localhost:8000",
+  "model": "Qwen/Qwen2.5-Coder-32B-Instruct-AWQ",
+  "test_type": "initial",
+  "timestamp": "2025-03-28T16:46:43.571557",
+  "test_results": [
+    {
+      "scenario_id": "code-completion",
+      "result": {
+        "success": true,
+        "response": "Certainly! To calculate the Fibonacci sequence up to the nth number, you can implement the function `calculate_fibonacci(n)` in Python. The Fibonacci sequence is a series of numbers where each number is the sum of the two preceding ones, usually starting with 0 and 1. Here's a simple implementation:\n\n```python\ndef calculate_fibonacci(n):\n    if n <= 0:\n        return []\n    elif n == 1:\n        return [0]\n    elif n == 2:\n        return [0, 1]\n    \n    # Start the list with the first two Fibonacci numbers\n    fib_sequence = [0, 1]\n    \n    # Calculate the Fibonacci sequence up to the nth number\n    for i in range(2, n):\n        next_fib = fib_sequence[-1] + fib_sequence[-2]\n        fib_sequence.append(next_fib)\n    \n    return fib_sequence\n\n# Example usage:\nn = 10\nprint(calculate_fibonacci(n))\n```\n\nThis function will return a list containing the Fibonacci sequence up to the nth number. For example, if `n = 10`, the output will be `[0, 1, 1, 2, 3, 5, 8, 13, 21, 34]`.",
+        "metrics": {
+          "total_time": 14.001488447189331,
+          "time_to_first_token": 0.6558651924133301,
+          "generated_tokens": 271,
+          "generation_time": 13.345623254776001,
+          "tokens_per_second_calculated": 20.30628280346646,
+          "gpu_stats_start": [
+            {
+              "id": 0,
+              "memory_used": 23715.0,
+              "memory_total": 24576.0,
+              "memory_util": 96.49658203125,
+              "gpu_util": 18.0
+            },
+            {
+              "id": 1,
+              "memory_used": 20442.0,
+              "memory_total": 24576.0,
+              "memory_util": 83.1787109375,
+              "gpu_util": 11.0
+            }
+          ],
+          "gpu_stats_end": [
+            {
+              "id": 0,
+              "memory_used": 23698.0,
+              "memory_total": 24576.0,
+              "memory_util": 96.42740885416666,
+              "gpu_util": 93.0
+            },
+            {
+              "id": 1,
+              "memory_used": 20442.0,
+              "memory_total": 24576.0,
+              "memory_util": 83.1787109375,
+              "gpu_util": 91.0
+            }
+          ],
+          "ram_stats_start": {
+            "total_gb": 127.82979965209961,
+            "available_gb": 66.17318725585938,
+            "percent_used": 48.2,
+            "used_gb": 61.656612396240234,
+            "free_gb": 66.17318725585938
+          },
+          "ram_stats_end": {
+            "total_gb": 127.82979965209961,
+            "available_gb": 66.20579147338867,
+            "percent_used": 48.2,
+            "used_gb": 61.62400817871094,
+            "free_gb": 66.20579147338867
+          }
+        }
+      }
+    }
+  ],
+  "context_length": 76800
+}

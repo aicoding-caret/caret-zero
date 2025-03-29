@@ -10,3 +10,9 @@ tmp
 pnpm-lock.yaml
 
 .clineignore
+
+# Model Cache (e.g., downloaded by TGI)
+models/
+
+# Environment variables
+.env

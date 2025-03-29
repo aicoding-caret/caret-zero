@@ -1,0 +1,1961 @@
+﻿{
+  "api_type": "vllm",
+  "api_url": "http://localhost:8000",
+  "model": "Qwen/Qwen2.5-Coder-32B-Instruct-GPTQ-Int4",
+  "test_type": "continuous",
+  "timestamp": "2025-03-29T01:19:33.618310",
+  "test_results": [
+    {
+      "scenario_id": "code-completion",
+      "prompt_index": 0,
+      "prompt": "Complete the following Python function to calculate the nth Fibonacci number:\n```python\ndef calculate_fibonacci(n):\n    # Your code here\n```",
+      "result": {
+        "success": true,
+        "response": "Certainly! There are several ways to calculate the nth Fibonacci number. Below, I'll provide a simple iterative approach, which is efficient in terms of both time and space complexity.\n\nHere's the completed function:\n\n```python\ndef calculate_fibonacci(n):\n    if n <= 0:\n        raise ValueError(\"n must be a positive integer\")\n    elif n == 1:\n        return 0\n    elif n == 2:\n        return 1\n    \n    a, b = 0, 1\n    for _ in range(2, n):\n        a, b = b, a + b\n    return b\n\n# Example usage:\n# print(calculate_fibonacci(10))  # Output: 34\n```\n\n### Explanation:\n- The function first checks if `n` is less than or equal to 0 and raises a `ValueError` because the Fibonacci sequence is defined for positive integers.\n- It then handles the base cases where `n` is 1 or 2, returning 0 and 1 respectively, as these are the first two numbers in the Fibonacci sequence.\n- For `n` greater than 2, it uses an iterative approach to calculate the Fibonacci numbers. It initializes two variables `a` and `b` to 0 and 1, which represent the first two Fibonacci numbers.\n- It then iterates from 2 to `n-1`, updating `a` and `b` in each iteration to the next two Fibonacci numbers.\n- Finally, it returns `b`, which holds the nth Fibonacci number after the loop completes.",
+        "metrics": {
+          "total_time": 7.336160898208618,
+          "time_to_first_token": 0.7513034343719482,
+          "generated_tokens": 327,
+          "generation_time": 6.58485746383667,
+          "tokens_per_second_calculated": 49.659389257223694,
+          "gpu_stats_start": [
+            {
+              "id": 0,
+              "memory_used": 20857.0,
+              "memory_total": 24576.0,
+              "memory_util": 84.86735026041666,
+              "gpu_util": 4.0
+            },
+            {
+              "id": 1,
+              "memory_used": 19747.0,
+              "memory_total": 24576.0,
+              "memory_util": 80.35074869791666,
+              "gpu_util": 0.0
+            }
+          ],
+          "gpu_stats_end": [
+            {
+              "id": 0,
+              "memory_used": 20858.0,
+              "memory_total": 24576.0,
+              "memory_util": 84.87141927083334,
+              "gpu_util": 82.0
+            },
+            {
+              "id": 1,
+              "memory_used": 19747.0,
+              "memory_total": 24576.0,
+              "memory_util": 80.35074869791666,
+              "gpu_util": 80.0
+            }
+          ],
+          "ram_stats_start": {
+            "total_gb": 127.82979965209961,
+            "available_gb": 94.80207443237305,
+            "percent_used": 25.8,
+            "used_gb": 33.02772521972656,
+            "free_gb": 94.80207443237305
+          },
+          "ram_stats_end": {
+            "total_gb": 127.82979965209961,
+            "available_gb": 94.79559707641602,
+            "percent_used": 25.8,
+            "used_gb": 33.034202575683594,
+            "free_gb": 94.79559707641602
+          }
+        }
+      }
+    },
+    {
+      "scenario_id": "code-completion",
+      "prompt_index": 1,
+      "prompt": "Provide a Python function `factorial(n)` that calculates the factorial of a non-negative integer n.",
+      "result": {
+        "success": true,
+        "response": "Certainly! The factorial of a non-negative integer \\( n \\) is the product of all positive integers less than or equal to \\( n \\). It is denoted by \\( n! \\) and is defined as:\n\n\\[ n! = n \\times (n-1) \\times (n-2) \\times \\ldots \\times 1 \\]\n\nFor \\( n = 0 \\), the factorial is defined as 1.\n\nHere's a Python function to calculate the factorial of a non-negative integer \\( n \\):\n\n```python\ndef factorial(n):\n    if n < 0:\n        raise ValueError(\"Factorial is not defined for negative numbers\")\n    elif n == 0:\n        return 1\n    else:\n        result = 1\n        for i in range(1, n + 1):\n            result *= i\n        return result\n\n# Example usage:\n# print(factorial(5))  # Output: 120\n```\n\nThis function first checks if the input \\( n \\) is negative and raises a `ValueError` if it is, since factorials are not defined for negative numbers. If \\( n \\) is 0, it returns 1. For positive integers, it calculates the factorial by iterating from 1 to \\( n \\) and multiplying the numbers together.",
+        "metrics": {
+          "total_time": 5.866025686264038,
+          "time_to_first_token": 0.34972691535949707,
+          "generated_tokens": 272,
+          "generation_time": 5.516298770904541,
+          "tokens_per_second_calculated": 49.30842423449782,
+          "gpu_stats_start": [
+            {
+              "id": 0,
+              "memory_used": 20858.0,
+              "memory_total": 24576.0,
+              "memory_util": 84.87141927083334,
+              "gpu_util": 82.0
+            },
+            {
+              "id": 1,
+              "memory_used": 19747.0,
+              "memory_total": 24576.0,
+              "memory_util": 80.35074869791666,
+              "gpu_util": 30.0
+            }
+          ],
+          "gpu_stats_end": [
+            {
+              "id": 0,
+              "memory_used": 20858.0,
+              "memory_total": 24576.0,
+              "memory_util": 84.87141927083334,
+              "gpu_util": 77.0
+            },
+            {
+              "id": 1,
+              "memory_used": 19747.0,
+              "memory_total": 24576.0,
+              "memory_util": 80.35074869791666,
+              "gpu_util": 77.0
+            }
+          ],
+          "ram_stats_start": {
+            "total_gb": 127.82979965209961,
+            "available_gb": 94.7940788269043,
+            "percent_used": 25.8,
+            "used_gb": 33.03572082519531,
+            "free_gb": 94.7940788269043
+          },
+          "ram_stats_end": {
+            "total_gb": 127.82979965209961,
+            "available_gb": 94.81116104125977,
+            "percent_used": 25.8,
+            "used_gb": 33.018638610839844,
+            "free_gb": 94.81116104125977
+          }
+        }
+      }
+    },
+    {
+      "scenario_id": "code-completion",
+      "prompt_index": 2,
+      "prompt": "Write a Python function `is_prime(num)` that checks if a given number `num` is a prime number.",
+      "result": {
+        "success": true,
+        "response": "Certainly! A prime number is a natural number greater than 1 that has no positive divisors other than 1 and itself. Here's a Python function `is_prime(num)` that checks if a given number `num` is a prime number:\n\n```python\ndef is_prime(num):\n    \"\"\"Check if a number is a prime number.\"\"\"\n    if num <= 1:\n        return False\n    if num <= 3:\n        return True\n    if num % 2 == 0 or num % 3 == 0:\n        return False\n    i = 5\n    while i * i <= num:\n        if num % i == 0 or num % (i + 2) == 0:\n            return False\n        i += 6\n    return True\n\n# Example usage:\nprint(is_prime(11))  # Output: True\nprint(is_prime(15))  # Output: False\n```\n\n### Explanation:\n1. **Initial Checks**:\n   - If `num` is less than or equal to 1, it is not a prime number.\n   - If `num` is 2 or 3, it is a prime number (since these are the first two prime numbers).\n\n2. **Divisibility by 2 or 3**:\n   - If `num` is divisible by 2 or 3, it is not a prime number.\n\n3. **Checking Further Divisors**:\n   - We start checking from 5 and increment by 6 each time (i.e., check 5, 11, 17, ...).\n   - This works because all primes greater than 3 can be written in the form of 6k \u00b1 1.\n   - For each `i`, we check if `num` is divisible by `i` or `i + 2`.\n   - The loop continues as long as `i * i` is less than or equal to `num`.\n\nThis function efficiently checks for primality and should work well for reasonably large numbers.",
+        "metrics": {
+          "total_time": 8.879713773727417,
+          "time_to_first_token": 0.3676135540008545,
+          "generated_tokens": 421,
+          "generation_time": 8.512100219726562,
+          "tokens_per_second_calculated": 49.45900413911291,
+          "gpu_stats_start": [
+            {
+              "id": 0,
+              "memory_used": 20858.0,
+              "memory_total": 24576.0,
+              "memory_util": 84.87141927083334,
+              "gpu_util": 77.0
+            },
+            {
+              "id": 1,
+              "memory_used": 19747.0,
+              "memory_total": 24576.0,
+              "memory_util": 80.35074869791666,
+              "gpu_util": 77.0
+            }
+          ],
+          "gpu_stats_end": [
+            {
+              "id": 0,
+              "memory_used": 20858.0,
+              "memory_total": 24576.0,
+              "memory_util": 84.87141927083334,
+              "gpu_util": 59.0
+            },
+            {
+              "id": 1,
+              "memory_used": 19747.0,
+              "memory_total": 24576.0,
+              "memory_util": 80.35074869791666,
+              "gpu_util": 74.0
+            }
+          ],
+          "ram_stats_start": {
+            "total_gb": 127.82979965209961,
+            "available_gb": 94.8128662109375,
+            "percent_used": 25.8,
+            "used_gb": 33.01693344116211,
+            "free_gb": 94.8128662109375
+          },
+          "ram_stats_end": {
+            "total_gb": 127.82979965209961,
+            "available_gb": 94.80256271362305,
+            "percent_used": 25.8,
+            "used_gb": 33.02723693847656,
+            "free_gb": 94.80256271362305
+          }
+        }
+      }
+    },
+    {
+      "scenario_id": "code-review",
+      "prompt_index": 0,
+      "prompt": "Review the following Python code snippet for potential issues and suggest improvements:\n```python\ndef get_user_data(user_id):\n    # Assume db_fetch is a function that fetches data from a database\n    data = db_fetch(user_id)\n    if data:\n        if data['active']:\n            return data['profile']\n    return None\n```",
+      "result": {
+        "success": true,
+        "response": "The provided Python code snippet is fairly straightforward, but there are a few areas where improvements can be made for readability, robustness, and error handling. Here are some suggestions:\n\n1. **Error Handling**: Currently, the code does not handle any potential exceptions that might be raised by `db_fetch`. It's a good practice to include error handling to manage unexpected situations gracefully.\n\n2. **Code Readability**: Adding comments and improving formatting can make the code easier to understand for someone else (or for yourself in the future).\n\n3. **Type Checking**: If `db_fetch` is expected to return a dictionary, it's a good idea to verify this assumption, especially if it's not guaranteed.\n\n4. **Function Documentation**: A docstring would help in understanding what the function does, what parameters it takes, and what it returns.\n\n5. **Early Return**: The function can be simplified by using early returns to reduce nesting.\n\nHere's an improved version of the function incorporating these suggestions:\n\n```python\ndef get_user_data(user_id):\n    \"\"\"\n    Fetches and returns the profile of an active user.\n\n    Parameters:\n    user_id (int): The ID of the user to fetch data for.\n\n    Returns:\n    dict or None: The user's profile if the user is active, otherwise None.\n    \"\"\"\n    try:\n        # Fetch user data from the database\n        data = db_fetch(user_id)\n        \n        # Check if data is a dictionary and if the user is active\n        if isinstance(data, dict) and data.get('active'):\n            return data['profile']\n        \n        return None\n    \n    except Exception as e:\n        # Log the exception or handle it as needed\n        print(f\"An error occurred while fetching user data: {e}\")\n        return None\n\n```\n\n### Key Improvements:\n- **Error Handling**: Wrapped the database fetch in a `try-except` block to handle any exceptions that might occur.\n- **Type Checking**: Added a check to ensure `data` is a dictionary before accessing its keys.\n- **Docstring**: Added a docstring to describe the function's purpose, parameters, and return value.\n- **Early Return**: Simplified the logic by using early returns to minimize nested `if` statements.\n- **Logging**: Included a basic print statement for logging errors. In a production environment, you might use a logging library instead of `print`.",
+        "metrics": {
+          "total_time": 10.224717140197754,
+          "time_to_first_token": 0.3916587829589844,
+          "generated_tokens": 486,
+          "generation_time": 9.83305835723877,
+          "tokens_per_second_calculated": 49.42511092108215,
+          "gpu_stats_start": [
+            {
+              "id": 0,
+              "memory_used": 20858.0,
+              "memory_total": 24576.0,
+              "memory_util": 84.87141927083334,
+              "gpu_util": 59.0
+            },
+            {
+              "id": 1,
+              "memory_used": 19747.0,
+              "memory_total": 24576.0,
+              "memory_util": 80.35074869791666,
+              "gpu_util": 74.0
+            }
+          ],
+          "gpu_stats_end": [
+            {
+              "id": 0,
+              "memory_used": 20858.0,
+              "memory_total": 24576.0,
+              "memory_util": 84.87141927083334,
+              "gpu_util": 84.0
+            },
+            {
+              "id": 1,
+              "memory_used": 19747.0,
+              "memory_total": 24576.0,
+              "memory_util": 80.35074869791666,
+              "gpu_util": 79.0
+            }
+          ],
+          "ram_stats_start": {
+            "total_gb": 127.82979965209961,
+            "available_gb": 94.80068969726562,
+            "percent_used": 25.8,
+            "used_gb": 33.029109954833984,
+            "free_gb": 94.80068969726562
+          },
+          "ram_stats_end": {
+            "total_gb": 127.82979965209961,
+            "available_gb": 94.79792785644531,
+            "percent_used": 25.8,
+            "used_gb": 33.0318717956543,
+            "free_gb": 94.79792785644531
+          }
+        }
+      }
+    },
+    {
+      "scenario_id": "code-review",
+      "prompt_index": 1,
+      "prompt": "Critique this Python code for handling file reading. What are the potential problems?\n```python\ndef read_config(filepath):\n    f = open(filepath, 'r')\n    config = json.load(f)\n    # ... process config ...\n    return config\n```",
+      "result": {
+        "success": true,
+        "response": "The provided Python code for reading and processing a configuration file has several potential issues that could lead to problems or inefficiencies:\n\n1. **File Not Closed**: The file `f` is opened but not explicitly closed. If an error occurs in the `json.load(f)` line or anywhere else in the function, the file will remain open. This can lead to resource leaks, especially if the function is called multiple times. To ensure the file is properly closed, use a `with` statement, which automatically handles closing the file.\n\n2. **No Error Handling**: The code does not handle exceptions that might occur when opening the file or parsing the JSON. For example, if the file does not exist, `open(filepath, 'r')` will raise a `FileNotFoundError`. Similarly, if the file is not a valid JSON, `json.load(f)` will raise a `json.JSONDecodeError`. It's good practice to wrap the file operations in a try-except block to handle these exceptions gracefully.\n\n3. **No Import Statement for `json` Module**: The code uses the `json` module without importing it. Before using `json`, you need to import it at the beginning of your script with the line `import json`.\n\n4. **Lack of Documentation**: There is no docstring for the function, which makes it harder for other developers (or yourself in the future) to understand what the function does, what parameters it takes, and what it returns.\n\n5. **Return Value**: While not necessarily a problem, it's worth considering whether the function should handle the processing of the config or simply return the raw data. This depends on the intended use of the function.\n\nHere is a revised version of the code addressing these issues:\n\n```python\nimport json\n\ndef read_config(filepath):\n    \"\"\"\n    Reads and parses a JSON configuration file.\n\n    Args:\n        filepath (str): The path to the configuration file.\n\n    Returns:\n        dict: The parsed configuration data.\n\n    Raises:\n        FileNotFoundError: If the configuration file does not exist.\n        json.JSONDecodeError: If the file is not a valid JSON.\n        IOError: If there are issues opening the file.\n    \"\"\"\n    try:\n        with open(filepath, 'r') as f:\n            config = json.load(f)\n        # ... process config ...\n        return config\n    except FileNotFoundError:\n        print(f\"Error: The file {filepath} does not exist.\")\n        raise\n    except json.JSONDecodeError:\n        print(f\"Error: The file {filepath} is not a valid JSON.\")\n        raise\n    except IOError as e:\n        print(f\"Error: An I/O error occurred: {e}\")\n        raise\n```\n\nThis version includes error handling, resource management, and documentation, making it more robust and easier to maintain.",
+        "metrics": {
+          "total_time": 11.887414932250977,
+          "time_to_first_token": 0.3766450881958008,
+          "generated_tokens": 569,
+          "generation_time": 11.510769844055176,
+          "tokens_per_second_calculated": 49.43196742777933,
+          "gpu_stats_start": [
+            {
+              "id": 0,
+              "memory_used": 20858.0,
+              "memory_total": 24576.0,
+              "memory_util": 84.87141927083334,
+              "gpu_util": 84.0
+            },
+            {
+              "id": 1,
+              "memory_used": 19747.0,
+              "memory_total": 24576.0,
+              "memory_util": 80.35074869791666,
+              "gpu_util": 38.0
+            }
+          ],
+          "gpu_stats_end": [
+            {
+              "id": 0,
+              "memory_used": 20858.0,
+              "memory_total": 24576.0,
+              "memory_util": 84.87141927083334,
+              "gpu_util": 84.0
+            },
+            {
+              "id": 1,
+              "memory_used": 19747.0,
+              "memory_total": 24576.0,
+              "memory_util": 80.35074869791666,
+              "gpu_util": 78.0
+            }
+          ],
+          "ram_stats_start": {
+            "total_gb": 127.82979965209961,
+            "available_gb": 94.7990608215332,
+            "percent_used": 25.8,
+            "used_gb": 33.030738830566406,
+            "free_gb": 94.7990608215332
+          },
+          "ram_stats_end": {
+            "total_gb": 127.82979965209961,
+            "available_gb": 94.7270278930664,
+            "percent_used": 25.9,
+            "used_gb": 33.1027717590332,
+            "free_gb": 94.7270278930664
+          }
+        }
+      }
+    },
+    {
+      "scenario_id": "code-review",
+      "prompt_index": 2,
+      "prompt": "Analyze the following Python list manipulation code. Is it efficient? How can it be improved?\n```python\nnew_list = []\nfor x in old_list:\n    if x > 10:\n        new_list.append(x * 2)\n```",
+      "result": {
+        "success": true,
+        "response": "The provided code snippet is a straightforward way to create a new list by filtering and transforming elements from an existing list. Here's a breakdown of its efficiency and potential improvements:\n\n### Efficiency Analysis\n\n1. **Time Complexity**: The time complexity of this code is \\(O(n)\\), where \\(n\\) is the number of elements in `old_list`. This is because the code iterates through each element of `old_list` exactly once and performs a constant amount of work (a conditional check and possibly an append operation) for each element.\n\n2. **Space Complexity**: The space complexity is also \\(O(n)\\) in the worst case, where all elements in `old_list` are greater than 10, and thus all are doubled and added to `new_list`.\n\n### Improvements\n\nWhile the code is already quite efficient in terms of time and space complexity, there are a few stylistic and potentially more Pythonic ways to write it:\n\n1. **List Comprehension**: Using a list comprehension can make the code more concise and often faster due to internal optimizations in Python.\n\n   ```python\n   new_list = [x * 2 for x in old_list if x > 10]\n   ```\n\n   This version does the same thing as the original code but in a single line. It is generally preferred for its readability and conciseness.\n\n2. **Generator Expression**: If you don't need to store all elements in memory at once (e.g., if you're processing a very large list or streaming data), consider using a generator expression with a similar syntax. However, note that a generator expression would yield elements one by one and would not create a list in memory.\n\n   ```python\n   new_list = list(x * 2 for x in old_list if x > 10)\n   ```\n\n   This is similar to the list comprehension but explicitly converts the generator to a list. It's useful if you need to access the entire list later and want to ensure it's created in memory.\n\n3. **Functional Programming**: Using functions such as `filter` and `map` can also achieve the same result, though this is less common and generally less readable than list comprehensions.\n\n   ```python\n   new_list = list(map(lambda x: x * 2, filter(lambda x: x > 10, old_list)))\n   ```\n\n   This approach is more functional in style and can be useful in certain contexts, but it's usually less readable than list comprehensions.\n\n### Conclusion\n\nThe original code is already efficient in terms of time and space complexity. However, using a list comprehension can make the code more Pythonic and potentially more efficient due to internal optimizations.",
+        "metrics": {
+          "total_time": 11.478771924972534,
+          "time_to_first_token": 0.38791775703430176,
+          "generated_tokens": 548,
+          "generation_time": 11.090854167938232,
+          "tokens_per_second_calculated": 49.41008074780881,
+          "gpu_stats_start": [
+            {
+              "id": 0,
+              "memory_used": 20858.0,
+              "memory_total": 24576.0,
+              "memory_util": 84.87141927083334,
+              "gpu_util": 84.0
+            },
+            {
+              "id": 1,
+              "memory_used": 19747.0,
+              "memory_total": 24576.0,
+              "memory_util": 80.35074869791666,
+              "gpu_util": 28.000000000000004
+            }
+          ],
+          "gpu_stats_end": [
+            {
+              "id": 0,
+              "memory_used": 20858.0,
+              "memory_total": 24576.0,
+              "memory_util": 84.87141927083334,
+              "gpu_util": 85.0
+            },
+            {
+              "id": 1,
+              "memory_used": 19747.0,
+              "memory_total": 24576.0,
+              "memory_util": 80.35074869791666,
+              "gpu_util": 79.0
+            }
+          ],
+          "ram_stats_start": {
+            "total_gb": 127.82979965209961,
+            "available_gb": 94.72608947753906,
+            "percent_used": 25.9,
+            "used_gb": 33.10371017456055,
+            "free_gb": 94.72608947753906
+          },
+          "ram_stats_end": {
+            "total_gb": 127.82979965209961,
+            "available_gb": 94.70065689086914,
+            "percent_used": 25.9,
+            "used_gb": 33.12914276123047,
+            "free_gb": 94.70065689086914
+          }
+        }
+      }
+    },
+    {
+      "scenario_id": "architecture-design",
+      "prompt_index": 0,
+      "prompt": "Outline the backend architecture for a simple Todo application.",
+      "result": {
+        "success": true,
+        "response": "Creating a backend architecture for a simple Todo application involves several key components and considerations. Below is an outline that covers the essential parts, focusing on the typical stack used for such applications. This example will use Node.js with Express for the server, MongoDB for the database, and a RESTful API for communication.\n\n### 1. **Framework and Server**\n- **Node.js**: A JavaScript runtime built on Chrome's V8 JavaScript engine, used for building scalable network applications.\n- **Express.js**: A web framework for Node.js, designed for building web applications and APIs. It provides a robust set of features for web and mobile applications.\n\n### 2. **Database**\n- **MongoDB**: A NoSQL database program. It uses JSON-like documents with a dynamic schema, making it a good fit for applications like a Todo list where the structure is not rigid.\n\n### 3. **API Design**\n- **RESTful API**: The application will expose a RESTful API for creating, reading, updating, and deleting (CRUD) todo items.\n  - **Endpoints**:\n    - `GET /todos` - Retrieve all todos.\n    - `POST /todos` - Create a new todo.\n    - `GET /todos/:id` - Retrieve a specific todo by ID.\n    - `PUT /todos/:id` - Update a specific todo by ID.\n    - `DELETE /todos/:id` - Delete a specific todo by ID.\n\n### 4. **Middleware**\n- **Body Parser**: Middleware to parse incoming request bodies in a middleware before your handlers, available under the `req.body` property.\n- **CORS**: Middleware to handle Cross-Origin Resource Sharing (CORS) to allow requests from different origins.\n- **Helmet**: Middleware to help secure Express apps by setting various HTTP headers.\n\n### 5. **Data Models**\n- **Todo Model**: A schema for storing todo items in MongoDB. It could include fields like `title`, `description`, `completed`, and `createdAt`.\n  ```javascript\n  const todoSchema = new mongoose.Schema({\n      title: { type: String, required: true },\n      description: { type: String, required: false },\n      completed: { type: Boolean, default: false },\n      createdAt: { type: Date, default: Date.now }\n  });\n  ```\n\n### 6. **Error Handling**\n- Implement error handling middleware to catch errors and return appropriate HTTP status codes and messages.\n  ```javascript\n  app.use((err, req, res, next) => {\n      console.error(err.stack);\n      res.status(500).send('Something broke!');\n  });\n  ```\n\n### 7. **Environment Configuration**\n- Use a library like `dotenv` to manage environment variables for configuration (e.g., database connection strings, secret keys).\n\n### 8. **Testing**\n- Write unit tests for your API endpoints and business logic using a testing framework like Mocha or Jest.\n- Implement integration tests to test the interaction between different parts of the system.\n\n### 9. **Deployment**\n- Use a platform like Heroku, AWS, or Vercel to deploy your application.\n- Set up a CI/CD pipeline using tools like GitHub Actions, Travis CI, or Jenkins to automate testing and deployment.\n\n### 10. **Monitoring and Logging**\n- Implement logging to capture application behavior and errors. Tools like Winston or Pino can be used for logging.\n- Consider using monitoring tools like New Relic or Datadog to keep an eye on application performance and health.\n\nThis outline provides a solid foundation for building a backend for a simple Todo application. Depending on the specific requirements and scale of your application, you might need to adjust or add more components.",
+        "metrics": {
+          "total_time": 15.538511753082275,
+          "time_to_first_token": 0.34468507766723633,
+          "generated_tokens": 759,
+          "generation_time": 15.193826675415039,
+          "tokens_per_second_calculated": 49.95449903533054,
+          "gpu_stats_start": [
+            {
+              "id": 0,
+              "memory_used": 20858.0,
+              "memory_total": 24576.0,
+              "memory_util": 84.87141927083334,
+              "gpu_util": 85.0
+            },
+            {
+              "id": 1,
+              "memory_used": 19747.0,
+              "memory_total": 24576.0,
+              "memory_util": 80.35074869791666,
+              "gpu_util": 79.0
+            }
+          ],
+          "gpu_stats_end": [
+            {
+              "id": 0,
+              "memory_used": 20858.0,
+              "memory_total": 24576.0,
+              "memory_util": 84.87141927083334,
+              "gpu_util": 86.0
+            },
+            {
+              "id": 1,
+              "memory_used": 19747.0,
+              "memory_total": 24576.0,
+              "memory_util": 80.35074869791666,
+              "gpu_util": 79.0
+            }
+          ],
+          "ram_stats_start": {
+            "total_gb": 127.82979965209961,
+            "available_gb": 94.6994857788086,
+            "percent_used": 25.9,
+            "used_gb": 33.130313873291016,
+            "free_gb": 94.6994857788086
+          },
+          "ram_stats_end": {
+            "total_gb": 127.82979965209961,
+            "available_gb": 94.74234771728516,
+            "percent_used": 25.9,
+            "used_gb": 33.08745193481445,
+            "free_gb": 94.74234771728516
+          }
+        }
+      }
+    },
+    {
+      "scenario_id": "architecture-design",
+      "prompt_index": 1,
+      "prompt": "Design the main components for a backend system managing blog posts and comments.",
+      "result": {
+        "success": true,
+        "response": "Designing a backend system for managing blog posts and comments involves several key components that work together to ensure the system is efficient, scalable, and secure. Below is a detailed breakdown of the main components:\n\n### 1. **Database**\nThe database is the core component where all the data related to blog posts, comments, users, and other entities is stored.\n\n- **Database Type**: Typically, a relational database like MySQL, PostgreSQL, or a NoSQL database like MongoDB can be used. The choice depends on specific requirements such as scalability, consistency, and the nature of the data.\n- **Entities**:\n  - **Posts**: Stores information about blog posts including title, content, author, publication date, status (published, draft), etc.\n  - **Comments**: Stores comments related to posts, including the user who posted the comment, the date, and the content.\n  - **Users**: Stores user information such as username, email, hashed password, registration date, etc.\n  - **Categories/Tags**: Optional tables to categorize or tag posts for better organization and retrieval.\n  - **Likes/Dislikes**: Optional tables to store user interactions with posts or comments.\n- **Relationships**: Establish relationships between entities, such as one-to-many relationships between posts and comments.\n\n### 2. **API Layer**\nThe API layer provides a way for clients (frontend, mobile apps) to interact with the backend system. RESTful APIs or GraphQL are commonly used.\n\n- **Endpoints**:\n  - **Posts**: CRUD operations (Create, Read, Update, Delete) for blog posts.\n  - **Comments**: CRUD operations for comments.\n  - **Users**: Authentication and authorization endpoints.\n- **Authentication & Authorization**: Implement mechanisms like JWT (JSON Web Tokens) for secure access to resources. Define roles and permissions for different user types (e.g., admin, author, guest).\n- **Validation**: Validate input data to prevent SQL injection and other security vulnerabilities.\n\n### 3. **Business Logic Layer**\nThis layer contains the application\u2019s business logic that determines how the data is processed and how the application behaves.\n\n- **Services**: Implement core functionalities such as creating a new post, deleting a comment, or fetching all posts by a user.\n- **Rules & Policies**: Define business rules and policies (e.g., a user can only delete their own comments).\n\n### 4. **Storage**\nFor storing media files like images and videos related to blog posts, a dedicated storage solution is often used.\n\n- **Cloud Storage**: Use services like AWS S3, Google Cloud Storage, or Azure Blob Storage for scalable and secure storage.\n- **File System**: Alternatively, you can store files on a local file system, though this might not be suitable for large-scale applications.\n\n### 5. **Caching**\nImplement caching to improve performance and reduce database load.\n\n- **In-Memory Cache**: Use systems like Redis or Memcached to store frequently accessed data.\n- **Query Cache**: Implement caching for database queries to speed up data retrieval.\n\n### 6. **Search & Indexing**\nFor efficient searching and indexing of blog posts and comments, consider using a search engine.\n\n- **Elasticsearch**: A powerful search engine that can be used to index and search through large volumes of data efficiently.\n\n### 7. **Logging & Monitoring**\nImplement logging and monitoring to track the system\u2019s performance and diagnose issues.\n\n- **Logging**: Use logging frameworks to log important events and errors.\n- **Monitoring**: Use monitoring tools like Prometheus, Grafana, or New Relic to keep track of system performance in real-time.\n\n### 8. **Security**\nEnsure that the system is secure against common vulnerabilities.\n\n- **Data Encryption**: Encrypt sensitive data both in transit and at rest.\n- **Rate Limiting**: Implement rate limiting to prevent abuse of the API.\n- **DDoS Protection**: Use services or tools to protect against Distributed Denial of Service attacks.\n\nBy integrating these components, you can build a robust and scalable backend system for managing blog posts and comments.",
+        "metrics": {
+          "total_time": 16.820635318756104,
+          "time_to_first_token": 0.3838014602661133,
+          "generated_tokens": 818,
+          "generation_time": 16.43683385848999,
+          "tokens_per_second_calculated": 49.76627536923632,
+          "gpu_stats_start": [
+            {
+              "id": 0,
+              "memory_used": 20858.0,
+              "memory_total": 24576.0,
+              "memory_util": 84.87141927083334,
+              "gpu_util": 86.0
+            },
+            {
+              "id": 1,
+              "memory_used": 19747.0,
+              "memory_total": 24576.0,
+              "memory_util": 80.35074869791666,
+              "gpu_util": 28.999999999999996
+            }
+          ],
+          "gpu_stats_end": [
+            {
+              "id": 0,
+              "memory_used": 20858.0,
+              "memory_total": 24576.0,
+              "memory_util": 84.87141927083334,
+              "gpu_util": 86.0
+            },
+            {
+              "id": 1,
+              "memory_used": 19747.0,
+              "memory_total": 24576.0,
+              "memory_util": 80.35074869791666,
+              "gpu_util": 69.0
+            }
+          ],
+          "ram_stats_start": {
+            "total_gb": 127.82979965209961,
+            "available_gb": 94.739990234375,
+            "percent_used": 25.9,
+            "used_gb": 33.08980941772461,
+            "free_gb": 94.739990234375
+          },
+          "ram_stats_end": {
+            "total_gb": 127.82979965209961,
+            "available_gb": 94.73595809936523,
+            "percent_used": 25.9,
+            "used_gb": 33.093841552734375,
+            "free_gb": 94.73595809936523
+          }
+        }
+      }
+    },
+    {
+      "scenario_id": "architecture-design",
+      "prompt_index": 2,
+      "prompt": "Describe the key architectural elements needed for a URL shortening service backend.",
+      "result": {
+        "success": true,
+        "response": "Building a URL shortening service backend involves several key architectural elements to ensure it is scalable, reliable, and efficient. Here\u2019s a breakdown of these components:\n\n1. **Database:**\n   - **Purpose:** To store the mapping between the original URLs and their shortened counterparts, along with any metadata like creation time, usage statistics, and user information (if applicable).\n   - **Types:** Could be a relational database (like PostgreSQL, MySQL) for structured data or a NoSQL store (like MongoDB, Redis) for faster access and flexibility.\n   - **Considerations:** High read and write performance, scalability, and data consistency.\n\n2. **URL Encoding/Decoding Service:**\n   - **Purpose:** To generate unique and short identifiers for URLs and decode them back to the original URLs when accessed.\n   - **Implementation:** Could use a base conversion method (like base62) or a hash-based approach with a lookup table.\n   - **Considerations:** Ensuring uniqueness and minimizing collisions.\n\n3. **API Layer:**\n   - **Purpose:** To expose endpoints for creating shortened URLs, redirecting users to the original URL, and managing user accounts (if required).\n   - **Implementation:** RESTful APIs or GraphQL.\n   - **Considerations:** Security, rate limiting, and input validation.\n\n4. **Routing Layer:**\n   - **Purpose:** To handle incoming requests for shortened URLs and route them to the appropriate destination.\n   - **Implementation:** Could be handled by the web server or a dedicated routing service.\n   - **Considerations:** Fast response times, handling of high traffic, and proper redirection.\n\n5. **Caching:**\n   - **Purpose:** To improve performance by caching frequently accessed URLs.\n   - **Implementation:** In-memory caches like Redis or Memcached.\n   - **Considerations:** Cache invalidation policies and handling cache misses.\n\n6. **Load Balancer:**\n   - **Purpose:** To distribute incoming requests across multiple servers to ensure high availability and reliability.\n   - **Implementation:** Hardware-based or software-based solutions like HAProxy or NGINX.\n   - **Considerations:** Session persistence, health checks, and failover mechanisms.\n\n7. **Monitoring and Logging:**\n   - **Purpose:** To track the performance and health of the service and diagnose issues.\n   - **Implementation:** Tools like Prometheus, Grafana, ELK stack, or cloud-native monitoring services.\n   - **Considerations:** Real-time monitoring, alerting, and log retention policies.\n\n8. **Security Layer:**\n   - **Purpose:** To protect the service from unauthorized access, attacks, and data breaches.\n   - **Implementation:** HTTPS, authentication mechanisms, input validation, rate limiting, and firewalls.\n   - **Considerations:** Regular security audits and updates.\n\n9. **Scalability Infrastructure:**\n   - **Purpose:** To support the service's growth in scale, both in terms of traffic and data.\n   - **Implementation:** Cloud services like AWS, Google Cloud, or Azure, using auto-scaling groups, containerization (Docker), and orchestration (Kubernetes).\n   - **Considerations:** Efficient resource utilization and cost management.\n\n10. **User Interface (Optional):**\n    - **Purpose:** To provide a web-based interface for users to create shortened URLs and manage their links.\n    - **Implementation:** Front-end frameworks like React, Angular, or Vue.js.\n    - **Considerations:** User experience, accessibility, and responsive design.\n\nBy carefully designing and integrating these elements, a URL shortening service can efficiently handle a large volume of requests, provide quick and reliable redirection, and scale seamlessly as user demand grows.",
+        "metrics": {
+          "total_time": 15.335452318191528,
+          "time_to_first_token": 0.3457918167114258,
+          "generated_tokens": 744,
+          "generation_time": 14.989660501480103,
+          "tokens_per_second_calculated": 49.63421285802546,
+          "gpu_stats_start": [
+            {
+              "id": 0,
+              "memory_used": 20858.0,
+              "memory_total": 24576.0,
+              "memory_util": 84.87141927083334,
+              "gpu_util": 55.00000000000001
+            },
+            {
+              "id": 1,
+              "memory_used": 19747.0,
+              "memory_total": 24576.0,
+              "memory_util": 80.35074869791666,
+              "gpu_util": 69.0
+            }
+          ],
+          "gpu_stats_end": [
+            {
+              "id": 0,
+              "memory_used": 20858.0,
+              "memory_total": 24576.0,
+              "memory_util": 84.87141927083334,
+              "gpu_util": 84.0
+            },
+            {
+              "id": 1,
+              "memory_used": 19747.0,
+              "memory_total": 24576.0,
+              "memory_util": 80.35074869791666,
+              "gpu_util": 76.0
+            }
+          ],
+          "ram_stats_start": {
+            "total_gb": 127.82979965209961,
+            "available_gb": 94.73934936523438,
+            "percent_used": 25.9,
+            "used_gb": 33.090450286865234,
+            "free_gb": 94.73934936523438
+          },
+          "ram_stats_end": {
+            "total_gb": 127.82979965209961,
+            "available_gb": 94.72957611083984,
+            "percent_used": 25.9,
+            "used_gb": 33.100223541259766,
+            "free_gb": 94.72957611083984
+          }
+        }
+      }
+    },
+    {
+      "scenario_id": "debugging",
+      "prompt_index": 0,
+      "prompt": "Find and fix the bug in the following Python code:\n```python\ndef find_item(items, target):\n    for item in items:\n        if item = target: # Bug is here\n            return True\n    return False\n```",
+      "result": {
+        "success": true,
+        "response": "The bug in the code is due to the use of a single equals sign (`=`) for comparison, which is an assignment operator in Python. To compare two values, you should use a double equals sign (`==`). Here is the corrected code:\n\n```python\ndef find_item(items, target):\n    for item in items:\n        if item == target: # Fixed the bug by using '=='\n            return True\n    return False\n```\n\nThis change ensures that the code correctly checks if `item` is equal to `target`.",
+        "metrics": {
+          "total_time": 2.5466623306274414,
+          "time_to_first_token": 0.3846578598022461,
+          "generated_tokens": 109,
+          "generation_time": 2.1620044708251953,
+          "tokens_per_second_calculated": 50.416176964887036,
+          "gpu_stats_start": [
+            {
+              "id": 0,
+              "memory_used": 20858.0,
+              "memory_total": 24576.0,
+              "memory_util": 84.87141927083334,
+              "gpu_util": 64.0
+            },
+            {
+              "id": 1,
+              "memory_used": 19747.0,
+              "memory_total": 24576.0,
+              "memory_util": 80.35074869791666,
+              "gpu_util": 76.0
+            }
+          ],
+          "gpu_stats_end": [
+            {
+              "id": 0,
+              "memory_used": 20858.0,
+              "memory_total": 24576.0,
+              "memory_util": 84.87141927083334,
+              "gpu_util": 76.0
+            },
+            {
+              "id": 1,
+              "memory_used": 19747.0,
+              "memory_total": 24576.0,
+              "memory_util": 80.35074869791666,
+              "gpu_util": 79.0
+            }
+          ],
+          "ram_stats_start": {
+            "total_gb": 127.82979965209961,
+            "available_gb": 94.72891616821289,
+            "percent_used": 25.9,
+            "used_gb": 33.10088348388672,
+            "free_gb": 94.72891616821289
+          },
+          "ram_stats_end": {
+            "total_gb": 127.82979965209961,
+            "available_gb": 94.69818878173828,
+            "percent_used": 25.9,
+            "used_gb": 33.13161087036133,
+            "free_gb": 94.69818878173828
+          }
+        }
+      }
+    },
+    {
+      "scenario_id": "debugging",
+      "prompt_index": 1,
+      "prompt": "Identify the error in this Python dictionary access code:\n```python\nuser_info = {'name': 'Alice'}\nprint(user_info['age']) # Bug is here\n```",
+      "result": {
+        "success": true,
+        "response": "The error in the code is that the key `'age'` does not exist in the `user_info` dictionary. The dictionary only contains the key `'name'` with the value `'Alice'`. Attempting to access a key that does not exist in a dictionary will raise a `KeyError`.\n\nTo fix this error, you should either:\n\n1. Add the `'age'` key to the dictionary if it is supposed to be there:\n   ```python\n   user_info = {'name': 'Alice', 'age': 30}\n   print(user_info['age'])\n   ```\n\n2. Check if the key exists in the dictionary before accessing it, or use the `get()` method which returns `None` or a default value if the key is not found:\n   ```python\n   user_info = {'name': 'Alice'}\n   age = user_info.get('age')\n   if age is not None:\n       print(age)\n   else:\n       print(\"Age is not available\")\n   ```\n\n3. Use a try-except block to handle the `KeyError`:\n   ```python\n   user_info = {'name': 'Alice'}\n   try:\n       print(user_info['age'])\n   except KeyError:\n       print(\"Age is not available\")\n   ```",
+        "metrics": {
+          "total_time": 5.6567769050598145,
+          "time_to_first_token": 0.39602160453796387,
+          "generated_tokens": 260,
+          "generation_time": 5.260755300521851,
+          "tokens_per_second_calculated": 49.42256104826028,
+          "gpu_stats_start": [
+            {
+              "id": 0,
+              "memory_used": 20858.0,
+              "memory_total": 24576.0,
+              "memory_util": 84.87141927083334,
+              "gpu_util": 76.0
+            },
+            {
+              "id": 1,
+              "memory_used": 19747.0,
+              "memory_total": 24576.0,
+              "memory_util": 80.35074869791666,
+              "gpu_util": 79.0
+            }
+          ],
+          "gpu_stats_end": [
+            {
+              "id": 0,
+              "memory_used": 20858.0,
+              "memory_total": 24576.0,
+              "memory_util": 84.87141927083334,
+              "gpu_util": 83.0
+            },
+            {
+              "id": 1,
+              "memory_used": 19747.0,
+              "memory_total": 24576.0,
+              "memory_util": 80.35074869791666,
+              "gpu_util": 62.0
+            }
+          ],
+          "ram_stats_start": {
+            "total_gb": 127.82979965209961,
+            "available_gb": 94.69744873046875,
+            "percent_used": 25.9,
+            "used_gb": 33.13235092163086,
+            "free_gb": 94.69744873046875
+          },
+          "ram_stats_end": {
+            "total_gb": 127.82979965209961,
+            "available_gb": 94.7026252746582,
+            "percent_used": 25.9,
+            "used_gb": 33.127174377441406,
+            "free_gb": 94.7026252746582
+          }
+        }
+      }
+    },
+    {
+      "scenario_id": "debugging",
+      "prompt_index": 2,
+      "prompt": "Debug the following Python loop. Why might it not terminate?\n```python\ni = 0\nwhile i < 5:\n    print(i)\n    # Missing increment: i += 1\n```",
+      "result": {
+        "success": true,
+        "response": "The loop in your code will not terminate because the variable `i` is not being incremented within the loop body. The condition for the `while` loop to continue is that `i < 5`. Since `i` is initialized to `0` and there is no statement to increase its value, `i` remains `0` throughout the loop, causing the condition `i < 5` to always be true.\n\nTo fix the loop, you need to add an increment statement for `i` inside the loop body. Here is the corrected version of the loop:\n\n```python\ni = 0\nwhile i < 5:\n    print(i)\n    i += 1\n```\n\nWith this addition, `i` will increase by `1` in each iteration, and the loop will terminate once `i` is no longer less than `5`.",
+        "metrics": {
+          "total_time": 3.8942642211914062,
+          "time_to_first_token": 0.3949868679046631,
+          "generated_tokens": 176,
+          "generation_time": 3.499277353286743,
+          "tokens_per_second_calculated": 50.29609894588368,
+          "gpu_stats_start": [
+            {
+              "id": 0,
+              "memory_used": 20858.0,
+              "memory_total": 24576.0,
+              "memory_util": 84.87141927083334,
+              "gpu_util": 47.0
+            },
+            {
+              "id": 1,
+              "memory_used": 19747.0,
+              "memory_total": 24576.0,
+              "memory_util": 80.35074869791666,
+              "gpu_util": 62.0
+            }
+          ],
+          "gpu_stats_end": [
+            {
+              "id": 0,
+              "memory_used": 20858.0,
+              "memory_total": 24576.0,
+              "memory_util": 84.87141927083334,
+              "gpu_util": 85.0
+            },
+            {
+              "id": 1,
+              "memory_used": 19747.0,
+              "memory_total": 24576.0,
+              "memory_util": 80.35074869791666,
+              "gpu_util": 80.0
+            }
+          ],
+          "ram_stats_start": {
+            "total_gb": 127.82979965209961,
+            "available_gb": 94.70580673217773,
+            "percent_used": 25.9,
+            "used_gb": 33.123992919921875,
+            "free_gb": 94.70580673217773
+          },
+          "ram_stats_end": {
+            "total_gb": 127.82979965209961,
+            "available_gb": 94.66337585449219,
+            "percent_used": 25.9,
+            "used_gb": 33.16642379760742,
+            "free_gb": 94.66337585449219
+          }
+        }
+      }
+    },
+    {
+      "scenario_id": "refactoring",
+      "prompt_index": 0,
+      "prompt": "Refactor the following Python code for better readability and efficiency:\n```python\ndef process_items(items):\n    results = []\n    for i in range(len(items)):\n        if items[i] % 2 == 0:\n            temp = items[i] * items[i]\n            results.append(temp)\n        else:\n            temp = items[i] + 10\n            results.append(temp)\n    return results\n```",
+      "result": {
+        "success": true,
+        "response": "Certainly! Here's a refactored version of the code that improves readability and efficiency:\n\n```python\ndef process_items(items):\n    return [item * item if item % 2 == 0 else item + 10 for item in items]\n```\n\n### Changes Made:\n1. **List Comprehension**: Replaced the `for` loop with a list comprehension, which is more concise and often faster for creating lists.\n2. **Direct Access**: Directly access each `item` from the list instead of using `items[i]`, which makes the code cleaner.\n3. **Inline Conditionals**: Used an inline conditional expression to handle the even/odd check and the corresponding operation, reducing the number of lines and improving readability.",
+        "metrics": {
+          "total_time": 3.3893771171569824,
+          "time_to_first_token": 0.3902764320373535,
+          "generated_tokens": 151,
+          "generation_time": 2.999100685119629,
+          "tokens_per_second_calculated": 50.34842636301051,
+          "gpu_stats_start": [
+            {
+              "id": 0,
+              "memory_used": 20858.0,
+              "memory_total": 24576.0,
+              "memory_util": 84.87141927083334,
+              "gpu_util": 34.0
+            },
+            {
+              "id": 1,
+              "memory_used": 19747.0,
+              "memory_total": 24576.0,
+              "memory_util": 80.35074869791666,
+              "gpu_util": 49.0
+            }
+          ],
+          "gpu_stats_end": [
+            {
+              "id": 0,
+              "memory_used": 20858.0,
+              "memory_total": 24576.0,
+              "memory_util": 84.87141927083334,
+              "gpu_util": 65.0
+            },
+            {
+              "id": 1,
+              "memory_used": 19747.0,
+              "memory_total": 24576.0,
+              "memory_util": 80.35074869791666,
+              "gpu_util": 79.0
+            }
+          ],
+          "ram_stats_start": {
+            "total_gb": 127.82979965209961,
+            "available_gb": 94.66212463378906,
+            "percent_used": 25.9,
+            "used_gb": 33.16767501831055,
+            "free_gb": 94.66212463378906
+          },
+          "ram_stats_end": {
+            "total_gb": 127.82979965209961,
+            "available_gb": 94.70065689086914,
+            "percent_used": 25.9,
+            "used_gb": 33.12914276123047,
+            "free_gb": 94.70065689086914
+          }
+        }
+      }
+    },
+    {
+      "scenario_id": "refactoring",
+      "prompt_index": 1,
+      "prompt": "Improve this Python code snippet by using more idiomatic Python features:\n```python\nindex = 0\nwhile index < len(my_list):\n    print(my_list[index])\n    index += 1\n```",
+      "result": {
+        "success": true,
+        "response": "You can make the code more idiomatic by using a `for` loop to iterate directly over the elements of the list. This eliminates the need to manage the index manually. Here's the improved version:\n\n```python\nfor item in my_list:\n    print(item)\n```\n\nThis approach is more Pythonic and easier to read, as it directly expresses the intention of iterating over each element in the list.",
+        "metrics": {
+          "total_time": 1.9959666728973389,
+          "time_to_first_token": 0.3931882381439209,
+          "generated_tokens": 82,
+          "generation_time": 1.602778434753418,
+          "tokens_per_second_calculated": 51.16115753866842,
+          "gpu_stats_start": [
+            {
+              "id": 0,
+              "memory_used": 20858.0,
+              "memory_total": 24576.0,
+              "memory_util": 84.87141927083334,
+              "gpu_util": 65.0
+            },
+            {
+              "id": 1,
+              "memory_used": 19747.0,
+              "memory_total": 24576.0,
+              "memory_util": 80.35074869791666,
+              "gpu_util": 79.0
+            }
+          ],
+          "gpu_stats_end": [
+            {
+              "id": 0,
+              "memory_used": 20858.0,
+              "memory_total": 24576.0,
+              "memory_util": 84.87141927083334,
+              "gpu_util": 84.0
+            },
+            {
+              "id": 1,
+              "memory_used": 19747.0,
+              "memory_total": 24576.0,
+              "memory_util": 80.35074869791666,
+              "gpu_util": 79.0
+            }
+          ],
+          "ram_stats_start": {
+            "total_gb": 127.82979965209961,
+            "available_gb": 94.70051193237305,
+            "percent_used": 25.9,
+            "used_gb": 33.12928771972656,
+            "free_gb": 94.70051193237305
+          },
+          "ram_stats_end": {
+            "total_gb": 127.82979965209961,
+            "available_gb": 94.70349502563477,
+            "percent_used": 25.9,
+            "used_gb": 33.126304626464844,
+            "free_gb": 94.70349502563477
+          }
+        }
+      }
+    },
+    {
+      "scenario_id": "refactoring",
+      "prompt_index": 2,
+      "prompt": "Refactor this nested loop structure in Python for potential performance gains or clarity:\n```python\nfor x in list1:\n    for y in list2:\n        if x == y:\n            print(f\"Match found: {x}\")\n```",
+      "result": {
+        "success": true,
+        "response": "To refactor the nested loop structure for potential performance gains and improved clarity, you can use a set for `list2` to take advantage of O(1) average time complexity for membership checks. This reduces the overall time complexity from O(n*m) to O(n+m) in the average case, where n and m are the lengths of `list1` and `list2`, respectively. Here's how you can do it:\n\n```python\nset2 = set(list2)\nfor x in list1:\n    if x in set2:\n        print(f\"Match found: {x}\")\n```\n\n### Explanation:\n- **Set Conversion**: By converting `list2` to a set (`set2`), you allow for faster membership testing. Checking if an element is in a set is generally faster than checking if it is in a list, especially as the size of the list grows.\n- **Single Loop**: The code now only iterates through `list1` once, checking each element against the set of elements in `list2`.\n\nThis approach is more efficient, especially when `list2` is large, and it maintains the clarity of the original code.",
+        "metrics": {
+          "total_time": 5.121868848800659,
+          "time_to_first_token": 0.38730645179748535,
+          "generated_tokens": 236,
+          "generation_time": 4.734562397003174,
+          "tokens_per_second_calculated": 49.84621179549359,
+          "gpu_stats_start": [
+            {
+              "id": 0,
+              "memory_used": 20858.0,
+              "memory_total": 24576.0,
+              "memory_util": 84.87141927083334,
+              "gpu_util": 84.0
+            },
+            {
+              "id": 1,
+              "memory_used": 19747.0,
+              "memory_total": 24576.0,
+              "memory_util": 80.35074869791666,
+              "gpu_util": 79.0
+            }
+          ],
+          "gpu_stats_end": [
+            {
+              "id": 0,
+              "memory_used": 20858.0,
+              "memory_total": 24576.0,
+              "memory_util": 84.87141927083334,
+              "gpu_util": 82.0
+            },
+            {
+              "id": 1,
+              "memory_used": 19747.0,
+              "memory_total": 24576.0,
+              "memory_util": 80.35074869791666,
+              "gpu_util": 79.0
+            }
+          ],
+          "ram_stats_start": {
+            "total_gb": 127.82979965209961,
+            "available_gb": 94.70288467407227,
+            "percent_used": 25.9,
+            "used_gb": 33.126914978027344,
+            "free_gb": 94.70288467407227
+          },
+          "ram_stats_end": {
+            "total_gb": 127.82979965209961,
+            "available_gb": 94.67401885986328,
+            "percent_used": 25.9,
+            "used_gb": 33.15578079223633,
+            "free_gb": 94.67401885986328
+          }
+        }
+      }
+    },
+    {
+      "scenario_id": "algorithm",
+      "prompt_index": 0,
+      "prompt": "Implement a binary search function in Python that finds the index of a target value in a sorted list. Return -1 if not found.",
+      "result": {
+        "success": true,
+        "response": "Certainly! Below is a Python implementation of a binary search function. This function takes a sorted list and a target value as inputs, and returns the index of the target value in the list if it exists. If the target value is not found, it returns -1.\n\n```python\ndef binary_search(sorted_list, target):\n    left, right = 0, len(sorted_list) - 1\n    \n    while left <= right:\n        mid = left + (right - left) // 2  # This helps prevent potential overflow in other languages\n        \n        # Check if target is present at mid\n        if sorted_list[mid] == target:\n            return mid\n        # If target is greater, ignore left half\n        elif sorted_list[mid] < target:\n            left = mid + 1\n        # If target is smaller, ignore right half\n        else:\n            right = mid - 1\n    \n    # Target is not present in the list\n    return -1\n\n# Example usage:\nsorted_list = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]\ntarget = 7\nindex = binary_search(sorted_list, target)\nprint(f\"Index of {target}: {index}\")  # Output: Index of 7: 6\n```\n\n### Explanation:\n- **Initialization**: We start with two pointers, `left` and `right`, which represent the current search boundaries within the list.\n- **Loop**: We continue the loop as long as `left` is less than or equal to `right`.\n- **Middle Calculation**: We calculate the middle index `mid` using `left + (right - left) // 2` to avoid potential overflow (although Python handles large integers well, this is a good practice in other languages).\n- **Comparison**: We compare the element at `mid` with the target:\n  - If they are equal, we return `mid` as the index of the target.\n  - If the element at `mid` is less than the target, we move the `left` pointer to `mid + 1` to search in the right half.\n  - If the element at `mid` is greater than the target, we move the `right` pointer to `mid - 1` to search in the left half.\n- **Not Found**: If the loop ends without finding the target, we return -1.",
+        "metrics": {
+          "total_time": 10.43770170211792,
+          "time_to_first_token": 0.38042163848876953,
+          "generated_tokens": 502,
+          "generation_time": 10.05728006362915,
+          "tokens_per_second_calculated": 49.91409176477226,
+          "gpu_stats_start": [
+            {
+              "id": 0,
+              "memory_used": 20858.0,
+              "memory_total": 24576.0,
+              "memory_util": 84.87141927083334,
+              "gpu_util": 82.0
+            },
+            {
+              "id": 1,
+              "memory_used": 19747.0,
+              "memory_total": 24576.0,
+              "memory_util": 80.35074869791666,
+              "gpu_util": 79.0
+            }
+          ],
+          "gpu_stats_end": [
+            {
+              "id": 0,
+              "memory_used": 20858.0,
+              "memory_total": 24576.0,
+              "memory_util": 84.87141927083334,
+              "gpu_util": 81.0
+            },
+            {
+              "id": 1,
+              "memory_used": 19747.0,
+              "memory_total": 24576.0,
+              "memory_util": 80.35074869791666,
+              "gpu_util": 69.0
+            }
+          ],
+          "ram_stats_start": {
+            "total_gb": 127.82979965209961,
+            "available_gb": 94.68001937866211,
+            "percent_used": 25.9,
+            "used_gb": 33.1497802734375,
+            "free_gb": 94.68001937866211
+          },
+          "ram_stats_end": {
+            "total_gb": 127.82979965209961,
+            "available_gb": 94.71878433227539,
+            "percent_used": 25.9,
+            "used_gb": 33.11101531982422,
+            "free_gb": 94.71878433227539
+          }
+        }
+      }
+    },
+    {
+      "scenario_id": "algorithm",
+      "prompt_index": 1,
+      "prompt": "Write a Python function to perform a linear search for a target value in a list. Return the index or -1.",
+      "result": {
+        "success": true,
+        "response": "Certainly! A linear search algorithm checks each element in the list sequentially until the target value is found or the list ends. Here's a Python function that performs a linear search:\n\n```python\ndef linear_search(lst, target):\n    \"\"\"\n    Perform a linear search for the target value in the list.\n\n    Parameters:\n    lst (list): The list to search through.\n    target: The value to search for.\n\n    Returns:\n    int: The index of the target value if found, otherwise -1.\n    \"\"\"\n    for index, value in enumerate(lst):\n        if value == target:\n            return index\n    return -1\n\n# Example usage:\nnumbers = [10, 20, 30, 40, 50]\ntarget_value = 30\nresult = linear_search(numbers, target_value)\nprint(f\"Target found at index: {result}\")  # Output: Target found at index: 2\n```\n\nIn this function:\n- We use `enumerate` to loop through the list `lst`, which gives us both the index and the value of each element.\n- If the value matches the target, we return the index.\n- If the loop completes without finding the target, we return -1 to indicate that the target is not in the list.",
+        "metrics": {
+          "total_time": 5.641963481903076,
+          "time_to_first_token": 0.36072635650634766,
+          "generated_tokens": 264,
+          "generation_time": 5.2812371253967285,
+          "tokens_per_second_calculated": 49.98828754165592,
+          "gpu_stats_start": [
+            {
+              "id": 0,
+              "memory_used": 20858.0,
+              "memory_total": 24576.0,
+              "memory_util": 84.87141927083334,
+              "gpu_util": 54.0
+            },
+            {
+              "id": 1,
+              "memory_used": 19747.0,
+              "memory_total": 24576.0,
+              "memory_util": 80.35074869791666,
+              "gpu_util": 69.0
+            }
+          ],
+          "gpu_stats_end": [
+            {
+              "id": 0,
+              "memory_used": 20858.0,
+              "memory_total": 24576.0,
+              "memory_util": 84.87141927083334,
+              "gpu_util": 83.0
+            },
+            {
+              "id": 1,
+              "memory_used": 19747.0,
+              "memory_total": 24576.0,
+              "memory_util": 80.35074869791666,
+              "gpu_util": 78.0
+            }
+          ],
+          "ram_stats_start": {
+            "total_gb": 127.82979965209961,
+            "available_gb": 94.71824645996094,
+            "percent_used": 25.9,
+            "used_gb": 33.11155319213867,
+            "free_gb": 94.71824645996094
+          },
+          "ram_stats_end": {
+            "total_gb": 127.82979965209961,
+            "available_gb": 94.73945999145508,
+            "percent_used": 25.9,
+            "used_gb": 33.09033966064453,
+            "free_gb": 94.73945999145508
+          }
+        }
+      }
+    },
+    {
+      "scenario_id": "algorithm",
+      "prompt_index": 2,
+      "prompt": "Implement a bubble sort algorithm in Python for a list of numbers.",
+      "result": {
+        "success": true,
+        "response": "Certainly! Bubble sort is a simple sorting algorithm that repeatedly steps through the list, compares adjacent elements, and swaps them if they are in the wrong order. The process is repeated until the list is sorted.\n\nHere's a Python implementation of the bubble sort algorithm:\n\n```python\ndef bubble_sort(arr):\n    n = len(arr)\n    # Traverse through all array elements\n    for i in range(n):\n        # Last i elements are already in place\n        for j in range(0, n-i-1):\n            # Traverse the array from 0 to n-i-1\n            # Swap if the element found is greater than the next element\n            if arr[j] > arr[j+1]:\n                arr[j], arr[j+1] = arr[j+1], arr[j]\n    return arr\n\n# Example usage:\nnumbers = [64, 34, 25, 12, 22, 11, 90]\nsorted_numbers = bubble_sort(numbers)\nprint(\"Sorted array is:\", sorted_numbers)\n```\n\n### Explanation:\n- The outer loop runs `n` times, where `n` is the number of elements in the array.\n- The inner loop runs from the start of the array to `n-i-1`, because after each pass through the array, the largest unsorted element is moved to its correct position at the end of the array.\n- If the current element is greater than the next element, they are swapped.\n- This process continues until the array is sorted.\n\n### Optimization:\nBubble sort can be optimized by adding a flag to detect if the array is already sorted. If no elements were swapped during a pass, the array is already sorted, and the algorithm can terminate early.\n\nHere's the optimized version:\n\n```python\ndef bubble_sort_optimized(arr):\n    n = len(arr)\n    for i in range(n):\n        swapped = False\n        for j in range(0, n-i-1):\n            if arr[j] > arr[j+1]:\n                arr[j], arr[j+1] = arr[j+1], arr[j]\n                swapped = True\n        if not swapped:\n            break\n    return arr\n\n# Example usage:\nnumbers = [64, 34, 25, 12, 22, 11, 90]\nsorted_numbers = bubble_sort_optimized(numbers)\nprint(\"Sorted array is:\", sorted_numbers)\n```\n\nThis optimized version can save time in cases where the array becomes sorted before all passes are completed.",
+        "metrics": {
+          "total_time": 10.833239555358887,
+          "time_to_first_token": 0.35926222801208496,
+          "generated_tokens": 522,
+          "generation_time": 10.473977327346802,
+          "tokens_per_second_calculated": 49.83780121779484,
+          "gpu_stats_start": [
+            {
+              "id": 0,
+              "memory_used": 20858.0,
+              "memory_total": 24576.0,
+              "memory_util": 84.87141927083334,
+              "gpu_util": 83.0
+            },
+            {
+              "id": 1,
+              "memory_used": 19747.0,
+              "memory_total": 24576.0,
+              "memory_util": 80.35074869791666,
+              "gpu_util": 38.0
+            }
+          ],
+          "gpu_stats_end": [
+            {
+              "id": 0,
+              "memory_used": 20858.0,
+              "memory_total": 24576.0,
+              "memory_util": 84.87141927083334,
+              "gpu_util": 66.0
+            },
+            {
+              "id": 1,
+              "memory_used": 19747.0,
+              "memory_total": 24576.0,
+              "memory_util": 80.35074869791666,
+              "gpu_util": 78.0
+            }
+          ],
+          "ram_stats_start": {
+            "total_gb": 127.82979965209961,
+            "available_gb": 94.73873901367188,
+            "percent_used": 25.9,
+            "used_gb": 33.091060638427734,
+            "free_gb": 94.73873901367188
+          },
+          "ram_stats_end": {
+            "total_gb": 127.82979965209961,
+            "available_gb": 94.73911666870117,
+            "percent_used": 25.9,
+            "used_gb": 33.09068298339844,
+            "free_gb": 94.73911666870117
+          }
+        }
+      }
+    },
+    {
+      "scenario_id": "documentation",
+      "prompt_index": 0,
+      "prompt": "Generate a Python docstring (following PEP 257) for the function:\n```python\ndef calculate_average(numbers):\n    if not numbers:\n        return 0\n    return sum(numbers) / len(numbers)\n```",
+      "result": {
+        "success": true,
+        "response": "Certainly! Below is a Python docstring for the `calculate_average` function following PEP 257 guidelines:\n\n```python\ndef calculate_average(numbers):\n    \"\"\"\n    Calculate the average of a list of numbers.\n\n    Parameters:\n    numbers (list of float): A list of numbers for which the average is to be calculated.\n\n    Returns:\n    float: The average of the numbers in the list. Returns 0 if the list is empty.\n    \"\"\"\n    if not numbers:\n        return 0\n    return sum(numbers) / len(numbers)\n```\n\nThis docstring provides a brief description of the function, details about the parameter, and information about the return value.",
+        "metrics": {
+          "total_time": 3.1152665615081787,
+          "time_to_first_token": 0.38817739486694336,
+          "generated_tokens": 137,
+          "generation_time": 2.7270891666412354,
+          "tokens_per_second_calculated": 50.236714543783435,
+          "gpu_stats_start": [
+            {
+              "id": 0,
+              "memory_used": 20858.0,
+              "memory_total": 24576.0,
+              "memory_util": 84.87141927083334,
+              "gpu_util": 66.0
+            },
+            {
+              "id": 1,
+              "memory_used": 19747.0,
+              "memory_total": 24576.0,
+              "memory_util": 80.35074869791666,
+              "gpu_util": 78.0
+            }
+          ],
+          "gpu_stats_end": [
+            {
+              "id": 0,
+              "memory_used": 20858.0,
+              "memory_total": 24576.0,
+              "memory_util": 84.87141927083334,
+              "gpu_util": 84.0
+            },
+            {
+              "id": 1,
+              "memory_used": 19747.0,
+              "memory_total": 24576.0,
+              "memory_util": 80.35074869791666,
+              "gpu_util": 72.0
+            }
+          ],
+          "ram_stats_start": {
+            "total_gb": 127.82979965209961,
+            "available_gb": 94.73852157592773,
+            "percent_used": 25.9,
+            "used_gb": 33.091278076171875,
+            "free_gb": 94.73852157592773
+          },
+          "ram_stats_end": {
+            "total_gb": 127.82979965209961,
+            "available_gb": 94.71481323242188,
+            "percent_used": 25.9,
+            "used_gb": 33.114986419677734,
+            "free_gb": 94.71481323242188
+          }
+        }
+      }
+    },
+    {
+      "scenario_id": "documentation",
+      "prompt_index": 1,
+      "prompt": "Write a clear docstring for this Python function:\n```python\ndef find_max(items):\n    if not items:\n        return None\n    max_val = items[0]\n    for item in items[1:]:\n        if item > max_val:\n            max_val = item\n    return max_val\n```",
+      "result": {
+        "success": true,
+        "response": "Certainly! Here's a clear docstring for the `find_max` function:\n\n```python\ndef find_max(items):\n    \"\"\"\n    Find and return the maximum value in a list of comparable items.\n\n    Parameters:\n    items (list): A list of items where each item is comparable with others\n                  (e.g., all integers, all floats).\n\n    Returns:\n    Comparable or None: The maximum item in the list, or None if the list is empty.\n\n    Examples:\n    >>> find_max([1, 3, 2, 5, 4])\n    5\n    >>> find_max(['a', 'c', 'b'])\n    'c'\n    >>> find_max([])\n    None\n    \"\"\"\n    if not items:\n        return None\n    max_val = items[0]\n    for item in items[1:]:\n        if item > max_val:\n            max_val = item\n    return max_val\n```\n\nThis docstring provides a brief description of what the function does, details about its parameters, and what it returns. It also includes some examples to illustrate its usage.",
+        "metrics": {
+          "total_time": 4.894812107086182,
+          "time_to_first_token": 0.3831932544708252,
+          "generated_tokens": 225,
+          "generation_time": 4.5116188526153564,
+          "tokens_per_second_calculated": 49.87123410692571,
+          "gpu_stats_start": [
+            {
+              "id": 0,
+              "memory_used": 20858.0,
+              "memory_total": 24576.0,
+              "memory_util": 84.87141927083334,
+              "gpu_util": 59.0
+            },
+            {
+              "id": 1,
+              "memory_used": 19747.0,
+              "memory_total": 24576.0,
+              "memory_util": 80.35074869791666,
+              "gpu_util": 72.0
+            }
+          ],
+          "gpu_stats_end": [
+            {
+              "id": 0,
+              "memory_used": 20858.0,
+              "memory_total": 24576.0,
+              "memory_util": 84.87141927083334,
+              "gpu_util": 84.0
+            },
+            {
+              "id": 1,
+              "memory_used": 19747.0,
+              "memory_total": 24576.0,
+              "memory_util": 80.35074869791666,
+              "gpu_util": 56.00000000000001
+            }
+          ],
+          "ram_stats_start": {
+            "total_gb": 127.82979965209961,
+            "available_gb": 94.71437072753906,
+            "percent_used": 25.9,
+            "used_gb": 33.11542892456055,
+            "free_gb": 94.71437072753906
+          },
+          "ram_stats_end": {
+            "total_gb": 127.82979965209961,
+            "available_gb": 94.74640655517578,
+            "percent_used": 25.9,
+            "used_gb": 33.08339309692383,
+            "free_gb": 94.74640655517578
+          }
+        }
+      }
+    },
+    {
+      "scenario_id": "documentation",
+      "prompt_index": 2,
+      "prompt": "Create a comprehensive docstring for the following Python class:\n```python\nclass Point:\n    def __init__(self, x, y):\n        self.x = x\n        self.y = y\n    def distance_to_origin(self):\n        return (self.x**2 + self.y**2)**0.5\n```",
+      "result": {
+        "success": true,
+        "response": "Certainly! Below is a comprehensive docstring for the `Point` class, including descriptions of the class itself, the constructor, and the method `distance_to_origin`.\n\n```python\nclass Point:\n    \"\"\"\n    Represents a point in a 2D Cartesian coordinate system.\n\n    Attributes:\n        x (float): The x-coordinate of the point.\n        y (float): The y-coordinate of the point.\n\n    Methods:\n        distance_to_origin(self) -> float:\n            Calculates the Euclidean distance from this point to the origin (0, 0).\n\n    Example:\n        >>> p = Point(3, 4)\n        >>> p.distance_to_origin()\n        5.0\n    \"\"\"\n\n    def __init__(self, x, y):\n        \"\"\"\n        Initializes a new Point instance with the given x and y coordinates.\n\n        Args:\n            x (float): The x-coordinate of the point.\n            y (float): The y-coordinate of the point.\n        \"\"\"\n        self.x = x\n        self.y = y\n\n    def distance_to_origin(self):\n        \"\"\"\n        Calculates the Euclidean distance from this point to the origin (0, 0).\n\n        Returns:\n            float: The distance from the point to the origin.\n        \"\"\"\n        return (self.x**2 + self.y**2)**0.5\n```\n\nThis docstring provides a clear overview of the class's purpose, its attributes, and the method it includes. It also includes an example of how to use the class and its method, which can be helpful for users of the class.",
+        "metrics": {
+          "total_time": 6.821661949157715,
+          "time_to_first_token": 0.405653715133667,
+          "generated_tokens": 318,
+          "generation_time": 6.416008234024048,
+          "tokens_per_second_calculated": 49.56352741470128,
+          "gpu_stats_start": [
+            {
+              "id": 0,
+              "memory_used": 20858.0,
+              "memory_total": 24576.0,
+              "memory_util": 84.87141927083334,
+              "gpu_util": 43.0
+            },
+            {
+              "id": 1,
+              "memory_used": 19747.0,
+              "memory_total": 24576.0,
+              "memory_util": 80.35074869791666,
+              "gpu_util": 56.00000000000001
+            }
+          ],
+          "gpu_stats_end": [
+            {
+              "id": 0,
+              "memory_used": 20858.0,
+              "memory_total": 24576.0,
+              "memory_util": 84.87141927083334,
+              "gpu_util": 81.0
+            },
+            {
+              "id": 1,
+              "memory_used": 19747.0,
+              "memory_total": 24576.0,
+              "memory_util": 80.35074869791666,
+              "gpu_util": 80.0
+            }
+          ],
+          "ram_stats_start": {
+            "total_gb": 127.82979965209961,
+            "available_gb": 94.74170303344727,
+            "percent_used": 25.9,
+            "used_gb": 33.088096618652344,
+            "free_gb": 94.74170303344727
+          },
+          "ram_stats_end": {
+            "total_gb": 127.82979965209961,
+            "available_gb": 94.74480819702148,
+            "percent_used": 25.9,
+            "used_gb": 33.084991455078125,
+            "free_gb": 94.74480819702148
+          }
+        }
+      }
+    },
+    {
+      "scenario_id": "unit-test",
+      "prompt_index": 0,
+      "prompt": "Write Python unit tests using the `unittest` module for the function:\n```python\ndef add(a, b):\n    return a + b\n```",
+      "result": {
+        "success": true,
+        "response": "Certainly! To write unit tests for the `add` function using the `unittest` module in Python, you can follow the structure below. This will include several test cases to ensure that the `add` function behaves as expected with different types of inputs.\n\nHere is the code for the unit tests:\n\n```python\nimport unittest\n\n# The function to be tested\ndef add(a, b):\n    return a + b\n\n# Define the test class inheriting from unittest.TestCase\nclass TestAddFunction(unittest.TestCase):\n    \n    def test_add_positive_numbers(self):\n        self.assertEqual(add(1, 2), 3)\n        self.assertEqual(add(10, 5), 15)\n    \n    def test_add_negative_numbers(self):\n        self.assertEqual(add(-1, -2), -3)\n        self.assertEqual(add(-10, -5), -15)\n    \n    def test_add_mixed_numbers(self):\n        self.assertEqual(add(-1, 2), 1)\n        self.assertEqual(add(1, -2), -1)\n    \n    def test_add_zero(self):\n        self.assertEqual(add(0, 0), 0)\n        self.assertEqual(add(0, 5), 5)\n        self.assertEqual(add(5, 0), 5)\n    \n    def test_add_floats(self):\n        self.assertEqual(add(1.5, 2.5), 4.0)\n        self.assertEqual(add(-1.5, 2.5), 1.0)\n        self.assertEqual(add(-1.5, -2.5), -4.0)\n        self.assertEqual(add(0.0, 0.0), 0.0)\n    \n    def test_add_large_numbers(self):\n        self.assertEqual(add(1000000, 2000000), 3000000)\n        self.assertEqual(add(-1000000, -2000000), -3000000)\n        self.assertEqual(add(1000000, -2000000), -1000000)\n\n# This allows the tests to be run from the command line\nif __name__ == '__main__':\n    unittest.main()\n```\n\n### Explanation:\n\n- **Test Class**: `TestAddFunction` is a class that inherits from `unittest.TestCase`. This is where you define your test methods.\n- **Test Methods**: Each method in the class that starts with `test_` is a test case. These methods use various `assert` methods to check the output of the `add` function against expected results.\n  - `test_add_positive_numbers`: Tests addition of two positive integers.\n  - `test_add_negative_numbers`: Tests addition of two negative integers.\n  - `test_add_mixed_numbers`: Tests addition of one positive and one negative integer.\n  - `test_add_zero`: Tests addition involving zero.\n  - `test_add_floats`: Tests addition of floating-point numbers.\n  - `test_add_large_numbers`: Tests addition of large integers to check for overflow or precision issues.\n- **Running the Tests**: The line `unittest.main()` is used to run the tests when the script is executed directly.\n\nThis setup provides a comprehensive test suite for the `add` function, ensuring it works correctly for a variety of input scenarios.",
+        "metrics": {
+          "total_time": 14.449816942214966,
+          "time_to_first_token": 0.38330888748168945,
+          "generated_tokens": 697,
+          "generation_time": 14.066508054733276,
+          "tokens_per_second_calculated": 49.55032174921797,
+          "gpu_stats_start": [
+            {
+              "id": 0,
+              "memory_used": 20858.0,
+              "memory_total": 24576.0,
+              "memory_util": 84.87141927083334,
+              "gpu_util": 81.0
+            },
+            {
+              "id": 1,
+              "memory_used": 19747.0,
+              "memory_total": 24576.0,
+              "memory_util": 80.35074869791666,
+              "gpu_util": 80.0
+            }
+          ],
+          "gpu_stats_end": [
+            {
+              "id": 0,
+              "memory_used": 20858.0,
+              "memory_total": 24576.0,
+              "memory_util": 84.87141927083334,
+              "gpu_util": 83.0
+            },
+            {
+              "id": 1,
+              "memory_used": 19747.0,
+              "memory_total": 24576.0,
+              "memory_util": 80.35074869791666,
+              "gpu_util": 63.0
+            }
+          ],
+          "ram_stats_start": {
+            "total_gb": 127.82979965209961,
+            "available_gb": 94.74452590942383,
+            "percent_used": 25.9,
+            "used_gb": 33.08527374267578,
+            "free_gb": 94.74452590942383
+          },
+          "ram_stats_end": {
+            "total_gb": 127.82979965209961,
+            "available_gb": 94.75985717773438,
+            "percent_used": 25.9,
+            "used_gb": 33.069942474365234,
+            "free_gb": 94.75985717773438
+          }
+        }
+      }
+    },
+    {
+      "scenario_id": "unit-test",
+      "prompt_index": 1,
+      "prompt": "Create unit tests for the `is_prime(num)` function using `unittest`.",
+      "result": {
+        "success": true,
+        "response": "Certainly! To create unit tests for the `is_prime(num)` function using Python's `unittest` framework, you first need to have the `is_prime` function defined. Here's a simple implementation of the `is_prime` function followed by the unit tests.\n\n### `is_prime` Function Implementation\n\n```python\ndef is_prime(num):\n    \"\"\"Return True if num is a prime number, else False.\"\"\"\n    if num <= 1:\n        return False\n    if num <= 3:\n        return True\n    if num % 2 == 0 or num % 3 == 0:\n        return False\n    i = 5\n    while i * i <= num:\n        if num % i == 0 or num % (i + 2) == 0:\n            return False\n        i += 6\n    return True\n```\n\n### Unit Tests Using `unittest`\n\n```python\nimport unittest\n\nclass TestIsPrime(unittest.TestCase):\n    def test_is_prime(self):\n        # Test cases for numbers less than 2\n        self.assertFalse(is_prime(-1), \"-1 is not a prime number\")\n        self.assertFalse(is_prime(0), \"0 is not a prime number\")\n        self.assertFalse(is_prime(1), \"1 is not a prime number\")\n\n        # Test cases for prime numbers\n        self.assertTrue(is_prime(2), \"2 is a prime number\")\n        self.assertTrue(is_prime(3), \"3 is a prime number\")\n        self.assertTrue(is_prime(5), \"5 is a prime number\")\n        self.assertTrue(is_prime(7), \"7 is a prime number\")\n        self.assertTrue(is_prime(11), \"11 is a prime number\")\n        self.assertTrue(is_prime(13), \"13 is a prime number\")\n        self.assertTrue(is_prime(17), \"17 is a prime number\")\n        self.assertTrue(is_prime(19), \"19 is a prime number\")\n        self.assertTrue(is_prime(23), \"23 is a prime number\")\n        self.assertTrue(is_prime(29), \"29 is a prime number\")\n\n        # Test cases for non-prime numbers\n        self.assertFalse(is_prime(4), \"4 is not a prime number\")\n        self.assertFalse(is_prime(6), \"6 is not a prime number\")\n        self.assertFalse(is_prime(8), \"8 is not a prime number\")\n        self.assertFalse(is_prime(9), \"9 is not a prime number\")\n        self.assertFalse(is_prime(10), \"10 is not a prime number\")\n        self.assertFalse(is_prime(12), \"12 is not a prime number\")\n        self.assertFalse(is_prime(14), \"14 is not a prime number\")\n        self.assertFalse(is_prime(15), \"15 is not a prime number\")\n        self.assertFalse(is_prime(16), \"16 is not a prime number\")\n        self.assertFalse(is_prime(18), \"18 is not a prime number\")\n\n        # Test cases for larger prime numbers\n        self.assertTrue(is_prime(101), \"101 is a prime number\")\n        self.assertTrue(is_prime(103), \"103 is a prime number\")\n        self.assertTrue(is_prime(107), \"107 is a prime number\")\n        self.assertTrue(is_prime(109), \"109 is a prime number\")\n        self.assertTrue(is_prime(113), \"113 is a prime number\")\n\n        # Test cases for larger non-prime numbers\n        self.assertFalse(is_prime(100), \"100 is not a prime number\")\n        self.assertFalse(is_prime(102), \"102 is not a prime number\")\n        self.assertFalse(is_prime(104), \"104 is not a prime number\")\n        self.assertFalse(is_prime(105), \"105 is not a prime number\")\n        self.assertFalse(is_prime(106), \"106 is not a prime number\")\n\nif __name__ == '__main__':\n    unittest.main()\n```\n\n### Explanation\n\n- **Test Cases for Numbers Less Than 2**: These tests ensure that numbers less than 2 return `False` because by definition, prime numbers are greater than 1.\n- **Test Cases for Prime Numbers**: These tests check that known prime numbers return `True`.\n- **Test Cases for Non-Prime Numbers**: These tests ensure that known non-prime numbers return `False`.\n- **Test Cases for Larger Numbers**: These tests include both larger prime and non-prime numbers to ensure the function works well with larger inputs.\n\nTo run the tests, simply execute the script. The `unittest` framework will run all the test methods and report the results.",
+        "metrics": {
+          "total_time": 20.09731698036194,
+          "time_to_first_token": 0.33665895462036133,
+          "generated_tokens": 981,
+          "generation_time": 19.760658025741577,
+          "tokens_per_second_calculated": 49.64409579489118,
+          "gpu_stats_start": [
+            {
+              "id": 0,
+              "memory_used": 20858.0,
+              "memory_total": 24576.0,
+              "memory_util": 84.87141927083334,
+              "gpu_util": 47.0
+            },
+            {
+              "id": 1,
+              "memory_used": 19747.0,
+              "memory_total": 24576.0,
+              "memory_util": 80.35074869791666,
+              "gpu_util": 63.0
+            }
+          ],
+          "gpu_stats_end": [
+            {
+              "id": 0,
+              "memory_used": 20858.0,
+              "memory_total": 24576.0,
+              "memory_util": 84.87141927083334,
+              "gpu_util": 83.0
+            },
+            {
+              "id": 1,
+              "memory_used": 19747.0,
+              "memory_total": 24576.0,
+              "memory_util": 80.35074869791666,
+              "gpu_util": 55.00000000000001
+            }
+          ],
+          "ram_stats_start": {
+            "total_gb": 127.82979965209961,
+            "available_gb": 94.75897598266602,
+            "percent_used": 25.9,
+            "used_gb": 33.070823669433594,
+            "free_gb": 94.75897598266602
+          },
+          "ram_stats_end": {
+            "total_gb": 127.82979965209961,
+            "available_gb": 94.75915908813477,
+            "percent_used": 25.9,
+            "used_gb": 33.070640563964844,
+            "free_gb": 94.75915908813477
+          }
+        }
+      }
+    },
+    {
+      "scenario_id": "unit-test",
+      "prompt_index": 2,
+      "prompt": "Generate `unittest` test cases for the `factorial(n)` function, including edge cases.",
+      "result": {
+        "success": true,
+        "response": "Certainly! To generate `unittest` test cases for a `factorial(n)` function, we first need to define what the `factorial` function does. The factorial of a non-negative integer \\( n \\) is the product of all positive integers less than or equal to \\( n \\). For example, the factorial of 5 (denoted as 5!) is \\( 5 \\times 4 \\times 3 \\times 2 \\times 1 = 120 \\).\n\nThe function should handle:\n- The base case where the input is 0 (since 0! is defined as 1).\n- Positive integers.\n- Negative integers (factorial is not defined for negative numbers, so the function should raise an exception or return an appropriate error message).\n- Large numbers (although Python can handle large integers, it's good to test performance and correctness).\n\nBelow is an example of how you can write test cases for the `factorial` function using the `unittest` framework in Python:\n\n```python\nimport unittest\n\n# Assume this is the implementation of the factorial function\ndef factorial(n):\n    if n < 0:\n        raise ValueError(\"Factorial is not defined for negative numbers\")\n    if n == 0:\n        return 1\n    result = 1\n    for i in range(1, n + 1):\n        result *= i\n    return result\n\nclass TestFactorial(unittest.TestCase):\n\n    def test_factorial_zero(self):\n        self.assertEqual(factorial(0), 1, \"Factorial of 0 should be 1\")\n\n    def test_factorial_positive_integers(self):\n        self.assertEqual(factorial(1), 1, \"Factorial of 1 should be 1\")\n        self.assertEqual(factorial(5), 120, \"Factorial of 5 should be 120\")\n        self.assertEqual(factorial(10), 3628800, \"Factorial of 10 should be 3628800\")\n\n    def test_factorial_large_number(self):\n        # Testing a larger number to ensure correctness\n        self.assertEqual(factorial(20), 2432902008176640000, \"Factorial of 20 should be 2432902008176640000\")\n\n    def test_factorial_negative_integer(self):\n        # Testing negative numbers, which should raise a ValueError\n        with self.assertRaises(ValueError):\n            factorial(-1)\n        with self.assertRaises(ValueError):\n            factorial(-5)\n\n    def test_factorial_non_integer(self):\n        # Testing non-integer values, which should raise a TypeError\n        with self.assertRaises(TypeError):\n            factorial(3.5)\n        with self.assertRaises(TypeError):\n            factorial(\"string\")\n\nif __name__ == '__main__':\n    unittest.main()\n```\n\n### Explanation:\n- **test_factorial_zero**: Tests the base case where the input is 0.\n- **test_factorial_positive_integers**: Tests the function with a few positive integers to ensure it returns the correct factorial value.\n- **test_factorial_large_number**: Tests the function with a larger number to ensure it handles large values correctly.\n- **test_factorial_negative_integer**: Tests the function with negative integers to ensure it raises a `ValueError`.\n- **test_factorial_non_integer**: Tests the function with non-integer values to ensure it raises a `TypeError`. Note that the `factorial` function provided only handles integers, so you might need to modify it to handle non-integer inputs if needed.\n\nThis set of test cases should cover the typical scenarios and edge cases for the `factorial` function.",
+        "metrics": {
+          "total_time": 15.778943538665771,
+          "time_to_first_token": 0.34297752380371094,
+          "generated_tokens": 767,
+          "generation_time": 15.43596601486206,
+          "tokens_per_second_calculated": 49.6891480106601,
+          "gpu_stats_start": [
+            {
+              "id": 0,
+              "memory_used": 20858.0,
+              "memory_total": 24576.0,
+              "memory_util": 84.87141927083334,
+              "gpu_util": 39.0
+            },
+            {
+              "id": 1,
+              "memory_used": 19747.0,
+              "memory_total": 24576.0,
+              "memory_util": 80.35074869791666,
+              "gpu_util": 55.00000000000001
+            }
+          ],
+          "gpu_stats_end": [
+            {
+              "id": 0,
+              "memory_used": 20858.0,
+              "memory_total": 24576.0,
+              "memory_util": 84.87141927083334,
+              "gpu_util": 67.0
+            },
+            {
+              "id": 1,
+              "memory_used": 19747.0,
+              "memory_total": 24576.0,
+              "memory_util": 80.35074869791666,
+              "gpu_util": 79.0
+            }
+          ],
+          "ram_stats_start": {
+            "total_gb": 127.82979965209961,
+            "available_gb": 94.75859069824219,
+            "percent_used": 25.9,
+            "used_gb": 33.07120895385742,
+            "free_gb": 94.75859069824219
+          },
+          "ram_stats_end": {
+            "total_gb": 127.82979965209961,
+            "available_gb": 94.76163864135742,
+            "percent_used": 25.9,
+            "used_gb": 33.06816101074219,
+            "free_gb": 94.76163864135742
+          }
+        }
+      }
+    },
+    {
+      "scenario_id": "regex",
+      "prompt_index": 0,
+      "prompt": "Create a Python regex pattern to validate a common email address format (e.g., 'user@example.com').",
+      "result": {
+        "success": true,
+        "response": "Creating a regex pattern to validate a common email address format can be a bit complex due to the variety of valid email formats. However, a commonly used regex pattern that covers most typical cases is as follows:\n\n```python\nimport re\n\n# Define the regex pattern\nemail_pattern = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$'\n\n# Example usage\ndef is_valid_email(email):\n    return re.match(email_pattern, email) is not None\n\n# Test the function\ntest_emails = [\n    \"user@example.com\",\n    \"user.name+tag+sorting@example.com\",\n    \"user@sub.example.com\",\n    \"user@123.123.123.123\",\n    \"user@[IPv6:2001:db8::1]\",\n    \"plainaddress\",\n    \"@missingusername.com\",\n    \"username@.com\",\n    \"username@.com.\",\n    \"username@com\",\n    \"username@domain..com\"\n]\n\nfor email in test_emails:\n    print(f\"{email}: {is_valid_email(email)}\")\n```\n\n### Explanation of the Regex Pattern:\n- `^` asserts the start of the string.\n- `[a-zA-Z0-9._%+-]+` matches one or more characters that can be letters (uppercase or lowercase), digits, dots (`.`), underscores (`_`), percent signs (`%`), plus signs (`+`), or hyphens (`-`). This represents the local part of the email address.\n- `@` matches the at symbol, which separates the local part from the domain part.\n- `[a-zA-Z0-9.-]+` matches one or more characters that can be letters, digits, dots, or hyphens. This represents the domain name.\n- `\\.` matches a literal dot, which separates the domain name from the top-level domain (TLD).\n- `[a-zA-Z]{2,}` matches two or more letters, representing the TLD.\n- `$` asserts the end of the string.\n\n### Important Notes:\n- This pattern is a simplified version and may not cover all edge cases defined by the official email specifications (RFC 5322).\n- It assumes that the domain part consists of valid domain names and TLDs.\n- It doesn't handle internationalized domain names or some other special cases.\n- For more comprehensive validation, consider using a dedicated library or service that handles email validation according to the full specification.\n\nThis pattern should work for most common email formats you're likely to encounter.",
+        "metrics": {
+          "total_time": 11.11778473854065,
+          "time_to_first_token": 0.36163830757141113,
+          "generated_tokens": 536,
+          "generation_time": 10.756146430969238,
+          "tokens_per_second_calculated": 49.8319731364703,
+          "gpu_stats_start": [
+            {
+              "id": 0,
+              "memory_used": 20858.0,
+              "memory_total": 24576.0,
+              "memory_util": 84.87141927083334,
+              "gpu_util": 67.0
+            },
+            {
+              "id": 1,
+              "memory_used": 19747.0,
+              "memory_total": 24576.0,
+              "memory_util": 80.35074869791666,
+              "gpu_util": 79.0
+            }
+          ],
+          "gpu_stats_end": [
+            {
+              "id": 0,
+              "memory_used": 20858.0,
+              "memory_total": 24576.0,
+              "memory_util": 84.87141927083334,
+              "gpu_util": 84.0
+            },
+            {
+              "id": 1,
+              "memory_used": 19747.0,
+              "memory_total": 24576.0,
+              "memory_util": 80.35074869791666,
+              "gpu_util": 76.0
+            }
+          ],
+          "ram_stats_start": {
+            "total_gb": 127.82979965209961,
+            "available_gb": 94.76081848144531,
+            "percent_used": 25.9,
+            "used_gb": 33.0689811706543,
+            "free_gb": 94.76081848144531
+          },
+          "ram_stats_end": {
+            "total_gb": 127.82979965209961,
+            "available_gb": 94.75530624389648,
+            "percent_used": 25.9,
+            "used_gb": 33.074493408203125,
+            "free_gb": 94.75530624389648
+          }
+        }
+      }
+    },
+    {
+      "scenario_id": "regex",
+      "prompt_index": 1,
+      "prompt": "Write a regex in Python to extract all URLs (starting with http or https) from a given text.",
+      "result": {
+        "success": true,
+        "response": "To extract all URLs that start with `http` or `https` from a given text using Python, you can use the `re` module, which provides support for regular expressions. Below is a regex pattern that should work for this purpose, along with a Python script to demonstrate its usage:\n\n```python\nimport re\n\n# Sample text containing URLs\ntext = \"\"\"\nHere are some URLs:\nhttp://example.com\nhttps://www.example.org\nhttp://sub.domain.co.uk/path/to/resource?query=param#fragment\nhttps://another-example.com/path\n\"\"\"\n\n# Regex pattern to match URLs starting with http or https\nurl_pattern = r'https?://[^\\s]+'\n\n# Using re.findall to extract all URLs that match the pattern\nurls = re.findall(url_pattern, text)\n\n# Print the extracted URLs\nfor url in urls:\n    print(url)\n```\n\n### Explanation of the Regex Pattern:\n- `https?`: Matches `http` or `https`. The `s?` makes the `s` optional.\n- `://`: Matches the literal `://` that follows `http` or `https`.\n- `[^\\s]+`: Matches one or more characters that are not whitespace. This will capture the rest of the URL up to the next space or end of the string.\n\nThis pattern will match most URLs, but URLs with special characters or unusual structures might require a more complex pattern. However, this should work for typical URLs found in text.",
+        "metrics": {
+          "total_time": 6.34045672416687,
+          "time_to_first_token": 0.3643355369567871,
+          "generated_tokens": 297,
+          "generation_time": 5.976121187210083,
+          "tokens_per_second_calculated": 49.69778736007405,
+          "gpu_stats_start": [
+            {
+              "id": 0,
+              "memory_used": 20858.0,
+              "memory_total": 24576.0,
+              "memory_util": 84.87141927083334,
+              "gpu_util": 59.0
+            },
+            {
+              "id": 1,
+              "memory_used": 19747.0,
+              "memory_total": 24576.0,
+              "memory_util": 80.35074869791666,
+              "gpu_util": 76.0
+            }
+          ],
+          "gpu_stats_end": [
+            {
+              "id": 0,
+              "memory_used": 20858.0,
+              "memory_total": 24576.0,
+              "memory_util": 84.87141927083334,
+              "gpu_util": 63.0
+            },
+            {
+              "id": 1,
+              "memory_used": 19747.0,
+              "memory_total": 24576.0,
+              "memory_util": 80.35074869791666,
+              "gpu_util": 78.0
+            }
+          ],
+          "ram_stats_start": {
+            "total_gb": 127.82979965209961,
+            "available_gb": 94.7533187866211,
+            "percent_used": 25.9,
+            "used_gb": 33.076480865478516,
+            "free_gb": 94.7533187866211
+          },
+          "ram_stats_end": {
+            "total_gb": 127.82979965209961,
+            "available_gb": 94.73723602294922,
+            "percent_used": 25.9,
+            "used_gb": 33.09256362915039,
+            "free_gb": 94.73723602294922
+          }
+        }
+      }
+    },
+    {
+      "scenario_id": "regex",
+      "prompt_index": 2,
+      "prompt": "Generate a Python regex pattern to match phone numbers in the format XXX-XXX-XXXX.",
+      "result": {
+        "success": true,
+        "response": "To create a Python regex pattern that matches phone numbers in the format `XXX-XXX-XXXX`, where `X` is a digit from 0 to 9, you can use the following pattern:\n\n```python\nimport re\n\n# Define the regex pattern\nphone_number_pattern = r'\\b\\d{3}-\\d{3}-\\d{4}\\b'\n\n# Example usage\ntext = \"Call me at 123-456-7890 or 987-654-3210.\"\nmatches = re.findall(phone_number_pattern, text)\n\nprint(matches)  # Output: ['123-456-7890', '987-654-3210']\n```\n\nHere's a breakdown of the pattern:\n- `\\b` asserts a word boundary, ensuring that the phone number is not part of a longer sequence of digits or characters.\n- `\\d{3}` matches exactly three digits.\n- `-` matches the hyphen character.\n- `\\d{3}` matches exactly three digits.\n- `-` matches the hyphen character.\n- `\\d{4}` matches exactly four digits.\n- `\\b` asserts another word boundary at the end of the phone number.\n\nThis pattern will correctly match phone numbers in the specified format.",
+        "metrics": {
+          "total_time": 5.858250379562378,
+          "time_to_first_token": 0.35816001892089844,
+          "generated_tokens": 274,
+          "generation_time": 5.5000903606414795,
+          "tokens_per_second_calculated": 49.81736335838002,
+          "gpu_stats_start": [
+            {
+              "id": 0,
+              "memory_used": 20858.0,
+              "memory_total": 24576.0,
+              "memory_util": 84.87141927083334,
+              "gpu_util": 63.0
+            },
+            {
+              "id": 1,
+              "memory_used": 19747.0,
+              "memory_total": 24576.0,
+              "memory_util": 80.35074869791666,
+              "gpu_util": 78.0
+            }
+          ],
+          "gpu_stats_end": [
+            {
+              "id": 0,
+              "memory_used": 20858.0,
+              "memory_total": 24576.0,
+              "memory_util": 84.87141927083334,
+              "gpu_util": 82.0
+            },
+            {
+              "id": 1,
+              "memory_used": 19747.0,
+              "memory_total": 24576.0,
+              "memory_util": 80.35074869791666,
+              "gpu_util": 56.00000000000001
+            }
+          ],
+          "ram_stats_start": {
+            "total_gb": 127.82979965209961,
+            "available_gb": 94.73667526245117,
+            "percent_used": 25.9,
+            "used_gb": 33.09312438964844,
+            "free_gb": 94.73667526245117
+          },
+          "ram_stats_end": {
+            "total_gb": 127.82979965209961,
+            "available_gb": 94.76322174072266,
+            "percent_used": 25.9,
+            "used_gb": 33.06657791137695,
+            "free_gb": 94.76322174072266
+          }
+        }
+      }
+    },
+    {
+      "scenario_id": "sql-query",
+      "prompt_index": 0,
+      "prompt": "Write an SQL query to select the names and emails of users from a 'users' table registered after '2024-01-01'.",
+      "result": {
+        "success": true,
+        "response": "Certainly! To select the names and emails of users from a `users` table who were registered after January 1, 2024, you can use the following SQL query. This assumes that there is a column named `registration_date` in the `users` table that stores the date when each user was registered.\n\n```sql\nSELECT name, email\nFROM users\nWHERE registration_date > '2024-01-01';\n```\n\nThis query selects the `name` and `email` columns from the `users` table where the `registration_date` is greater than January 1, 2024. Make sure that the `registration_date` column is of a date-compatible data type (such as DATE, DATETIME, or TIMESTAMP) for this comparison to work correctly.",
+        "metrics": {
+          "total_time": 3.6889567375183105,
+          "time_to_first_token": 0.36855196952819824,
+          "generated_tokens": 166,
+          "generation_time": 3.3204047679901123,
+          "tokens_per_second_calculated": 49.993904839644635,
+          "gpu_stats_start": [
+            {
+              "id": 0,
+              "memory_used": 20858.0,
+              "memory_total": 24576.0,
+              "memory_util": 84.87141927083334,
+              "gpu_util": 42.0
+            },
+            {
+              "id": 1,
+              "memory_used": 19747.0,
+              "memory_total": 24576.0,
+              "memory_util": 80.35074869791666,
+              "gpu_util": 56.00000000000001
+            }
+          ],
+          "gpu_stats_end": [
+            {
+              "id": 0,
+              "memory_used": 20858.0,
+              "memory_total": 24576.0,
+              "memory_util": 84.87141927083334,
+              "gpu_util": 84.0
+            },
+            {
+              "id": 1,
+              "memory_used": 19747.0,
+              "memory_total": 24576.0,
+              "memory_util": 80.35074869791666,
+              "gpu_util": 80.0
+            }
+          ],
+          "ram_stats_start": {
+            "total_gb": 127.82979965209961,
+            "available_gb": 94.76267623901367,
+            "percent_used": 25.9,
+            "used_gb": 33.06712341308594,
+            "free_gb": 94.76267623901367
+          },
+          "ram_stats_end": {
+            "total_gb": 127.82979965209961,
+            "available_gb": 94.7290153503418,
+            "percent_used": 25.9,
+            "used_gb": 33.10078430175781,
+            "free_gb": 94.7290153503418
+          }
+        }
+      }
+    },
+    {
+      "scenario_id": "sql-query",
+      "prompt_index": 1,
+      "prompt": "Create an SQL query to find all orders from an 'orders' table with an amount greater than 100, joining with the 'customers' table to get customer names.",
+      "result": {
+        "success": true,
+        "response": "Certainly! To retrieve all orders with an amount greater than 100 and include the customer names from the `customers` table, you can use an SQL `JOIN` operation. Assuming that the `orders` table has a column named `customer_id` which corresponds to the `id` column in the `customers` table, and that the `customers` table has a column named `name`, the SQL query would look like this:\n\n```sql\nSELECT \n    orders.id AS order_id,\n    orders.amount,\n    customers.name AS customer_name\nFROM \n    orders\nJOIN \n    customers ON orders.customer_id = customers.id\nWHERE \n    orders.amount > 100;\n```\n\nThis query selects the order ID, order amount, and customer name for all orders where the amount is greater than 100. It joins the `orders` table with the `customers` table on the `customer_id` field, which is assumed to be the foreign key linking the two tables. Adjust the column names if they differ in your actual database schema.",
+        "metrics": {
+          "total_time": 4.720846176147461,
+          "time_to_first_token": 0.38465142250061035,
+          "generated_tokens": 216,
+          "generation_time": 4.336194753646851,
+          "tokens_per_second_calculated": 49.81326076702124,
+          "gpu_stats_start": [
+            {
+              "id": 0,
+              "memory_used": 20858.0,
+              "memory_total": 24576.0,
+              "memory_util": 84.87141927083334,
+              "gpu_util": 84.0
+            },
+            {
+              "id": 1,
+              "memory_used": 19747.0,
+              "memory_total": 24576.0,
+              "memory_util": 80.35074869791666,
+              "gpu_util": 44.0
+            }
+          ],
+          "gpu_stats_end": [
+            {
+              "id": 0,
+              "memory_used": 20858.0,
+              "memory_total": 24576.0,
+              "memory_util": 84.87141927083334,
+              "gpu_util": 82.0
+            },
+            {
+              "id": 1,
+              "memory_used": 19747.0,
+              "memory_total": 24576.0,
+              "memory_util": 80.35074869791666,
+              "gpu_util": 78.0
+            }
+          ],
+          "ram_stats_start": {
+            "total_gb": 127.82979965209961,
+            "available_gb": 94.7284049987793,
+            "percent_used": 25.9,
+            "used_gb": 33.10139465332031,
+            "free_gb": 94.7284049987793
+          },
+          "ram_stats_end": {
+            "total_gb": 127.82979965209961,
+            "available_gb": 94.7638168334961,
+            "percent_used": 25.9,
+            "used_gb": 33.065982818603516,
+            "free_gb": 94.7638168334961
+          }
+        }
+      }
+    },
+    {
+      "scenario_id": "sql-query",
+      "prompt_index": 2,
+      "prompt": "Write an SQL query to count the number of products in each category from a 'products' table, grouped by 'category_id'.",
+      "result": {
+        "success": true,
+        "response": "Certainly! To count the number of products in each category from a `products` table, you can use the SQL `GROUP BY` clause along with the `COUNT()` function. Here's how you can write the query:\n\n```sql\nSELECT category_id, COUNT(*) AS product_count\nFROM products\nGROUP BY category_id;\n```\n\nThis query will return a list of `category_id` values along with the corresponding count of products in each category, labeled as `product_count`.",
+        "metrics": {
+          "total_time": 2.2706286907196045,
+          "time_to_first_token": 0.35892200469970703,
+          "generated_tokens": 97,
+          "generation_time": 1.9117066860198975,
+          "tokens_per_second_calculated": 50.74000143921158,
+          "gpu_stats_start": [
+            {
+              "id": 0,
+              "memory_used": 20858.0,
+              "memory_total": 24576.0,
+              "memory_util": 84.87141927083334,
+              "gpu_util": 82.0
+            },
+            {
+              "id": 1,
+              "memory_used": 19747.0,
+              "memory_total": 24576.0,
+              "memory_util": 80.35074869791666,
+              "gpu_util": 38.0
+            }
+          ],
+          "gpu_stats_end": [
+            {
+              "id": 0,
+              "memory_used": 20858.0,
+              "memory_total": 24576.0,
+              "memory_util": 84.87141927083334,
+              "gpu_util": 84.0
+            },
+            {
+              "id": 1,
+              "memory_used": 19747.0,
+              "memory_total": 24576.0,
+              "memory_util": 80.35074869791666,
+              "gpu_util": 80.0
+            }
+          ],
+          "ram_stats_start": {
+            "total_gb": 127.82979965209961,
+            "available_gb": 94.76314163208008,
+            "percent_used": 25.9,
+            "used_gb": 33.06665802001953,
+            "free_gb": 94.76314163208008
+          },
+          "ram_stats_end": {
+            "total_gb": 127.82979965209961,
+            "available_gb": 94.76252746582031,
+            "percent_used": 25.9,
+            "used_gb": 33.0672721862793,
+            "free_gb": 94.76252746582031
+          }
+        }
+      }
+    }
+  ],
+  "quality_evaluation": {
+    "code-completion": {
+      "detailed_scores": {
+        "accuracy": 7.5,
+        "consistency": 0.0,
+        "code_quality": 10.0,
+        "clarity": 7.666666666666667
+      },
+      "total_score": 7.533333333333334
+    },
+    "code-review": {
+      "detailed_scores": {
+        "accuracy": 2.0,
+        "consistency": 0.0,
+        "code_quality": 6.666666666666667,
+        "clarity": 3.6666666666666665
+      },
+      "total_score": 3.533333333333333
+    },
+    "architecture-design": {
+      "detailed_scores": {
+        "accuracy": 4.666666666666667,
+        "consistency": 0.0,
+        "code_quality": 0.0,
+        "clarity": 5.666666666666667
+      },
+      "total_score": 3.0000000000000004
+    },
+    "debugging": {
+      "detailed_scores": {
+        "accuracy": 3.3333333333333335,
+        "consistency": 0.0,
+        "code_quality": 6.0,
+        "clarity": 3.0
+      },
+      "total_score": 3.733333333333333
+    },
+    "refactoring": {
+      "detailed_scores": {
+        "accuracy": 2.6666666666666665,
+        "consistency": 0.0,
+        "code_quality": 8.0,
+        "clarity": 4.0
+      },
+      "total_score": 4.266666666666667
+    },
+    "algorithm": {
+      "detailed_scores": {
+        "accuracy": 5.0,
+        "consistency": 0.0,
+        "code_quality": 10.0,
+        "clarity": 6.333333333333333
+      },
+      "total_score": 6.266666666666667
+    },
+    "documentation": {
+      "detailed_scores": {
+        "accuracy": 6.111111111111111,
+        "consistency": 0.0,
+        "code_quality": 9.666666666666666,
+        "clarity": 3.6666666666666665
+      },
+      "total_score": 6.077777777777778
+    },
+    "unit-test": {
+      "detailed_scores": {
+        "accuracy": 8.0,
+        "consistency": 0.0,
+        "code_quality": 10.0,
+        "clarity": 4.0
+      },
+      "total_score": 7.0
+    },
+    "regex": {
+      "detailed_scores": {
+        "accuracy": 8.888888888888891,
+        "consistency": 0.0,
+        "code_quality": 10.0,
+        "clarity": 5.333333333333333
+      },
+      "total_score": 7.622222222222223
+    },
+    "sql-query": {
+      "detailed_scores": {
+        "accuracy": 7.222222222222221,
+        "consistency": 0.0,
+        "code_quality": 0.0,
+        "clarity": 3.0
+      },
+      "total_score": 3.488888888888889
+    }
+  }
+}

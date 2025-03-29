@@ -1,0 +1,82 @@
+﻿{
+  "api_type": "vllm",
+  "api_url": "http://localhost:8000",
+  "model": "Qwen/Qwen2.5-Coder-32B-Instruct-AWQ",
+  "test_type": "continuous",
+  "timestamp": "2025-03-28T23:45:26.137966",
+  "test_results": [
+    {
+      "scenario_id": "code-completion",
+      "prompt_index": 0,
+      "prompt": "Complete the following Python function to calculate the nth Fibonacci number:\n```python\ndef calculate_fibonacci(n):\n    # Your code here\n```",
+      "result": {
+        "success": true,
+        "response": "To calculate the nth Fibonacci number, you can use several approaches such as recursion, iteration, or dynamic programming. Here, I'll provide an iterative approach which is efficient in terms of both time and space complexity.\n\nHere's the completed function using an iterative approach:\n\n```python\ndef calculate_fibonacci(n):\n    if n <= 0:\n        return 0\n    elif n == 1:\n        return 1\n    \n    a, b = 0, 1\n    for _ in range(2, n + 1):\n        a, b = b, a + b\n    return b\n\n# Example usage:\n# print(calculate_fibonacci(10))  # Output: 55\n```\n\n### Explanation:\n- The function first checks if `n` is less than or equal to 0, in which case it returns 0 because the 0th Fibonacci number is 0.\n- If `n` is 1, it returns 1 because the 1st Fibonacci number is 1.\n- For `n` greater than 1, it initializes two variables `a` and `b` to 0 and 1, respectively. These represent the two previous Fibonacci numbers.\n- It then iterates from 2 to `n`, updating `a` and `b` to the next two Fibonacci numbers in the sequence.\n- After the loop, `b` contains the nth Fibonacci number, which is returned.",
+        "metrics": {
+          "total_time": 18.363011598587036,
+          "time_to_first_token": 0.6042068004608154,
+          "generated_tokens": 299,
+          "generation_time": 17.75880479812622,
+          "tokens_per_second_calculated": 16.836718653022658,
+          "gpu_stats_start": [
+            {
+              "id": 0,
+              "memory_used": 23276.0,
+              "memory_total": 24576.0,
+              "memory_util": 94.71028645833334,
+              "gpu_util": 13.0
+            },
+            {
+              "id": 1,
+              "memory_used": 19990.0,
+              "memory_total": 24576.0,
+              "memory_util": 81.33951822916666,
+              "gpu_util": 15.0
+            }
+          ],
+          "gpu_stats_end": [
+            {
+              "id": 0,
+              "memory_used": 23352.0,
+              "memory_total": 24576.0,
+              "memory_util": 95.01953125,
+              "gpu_util": 94.0
+            },
+            {
+              "id": 1,
+              "memory_used": 19990.0,
+              "memory_total": 24576.0,
+              "memory_util": 81.33951822916666,
+              "gpu_util": 90.0
+            }
+          ],
+          "ram_stats_start": {
+            "total_gb": 127.82979965209961,
+            "available_gb": 89.40787124633789,
+            "percent_used": 30.1,
+            "used_gb": 38.42192840576172,
+            "free_gb": 89.40787124633789
+          },
+          "ram_stats_end": {
+            "total_gb": 127.82979965209961,
+            "available_gb": 89.33602523803711,
+            "percent_used": 30.1,
+            "used_gb": 38.4937744140625,
+            "free_gb": 89.33602523803711
+          }
+        }
+      }
+    }
+  ],
+  "quality_evaluation": {
+    "code-completion": {
+      "detailed_scores": {
+        "accuracy": 7.5,
+        "consistency": 0.0,
+        "code_quality": 10.0,
+        "clarity": 8.0
+      },
+      "total_score": 7.6
+    }
+  }
+}

@@ -1,0 +1,288 @@
+﻿{
+  "api_type": "vllm",
+  "api_url": "http://localhost:8000",
+  "model": "Qwen/Qwen2.5-Coder-32B-Instruct-AWQ",
+  "test_type": "continuous",
+  "timestamp": "2025-03-28T16:36:15.489089",
+  "test_results": [
+    {
+      "scenario_id": "code-completion",
+      "result": {
+        "success": true,
+        "response": "Certainly! The Fibonacci sequence is a series of numbers where each number is the sum of the two preceding ones, usually starting with 0 and 1. Here's a Python function to calculate the nth Fibonacci number:\n\n```python\ndef calculate_fibonacci(n):\n    if n <= 0:\n        return \"Input should be a positive integer.\"\n    elif n == 1:\n        return 0\n    elif n == 2:\n        return 1\n    else:\n        a, b = 0, 1\n        for _ in range(2, n):\n            a, b = b, a + b\n        return b\n\n# Example usage:\n# print(calculate_fibonacci(10))  # Output: 34\n```\n\nThis function first checks if the input `n` is a positive integer. It handles the first two Fibonacci numbers as special cases (0 and 1). For all other cases, it uses an iterative approach to calculate the Fibonacci number, which is efficient in terms of both time and space complexity.",
+        "metrics": {
+          "total_time": 11.121469020843506,
+          "time_to_first_token": 0.5177805423736572,
+          "generated_tokens": 217,
+          "generation_time": 10.603688478469849,
+          "tokens_per_second_calculated": 20.464577061142965,
+          "gpu_stats_start": [
+            {
+              "id": 0,
+              "memory_used": 23839.0,
+              "memory_total": 24576.0,
+              "memory_util": 97.00113932291666,
+              "gpu_util": 7.000000000000001
+            },
+            {
+              "id": 1,
+              "memory_used": 20288.0,
+              "memory_total": 24576.0,
+              "memory_util": 82.55208333333334,
+              "gpu_util": 7.000000000000001
+            }
+          ],
+          "gpu_stats_end": [
+            {
+              "id": 0,
+              "memory_used": 23860.0,
+              "memory_total": 24576.0,
+              "memory_util": 97.08658854166666,
+              "gpu_util": 91.0
+            },
+            {
+              "id": 1,
+              "memory_used": 20288.0,
+              "memory_total": 24576.0,
+              "memory_util": 82.55208333333334,
+              "gpu_util": 91.0
+            }
+          ],
+          "ram_stats_start": {
+            "total_gb": 127.82979965209961,
+            "available_gb": 67.28066635131836,
+            "percent_used": 47.4,
+            "used_gb": 60.54913330078125,
+            "free_gb": 67.28066635131836
+          },
+          "ram_stats_end": {
+            "total_gb": 127.82979965209961,
+            "available_gb": 67.26848220825195,
+            "percent_used": 47.4,
+            "used_gb": 60.561317443847656,
+            "free_gb": 67.26848220825195
+          }
+        }
+      }
+    },
+    {
+      "scenario_id": "code-review",
+      "result": {
+        "success": true,
+        "response": "It looks like you've started defining a function named `process_data` that takes a parameter `data`. However, the function body is empty. Could you please specify what kind of processing you want to perform on the data? This will help me provide a more tailored solution.\n\nFor example, are you looking to:\n- Clean the data?\n- Transform the data in some way?\n- Aggregate or summarize the data?\n- Filter the data based on certain conditions?\n\nPlease provide more details so I can assist you better.",
+        "metrics": {
+          "total_time": 5.405932664871216,
+          "time_to_first_token": 0.39641737937927246,
+          "generated_tokens": 103,
+          "generation_time": 5.009515285491943,
+          "tokens_per_second_calculated": 20.56087148756653,
+          "gpu_stats_start": [
+            {
+              "id": 0,
+              "memory_used": 23844.0,
+              "memory_total": 24576.0,
+              "memory_util": 97.021484375,
+              "gpu_util": 25.0
+            },
+            {
+              "id": 1,
+              "memory_used": 20288.0,
+              "memory_total": 24576.0,
+              "memory_util": 82.55208333333334,
+              "gpu_util": 32.0
+            }
+          ],
+          "gpu_stats_end": [
+            {
+              "id": 0,
+              "memory_used": 23826.0,
+              "memory_total": 24576.0,
+              "memory_util": 96.9482421875,
+              "gpu_util": 78.0
+            },
+            {
+              "id": 1,
+              "memory_used": 20288.0,
+              "memory_total": 24576.0,
+              "memory_util": 82.55208333333334,
+              "gpu_util": 87.0
+            }
+          ],
+          "ram_stats_start": {
+            "total_gb": 127.82979965209961,
+            "available_gb": 67.25131607055664,
+            "percent_used": 47.4,
+            "used_gb": 60.57848358154297,
+            "free_gb": 67.25131607055664
+          },
+          "ram_stats_end": {
+            "total_gb": 127.82979965209961,
+            "available_gb": 67.25556945800781,
+            "percent_used": 47.4,
+            "used_gb": 60.5742301940918,
+            "free_gb": 67.25556945800781
+          }
+        }
+      }
+    },
+    {
+      "scenario_id": "architecture-design",
+      "result": {
+        "success": true,
+        "response": "Todo \uc571 \ubc31\uc5d4\ub4dc \uc124\uacc4\ub97c \uc2dc\uc791\ud558\uae30 \uc804\uc5d0 \uace0\ub824\ud574\uc57c \ud560 \uc8fc\uc694 \uc694\uc18c\ub4e4\uc774 \uc788\uc2b5\ub2c8\ub2e4. \uc774 \uc124\uacc4\ub294 \uc0ac\uc6a9\uc790 \uc778\uc99d, \ud560 \uc77c \ubaa9\ub85d \uad00\ub9ac, \ub370\uc774\ud130\ubca0\uc774\uc2a4 \uc120\ud0dd \ub4f1 \ub2e4\uc591\ud55c \uc694\uc18c\ub97c \ud3ec\ud568\ud560 \uc218 \uc788\uc2b5\ub2c8\ub2e4. \uc544\ub798\ub294 \uae30\ubcf8\uc801\uc778 Todo \uc571 \ubc31\uc5d4\ub4dc \uc124\uacc4\uc758 \ub2e8\uacc4\uc785\ub2c8\ub2e4.\n\n### 1. \uc694\uad6c \uc0ac\ud56d \uc815\uc758\n- **\uae30\ub2a5**: \ud560 \uc77c \ubaa9\ub85d \uc0dd\uc131, \uc5c5\ub370\uc774\ud2b8, \uc0ad\uc81c, \uc870\ud68c, \uc0ac\uc6a9\uc790 \uc778\uc99d(\ub85c\uadf8\uc778/\ub85c\uadf8\uc544\uc6c3), \ud560 \uc77c \ubaa9\ub85d \uacf5\uc720 \ub4f1.\n- **\uc0ac\uc6a9\uc790 \uc778\ud130\ud398\uc774\uc2a4 \uc694\uad6c \uc0ac\ud56d**: RESTful API, GraphQL \ub4f1.\n- **\ube44\uc988\ub2c8\uc2a4 \ub85c\uc9c1**: \uc911\ubcf5\ub41c \ud560 \uc77c\uc774 \uc0dd\uc131\ub418\uc9c0 \uc54a\ub3c4\ub85d \ubc29\uc9c0, \uc0ac\uc6a9\uc790\ubcc4 \ud560 \uc77c \ubaa9\ub85d \uad00\ub9ac \ub4f1.\n\n### 2. \ub370\uc774\ud130 \ubaa8\ub378 \uc124\uacc4\n- **\uc0ac\uc6a9\uc790(User)**: ID, \uc774\ub984, \uc774\uba54\uc77c, \ube44\ubc00\ubc88\ud638 \ud574\uc2dc, \uc0dd\uc131 \ub0a0\uc9dc \ub4f1.\n- **\ud560 \uc77c(ToDo)**: ID, \uc0ac\uc6a9\uc790 ID, \uc81c\ubaa9, \ub0b4\uc6a9, \uc644\ub8cc \uc5ec\ubd80, \uc0dd\uc131 \ub0a0\uc9dc, \uc218\uc815 \ub0a0\uc9dc \ub4f1.\n\n### 3. \ub370\uc774\ud130\ubca0\uc774\uc2a4 \uc120\ud0dd\n- **\uad00\uacc4\ud615 \ub370\uc774\ud130\ubca0\uc774\uc2a4**: MySQL, PostgreSQL \ub4f1. \uc0ac\uc6a9\uc790\uc640 \ud560 \uc77c \uac04\uc758 \uad00\uacc4\ub97c \uc27d\uac8c \ud45c\ud604\ud560 \uc218 \uc788\uc2b5\ub2c8\ub2e4.\n- **\ube44\uad00\uacc4\ud615 \ub370\uc774\ud130\ubca0\uc774\uc2a4**: MongoDB \ub4f1. \uc720\uc5f0\ud55c \uc2a4\ud0a4\ub9c8\uc640 \ub192\uc740 \ud655\uc7a5\uc131\uc744 \ud544\uc694\ub85c \ud558\ub294 \uacbd\uc6b0.\n\n### 4. API \uc124\uacc4\n- **\uc778\uc99d**: JWT(Json Web Token) \ub610\ub294 OAuth\ub97c \uc0ac\uc6a9\ud558\uc5ec \uc0ac\uc6a9\uc790\ub97c \uc778\uc99d\ud569\ub2c8\ub2e4.\n- **\ud560 \uc77c \ubaa9\ub85d \uad00\ub9ac**: \ud560 \uc77c \ubaa9\ub85d\uc758 \uc0dd\uc131, \uc77d\uae30, \uac31\uc2e0, \uc0ad\uc81c(CRUD)\uc744 \uc704\ud55c API\ub97c \uc81c\uacf5\ud569\ub2c8\ub2e4.\n- **\uc624\ub958 \ucc98\ub9ac**: API \ud638\ucd9c \uc2dc \ubc1c\uc0dd\ud560 \uc218 \uc788\ub294 \ub2e4\uc591\ud55c \uc624\ub958\uc5d0 \ub300\ud55c \ucc98\ub9ac \ubc29\uc548\uc744 \uc124\uacc4\ud569\ub2c8\ub2e4.\n\n### 5. \ubcf4\uc548 \uace0\ub824\uc0ac\ud56d\n- **\ube44\ubc00\ubc88\ud638 \uc554\ud638\ud654**: \uc0ac\uc6a9\uc790\uc758 \ube44\ubc00\ubc88\ud638\ub294 \ud574\uc2dc \ud568\uc218\ub97c \uc0ac\uc6a9\ud558\uc5ec \uc800\uc7a5\ud569\ub2c8\ub2e4.\n- **\ub370\uc774\ud130 \uac80\uc99d**: \uc0ac\uc6a9\uc790 \uc785\ub825\uc5d0 \ub300\ud55c \uac80\uc99d\uc744 \ud1b5\ud574 SQL \uc778\uc81d\uc158 \ub4f1\uc758 \uacf5\uaca9\uc744 \ubc29\uc9c0\ud569\ub2c8\ub2e4.\n- **HTTPS \uc0ac\uc6a9**: \ub370\uc774\ud130\uc758 \uc548\uc804\uc744 \uc704\ud574 HTTPS\ub97c \uc0ac\uc6a9\ud569\ub2c8\ub2e4.\n\n### 6. \ud14c\uc2a4\ud2b8 \uacc4\ud68d\n- **\ub2e8\uc704 \ud14c\uc2a4\ud2b8**: \uac1c\ubcc4 \ud568\uc218\ub098 \ubaa8\ub4c8\uc758 \uc815\ud655\uc131\uc744 \ud14c\uc2a4\ud2b8\ud569\ub2c8\ub2e4.\n- **\ud1b5\ud569 \ud14c\uc2a4\ud2b8**: \uc5ec\ub7ec \ubaa8\ub4c8\uc774 \ud568\uaed8 \uc791\ub3d9\ud558\ub294\uc9c0 \ud14c\uc2a4\ud2b8\ud569\ub2c8\ub2e4.\n- **\ubd80\ud558 \ud14c\uc2a4\ud2b8**: \uc560\ud50c\ub9ac\ucf00\uc774\uc158\uc758 \uc131\ub2a5\uc744 \uce21\uc815\ud569\ub2c8\ub2e4.\n\n### 7. \ubc30\ud3ec \uacc4\ud68d\n- **\uc11c\ubc84 \uc120\ud0dd**: AWS, Heroku, Google Cloud \ub4f1 \ud074\ub77c\uc6b0\ub4dc \uc11c\ube44\uc2a4\ub97c \uc0ac\uc6a9\ud558\uac70\ub098 \uc790\uccb4 \uc11c\ubc84\ub97c \uad6c\ucd95\ud560 \uc218 \uc788\uc2b5\ub2c8\ub2e4.\n- **\ubc30\ud3ec \uc790\ub3d9\ud654**: CI/CD \ud30c\uc774\ud504\ub77c\uc778\uc744 \ud1b5\ud574 \ubc30\ud3ec\ub97c \uc790\ub3d9\ud654\ud569\ub2c8\ub2e4.\n- **\ubaa8\ub2c8\ud130\ub9c1**: \uc560\ud50c\ub9ac\ucf00\uc774\uc158\uc758 \uc0c1\ud0dc\ub97c \ubaa8\ub2c8\ud130\ub9c1\ud558\uc5ec \uc624\ub958\ub97c \ube60\ub974\uac8c \uac10\uc9c0\ud558\uace0 \ud574\uacb0\ud569\ub2c8\ub2e4.\n\n\uc774\ub7ec\ud55c \ub2e8\uacc4\ub97c \uac70\uccd0 Todo \uc571 \ubc31\uc5d4\ub4dc\ub97c \uc124\uacc4\ud558\uace0 \uad6c\ud604\ud560 \uc218 \uc788\uc2b5\ub2c8\ub2e4. \uac01 \ub2e8\uacc4\uc5d0\uc11c\ub294 \ud544\uc694\ud55c \uae30\uc220 \uc2a4\ud0dd\uacfc \ub3c4\uad6c\ub97c \uc120\ud0dd\ud558\uace0 \uc801\uc6a9\ud558\uba70, \ud504\ub85c\uc81d\ud2b8\uc758 \uc694\uad6c \uc0ac\ud56d\uacfc \uaddc\ubaa8\uc5d0 \ub530\ub77c \uc720\uc5f0\ud558\uac8c \uc870\uc815\ud560 \uc218 \uc788\uc5b4\uc57c \ud569\ub2c8\ub2e4.",
+        "metrics": {
+          "total_time": 37.48666977882385,
+          "time_to_first_token": 0.41887640953063965,
+          "generated_tokens": 942,
+          "generation_time": 37.06779336929321,
+          "tokens_per_second_calculated": 25.412896597733504,
+          "gpu_stats_start": [
+            {
+              "id": 0,
+              "memory_used": 23826.0,
+              "memory_total": 24576.0,
+              "memory_util": 96.9482421875,
+              "gpu_util": 78.0
+            },
+            {
+              "id": 1,
+              "memory_used": 20288.0,
+              "memory_total": 24576.0,
+              "memory_util": 82.55208333333334,
+              "gpu_util": 7.000000000000001
+            }
+          ],
+          "gpu_stats_end": [
+            {
+              "id": 0,
+              "memory_used": 23825.0,
+              "memory_total": 24576.0,
+              "memory_util": 96.94417317708334,
+              "gpu_util": 91.0
+            },
+            {
+              "id": 1,
+              "memory_used": 20288.0,
+              "memory_total": 24576.0,
+              "memory_util": 82.55208333333334,
+              "gpu_util": 90.0
+            }
+          ],
+          "ram_stats_start": {
+            "total_gb": 127.82979965209961,
+            "available_gb": 67.2546157836914,
+            "percent_used": 47.4,
+            "used_gb": 60.5751838684082,
+            "free_gb": 67.2546157836914
+          },
+          "ram_stats_end": {
+            "total_gb": 127.82979965209961,
+            "available_gb": 67.23956298828125,
+            "percent_used": 47.4,
+            "used_gb": 60.59023666381836,
+            "free_gb": 67.23956298828125
+          }
+        }
+      }
+    },
+    {
+      "scenario_id": "debugging",
+      "result": {
+        "success": true,
+        "response": "It looks like you're starting to define a class named `UserManager`. This class could be used to manage user data in an application, such as adding, removing, updating, and retrieving user information. Below is a basic example of how you might implement such a class in Python:\n\n```python\nclass UserManager:\n    def __init__(self):\n        # Initialize an empty dictionary to store user data\n        # where the key is the user ID and the value is a dictionary of user details\n        self.users = {}\n\n    def add_user(self, user_id, user_details):\n        \"\"\"Add a new user to the system.\"\"\"\n        if user_id in self.users:\n            print(f\"User with ID {user_id} already exists.\")\n        else:\n            self.users[user_id] = user_details\n            print(f\"User with ID {user_id} added successfully.\")\n\n    def remove_user(self, user_id):\n        \"\"\"Remove a user from the system.\"\"\"\n        if user_id in self.users:\n            del self.users[user_id]\n            print(f\"User with ID {user_id} removed successfully.\")\n        else:\n            print(f\"User with ID {user_id} does not exist.\")\n\n    def update_user(self, user_id, user_details):\n        \"\"\"Update details of an existing user.\"\"\"\n        if user_id in self.users:\n            self.users[user_id].update(user_details)\n            print(f\"User with ID {user_id} updated successfully.\")\n        else:\n            print(f\"User with ID {user_id} does not exist.\")\n\n    def get_user(self, user_id):\n        \"\"\"Retrieve details of a user.\"\"\"\n        return self.users.get(user_id, f\"User with ID {user_id} does not exist.\")\n\n    def list_users(self):\n        \"\"\"List all users in the system.\"\"\"\n        if not self.users:\n            return \"No users in the system.\"\n        return self.users\n\n# Example usage:\nif __name__ == \"__main__\":\n    manager = UserManager()\n    manager.add_user(1, {\"name\": \"Alice\", \"email\": \"alice@example.com\"})\n    manager.add_user(2, {\"name\": \"Bob\", \"email\": \"bob@example.com\"})\n    print(manager.get_user(1))\n    manager.update_user(1, {\"email\": \"alice_new@example.com\"})\n    print(manager.get_user(1))\n    manager.remove_user(2)\n    print(manager.list_users())\n```\n\n### Explanation:\n- **Initialization**: The `__init__` method initializes an empty dictionary `self.users` to store user data.\n- **Add User**: The `add_user` method adds a new user to the dictionary, checking first if the user ID already exists.\n- **Remove User**: The `remove_user` method deletes a user from the dictionary if the user ID exists.\n- **Update User**: The `update_user` method updates the details of an existing user.\n- **Get User**: The `get_user` method retrieves the details of a user by user ID.\n- **List Users**: The `list_users` method returns all users in the system or a message if there are no users.\n\nThis is a simple implementation and can be expanded with more features such as user validation, persistent storage (e.g., using a database), and more sophisticated error handling as needed.",
+        "metrics": {
+          "total_time": 33.67585492134094,
+          "time_to_first_token": 0.4178962707519531,
+          "generated_tokens": 670,
+          "generation_time": 33.25795865058899,
+          "tokens_per_second_calculated": 20.145553942112876,
+          "gpu_stats_start": [
+            {
+              "id": 0,
+              "memory_used": 23825.0,
+              "memory_total": 24576.0,
+              "memory_util": 96.94417317708334,
+              "gpu_util": 91.0
+            },
+            {
+              "id": 1,
+              "memory_used": 20288.0,
+              "memory_total": 24576.0,
+              "memory_util": 82.55208333333334,
+              "gpu_util": 17.0
+            }
+          ],
+          "gpu_stats_end": [
+            {
+              "id": 0,
+              "memory_used": 23826.0,
+              "memory_total": 24576.0,
+              "memory_util": 96.9482421875,
+              "gpu_util": 92.0
+            },
+            {
+              "id": 1,
+              "memory_used": 20288.0,
+              "memory_total": 24576.0,
+              "memory_util": 82.55208333333334,
+              "gpu_util": 91.0
+            }
+          ],
+          "ram_stats_start": {
+            "total_gb": 127.82979965209961,
+            "available_gb": 67.23794174194336,
+            "percent_used": 47.4,
+            "used_gb": 60.59185791015625,
+            "free_gb": 67.23794174194336
+          },
+          "ram_stats_end": {
+            "total_gb": 127.82979965209961,
+            "available_gb": 67.19286727905273,
+            "percent_used": 47.4,
+            "used_gb": 60.636932373046875,
+            "free_gb": 67.19286727905273
+          }
+        }
+      }
+    }
+  ],
+  "context_length": 41200,
+  "quality_evaluation": {
+    "code-completion": {
+      "detailed_scores": {
+        "accuracy": 0.0,
+        "consistency": 0.0,
+        "code_quality": 6.0,
+        "clarity": 2.0
+      },
+      "total_score": 1.6
+    },
+    "code-review": {
+      "detailed_scores": {
+        "accuracy": 0.0,
+        "consistency": 0.0,
+        "code_quality": 0.0,
+        "clarity": 4.0
+      },
+      "total_score": 0.8
+    },
+    "architecture-design": {
+      "detailed_scores": {
+        "accuracy": 8.0,
+        "consistency": 0.0,
+        "code_quality": 0.0,
+        "clarity": 4.0
+      },
+      "total_score": 4.0
+    },
+    "debugging": {
+      "detailed_scores": {
+        "accuracy": 0.0,
+        "consistency": 0.0,
+        "code_quality": 6.0,
+        "clarity": 4.0
+      },
+      "total_score": 2.0
+    }
+  }
+}

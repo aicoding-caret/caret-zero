@@ -64,7 +64,17 @@
     **요약:**
     본 보고서는 gemma3:12b, gemma3:27b, qwen2.5-coder:14b, qwen2.5-coder:32b 모델의 성능을 다양한 컨텍스트 길이(12800, 41200, 51200, 76800)에서 테스트한 결과를 담고 있습니다. Qwen2.5 Coder 시리즈가 전반적으로 우수한 성능을 보였으며, 특히 Qwen2.5 Coder 14B는 빠른 응답 시간과 높은 처리량을, Qwen2.5 Coder 32B는 높은 코드 품질을 제공합니다. 메모리 사용량, 응답 시간, 토큰 처리량, 코드 품질 등을 고려하여 작업에 맞는 모델을 선택하는 것이 중요합니다
 
-## 6.**대화 아카이브 및 파인튜닝** 
+*   **vLLM Qwen 32B 4bit Cline 연동 테스트 결과 (2025-03-29):**
+    *   **결론:** `Qwen/Qwen2.5-Coder-32B-Instruct-GPTQ-Int4` (4bit) 모델은 현재 Cline과 **연동 실패**했습니다.
+    *   **원인:** Cline의 기본 시스템 프롬프트 크기(약 22k 토큰)가 너무 커서, 모델의 최대 컨텍스트 길이(32768 토큰)를 초과하는 요청이 발생하기 때문입니다.
+    *   **상세 내용:** [Ollama vs vLLM 성능 비교 분석 보고서 - 섹션 13](/docs/work-logs/luke-and-alpha/reports/ollama-vs-vllm-performance-comparison.md#13-cline-연동-테스트-결과-vllm-qwen-32b-gptq-int4-2025-03-29) 참조.
+
+*   **로컬 vLLM 서버 실행:**
+    *   **환경 변수 설정:** 프로젝트 루트에 있는 `.env.sample` 파일을 복사하여 `.env` 파일을 만듭니다. `.env` 파일 내의 `HUGGING_FACE_HUB_TOKEN`에 자신의 Hugging Face Hub 토큰을 입력합니다. 이 토큰은 vLLM이 비공개 모델에 접근하거나 모델 설정을 가져올 때 필요할 수 있습니다. (`.env` 파일은 `.gitignore`에 포함되어 Git에 추적되지 않습니다.)
+    *   **서버 시작 스크립트:** 프로젝트 루트의 `start_vllm_qwen2.5_4bit.bat` 스크립트를 실행하여 로컬 vLLM 서버를 시작할 수 있습니다. 이 스크립트는 Docker Desktop을 실행하고, `.env` 파일에서 토큰을 읽어와 Qwen-2.5 7B Chat AWQ (4비트) 모델을 2개의 GPU로 로드합니다. (Docker Desktop이 기본 경로가 아닌 다른 곳에 설치된 경우 스크립트 내 경로 수정이 필요할 수 있습니다.)
+    *   **참고:** 로컬 모델 테스트 및 성능 비교에 대한 자세한 내용은 [`scripts/sllm_test/`](/scripts/sllm_test/) 디렉토리 및 관련 작업 로그([`docs/work-logs/luke-and-alpha/tasks/004-vllm-setup-and-test.md`](/docs/work-logs/luke-and-alpha/tasks/004-vllm-setup-and-test.md), [`docs/work-logs/luke-and-alpha/reports/004-ollama-vs-vllm-performance-comparison.md`](/docs/work-logs/luke-and-alpha/reports/004-ollama-vs-vllm-performance-comparison.md))를 참조하세요.
+
+## 6.**대화 아카이브 및 파인튜닝**
 * 상호작용을 체계적으로 아카이브하고 이를 사용하여 프로젝트별 로컬 LLM을 파인튜닝하여 시간이 지남에 따라 개인화 및 성능을 향상하는 프레임워크 개발
 * 현재 작업사항 없음
 
