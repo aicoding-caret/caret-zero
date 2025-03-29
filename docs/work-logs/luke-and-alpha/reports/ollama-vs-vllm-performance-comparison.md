@@ -172,13 +172,13 @@ Qwen 2.5 Coder 32B 4bit (vLLM GPTQ-Int4) 모델을 싱글 RTX 3090 (24GB VRAM)�
 
 1.  **기본 설정:**
     *   **API Provider:** `OpenAI Compatible`
-    *   **Base URL:** `http://localhost:8000`
+    *   **Base URL:** `http://localhost:8000/v1`
     *   **API Key:** (비워두거나 `NA` 입력)
     *   **Model ID:** `Qwen/Qwen2.5-Coder-32B-Instruct-GPTQ-Int4`
 
 2.  **모델 구성 (MODEL CONFIGURATION):**
     *   **Supports Images / Supports Computer Use / Enable R1 messages format:** 모두 체크 해제합니다.
-    *   **Context Window Size:** vLLM 시작 스크립트의 `--max-model-len` 값과 동일하게 설정합니다. 현재 스크립트 기준으로는 **`4096`** 입니다. (더 긴 컨텍스트가 필요하면 스크립트 수정 및 서버 재시작 후 동일 값 입력)
+    *   **Context Window Size:** `32734` Qwen/Qwen2.5-Coder-32B-Instruct-GPTQ-Int4에서 권장한 최대 길이는 32786이었으나, CURL로 테스트시 34를 더 작게 써야 32786으로 인지되었습니다. curl의 기본 시스템프롬프트의 토큰이 32786을 초과하여 툴에서 상세테스트는 못해봤습니다. 
     *   **Max Output Tokens:** `-1` (무제한) 또는 적절한 제한값 (예: **`4096`**)을 설정합니다.
     *   **Input Price / Output Price / 1M tokens:** 로컬 모델이므로 모두 **`0`**으로 설정합니다.
     *   **Temperature:** 일관된 코딩 결과를 위해 **`0`** 또는 낮은 값 (예: `0.2`)을 권장합니다.
@@ -193,6 +193,10 @@ Qwen 2.5 Coder 32B 4bit (vLLM GPTQ-Int4) 모델을 싱글 RTX 3090 (24GB VRAM)�
 *   **향후 조치 필요:**
     *   Cline의 시스템 프롬프트 길이를 줄이는 커스터마이징 방안을 모색하거나, API 요청 시 컨텍스트 길이를 동적으로 관리하는 로직을 확인/개선해야 합니다.
     *   더 긴 컨텍스트 길이를 지원하는 다른 모델 사용을 검토해야 합니다. 하지만, 현재 sLLM중 우수한 코딩 실력을 가진 모델이 Qwen2.5-Coder-32B-Instruct 로 대안은 없습니다.
+    *   결론 : Cline에서는 멀티 gpu최적화가 덜되었으나 구동가능한 ollama를 통한 Qwen2.5-Corder-32B 사용이 현실적임. 
+            코딩 최고 성능은  qwen2.5-coder-32b-instruct모델로  https://ollama.com/krith/qwen2.5-coder-32b-instruct 에 올라와 있음
+            다만 성능과 속도에서 구글의 google의 gemini-2.5 pro exp와 gemini-2.0-flash 보다 크게 떨어져 온라인을 쓸 수 있다면 현실적인 대안은 아님
+            현실적으로는  gemini-2.5 pro exp와 gemini-2.0-flash 사용을 권함
 
 ---
 *본 보고서는 제공된 테스트 결과 로그를 바탕으로 알파가 작성했습니다.*
