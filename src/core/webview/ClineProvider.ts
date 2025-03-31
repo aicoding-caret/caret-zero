@@ -41,6 +41,7 @@ import { getTotalTasksSize } from "../../utils/storage"
 import { ConversationTelemetryService } from "../../services/telemetry/ConversationTelemetryService"
 import { GlobalFileNames } from "../../global-constants"
 import { setTimeout as setTimeoutPromise } from "node:timers/promises"
+import { getUri as getWebviewUri } from "./getUri" // getUri 함수 가져오기
 
 /*
 https://github.com/microsoft/vscode-webview-ui-toolkit-samples/blob/main/default/weather-webview/src/providers/WeatherViewProvider.ts
@@ -202,7 +203,12 @@ export class ClineProvider implements vscode.WebviewViewProvider {
 		webviewView.webview.options = {
 			// Allow scripts in the webview
 			enableScripts: true,
-			localResourceRoots: [this.context.extensionUri],
+			// Restrict the webview to only load resources from the `webview-ui/build` directory
+			localResourceRoots: [
+				vscode.Uri.joinPath(this.context.extensionUri, "webview-ui", "build"),
+				// Also allow loading resources from the source assets directory for the avatar
+				vscode.Uri.joinPath(this.context.extensionUri, "webview-ui", "src", "assets"),
+			],
 		}
 
 		webviewView.webview.html =
@@ -2006,6 +2012,11 @@ Here is the project's README to help you get started:\n\n${mcpDetails.readmeCont
 			planActSeparateModelsSetting,
 		} = await this.getState()
 
+		// 알파 아바타 URI 추가 (웹뷰가 로드된 후에만 생성 가능)
+		const alphaAvatarUri = this.view?.webview
+			? getWebviewUri(this.view.webview, this.context.extensionUri, ["webview-ui", "src", "assets", "alpha.png"]).toString()
+			: undefined
+
 		return {
 			version: this.context.extension?.packageJSON?.version ?? "",
 			apiConfiguration,
@@ -2028,6 +2039,7 @@ Here is the project's README to help you get started:\n\n${mcpDetails.readmeCont
 			telemetrySetting,
 			planActSeparateModelsSetting,
 			vscMachineId: vscode.env.machineId,
+			alphaAvatarUri, // 생성된 URI 전달
 		}
 	}
 

@@ -12,7 +12,8 @@
 			"group": {
 				"kind": "build",
 				"isDefault": true
-			}
+			},
+			"problemMatcher": [] // Explicitly add empty problem matcher
 		},
 		{
 			"type": "npm",

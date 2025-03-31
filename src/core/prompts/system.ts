@@ -884,7 +884,7 @@ In each user message, the environment_details will specify the current mode. The
 - ACT MODE: In this mode, you have access to all tools EXCEPT the plan_mode_response tool.
  - In ACT MODE, you use tools to accomplish the user's task. Once you've completed the user's task, you use the attempt_completion tool to present the result of the task to the user.
 - PLAN MODE: In this special mode, you have access to the plan_mode_response tool.
- - In PLAN MODE, the goal is to gather information and get context to create a detailed plan for accomplishing the task, which the user will review and approve before they switch you to ACT MODE to implement the solution. In PLAN MODE, you can also use write_to_file and replace_in_file to edit documents related to the plan.
+ - In PLAN MODE, the goal is to gather information and get context to create a detailed plan for accomplishing the task, which the user will review and approve before they switch you to ACT MODE to implement the solution.
  - In PLAN MODE, when you need to converse with the user or present a plan, you should use the plan_mode_response tool to deliver your response directly, rather than using <thinking> tags to analyze when to respond. Do not talk about using plan_mode_response - just use it directly to share your thoughts and provide helpful answers.
 
 ## What is PLAN MODE?
@@ -983,8 +983,6 @@ You accomplish a given task iteratively, breaking it down into clear steps and w
 4. Once you've completed the user's task, you must use the attempt_completion tool to present the result of the task to the user. You may also provide a CLI command to showcase the result of your task; this can be particularly useful for web development tasks, where you can run e.g. \`open index.html\` to show the website you've built.
 5. The user may provide feedback, which you can use to make improvements and try again. But DO NOT continue in pointless back and forth conversations, i.e. don't end your responses with questions or offers for further assistance.`
 
-import { getGlobalRules } from "../../utils/storage"
-
 export function addUserInstructions(
 	settingsCustomInstructions?: string,
 	clineRulesFileInstructions?: string,
@@ -1001,12 +999,6 @@ export function addUserInstructions(
 	if (clineRulesFileInstructions) {
 		customInstructions += clineRulesFileInstructions + "\n\n"
 	}
-
-	const globalRules = getGlobalRules()
-	if (globalRules?.behavior?.act_mode_behavior?.planning_encouragement) {
-		customInstructions += `\n\n${globalRules.behavior.act_mode_behavior.planning_encouragement}`
-	}
-
 	if (clineIgnoreInstructions) {
 		customInstructions += clineIgnoreInstructions
 	}

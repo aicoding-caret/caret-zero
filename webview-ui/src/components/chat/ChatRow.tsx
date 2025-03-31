@@ -2,7 +2,8 @@ import { VSCodeBadge, VSCodeProgressRing } from "@vscode/webview-ui-toolkit/reac
 import deepEqual from "fast-deep-equal"
 import React, { memo, useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { useEvent, useSize } from "react-use"
-import styled from "styled-components"
+import styled, { css } from "styled-components"
+// import alphaAvatar from "../../assets/alpha.png" // 더 이상 직접 import하지 않음
 import {
 	ClineApiReqInfo,
 	ClineAskQuestion,
@@ -38,6 +39,25 @@ const ChatRowContainer = styled.div`
 	&:hover ${CheckpointControls} {
 		opacity: 1;
 	}
+`
+
+// 알파 아바타 스타일
+const AvatarImage = styled.img`
+	width: 32px;
+	height: 32px;
+	border-radius: 50%;
+	margin-right: 10px;
+	flex-shrink: 0; // 크기 고정
+`
+
+// 메시지 내용 감싸는 컨테이너
+const MessageContentWrapper = styled.div<{ isAiMessage?: boolean }>`
+	flex-grow: 1; // 남은 공간 채우기
+	padding: 8px 12px;
+	border-radius: 6px;
+	background-color: ${({ isAiMessage }) =>
+		isAiMessage ? "var(--vscode-textBlockQuote-background)" : "transparent"}; // AI 메시지 배경색 구분
+	min-width: 0; // flex item 내용 넘침 방지
 `
 
 interface ChatRowProps {
@@ -134,8 +154,47 @@ const ChatRow = memo(
 export default ChatRow
 
 export const ChatRowContent = ({ message, isExpanded, onToggleExpand, lastModifiedMessage, isLast }: ChatRowContentProps) => {
-	const { mcpServers, mcpMarketplaceCatalog } = useExtensionState()
+	// alphaAvatarUri 상태 가져오기
+	const { mcpServers, mcpMarketplaceCatalog, alphaAvatarUri } = useExtensionState()
 	const [seeNewChangesDisabled, setSeeNewChangesDisabled] = useState(false)
+
+	// splitMessage 함수 정의
+	const splitMessage = (text: string) => {
+		const outputIndex = text.indexOf(COMMAND_OUTPUT_STRING)
+		if (outputIndex === -1) {
+			return { command: text, output: "" }
+		}
+		return {
+			command: text.slice(0, outputIndex).trim(),
+			output: text
+				.slice(outputIndex + COMMAND_OUTPUT_STRING.length)
+				.trim()
+				.split("")
+				.map((char) => {
+					switch (char) {
+						case "\t":
+							return "→   "
+						case "\b":
+							return "⌫"
+						case "\f":
+							return "⏏"
+						case "\v":
+							return "⇳"
+						default:
+							return char
+					}
+				})
+				.join(""),
+		}
+	}
+
+	// AI 메시지인지 확인 (텍스트, 질문, 계획 응답 등)
+	const isAiMessage = useMemo(() => {
+		return (
+			(message.type === "say" && (message.say === "text" || message.say === "reasoning")) ||
+			(message.type === "ask" && (message.ask === "followup" || message.ask === "plan_mode_response"))
+		)
+	}, [message.type, message.say, message.ask])
 
 	const [cost, apiReqCancelReason, apiReqStreamingFailedMessage] = useMemo(() => {
 		if (message.text != null && message.say === "api_req_started") {
@@ -322,6 +381,7 @@ export const ChatRowContent = ({ message, isExpanded, onToggleExpand, lastModifi
 		}
 	}, [type, cost, apiRequestFailedMessage, isCommandExecuting, apiReqCancelReason, isMcpServerResponding, message.text])
 
+	// 헤더 스타일 (아바타 없을 때 사용, AI 메시지 내부에서도 사용될 수 있음)
 	const headerStyle: React.CSSProperties = {
 		display: "flex",
 		alignItems: "center",
@@ -343,6 +403,7 @@ export const ChatRowContent = ({ message, isExpanded, onToggleExpand, lastModifi
 		return null
 	}, [message.ask, message.say, message.text])
 
+	// --- Tool Rendering ---
 	if (tool) {
 		const toolIcon = (name: string) => (
 			<span
@@ -355,8 +416,9 @@ export const ChatRowContent = ({ message, isExpanded, onToggleExpand, lastModifi
 
 		switch (tool.tool) {
 			case "editedExistingFile":
+				// 도구 사용 메시지에는 아바타 미표시, rowStyle 적용 안 함
 				return (
-					<>
+					<div>
 						<div style={headerStyle}>
 							{toolIcon("edit")}
 							<span style={{ fontWeight: "bold" }}>Cline wants to edit this file:</span>
@@ -368,11 +430,11 @@ export const ChatRowContent = ({ message, isExpanded, onToggleExpand, lastModifi
 							isExpanded={isExpanded}
 							onToggleExpand={onToggleExpand}
 						/>
-					</>
+					</div>
 				)
 			case "newFileCreated":
 				return (
-					<>
+					<div>
 						<div style={headerStyle}>
 							{toolIcon("new-file")}
 							<span style={{ fontWeight: "bold" }}>Cline wants to create a new file:</span>
@@ -384,11 +446,11 @@ export const ChatRowContent = ({ message, isExpanded, onToggleExpand, lastModifi
 							isExpanded={isExpanded}
 							onToggleExpand={onToggleExpand}
 						/>
-					</>
+					</div>
 				)
 			case "readFile":
 				return (
-					<>
+					<div>
 						<div style={headerStyle}>
 							{toolIcon("file-code")}
 							<span style={{ fontWeight: "bold" }}>
@@ -442,11 +504,11 @@ export const ChatRowContent = ({ message, isExpanded, onToggleExpand, lastModifi
 									}}></span>
 							</div>
 						</div>
-					</>
+					</div>
 				)
 			case "listFilesTopLevel":
 				return (
-					<>
+					<div>
 						<div style={headerStyle}>
 							{toolIcon("folder-opened")}
 							<span style={{ fontWeight: "bold" }}>
@@ -462,11 +524,11 @@ export const ChatRowContent = ({ message, isExpanded, onToggleExpand, lastModifi
 							isExpanded={isExpanded}
 							onToggleExpand={onToggleExpand}
 						/>
-					</>
+					</div>
 				)
 			case "listFilesRecursive":
 				return (
-					<>
+					<div>
 						<div style={headerStyle}>
 							{toolIcon("folder-opened")}
 							<span style={{ fontWeight: "bold" }}>
@@ -482,11 +544,11 @@ export const ChatRowContent = ({ message, isExpanded, onToggleExpand, lastModifi
 							isExpanded={isExpanded}
 							onToggleExpand={onToggleExpand}
 						/>
-					</>
+					</div>
 				)
 			case "listCodeDefinitionNames":
 				return (
-					<>
+					<div>
 						<div style={headerStyle}>
 							{toolIcon("file-code")}
 							<span style={{ fontWeight: "bold" }}>
@@ -501,11 +563,11 @@ export const ChatRowContent = ({ message, isExpanded, onToggleExpand, lastModifi
 							isExpanded={isExpanded}
 							onToggleExpand={onToggleExpand}
 						/>
-					</>
+					</div>
 				)
 			case "searchFiles":
 				return (
-					<>
+					<div>
 						<div style={headerStyle}>
 							{toolIcon("search")}
 							<span style={{ fontWeight: "bold" }}>
@@ -519,50 +581,23 @@ export const ChatRowContent = ({ message, isExpanded, onToggleExpand, lastModifi
 							isExpanded={isExpanded}
 							onToggleExpand={onToggleExpand}
 						/>
-					</>
+					</div>
 				)
 			default:
 				return null
 		}
 	}
 
+	// --- Command Rendering ---
 	if (message.ask === "command" || message.say === "command") {
-		const splitMessage = (text: string) => {
-			const outputIndex = text.indexOf(COMMAND_OUTPUT_STRING)
-			if (outputIndex === -1) {
-				return { command: text, output: "" }
-			}
-			return {
-				command: text.slice(0, outputIndex).trim(),
-				output: text
-					.slice(outputIndex + COMMAND_OUTPUT_STRING.length)
-					.trim()
-					.split("")
-					.map((char) => {
-						switch (char) {
-							case "\t":
-								return "→   "
-							case "\b":
-								return "⌫"
-							case "\f":
-								return "⏏"
-							case "\v":
-								return "⇳"
-							default:
-								return char
-						}
-					})
-					.join(""),
-			}
-		}
-
-		const { command: rawCommand, output } = splitMessage(message.text || "")
+		const { command: rawCommand, output } = splitMessage(message.text || "") // 이제 함수 호출 가능
 
 		const requestsApproval = rawCommand.endsWith(COMMAND_REQ_APP_STRING)
 		const command = requestsApproval ? rawCommand.slice(0, -COMMAND_REQ_APP_STRING.length) : rawCommand
 
+		// 커맨드 메시지에는 아바타 미표시
 		return (
-			<>
+			<div>
 				<div style={headerStyle}>
 					{icon}
 					{title}
@@ -609,15 +644,17 @@ export const ChatRowContent = ({ message, isExpanded, onToggleExpand, lastModifi
 						<span>The model has determined this command requires explicit approval.</span>
 					</div>
 				)}
-			</>
+			</div>
 		)
 	}
 
+	// --- MCP Server Rendering ---
 	if (message.ask === "use_mcp_server" || message.say === "use_mcp_server") {
 		const useMcpServer = JSON.parse(message.text || "{}") as ClineAskUseMcpServer
 		const server = mcpServers.find((server) => server.name === useMcpServer.serverName)
+		// MCP 메시지에는 아바타 미표시
 		return (
-			<>
+			<div>
 				<div style={headerStyle}>
 					{icon}
 					{title}
@@ -684,54 +721,59 @@ export const ChatRowContent = ({ message, isExpanded, onToggleExpand, lastModifi
 						</>
 					)}
 				</div>
-			</>
+			</div>
 		)
 	}
 
-	switch (message.type) {
-		case "say":
-			switch (message.say) {
-				case "api_req_started":
-					return (
-						<>
-							<div
-								style={{
-									...headerStyle,
-									marginBottom:
-										(cost == null && apiRequestFailedMessage) || apiReqStreamingFailedMessage ? 10 : 0,
-									justifyContent: "space-between",
-									cursor: "pointer",
-									userSelect: "none",
-									WebkitUserSelect: "none",
-									MozUserSelect: "none",
-									msUserSelect: "none",
-								}}
-								onClick={onToggleExpand}>
+	// --- General Message Rendering Function ---
+	const renderSpecificContent = () => {
+		// Contains the large switch statement for message.type and message.say/ask
+		// IMPORTANT: Cases like user_feedback, error, diff_error, clineignore_error, checkpoint_created, completion_result, shell_integration_warning, api_req_started SHOULD NOT have avatar/wrapper applied internally.
+		// Only text, reasoning, followup, plan_mode_response should potentially be styled differently by the wrapper.
+		switch (message.type) {
+			case "say":
+				switch (message.say) {
+					case "api_req_started": // No Avatar/Wrapper
+						return (
+							<>
 								<div
 									style={{
-										display: "flex",
-										alignItems: "center",
-										gap: "10px",
-									}}>
-									{icon}
-									{title}
-									{/* Need to render this every time since it affects height of row by 2px */}
-									<VSCodeBadge
+										...headerStyle, // 아바타 없을 때의 헤더 스타일 사용
+										marginBottom:
+											(cost == null && apiRequestFailedMessage) || apiReqStreamingFailedMessage ? 10 : 0,
+										justifyContent: "space-between",
+										cursor: "pointer",
+										userSelect: "none",
+										WebkitUserSelect: "none",
+										MozUserSelect: "none",
+										msUserSelect: "none",
+									}}
+									onClick={onToggleExpand}>
+									<div
 										style={{
-											opacity: cost != null && cost > 0 ? 1 : 0,
+											display: "flex",
+											alignItems: "center",
+											gap: "10px",
 										}}>
-										${Number(cost || 0)?.toFixed(4)}
-									</VSCodeBadge>
+										{icon}
+										{title}
+										{/* Need to render this every time since it affects height of row by 2px */}
+										<VSCodeBadge
+											style={{
+												opacity: cost != null && cost > 0 ? 1 : 0,
+											}}>
+											${Number(cost || 0)?.toFixed(4)}
+										</VSCodeBadge>
+									</div>
+									<span className={`codicon codicon-chevron-${isExpanded ? "up" : "down"}`}></span>
 								</div>
-								<span className={`codicon codicon-chevron-${isExpanded ? "up" : "down"}`}></span>
-							</div>
-							{((cost == null && apiRequestFailedMessage) || apiReqStreamingFailedMessage) && (
-								<>
-									{(() => {
-										// Try to parse the error message as JSON for credit limit error
-										const errorData = parseErrorText(apiRequestFailedMessage)
-										if (errorData) {
+								{((cost == null && apiRequestFailedMessage) || apiReqStreamingFailedMessage) && (
+									<>
+										{(() => {
+											// Try to parse the error message as JSON for credit limit error
+											const errorData = parseErrorText(apiRequestFailedMessage || apiReqStreamingFailedMessage) // Combine checks
 											if (
+												errorData &&
 												errorData.code === "insufficient_credits" &&
 												typeof errorData.current_balance === "number" &&
 												typeof errorData.total_spent === "number" &&
@@ -747,394 +789,251 @@ export const ChatRowContent = ({ message, isExpanded, onToggleExpand, lastModifi
 													/>
 												)
 											}
-										}
 
-										// Default error display
-										return (
-											<p
-												style={{
-													...pStyle,
-													color: "var(--vscode-errorForeground)",
-												}}>
-												{apiRequestFailedMessage || apiReqStreamingFailedMessage}
-												{apiRequestFailedMessage?.toLowerCase().includes("powershell") && (
-													<>
-														<br />
-														<br />
-														It seems like you're having Windows PowerShell issues, please see this{" "}
-														<a
-															href="https://github.com/cline/cline/wiki/TroubleShooting-%E2%80%90-%22PowerShell-is-not-recognized-as-an-internal-or-external-command%22"
-															style={{
-																color: "inherit",
-																textDecoration: "underline",
-															}}>
-															troubleshooting guide
-														</a>
-														.
-													</>
-												)}
-											</p>
-										)
-									})()}
-								</>
-							)}
-
-							{isExpanded && (
-								<div style={{ marginTop: "10px" }}>
-									<CodeAccordian
-										code={JSON.parse(message.text || "{}").request}
-										language="markdown"
-										isExpanded={true}
-										onToggleExpand={onToggleExpand}
-									/>
-								</div>
-							)}
-						</>
-					)
-				case "api_req_finished":
-					return null // we should never see this message type
-				case "mcp_server_response":
-					return <McpResponseDisplay responseText={message.text || ""} />
-				case "text":
-					return (
-						<div>
-							<Markdown markdown={message.text} />
-						</div>
-					)
-				case "reasoning":
-					return (
-						<>
-							{message.text && (
-								<div
-									onClick={onToggleExpand}
-									style={{
-										// marginBottom: 15,
-										cursor: "pointer",
-										color: "var(--vscode-descriptionForeground)",
-
-										fontStyle: "italic",
-										overflow: "hidden",
-									}}>
-									{isExpanded ? (
-										<div style={{ marginTop: -3 }}>
-											<span style={{ fontWeight: "bold", display: "block", marginBottom: "4px" }}>
-												Thinking
-												<span
-													className="codicon codicon-chevron-down"
+											// Default error display
+											return (
+												<p
 													style={{
-														display: "inline-block",
-														transform: "translateY(3px)",
-														marginLeft: "1.5px",
-													}}
-												/>
-											</span>
-											{message.text}
-										</div>
-									) : (
-										<div style={{ display: "flex", alignItems: "center" }}>
-											<span style={{ fontWeight: "bold", marginRight: "4px" }}>Thinking:</span>
-											<span
-												style={{
-													whiteSpace: "nowrap",
-													overflow: "hidden",
-													textOverflow: "ellipsis",
-													direction: "rtl",
-													textAlign: "left",
-													flex: 1,
-												}}>
-												{message.text + "\u200E"}
-											</span>
-											<span
-												className="codicon codicon-chevron-right"
-												style={{
-													marginLeft: "4px",
-													flexShrink: 0,
-												}}
-											/>
-										</div>
-									)}
-								</div>
-							)}
-						</>
-					)
-				case "user_feedback":
-					return (
-						<div
-							style={{
-								backgroundColor: "var(--vscode-badge-background)",
-								color: "var(--vscode-badge-foreground)",
-								borderRadius: "3px",
-								padding: "9px",
-								whiteSpace: "pre-line",
-								wordWrap: "break-word",
-							}}>
-							<span style={{ display: "block" }}>{highlightMentions(message.text)}</span>
-							{message.images && message.images.length > 0 && (
-								<Thumbnails images={message.images} style={{ marginTop: "8px" }} />
-							)}
-						</div>
-					)
-				case "user_feedback_diff":
-					const tool = JSON.parse(message.text || "{}") as ClineSayTool
-					return (
-						<div
-							style={{
-								marginTop: -10,
-								width: "100%",
-							}}>
-							<CodeAccordian
-								diff={tool.diff!}
-								isFeedback={true}
-								isExpanded={isExpanded}
-								onToggleExpand={onToggleExpand}
-							/>
-						</div>
-					)
-				case "error":
-					return (
-						<>
-							{title && (
-								<div style={headerStyle}>
-									{icon}
-									{title}
-								</div>
-							)}
-							<p
-								style={{
-									...pStyle,
-									color: "var(--vscode-errorForeground)",
-								}}>
-								{message.text}
-							</p>
-						</>
-					)
-				case "diff_error":
-					return (
-						<>
-							<div
-								style={{
-									display: "flex",
-									flexDirection: "column",
-									backgroundColor: "var(--vscode-textBlockQuote-background)",
-									padding: 8,
-									borderRadius: 3,
-									fontSize: 12,
-									color: "var(--vscode-foreground)",
-									opacity: 0.8,
-								}}>
-								<div
-									style={{
-										display: "flex",
-										alignItems: "center",
-										marginBottom: 4,
-									}}>
-									<i
-										className="codicon codicon-warning"
-										style={{
-											marginRight: 8,
-											fontSize: 14,
-											color: "var(--vscode-descriptionForeground)",
-										}}></i>
-									<span style={{ fontWeight: 500 }}>Diff Edit Mismatch</span>
-								</div>
-								<div>The model used search patterns that don't match anything in the file. Retrying...</div>
-							</div>
-						</>
-					)
-				case "clineignore_error":
-					return (
-						<>
-							<div
-								style={{
-									display: "flex",
-									flexDirection: "column",
-									backgroundColor: "rgba(255, 191, 0, 0.1)",
-									padding: 8,
-									borderRadius: 3,
-									fontSize: 12,
-								}}>
-								<div
-									style={{
-										display: "flex",
-										alignItems: "center",
-										marginBottom: 4,
-									}}>
-									<i
-										className="codicon codicon-error"
-										style={{
-											marginRight: 8,
-											fontSize: 18,
-											color: "#FFA500",
-										}}></i>
-									<span
-										style={{
-											fontWeight: 500,
-											color: "#FFA500",
-										}}>
-										Access Denied
-									</span>
-								</div>
-								<div>
-									Cline tried to access <code>{message.text}</code> which is blocked by the{" "}
-									<code>.clineignore</code>
-									file.
-								</div>
-							</div>
-						</>
-					)
-				case "checkpoint_created":
-					return (
-						<>
-							<CheckmarkControl messageTs={message.ts} isCheckpointCheckedOut={message.isCheckpointCheckedOut} />
-						</>
-					)
-				case "completion_result":
-					const hasChanges = message.text?.endsWith(COMPLETION_RESULT_CHANGES_FLAG) ?? false
-					const text = hasChanges ? message.text?.slice(0, -COMPLETION_RESULT_CHANGES_FLAG.length) : message.text
-					return (
-						<>
-							<div
-								style={{
-									...headerStyle,
-									marginBottom: "10px",
-								}}>
-								{icon}
-								{title}
-							</div>
-							<div
-								style={{
-									color: "var(--vscode-charts-green)",
-									paddingTop: 10,
-								}}>
-								<Markdown markdown={text} />
-							</div>
-							{message.partial !== true && hasChanges && (
-								<div style={{ paddingTop: 17 }}>
-									<SuccessButton
-										disabled={seeNewChangesDisabled}
-										onClick={() => {
-											setSeeNewChangesDisabled(true)
-											vscode.postMessage({
-												type: "taskCompletionViewChanges",
-												number: message.ts,
-											})
-										}}
-										style={{
-											cursor: seeNewChangesDisabled ? "wait" : "pointer",
-											width: "100%",
-										}}>
-										<i className="codicon codicon-new-file" style={{ marginRight: 6 }} />
-										See new changes
-									</SuccessButton>
-								</div>
-							)}
-						</>
-					)
-				case "shell_integration_warning":
-					return (
-						<>
-							<div
-								style={{
-									display: "flex",
-									flexDirection: "column",
-									backgroundColor: "rgba(255, 191, 0, 0.1)",
-									padding: 8,
-									borderRadius: 3,
-									fontSize: 12,
-								}}>
-								<div
-									style={{
-										display: "flex",
-										alignItems: "center",
-										marginBottom: 4,
-									}}>
-									<i
-										className="codicon codicon-warning"
-										style={{
-											marginRight: 8,
-											fontSize: 18,
-											color: "#FFA500",
-										}}></i>
-									<span
-										style={{
-											fontWeight: 500,
-											color: "#FFA500",
-										}}>
-										Shell Integration Unavailable
-									</span>
-								</div>
-								<div>
-									Cline won't be able to view the command's output. Please update VSCode (
-									<code>CMD/CTRL + Shift + P</code> → "Update") and make sure you're using a supported shell:
-									zsh, bash, fish, or PowerShell (<code>CMD/CTRL + Shift + P</code> → "Terminal: Select Default
-									Profile").{" "}
-									<a
-										href="https://github.com/cline/cline/wiki/Troubleshooting-%E2%80%90-Shell-Integration-Unavailable"
-										style={{
-											color: "inherit",
-											textDecoration: "underline",
-										}}>
-										Still having trouble?
-									</a>
-								</div>
-							</div>
-						</>
-					)
-				default:
-					return (
-						<>
-							{title && (
-								<div style={headerStyle}>
-									{icon}
-									{title}
-								</div>
-							)}
-							<div style={{ paddingTop: 10 }}>
-								<Markdown markdown={message.text} />
-							</div>
-						</>
-					)
-			}
-		case "ask":
-			switch (message.ask) {
-				case "mistake_limit_reached":
-					return (
-						<>
-							<div style={headerStyle}>
-								{icon}
-								{title}
-							</div>
-							<p
-								style={{
-									...pStyle,
-									color: "var(--vscode-errorForeground)",
-								}}>
-								{message.text}
-							</p>
-						</>
-					)
-				case "auto_approval_max_req_reached":
-					return (
-						<>
-							<div style={headerStyle}>
-								{icon}
-								{title}
-							</div>
-							<p
-								style={{
-									...pStyle,
-									color: "var(--vscode-errorForeground)",
-								}}>
-								{message.text}
-							</p>
-						</>
-					)
-				case "completion_result":
-					if (message.text) {
-						const hasChanges = message.text.endsWith(COMPLETION_RESULT_CHANGES_FLAG) ?? false
-						const text = hasChanges ? message.text.slice(0, -COMPLETION_RESULT_CHANGES_FLAG.length) : message.text
+														...pStyle,
+														color: "var(--vscode-errorForeground)",
+													}}>
+													{apiRequestFailedMessage || apiReqStreamingFailedMessage}
+													{apiRequestFailedMessage?.toLowerCase().includes("powershell") && (
+														<>
+															<br />
+															<br />
+															It seems like you're having Windows PowerShell issues, please see this{" "}
+															<a
+																href="https://github.com/cline/cline/wiki/TroubleShooting-%E2%80%90-%22PowerShell-is-not-recognized-as-an-internal-or-external-command%22"
+																style={{
+																	color: "inherit",
+																	textDecoration: "underline",
+																}}>
+																troubleshooting guide
+															</a>
+															.
+														</>
+													)}
+												</p>
+											)
+										})()}
+									</>
+								)}
+
+								{isExpanded && (
+									<div style={{ marginTop: "10px" }}>
+										<CodeAccordian
+											code={JSON.parse(message.text || "{}").request}
+											language="markdown"
+											isExpanded={true}
+											onToggleExpand={onToggleExpand}
+										/>
+									</div>
+								)}
+							</>
+						)
+					case "api_req_finished":
+						return null // we should never see this message type
+					case "mcp_server_response": // No Avatar/Wrapper
+						return <McpResponseDisplay responseText={message.text || ""} />
+					case "text": // Will be wrapped
 						return (
 							<div>
+								<Markdown markdown={message.text} />
+							</div>
+						)
+					case "reasoning": // Will be wrapped
+						return (
+							<>
+								{message.text && (
+									<div
+										onClick={onToggleExpand}
+										style={{
+											// marginBottom: 15,
+											cursor: "pointer",
+											color: "var(--vscode-descriptionForeground)",
+
+											fontStyle: "italic",
+											overflow: "hidden",
+										}}>
+										{isExpanded ? (
+											<div style={{ marginTop: -3 }}>
+												<span style={{ fontWeight: "bold", display: "block", marginBottom: "4px" }}>
+													Thinking
+													<span
+														className="codicon codicon-chevron-down"
+														style={{
+															display: "inline-block",
+															transform: "translateY(3px)",
+															marginLeft: "1.5px",
+														}}
+													/>
+												</span>
+												{message.text}
+											</div>
+										) : (
+											<div style={{ display: "flex", alignItems: "center" }}>
+												<span style={{ fontWeight: "bold", marginRight: "4px" }}>Thinking:</span>
+												<span
+													style={{
+														whiteSpace: "nowrap",
+														overflow: "hidden",
+														textOverflow: "ellipsis",
+														direction: "rtl",
+														textAlign: "left",
+														flex: 1,
+													}}>
+													{message.text + "\u200E"}
+												</span>
+												<span
+													className="codicon codicon-chevron-right"
+													style={{
+														marginLeft: "4px",
+														flexShrink: 0,
+													}}
+												/>
+											</div>
+										)}
+									</div>
+								)}
+							</>
+						)
+					case "user_feedback": // No Avatar/Wrapper
+						return (
+							<div
+								style={{
+									backgroundColor: "var(--vscode-badge-background)",
+									color: "var(--vscode-badge-foreground)",
+									borderRadius: "3px",
+									padding: "9px",
+									whiteSpace: "pre-line",
+									wordWrap: "break-word",
+								}}>
+								<span style={{ display: "block" }}>{highlightMentions(message.text)}</span>
+								{message.images && message.images.length > 0 && (
+									<Thumbnails images={message.images} style={{ marginTop: "8px" }} />
+								)}
+							</div>
+						)
+					case "user_feedback_diff": // No Avatar/Wrapper
+						const userDiffTool = JSON.parse(message.text || "{}") as ClineSayTool
+						return (
+							<div
+								style={{
+									marginTop: -10,
+									width: "100%",
+								}}>
+								<CodeAccordian
+									diff={userDiffTool.diff!} // 변수명 변경
+									isFeedback={true}
+									isExpanded={isExpanded}
+									onToggleExpand={onToggleExpand}
+								/>
+							</div>
+						)
+					case "error": // No Avatar/Wrapper
+						return (
+							<>
+								{title && (
+									<div style={headerStyle}>
+										{icon}
+										{title}
+									</div>
+								)}
+								<p
+									style={{
+										...pStyle,
+										color: "var(--vscode-errorForeground)",
+									}}>
+									{message.text}
+								</p>
+							</>
+						)
+					case "diff_error": // No Avatar/Wrapper
+						return (
+							<>
+								<div
+									style={{
+										display: "flex",
+										flexDirection: "column",
+										backgroundColor: "var(--vscode-textBlockQuote-background)",
+										padding: 8,
+										borderRadius: 3,
+										fontSize: 12,
+										color: "var(--vscode-foreground)",
+										opacity: 0.8,
+									}}>
+									<div
+										style={{
+											display: "flex",
+											alignItems: "center",
+											marginBottom: 4,
+										}}>
+										<i
+											className="codicon codicon-warning"
+											style={{
+												marginRight: 8,
+												fontSize: 14,
+												color: "var(--vscode-descriptionForeground)",
+											}}></i>
+										<span style={{ fontWeight: 500 }}>Diff Edit Mismatch</span>
+									</div>
+									<div>The model used search patterns that don't match anything in the file. Retrying...</div>
+								</div>
+							</>
+						)
+					case "clineignore_error": // No Avatar/Wrapper
+						return (
+							<>
+								<div
+									style={{
+										display: "flex",
+										flexDirection: "column",
+										backgroundColor: "rgba(255, 191, 0, 0.1)",
+										padding: 8,
+										borderRadius: 3,
+										fontSize: 12,
+									}}>
+									<div
+										style={{
+											display: "flex",
+											alignItems: "center",
+											marginBottom: 4,
+										}}>
+										<i
+											className="codicon codicon-error"
+											style={{
+												marginRight: 8,
+												fontSize: 18,
+												color: "#FFA500",
+											}}></i>
+										<span
+											style={{
+												fontWeight: 500,
+												color: "#FFA500",
+											}}>
+											Access Denied
+										</span>
+									</div>
+									<div>
+										Cline tried to access <code>{message.text}</code> which is blocked by the{" "}
+										<code>.clineignore</code>
+										file.
+									</div>
+								</div>
+							</>
+						)
+					case "checkpoint_created": // No Avatar/Wrapper
+						return (
+							<>
+								<CheckmarkControl messageTs={message.ts} isCheckpointCheckedOut={message.isCheckpointCheckedOut} />
+							</>
+						)
+					case "completion_result": // No Avatar/Wrapper
+						const hasChanges = message.text?.endsWith(COMPLETION_RESULT_CHANGES_FLAG) ?? false
+						const text = hasChanges ? message.text?.slice(0, -COMPLETION_RESULT_CHANGES_FLAG.length) : message.text
+						return (
+							<>
 								<div
 									style={{
 										...headerStyle,
@@ -1149,96 +1048,262 @@ export const ChatRowContent = ({ message, isExpanded, onToggleExpand, lastModifi
 										paddingTop: 10,
 									}}>
 									<Markdown markdown={text} />
-									{message.partial !== true && hasChanges && (
-										<div style={{ marginTop: 15 }}>
-											<SuccessButton
-												appearance="secondary"
-												disabled={seeNewChangesDisabled}
-												onClick={() => {
-													setSeeNewChangesDisabled(true)
-													vscode.postMessage({
-														type: "taskCompletionViewChanges",
-														number: message.ts,
-													})
-												}}>
-												<i
-													className="codicon codicon-new-file"
-													style={{
-														marginRight: 6,
-														cursor: seeNewChangesDisabled ? "wait" : "pointer",
-													}}
-												/>
-												See new changes
-											</SuccessButton>
-										</div>
-									)}
 								</div>
-							</div>
+								{message.partial !== true && hasChanges && (
+									<div style={{ paddingTop: 17 }}>
+										<SuccessButton
+											disabled={seeNewChangesDisabled}
+											onClick={() => {
+												setSeeNewChangesDisabled(true)
+												vscode.postMessage({
+													type: "taskCompletionViewChanges",
+													number: message.ts,
+												})
+											}}
+											style={{
+												cursor: seeNewChangesDisabled ? "wait" : "pointer",
+												width: "100%",
+											}}>
+											<i className="codicon codicon-new-file" style={{ marginRight: 6 }} />
+											See new changes
+										</SuccessButton>
+									</div>
+								)}
+							</>
 						)
-					} else {
-						return null // Don't render anything when we get a completion_result ask without text
-					}
-				case "followup":
-					let question: string | undefined
-					let options: string[] | undefined
-					let selected: string | undefined
-					try {
-						const parsedMessage = JSON.parse(message.text || "{}") as ClineAskQuestion
-						question = parsedMessage.question
-						options = parsedMessage.options
-						selected = parsedMessage.selected
-					} catch (e) {
-						// legacy messages would pass question directly
-						question = message.text
-					}
-
-					return (
-						<>
-							{title && (
+					case "shell_integration_warning": // No Avatar/Wrapper
+						return (
+							<>
+								<div
+									style={{
+										display: "flex",
+										flexDirection: "column",
+										backgroundColor: "rgba(255, 191, 0, 0.1)",
+										padding: 8,
+										borderRadius: 3,
+										fontSize: 12,
+									}}>
+									<div
+										style={{
+											display: "flex",
+											alignItems: "center",
+											marginBottom: 4,
+										}}>
+										<i
+											className="codicon codicon-warning"
+											style={{
+												marginRight: 8,
+												fontSize: 18,
+												color: "#FFA500",
+											}}></i>
+										<span
+											style={{
+												fontWeight: 500,
+												color: "#FFA500",
+											}}>
+											Shell Integration Unavailable
+										</span>
+									</div>
+									<div>
+										Cline won't be able to view the command's output. Please update VSCode (
+										<code>CMD/CTRL + Shift + P</code> → "Update") and make sure you're using a supported shell:
+										zsh, bash, fish, or PowerShell (<code>CMD/CTRL + Shift + P</code> → "Terminal: Select Default
+										Profile").{" "}
+										<a
+											href="https://github.com/cline/cline/wiki/Troubleshooting-%E2%80%90-Shell-Integration-Unavailable"
+											style={{
+												color: "inherit",
+												textDecoration: "underline",
+											}}>
+											Still having trouble?
+										</a>
+									</div>
+								</div>
+							</>
+						)
+					default:
+						// Default case for 'say' might need avatar/wrapper if it's AI text
+						// Let's assume default 'say' doesn't get avatar for now unless identified
+						return (
+							<>
+								{title && (
+									<div style={headerStyle}>
+										{icon}
+										{title}
+									</div>
+								)}
+								<div style={{ paddingTop: 10 }}>
+									<Markdown markdown={message.text} />
+								</div>
+							</>
+						)
+				}
+			case "ask":
+				switch (message.ask) {
+					case "mistake_limit_reached": // No Avatar/Wrapper
+						return (
+							<>
 								<div style={headerStyle}>
 									{icon}
 									{title}
 								</div>
-							)}
-							<div style={{ paddingTop: 10 }}>
-								<Markdown markdown={question} />
+								<p
+									style={{
+										...pStyle,
+										color: "var(--vscode-errorForeground)",
+									}}>
+									{message.text}
+								</p>
+							</>
+						)
+					case "auto_approval_max_req_reached": // No Avatar/Wrapper
+						return (
+							<>
+								<div style={headerStyle}>
+									{icon}
+									{title}
+								</div>
+								<p
+									style={{
+										...pStyle,
+										color: "var(--vscode-errorForeground)",
+									}}>
+									{message.text}
+								</p>
+							</>
+						)
+					case "completion_result": // No Avatar/Wrapper
+						if (message.text) {
+							const hasChangesAsk = message.text.endsWith(COMPLETION_RESULT_CHANGES_FLAG) ?? false // 변수명 변경
+							const textAsk = hasChangesAsk ? message.text.slice(0, -COMPLETION_RESULT_CHANGES_FLAG.length) : message.text // 변수명 변경
+							return (
+								<div>
+									<div
+										style={{
+											...headerStyle,
+											marginBottom: "10px",
+										}}>
+										{icon}
+										{title}
+									</div>
+									<div
+										style={{
+											color: "var(--vscode-charts-green)",
+											paddingTop: 10,
+										}}>
+										<Markdown markdown={textAsk} /> {/* 변수명 변경 */}
+										{message.partial !== true && hasChangesAsk && ( // 변수명 변경
+											<div style={{ marginTop: 15 }}>
+												<SuccessButton
+													appearance="secondary"
+													disabled={seeNewChangesDisabled}
+													onClick={() => {
+														setSeeNewChangesDisabled(true)
+														vscode.postMessage({
+															type: "taskCompletionViewChanges",
+															number: message.ts,
+														})
+													}}>
+													<i
+														className="codicon codicon-new-file"
+														style={{
+															marginRight: 6,
+															cursor: seeNewChangesDisabled ? "wait" : "pointer",
+														}}
+													/>
+													See new changes
+												</SuccessButton>
+											</div>
+										)}
+									</div>
+								</div>
+							)
+						} else {
+							return null // Don't render anything when we get a completion_result ask without text
+						}
+					case "followup": // Will be wrapped
+						let question: string | undefined
+						let options: string[] | undefined
+						let selected: string | undefined
+						try {
+							const parsedMessage = JSON.parse(message.text || "{}") as ClineAskQuestion
+							question = parsedMessage.question
+							options = parsedMessage.options
+							selected = parsedMessage.selected
+						} catch (e) {
+							// legacy messages would pass question directly
+							question = message.text
+						}
+
+						return (
+							<>
+								{title && (
+									<div style={headerStyle}>
+										{icon}
+										{title}
+									</div>
+								)}
+								<div style={{ paddingTop: 10 }}>
+									<Markdown markdown={question} />
+									<OptionsButtons
+										options={options}
+										selected={selected}
+										isActive={isLast && lastModifiedMessage?.ask === "followup"}
+									/>
+								</div>
+							</>
+						)
+					case "plan_mode_response": { // Will be wrapped
+						let response: string | undefined
+						let options: string[] | undefined
+						let selected: string | undefined
+						try {
+							const parsedMessage = JSON.parse(message.text || "{}") as ClinePlanModeResponse
+							response = parsedMessage.response
+							options = parsedMessage.options
+							selected = parsedMessage.selected
+						} catch (e) {
+							// legacy messages would pass response directly
+							response = message.text
+						}
+						return (
+							<div style={{}}>
+								<Markdown markdown={response} />
 								<OptionsButtons
 									options={options}
 									selected={selected}
-									isActive={isLast && lastModifiedMessage?.ask === "followup"}
+									isActive={isLast && lastModifiedMessage?.ask === "plan_mode_response"}
 								/>
 							</div>
-						</>
-					)
-				case "plan_mode_response": {
-					let response: string | undefined
-					let options: string[] | undefined
-					let selected: string | undefined
-					try {
-						const parsedMessage = JSON.parse(message.text || "{}") as ClinePlanModeResponse
-						response = parsedMessage.response
-						options = parsedMessage.options
-						selected = parsedMessage.selected
-					} catch (e) {
-						// legacy messages would pass response directly
-						response = message.text
+						)
 					}
-					return (
-						<div style={{}}>
-							<Markdown markdown={response} />
-							<OptionsButtons
-								options={options}
-								selected={selected}
-								isActive={isLast && lastModifiedMessage?.ask === "plan_mode_response"}
-							/>
-						</div>
-					)
+					default:
+						return null
 				}
-				default:
-					return null
-			}
+		}
+		return null; // Default case
+	};
+
+	// --- Final Return Structure ---
+	// Conditionally apply avatar and wrapper ONLY for specific AI message types
+	if (isAiMessage && alphaAvatarUri) { // alphaAvatarUri가 있을 때만 아바타 표시
+		// AI text, reasoning, followup, plan_mode_response
+		return (
+			<div style={{ display: "flex", alignItems: "flex-start" }}>
+				<AvatarImage src={alphaAvatarUri} alt="Alpha Avatar" /> {/* alphaAvatarUri 사용 */}
+				<MessageContentWrapper isAiMessage={true}>{renderSpecificContent()}</MessageContentWrapper>
+			</div>
+		);
+	} else {
+		// User messages, tool messages, commands, errors, warnings, etc.
+		// Render without avatar and special wrapper
+		return (
+			<div> {/* Simple div container */}
+				{renderSpecificContent()}
+			</div>
+		);
 	}
-}
+};
 
 function parseErrorText(text: string | undefined) {
 	if (!text) {

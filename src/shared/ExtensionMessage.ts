@@ -111,6 +111,7 @@ export interface ExtensionState {
 	}
 	version: string
 	vscMachineId: string
+	alphaAvatarUri?: string // 알파 아바타 URI 추가
 }
 
 export interface ClineMessage {
