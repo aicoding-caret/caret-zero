@@ -33,8 +33,12 @@ export function parseAssistantMessage(assistantMessage: string) {
 
 		if (currentToolUse) {
 			const currentToolValue = accumulator.slice(currentToolUseStartIndex)
-			const toolUseClosingTag = `</${currentToolUse.name}>`
-			if (currentToolValue.endsWith(toolUseClosingTag)) {
+			const standardClosingTag = `</${currentToolUse.name}>`
+			// 'write_to_file'을 사용할 경우 'write_file' 닫는 태그도 인식 
+			const alternativeClosingTag = currentToolUse.name === "write_to_file" ? "</write_file>" : ""
+			
+			if (currentToolValue.endsWith(standardClosingTag) || 
+			   (alternativeClosingTag && currentToolValue.endsWith(alternativeClosingTag))) {
 				// end of a tool use
 				currentToolUse.partial = false
 				contentBlocks.push(currentToolUse)
@@ -78,9 +82,14 @@ export function parseAssistantMessage(assistantMessage: string) {
 		for (const toolUseOpeningTag of possibleToolUseOpeningTags) {
 			if (accumulator.endsWith(toolUseOpeningTag)) {
 				// start of a new tool use
+				const toolName = toolUseOpeningTag.slice(1, -1) as ToolUseName;
+				
+				// 'write_file'을 'write_to_file'로 정규화
+				const normalizedToolName = toolName === "write_file" ? "write_to_file" : toolName;
+				
 				currentToolUse = {
 					type: "tool_use",
-					name: toolUseOpeningTag.slice(1, -1) as ToolUseName,
+					name: normalizedToolName,
 					params: {},
 					partial: true,
 				}
@@ -113,7 +122,7 @@ export function parseAssistantMessage(assistantMessage: string) {
 				partial: true,
 			}
 			// Log partial text content accumulation
-			// console.log(`[Parser] Accumulating text: "${currentTextContent.content}"`) 
+			// console.log(`[Parser] Accumulating text: "${currentTextContent.content}"`)
 		}
 	}
 
