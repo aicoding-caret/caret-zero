@@ -377,19 +377,15 @@ export async function SYSTEM_PROMPT(cwd: string, browserEnabled: boolean, mcpHub
 
 이 접근 방식은 단순한 포맷 변환을 넘어, AI가 AI를 위한 규칙을 만들고 검증하는 새로운 패러다임을 제시합니다. 이는 AI 시스템이 자기 자신의 동작 방식을 이해하고 최적화하는 메타인지적 프로세스를 가집니다.
 
-## 파일 예시 자료
+## 참고 자료 및 예시 파일
 
-1. **[md-json-patent-concept.md](./md-json-patent-concept.md)** - 기술의 개념, 문제 해결 방법, 가치 및 장점에 대한 포괄적인 설명
+1. **[comparison-example.md](./comparison-example.md)** - 마크다운과 JSON 형식의 구체적인 비교 예시
+   - 도구 사용 설명 및 규칙 설명에 대한 실제 마크다운과 JSON 코드 비교
+   - 구조적 명확성과 프로그래매틱 접근성 설명
 
-2. **[comparison-example.md](./comparison-example.md)** - 마크다운과 JSON 형식의 구체적인 비교 예시
-
-3. **[token-savings-analysis.md](./token-savings-analysis.md)** - 토큰 절감 효과 분석 및 성능 영향 측정 결과
-
-4. **[md-json-architecture.md](./md-json-architecture.md)** - 시스템 아키텍처와 구현 방법에 대한 상세 설명
-
-5. **implementation-example/** - 실제 구현 예시 파일
-   - **[sample_rule.md](./implementation-example/sample_rule.md)** - 마크다운 형식의 도구 사용 가이드라인
-   - **[sample_rule.json](./implementation-example/sample_rule.json)** - 동일한 내용의 JSON 형식 변환 예시
+2. **[token-savings-analysis.md](./token-savings-analysis.md)** - 토큰 절감 효과 분석 및 성능 영향 측정 결과
+   - 도구 정의, 규칙, 모드 설명 등 주요 섹션별 절감율 상세 분석
+   - 75.91%의 전체 토큰 절감 효과 데이터 제공   
 
 ## 결론
 
