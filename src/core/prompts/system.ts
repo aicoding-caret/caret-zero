@@ -31,7 +31,7 @@ interface SectionJson {
  */
 async function loadJsonFile<T>(filePath: string): Promise<T> {
 	try {
-		const content = await fs.readFile(filePath, 'utf-8')
+		const content = await fs.readFile(filePath, "utf-8")
 		return JSON.parse(content) as T
 	} catch (error) {
 		console.error(`Error loading JSON from ${filePath}:`, error)
@@ -51,7 +51,7 @@ async function loadSection(sectionsDir: string, sectionName: string): Promise<st
 		console.error(`Error loading section ${sectionName}:`, error)
 		// Fallback to markdown file if JSON loading fails
 		const mdPath = path.join(sectionsDir, `${sectionName}.md`)
-		return await fs.readFile(mdPath, 'utf-8')
+		return await fs.readFile(mdPath, "utf-8")
 	}
 }
 
@@ -67,7 +67,7 @@ async function loadRules(rulesDir: string, ruleName: string): Promise<string[]> 
 		console.error(`Error loading rules ${ruleName}:`, error)
 		// Fallback to markdown if JSON loading fails
 		const mdPath = path.join(rulesDir, `${ruleName}.md`)
-		const content = await fs.readFile(mdPath, 'utf-8')
+		const content = await fs.readFile(mdPath, "utf-8")
 		return [content]
 	}
 }
@@ -78,17 +78,17 @@ export const SYSTEM_PROMPT = async (
 	mcpHub: McpHub,
 	browserSettings: BrowserSettings,
 ): Promise<string> => {
-	const promptsDir = path.join(__dirname, '..')
-	const sectionsDir = path.join(promptsDir, 'sections')
-	const rulesDir = path.join(promptsDir, 'rules')
-	
+	const promptsDir = path.join(__dirname, "..")
+	const sectionsDir = path.join(promptsDir, "sections")
+	const rulesDir = path.join(promptsDir, "rules")
+
 	// Use directly imported core system prompt JSON
 	// No need to load from file path which can cause path resolution issues
-	
+
 	// 현재 모드 결정
-	const currentMode = supportsComputerUse ? 'act_mode' : 'plan_mode'
+	const currentMode = supportsComputerUse ? "act_mode" : "plan_mode"
 	const modeConfig = corePrompt.modes[currentMode]
-	
+
 	// 기본 프롬프트 구성
 	let systemPrompt = `You are Cline, a highly skilled software engineer with extensive knowledge in many programming languages, frameworks, design patterns, and best practices.
 
@@ -118,21 +118,21 @@ Always adhere to this format for the tool use to ensure proper parsing and execu
 
 	// 도구 정의 로드 및 포맷팅
 	try {
-		const toolDefinitionsPath = path.join(sectionsDir, 'TOOL_DEFINITIONS.json')
+		const toolDefinitionsPath = path.join(sectionsDir, "TOOL_DEFINITIONS.json")
 		const toolDefsData = await loadJsonFile<{ tools: { [key: string]: ToolDefinition } }>(toolDefinitionsPath)
-		
-		systemPrompt += '\n\n# Tools'
+
+		systemPrompt += "\n\n# Tools"
 
 		for (const toolName in toolDefsData.tools) {
 			const tool = toolDefsData.tools[toolName]
 			systemPrompt += `\n\n## ${toolName}\nDescription: ${tool.description}`
-			systemPrompt += '\nParameters:'
+			systemPrompt += "\nParameters:"
 			for (const paramName in tool.params) {
 				const param = tool.params[paramName]
-				systemPrompt += `\n- ${paramName}: (${param.required ? 'required' : 'optional'}) ${param.desc}`
+				systemPrompt += `\n- ${paramName}: (${param.required ? "required" : "optional"}) ${param.desc}`
 			}
 			// 기본 사용법 예시 추가 (필요 시)
-			// systemPrompt += `\nUsage:\n<${toolName}>\n...</${toolName}>` 
+			// systemPrompt += `\nUsage:\n<${toolName}>\n...</${toolName}>`
 		}
 	} catch (error) {
 		console.error("Error loading or formatting tool definitions:", error)
@@ -141,39 +141,39 @@ Always adhere to this format for the tool use to ensure proper parsing and execu
 	// 나머지 섹션 로딩 로직 (헤더와 함께 구조적으로 추가)
 	try {
 		for (const sectionRef of modeConfig.sections_ref) {
-			const sectionName = sectionRef.replace('.json', '')
+			const sectionName = sectionRef.replace(".json", "")
 			// 이미 처리된 TOOL_DEFINITIONS는 건너뜀
-			if (sectionName === 'TOOL_DEFINITIONS') continue 
+			if (sectionName === "TOOL_DEFINITIONS") continue
 
 			try {
 				const sectionContent = await loadSection(sectionsDir, sectionName)
 				// 섹션 이름으로 헤더 추가 (예: # Tool Use Examples)
-				let formattedContent = sectionContent;
-				if (sectionName === 'EDITING_FILES_GUIDE') {
+				let formattedContent = sectionContent
+				if (sectionName === "EDITING_FILES_GUIDE") {
 					try {
-						const guideData = JSON.parse(sectionContent);
-						formattedContent = `# EDITING FILES GUIDE\n\n`;
+						const guideData = JSON.parse(sectionContent)
+						formattedContent = `# EDITING FILES GUIDE\n\n`
 						guideData.tools.forEach((tool: any) => {
-							formattedContent += `## ${tool.name}\n\n`;
-							formattedContent += `### Purpose\n- ${tool.purpose}\n\n`;
-							formattedContent += `### When to Use\n${tool.when_to_use.map((item: string) => `- ${item}`).join('\n')}\n\n`;
+							formattedContent += `## ${tool.name}\n\n`
+							formattedContent += `### Purpose\n- ${tool.purpose}\n\n`
+							formattedContent += `### When to Use\n${tool.when_to_use.map((item: string) => `- ${item}`).join("\n")}\n\n`
 							if (tool.important_considerations) {
-								formattedContent += `### Important Considerations\n${tool.important_considerations.map((item: string) => `- ${item}`).join('\n')}\n\n`;
+								formattedContent += `### Important Considerations\n${tool.important_considerations.map((item: string) => `- ${item}`).join("\n")}\n\n`
 							}
 							if (tool.advantages) {
-								formattedContent += `### Advantages\n${tool.advantages.map((item: string) => `- ${item}`).join('\n')}\n\n`;
+								formattedContent += `### Advantages\n${tool.advantages.map((item: string) => `- ${item}`).join("\n")}\n\n`
 							}
-						});
-						formattedContent += `### Choosing the Appropriate Tool\n${guideData.choosing_the_appropriate_tool.map((item: string) => `- ${item}`).join('\n')}\n\n`;
-						formattedContent += `### Auto-formatting Considerations\n${guideData.auto_formatting_considerations.map((item: string) => `- ${item}`).join('\n')}\n\n`;
-						formattedContent += `### Workflow Tips\n${guideData.workflow_tips.map((item: string) => `- ${item}`).join('\n')}`;
+						})
+						formattedContent += `### Choosing the Appropriate Tool\n${guideData.choosing_the_appropriate_tool.map((item: string) => `- ${item}`).join("\n")}\n\n`
+						formattedContent += `### Auto-formatting Considerations\n${guideData.auto_formatting_considerations.map((item: string) => `- ${item}`).join("\n")}\n\n`
+						formattedContent += `### Workflow Tips\n${guideData.workflow_tips.map((item: string) => `- ${item}`).join("\n")}`
 					} catch (parseError) {
-						console.error("Error parsing EDITING_FILES_GUIDE.json:", parseError);
+						console.error("Error parsing EDITING_FILES_GUIDE.json:", parseError)
 						// 파싱 실패 시 원본 내용 사용
-						formattedContent = `# EDITING FILES GUIDE\n\n${sectionContent}`;
+						formattedContent = `# EDITING FILES GUIDE\n\n${sectionContent}`
 					}
 				} else {
-					const header = `# ${sectionName.replace(/_/g, ' ')}`
+					const header = `# ${sectionName.replace(/_/g, " ")}`
 					formattedContent = `${header}\n\n${sectionContent}`
 				}
 				systemPrompt += `\n\n====\n\n${formattedContent}`
@@ -188,15 +188,15 @@ Always adhere to this format for the tool use to ensure proper parsing and execu
 
 	// 규칙 로딩 로직 (헤더와 함께 구조적으로 추가)
 	try {
-		systemPrompt += '\n\n====\n\n# RULES\n'
+		systemPrompt += "\n\n====\n\n# RULES\n"
 		for (const ruleRef of modeConfig.rules_ref) {
-			const rules = await loadRules(rulesDir, ruleRef.replace('.json', ''))
-			systemPrompt += '\n' + rules.join('\n')
+			const rules = await loadRules(rulesDir, ruleRef.replace(".json", ""))
+			systemPrompt += "\n" + rules.join("\n")
 		}
 	} catch (error) {
 		console.error("Error loading rules:", error)
 	}
-	
+
 	return systemPrompt
 }
 

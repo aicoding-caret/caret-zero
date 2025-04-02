@@ -12,6 +12,7 @@ export const toolUseNames = [
 	"execute_command",
 	"read_file",
 	"write_to_file",
+	"write_file", // 추가: 'write_file'을 호환 태그로 인식하도록 추가
 	"replace_in_file",
 	"search_files",
 	"list_files",

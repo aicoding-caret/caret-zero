@@ -155,18 +155,18 @@ export class DiffViewProvider {
 		const preSaveContent = updatedDocument.getText()
 
 		// Check file size limit
-		const fileSizeLimit = 5000;
+		const fileSizeLimit = 5000
 		if (preSaveContent.length > fileSizeLimit) {
-			throw new Error(`File size exceeds the limit of ${fileSizeLimit} characters.`);
+			throw new Error(`File size exceeds the limit of ${fileSizeLimit} characters.`)
 		}
 
 		if (updatedDocument.isDirty) {
 			try {
-				await updatedDocument.save();
+				await updatedDocument.save()
 			} catch (error) {
-				console.error("Failed to save document:", error);
+				console.error("Failed to save document:", error)
 				// Re-throw the error to be caught by the caller
-				throw error;
+				throw error
 			}
 		}
 

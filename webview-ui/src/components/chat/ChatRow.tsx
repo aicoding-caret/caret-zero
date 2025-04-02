@@ -771,7 +771,9 @@ export const ChatRowContent = ({ message, isExpanded, onToggleExpand, lastModifi
 									<>
 										{(() => {
 											// Try to parse the error message as JSON for credit limit error
-											const errorData = parseErrorText(apiRequestFailedMessage || apiReqStreamingFailedMessage) // Combine checks
+											const errorData = parseErrorText(
+												apiRequestFailedMessage || apiReqStreamingFailedMessage,
+											) // Combine checks
 											if (
 												errorData &&
 												errorData.code === "insufficient_credits" &&
@@ -1026,7 +1028,10 @@ export const ChatRowContent = ({ message, isExpanded, onToggleExpand, lastModifi
 					case "checkpoint_created": // No Avatar/Wrapper
 						return (
 							<>
-								<CheckmarkControl messageTs={message.ts} isCheckpointCheckedOut={message.isCheckpointCheckedOut} />
+								<CheckmarkControl
+									messageTs={message.ts}
+									isCheckpointCheckedOut={message.isCheckpointCheckedOut}
+								/>
 							</>
 						)
 					case "completion_result": // No Avatar/Wrapper
@@ -1106,9 +1111,9 @@ export const ChatRowContent = ({ message, isExpanded, onToggleExpand, lastModifi
 									</div>
 									<div>
 										Cline won't be able to view the command's output. Please update VSCode (
-										<code>CMD/CTRL + Shift + P</code> → "Update") and make sure you're using a supported shell:
-										zsh, bash, fish, or PowerShell (<code>CMD/CTRL + Shift + P</code> → "Terminal: Select Default
-										Profile").{" "}
+										<code>CMD/CTRL + Shift + P</code> → "Update") and make sure you're using a supported
+										shell: zsh, bash, fish, or PowerShell (<code>CMD/CTRL + Shift + P</code> → "Terminal:
+										Select Default Profile").{" "}
 										<a
 											href="https://github.com/cline/cline/wiki/Troubleshooting-%E2%80%90-Shell-Integration-Unavailable"
 											style={{
@@ -1175,7 +1180,9 @@ export const ChatRowContent = ({ message, isExpanded, onToggleExpand, lastModifi
 					case "completion_result": // No Avatar/Wrapper
 						if (message.text) {
 							const hasChangesAsk = message.text.endsWith(COMPLETION_RESULT_CHANGES_FLAG) ?? false // 변수명 변경
-							const textAsk = hasChangesAsk ? message.text.slice(0, -COMPLETION_RESULT_CHANGES_FLAG.length) : message.text // 변수명 변경
+							const textAsk = hasChangesAsk
+								? message.text.slice(0, -COMPLETION_RESULT_CHANGES_FLAG.length)
+								: message.text // 변수명 변경
 							return (
 								<div>
 									<div
@@ -1192,29 +1199,30 @@ export const ChatRowContent = ({ message, isExpanded, onToggleExpand, lastModifi
 											paddingTop: 10,
 										}}>
 										<Markdown markdown={textAsk} /> {/* 변수명 변경 */}
-										{message.partial !== true && hasChangesAsk && ( // 변수명 변경
-											<div style={{ marginTop: 15 }}>
-												<SuccessButton
-													appearance="secondary"
-													disabled={seeNewChangesDisabled}
-													onClick={() => {
-														setSeeNewChangesDisabled(true)
-														vscode.postMessage({
-															type: "taskCompletionViewChanges",
-															number: message.ts,
-														})
-													}}>
-													<i
-														className="codicon codicon-new-file"
-														style={{
-															marginRight: 6,
-															cursor: seeNewChangesDisabled ? "wait" : "pointer",
-														}}
-													/>
-													See new changes
-												</SuccessButton>
-											</div>
-										)}
+										{message.partial !== true &&
+											hasChangesAsk && ( // 변수명 변경
+												<div style={{ marginTop: 15 }}>
+													<SuccessButton
+														appearance="secondary"
+														disabled={seeNewChangesDisabled}
+														onClick={() => {
+															setSeeNewChangesDisabled(true)
+															vscode.postMessage({
+																type: "taskCompletionViewChanges",
+																number: message.ts,
+															})
+														}}>
+														<i
+															className="codicon codicon-new-file"
+															style={{
+																marginRight: 6,
+																cursor: seeNewChangesDisabled ? "wait" : "pointer",
+															}}
+														/>
+														See new changes
+													</SuccessButton>
+												</div>
+											)}
 									</div>
 								</div>
 							)
@@ -1253,7 +1261,8 @@ export const ChatRowContent = ({ message, isExpanded, onToggleExpand, lastModifi
 								</div>
 							</>
 						)
-					case "plan_mode_response": { // Will be wrapped
+					case "plan_mode_response": {
+						// Will be wrapped
 						let response: string | undefined
 						let options: string[] | undefined
 						let selected: string | undefined
@@ -1281,29 +1290,32 @@ export const ChatRowContent = ({ message, isExpanded, onToggleExpand, lastModifi
 						return null
 				}
 		}
-		return null; // Default case
-	};
+		return null // Default case
+	}
 
 	// --- Final Return Structure ---
 	// Conditionally apply avatar and wrapper ONLY for specific AI message types
-	if (isAiMessage && alphaAvatarUri) { // alphaAvatarUri가 있을 때만 아바타 표시
+	if (isAiMessage && alphaAvatarUri) {
+		// alphaAvatarUri가 있을 때만 아바타 표시
 		// AI text, reasoning, followup, plan_mode_response
 		return (
 			<div style={{ display: "flex", alignItems: "flex-start" }}>
 				<AvatarImage src={alphaAvatarUri} alt="Alpha Avatar" /> {/* alphaAvatarUri 사용 */}
 				<MessageContentWrapper isAiMessage={true}>{renderSpecificContent()}</MessageContentWrapper>
 			</div>
-		);
+		)
 	} else {
 		// User messages, tool messages, commands, errors, warnings, etc.
 		// Render without avatar and special wrapper
 		return (
-			<div> {/* Simple div container */}
+			<div>
+				{" "}
+				{/* Simple div container */}
 				{renderSpecificContent()}
 			</div>
-		);
+		)
 	}
-};
+}
 
 function parseErrorText(text: string | undefined) {
 	if (!text) {

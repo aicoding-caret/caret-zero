@@ -1576,6 +1576,8 @@ export class Cline {
 							return `[${block.name}]`
 						case "attempt_completion":
 							return `[${block.name}]`
+						default:
+							return `[${block.name}]` // 기본 반환 값 추가
 					}
 				}
 
