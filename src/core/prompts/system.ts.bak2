@@ -116,67 +116,12 @@ For example:
 
 Always adhere to this format for the tool use to ensure proper parsing and execution.`
 
-	// 도구 정의 로드 및 포맷팅
-	try {
-		const toolDefinitionsPath = path.join(sectionsDir, 'TOOL_DEFINITIONS.json')
-		const toolDefsData = await loadJsonFile<{ tools: { [key: string]: ToolDefinition } }>(toolDefinitionsPath)
-		
-		systemPrompt += '\n\n# Tools'
-
-		for (const toolName in toolDefsData.tools) {
-			const tool = toolDefsData.tools[toolName]
-			systemPrompt += `\n\n## ${toolName}\nDescription: ${tool.description}`
-			systemPrompt += '\nParameters:'
-			for (const paramName in tool.params) {
-				const param = tool.params[paramName]
-				systemPrompt += `\n- ${paramName}: (${param.required ? 'required' : 'optional'}) ${param.desc}`
-			}
-			// 기본 사용법 예시 추가 (필요 시)
-			// systemPrompt += `\nUsage:\n<${toolName}>\n...</${toolName}>` 
-		}
-	} catch (error) {
-		console.error("Error loading or formatting tool definitions:", error)
-	}
-
-	// 나머지 섹션 로딩 로직 (헤더와 함께 구조적으로 추가)
+	// 섹션 로딩 로직
 	try {
 		for (const sectionRef of modeConfig.sections_ref) {
-			const sectionName = sectionRef.replace('.json', '')
-			// 이미 처리된 TOOL_DEFINITIONS는 건너뜀
-			if (sectionName === 'TOOL_DEFINITIONS') continue 
-
 			try {
-				const sectionContent = await loadSection(sectionsDir, sectionName)
-				// 섹션 이름으로 헤더 추가 (예: # Tool Use Examples)
-				let formattedContent = sectionContent;
-				if (sectionName === 'EDITING_FILES_GUIDE') {
-					try {
-						const guideData = JSON.parse(sectionContent);
-						formattedContent = `# EDITING FILES GUIDE\n\n`;
-						guideData.tools.forEach((tool: any) => {
-							formattedContent += `## ${tool.name}\n\n`;
-							formattedContent += `### Purpose\n- ${tool.purpose}\n\n`;
-							formattedContent += `### When to Use\n${tool.when_to_use.map((item: string) => `- ${item}`).join('\n')}\n\n`;
-							if (tool.important_considerations) {
-								formattedContent += `### Important Considerations\n${tool.important_considerations.map((item: string) => `- ${item}`).join('\n')}\n\n`;
-							}
-							if (tool.advantages) {
-								formattedContent += `### Advantages\n${tool.advantages.map((item: string) => `- ${item}`).join('\n')}\n\n`;
-							}
-						});
-						formattedContent += `### Choosing the Appropriate Tool\n${guideData.choosing_the_appropriate_tool.map((item: string) => `- ${item}`).join('\n')}\n\n`;
-						formattedContent += `### Auto-formatting Considerations\n${guideData.auto_formatting_considerations.map((item: string) => `- ${item}`).join('\n')}\n\n`;
-						formattedContent += `### Workflow Tips\n${guideData.workflow_tips.map((item: string) => `- ${item}`).join('\n')}`;
-					} catch (parseError) {
-						console.error("Error parsing EDITING_FILES_GUIDE.json:", parseError);
-						// 파싱 실패 시 원본 내용 사용
-						formattedContent = `# EDITING FILES GUIDE\n\n${sectionContent}`;
-					}
-				} else {
-					const header = `# ${sectionName.replace(/_/g, ' ')}`
-					formattedContent = `${header}\n\n${sectionContent}`
-				}
-				systemPrompt += `\n\n====\n\n${formattedContent}`
+				const sectionContent = await loadSection(sectionsDir, sectionRef.replace('.json', ''))
+				systemPrompt += '\n\n' + sectionContent
 			} catch (error) {
 				console.error(`Error loading section ${sectionRef}:`, error)
 				// 오류가 있어도 계속 진행
@@ -184,17 +129,6 @@ Always adhere to this format for the tool use to ensure proper parsing and execu
 		}
 	} catch (error) {
 		console.error("Error loading sections:", error)
-	}
-
-	// 규칙 로딩 로직 (헤더와 함께 구조적으로 추가)
-	try {
-		systemPrompt += '\n\n====\n\n# RULES\n'
-		for (const ruleRef of modeConfig.rules_ref) {
-			const rules = await loadRules(rulesDir, ruleRef.replace('.json', ''))
-			systemPrompt += '\n' + rules.join('\n')
-		}
-	} catch (error) {
-		console.error("Error loading rules:", error)
 	}
 	
 	return systemPrompt

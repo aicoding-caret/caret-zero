@@ -104,6 +104,7 @@ export function parseAssistantMessage(assistantMessage: string) {
 		if (!didStartToolUse) {
 			// no tool use, so it must be text either at the beginning or between tools
 			if (currentTextContent === undefined) {
+				// Start of a new text block
 				currentTextContentStartIndex = i
 			}
 			currentTextContent = {
@@ -111,6 +112,8 @@ export function parseAssistantMessage(assistantMessage: string) {
 				content: accumulator.slice(currentTextContentStartIndex).trim(),
 				partial: true,
 			}
+			// Log partial text content accumulation
+			// console.log(`[Parser] Accumulating text: "${currentTextContent.content}"`) 
 		}
 	}
 

@@ -154,8 +154,20 @@ export class DiffViewProvider {
 		// get the contents before save operation which may do auto-formatting
 		const preSaveContent = updatedDocument.getText()
 
+		// Check file size limit
+		const fileSizeLimit = 5000;
+		if (preSaveContent.length > fileSizeLimit) {
+			throw new Error(`File size exceeds the limit of ${fileSizeLimit} characters.`);
+		}
+
 		if (updatedDocument.isDirty) {
-			await updatedDocument.save()
+			try {
+				await updatedDocument.save();
+			} catch (error) {
+				console.error("Failed to save document:", error);
+				// Re-throw the error to be caught by the caller
+				throw error;
+			}
 		}
 
 		// get text after save in case there is any auto-formatting done by the editor

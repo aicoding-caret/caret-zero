@@ -508,6 +508,8 @@ Remember:
 - Maintain clear separation of concerns
 - Install dependencies in correct package.json
 
+- When using write_to_file, limit content to 5000 characters to ensure stability.
+
 ## Contributing
 
 Contributions to the Cline extension are welcome! Please follow these guidelines:
