@@ -1,34 +1,34 @@
 {
-  "name": "todo-list-app",
-  "version": "1.0.0",
-  "description": "간단한 웹 기반 Todo 리스트 애플리케이션",
-  "main": "index.html",
-  "scripts": {
-    "test": "jest",
-    "start": "serve ."
-  },
-  "keywords": [
-    "todo",
-    "list",
-    "web",
-    "app"
-  ],
-  "author": "",
-  "license": "MIT",
-  "devDependencies": {
-    "jest": "^29.5.0",
-    "jest-environment-jsdom": "^29.5.0",
-    "serve": "^14.2.0"
-  },
-  "jest": {
-    "testEnvironment": "node",
-    "moduleFileExtensions": [
-      "js",
-      "json"
-    ],
-    "transform": {},
-    "testMatch": [
-      "**/*.test.js"
-    ]
-  }
-} 
+	"name": "todo-list-app",
+	"version": "1.0.0",
+	"description": "간단한 웹 기반 Todo 리스트 애플리케이션",
+	"main": "index.html",
+	"scripts": {
+		"test": "jest",
+		"start": "serve ."
+	},
+	"keywords": [
+		"todo",
+		"list",
+		"web",
+		"app"
+	],
+	"author": "",
+	"license": "MIT",
+	"devDependencies": {
+		"jest": "^29.5.0",
+		"jest-environment-jsdom": "^29.5.0",
+		"serve": "^14.2.0"
+	},
+	"jest": {
+		"testEnvironment": "node",
+		"moduleFileExtensions": [
+			"js",
+			"json"
+		],
+		"transform": {},
+		"testMatch": [
+			"**/*.test.js"
+		]
+	}
+}

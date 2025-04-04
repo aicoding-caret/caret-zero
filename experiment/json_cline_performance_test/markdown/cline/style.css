@@ -3,85 +3,85 @@
 
 /* 기본 스타일 */
 * {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
+	box-sizing: border-box;
+	margin: 0;
+	padding: 0;
 }
 
 body {
-  font-family: 'Noto Sans KR', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  line-height: 1.6;
-  color: #333;
-  background-color: #f8f9fa;
+	font-family: "Noto Sans KR", "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+	line-height: 1.6;
+	color: #333;
+	background-color: #f8f9fa;
 }
 
 /* 헤더 스타일 */
 header {
-  background-color: #4a6fa5;
-  color: white;
-  text-align: center;
-  padding: 1.5rem 0;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+	background-color: #4a6fa5;
+	color: white;
+	text-align: center;
+	padding: 1.5rem 0;
+	box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
 header h1 {
-  font-size: 2rem;
-  font-weight: 500;
+	font-size: 2rem;
+	font-weight: 500;
 }
 
 /* 메인 컨테이너 스타일 */
 main {
-  padding: 2rem;
+	padding: 2rem;
 }
 
 .container {
-  display: flex;
-  max-width: 1200px;
-  margin: 0 auto;
-  gap: 2rem;
+	display: flex;
+	max-width: 1200px;
+	margin: 0 auto;
+	gap: 2rem;
 }
 
 /* 섹션 공통 스타일 */
 .editor-section,
 .preview-section {
-  flex: 1;
-  background-color: white;
-  border-radius: 8px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-  padding: 1.5rem;
+	flex: 1;
+	background-color: white;
+	border-radius: 8px;
+	box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+	padding: 1.5rem;
 }
 
 h2 {
-  margin-bottom: 1rem;
-  color: #4a6fa5;
-  font-size: 1.5rem;
-  font-weight: 500;
+	margin-bottom: 1rem;
+	color: #4a6fa5;
+	font-size: 1.5rem;
+	font-weight: 500;
 }
 
 /* 에디터 스타일 */
 #markdown-input {
-  width: 100%;
-  height: 70vh;
-  min-height: 400px;
-  padding: 1rem;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  font-family: 'Consolas', 'Monaco', monospace;
-  font-size: 0.9rem;
-  line-height: 1.5;
-  resize: vertical;
+	width: 100%;
+	height: 70vh;
+	min-height: 400px;
+	padding: 1rem;
+	border: 1px solid #ddd;
+	border-radius: 4px;
+	font-family: "Consolas", "Monaco", monospace;
+	font-size: 0.9rem;
+	line-height: 1.5;
+	resize: vertical;
 }
 
 /* 미리보기 스타일 */
 .preview {
-  width: 100%;
-  height: 70vh;
-  min-height: 400px;
-  padding: 1rem;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  overflow-y: auto;
-  background-color: #fff;
+	width: 100%;
+	height: 70vh;
+	min-height: 400px;
+	padding: 1rem;
+	border: 1px solid #ddd;
+	border-radius: 4px;
+	overflow-y: auto;
+	background-color: #fff;
 }
 
 /* 미리보기 내부 요소 스타일 */
@@ -91,126 +91,126 @@ h2 {
 .preview h4,
 .preview h5,
 .preview h6 {
-  margin-top: 1.5rem;
-  margin-bottom: 1rem;
-  color: #333;
+	margin-top: 1.5rem;
+	margin-bottom: 1rem;
+	color: #333;
 }
 
 .preview h1 {
-  font-size: 2rem;
-  border-bottom: 2px solid #eee;
-  padding-bottom: 0.5rem;
+	font-size: 2rem;
+	border-bottom: 2px solid #eee;
+	padding-bottom: 0.5rem;
 }
 
 .preview h2 {
-  font-size: 1.75rem;
-  border-bottom: 1px solid #eee;
-  padding-bottom: 0.3rem;
+	font-size: 1.75rem;
+	border-bottom: 1px solid #eee;
+	padding-bottom: 0.3rem;
 }
 
 .preview h3 {
-  font-size: 1.5rem;
+	font-size: 1.5rem;
 }
 
 .preview h4 {
-  font-size: 1.25rem;
+	font-size: 1.25rem;
 }
 
 .preview h5 {
-  font-size: 1.1rem;
+	font-size: 1.1rem;
 }
 
 .preview h6 {
-  font-size: 1rem;
+	font-size: 1rem;
 }
 
 .preview p {
-  margin-bottom: 1rem;
+	margin-bottom: 1rem;
 }
 
 .preview ul,
 .preview ol {
-  margin-bottom: 1rem;
-  padding-left: 2rem;
+	margin-bottom: 1rem;
+	padding-left: 2rem;
 }
 
 .preview li {
-  margin-bottom: 0.5rem;
+	margin-bottom: 0.5rem;
 }
 
 .preview blockquote {
-  padding: 0.5rem 1rem;
-  margin-bottom: 1rem;
-  border-left: 4px solid #4a6fa5;
-  background-color: #f8f9fa;
-  color: #555;
+	padding: 0.5rem 1rem;
+	margin-bottom: 1rem;
+	border-left: 4px solid #4a6fa5;
+	background-color: #f8f9fa;
+	color: #555;
 }
 
 .preview pre {
-  background-color: #f5f5f5;
-  padding: 1rem;
-  border-radius: 4px;
-  overflow-x: auto;
-  margin-bottom: 1rem;
+	background-color: #f5f5f5;
+	padding: 1rem;
+	border-radius: 4px;
+	overflow-x: auto;
+	margin-bottom: 1rem;
 }
 
 .preview code {
-  font-family: 'Consolas', 'Monaco', monospace;
-  background-color: #f5f5f5;
-  padding: 0.2rem 0.4rem;
-  border-radius: 3px;
-  font-size: 0.9rem;
+	font-family: "Consolas", "Monaco", monospace;
+	background-color: #f5f5f5;
+	padding: 0.2rem 0.4rem;
+	border-radius: 3px;
+	font-size: 0.9rem;
 }
 
 .preview pre code {
-  padding: 0;
-  background-color: transparent;
+	padding: 0;
+	background-color: transparent;
 }
 
 .preview a {
-  color: #4a6fa5;
-  text-decoration: none;
+	color: #4a6fa5;
+	text-decoration: none;
 }
 
 .preview a:hover {
-  text-decoration: underline;
+	text-decoration: underline;
 }
 
 .preview img {
-  max-width: 100%;
-  height: auto;
-  display: block;
-  margin: 1rem 0;
+	max-width: 100%;
+	height: auto;
+	display: block;
+	margin: 1rem 0;
 }
 
 .preview hr {
-  border: none;
-  border-top: 1px solid #ddd;
-  margin: 2rem 0;
+	border: none;
+	border-top: 1px solid #ddd;
+	margin: 2rem 0;
 }
 
 /* 푸터 스타일 */
 footer {
-  text-align: center;
-  padding: 1.5rem 0;
-  margin-top: 2rem;
-  color: #666;
-  font-size: 0.9rem;
+	text-align: center;
+	padding: 1.5rem 0;
+	margin-top: 2rem;
+	color: #666;
+	font-size: 0.9rem;
 }
 
 /* 반응형 디자인 */
 @media (max-width: 768px) {
-  .container {
-    flex-direction: column;
-  }
-  
-  .editor-section,
-  .preview-section {
-    width: 100%;
-  }
-  
-  #markdown-input,
-  .preview {
-    height: 50vh;
-  }
+	.container {
+		flex-direction: column;
+	}
+
+	.editor-section,
+	.preview-section {
+		width: 100%;
+	}
+
+	#markdown-input,
+	.preview {
+		height: 50vh;
+	}
 }

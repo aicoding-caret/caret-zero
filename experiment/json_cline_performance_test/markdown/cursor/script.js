@@ -1,6 +1,6 @@
 // DOM 요소 참조
-const markdownInput = document.getElementById('markdown-input');
-const htmlOutput = document.getElementById('html-output');
+const markdownInput = document.getElementById("markdown-input")
+const htmlOutput = document.getElementById("html-output")
 
 // 예시 마크다운 텍스트
 const defaultMarkdown = `# 마크다운 뷰어에 오신 것을 환영합니다!
@@ -53,28 +53,28 @@ function greet(name) {
 
 ---
 
-이 텍스트 상자에 마크다운을 입력하고 결과를 오른쪽에서 확인하세요!`;
+이 텍스트 상자에 마크다운을 입력하고 결과를 오른쪽에서 확인하세요!`
 
 // 페이지 로드 시 기본 마크다운 텍스트 표시
-window.addEventListener('DOMContentLoaded', () => {
-    markdownInput.value = defaultMarkdown;
-    updatePreview();
-});
+window.addEventListener("DOMContentLoaded", () => {
+	markdownInput.value = defaultMarkdown
+	updatePreview()
+})
 
 // 텍스트 입력 시마다 미리보기 업데이트
-markdownInput.addEventListener('input', updatePreview);
+markdownInput.addEventListener("input", updatePreview)
 
 /**
  * 입력된 마크다운 텍스트를 HTML로 변환하여 출력 영역에 표시
  */
 function updatePreview() {
-    try {
-        // markdownParser.js에서 export한 parseMarkdown 함수 사용
-        // (브라우저에서는 export/import가 아닌 전역 스코프로 로드됨)
-        const html = parseMarkdown(markdownInput.value);
-        htmlOutput.innerHTML = html;
-    } catch (error) {
-        console.error('마크다운 변환 중 오류 발생:', error);
-        htmlOutput.innerHTML = `<p class="error">마크다운 변환 중 오류가 발생했습니다: ${error.message}</p>`;
-    }
-} 
+	try {
+		// markdownParser.js에서 export한 parseMarkdown 함수 사용
+		// (브라우저에서는 export/import가 아닌 전역 스코프로 로드됨)
+		const html = parseMarkdown(markdownInput.value)
+		htmlOutput.innerHTML = html
+	} catch (error) {
+		console.error("마크다운 변환 중 오류 발생:", error)
+		htmlOutput.innerHTML = `<p class="error">마크다운 변환 중 오류가 발생했습니다: ${error.message}</p>`
+	}
+}

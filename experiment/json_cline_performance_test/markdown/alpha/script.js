@@ -1,13 +1,13 @@
 // script.js
 // 마크다운 뷰어 애플리케이션의 동작 로직
 
-document.addEventListener('DOMContentLoaded', function() {
-  // 필요한 DOM 요소 가져오기
-  const markdownInput = document.getElementById('markdown-input');
-  const htmlOutput = document.getElementById('html-output');
-  
-  // 기본 마크다운 샘플 텍스트
-  const defaultMarkdown = `# 마크다운 뷰어에 오신 것을 환영합니다!
+document.addEventListener("DOMContentLoaded", function () {
+	// 필요한 DOM 요소 가져오기
+	const markdownInput = document.getElementById("markdown-input")
+	const htmlOutput = document.getElementById("html-output")
+
+	// 기본 마크다운 샘플 텍스트
+	const defaultMarkdown = `# 마크다운 뷰어에 오신 것을 환영합니다!
 
 이 애플리케이션은 마크다운 텍스트를 실시간으로 HTML로 변환해줍니다.
 
@@ -56,27 +56,27 @@ function hello() {
 
 ---
 
-위 예시들을 자유롭게 수정하여 마크다운 변환을 테스트해보세요!`;
-  
-  // 기본 마크다운 샘플 텍스트 설정
-  markdownInput.value = defaultMarkdown;
-  
-  // 초기 변환 실행
-  updatePreview();
-  
-  // 입력 영역의 내용이 변경될 때마다 변환 실행
-  markdownInput.addEventListener('input', updatePreview);
-  
-  // 마크다운을 HTML로 변환하고 출력 영역에 표시하는 함수
-  function updatePreview() {
-    const markdown = markdownInput.value;
-    const html = markdownToHtml(markdown);
-    htmlOutput.innerHTML = html;
-  }
-  
-  // 텍스트 영역 크기 자동 조정 (선택 사항)
-  markdownInput.addEventListener('input', function() {
-    this.style.height = 'auto';
-    this.style.height = (this.scrollHeight) + 'px';
-  });
-});
+위 예시들을 자유롭게 수정하여 마크다운 변환을 테스트해보세요!`
+
+	// 기본 마크다운 샘플 텍스트 설정
+	markdownInput.value = defaultMarkdown
+
+	// 초기 변환 실행
+	updatePreview()
+
+	// 입력 영역의 내용이 변경될 때마다 변환 실행
+	markdownInput.addEventListener("input", updatePreview)
+
+	// 마크다운을 HTML로 변환하고 출력 영역에 표시하는 함수
+	function updatePreview() {
+		const markdown = markdownInput.value
+		const html = markdownToHtml(markdown)
+		htmlOutput.innerHTML = html
+	}
+
+	// 텍스트 영역 크기 자동 조정 (선택 사항)
+	markdownInput.addEventListener("input", function () {
+		this.style.height = "auto"
+		this.style.height = this.scrollHeight + "px"
+	})
+})

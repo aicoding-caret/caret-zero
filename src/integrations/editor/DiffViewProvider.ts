@@ -153,7 +153,7 @@ export class DiffViewProvider {
 
 		// get the contents before save operation which may do auto-formatting
 		const preSaveContent = updatedDocument.getText()
-				
+
 		await updatedDocument.save()
 
 		// get text after save in case there is any auto-formatting done by the editor

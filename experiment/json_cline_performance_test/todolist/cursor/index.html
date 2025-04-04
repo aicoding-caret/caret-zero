@@ -1,50 +1,42 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ko">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Todo 리스트 앱</title>
-  <link rel="stylesheet" href="style.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-</head>
-<body>
-  <div class="container">
-    <header>
-      <h1>Todo 리스트</h1>
-    </header>
-    
-    <div class="todo-input-container">
-      <form id="todo-form">
-        <input 
-          type="text" 
-          id="todo-input" 
-          placeholder="할 일을 입력하세요..." 
-          autocomplete="off"
-          autofocus
-        >
-        <button type="submit" id="add-button">
-          <i class="fas fa-plus"></i> 추가
-        </button>
-      </form>
-    </div>
-    
-    <div class="todo-list-container">
-      <ul id="todo-list"></ul>
-      <div id="no-todos" class="hidden">
-        <p>할 일이 없습니다. 새로운 할 일을 추가해보세요!</p>
-      </div>
-    </div>
-    
-    <div class="todo-info">
-      <span id="todo-count">전체: <strong>0</strong>개</span>
-      <span id="todo-completed">완료: <strong>0</strong>개</span>
-    </div>
-  </div>
-  
-  <!-- 먼저 TodoManager 모듈 로드 -->
-  <script src="todoManager.js"></script>
-  
-  <!-- 그 다음 UI 연동 스크립트 로드 -->
-  <script src="script.js"></script>
-</body>
-</html> 
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Todo 리스트 앱</title>
+		<link rel="stylesheet" href="style.css" />
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+	</head>
+	<body>
+		<div class="container">
+			<header>
+				<h1>Todo 리스트</h1>
+			</header>
+
+			<div class="todo-input-container">
+				<form id="todo-form">
+					<input type="text" id="todo-input" placeholder="할 일을 입력하세요..." autocomplete="off" autofocus />
+					<button type="submit" id="add-button"><i class="fas fa-plus"></i> 추가</button>
+				</form>
+			</div>
+
+			<div class="todo-list-container">
+				<ul id="todo-list"></ul>
+				<div id="no-todos" class="hidden">
+					<p>할 일이 없습니다. 새로운 할 일을 추가해보세요!</p>
+				</div>
+			</div>
+
+			<div class="todo-info">
+				<span id="todo-count">전체: <strong>0</strong>개</span>
+				<span id="todo-completed">완료: <strong>0</strong>개</span>
+			</div>
+		</div>
+
+		<!-- 먼저 TodoManager 모듈 로드 -->
+		<script src="todoManager.js"></script>
+
+		<!-- 그 다음 UI 연동 스크립트 로드 -->
+		<script src="script.js"></script>
+	</body>
+</html>

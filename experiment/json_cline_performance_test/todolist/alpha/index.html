@@ -1,40 +1,40 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ko">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Todo 리스트 애플리케이션</title>
-  <link rel="stylesheet" href="style.css">
-</head>
-<body>
-  <div class="container">
-    <header>
-      <h1>Todo 리스트</h1>
-    </header>
-    
-    <main>
-      <!-- Todo 입력 폼 -->
-      <form id="todo-form">
-        <input type="text" id="todo-input" placeholder="할 일을 입력하세요..." autocomplete="off">
-        <button type="submit" id="add-btn">추가</button>
-      </form>
-      
-      <!-- 필터 버튼 -->
-      <div class="filters">
-        <button class="filter-btn active" data-filter="all">전체</button>
-        <button class="filter-btn" data-filter="active">활성</button>
-        <button class="filter-btn" data-filter="completed">완료</button>
-      </div>
-      
-      <!-- Todo 목록 -->
-      <ul id="todo-list"></ul>
-    </main>
-    
-    <footer>
-      <p>Todo 리스트 애플리케이션 - TDD로 구현</p>
-    </footer>
-  </div>
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Todo 리스트 애플리케이션</title>
+		<link rel="stylesheet" href="style.css" />
+	</head>
+	<body>
+		<div class="container">
+			<header>
+				<h1>Todo 리스트</h1>
+			</header>
 
-  <script src="script.js"></script>
-</body>
+			<main>
+				<!-- Todo 입력 폼 -->
+				<form id="todo-form">
+					<input type="text" id="todo-input" placeholder="할 일을 입력하세요..." autocomplete="off" />
+					<button type="submit" id="add-btn">추가</button>
+				</form>
+
+				<!-- 필터 버튼 -->
+				<div class="filters">
+					<button class="filter-btn active" data-filter="all">전체</button>
+					<button class="filter-btn" data-filter="active">활성</button>
+					<button class="filter-btn" data-filter="completed">완료</button>
+				</div>
+
+				<!-- Todo 목록 -->
+				<ul id="todo-list"></ul>
+			</main>
+
+			<footer>
+				<p>Todo 리스트 애플리케이션 - TDD로 구현</p>
+			</footer>
+		</div>
+
+		<script src="script.js"></script>
+	</body>
 </html>

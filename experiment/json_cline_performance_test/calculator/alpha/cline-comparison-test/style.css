@@ -2,153 +2,153 @@
 
 /* 기본 스타일 초기화 */
 * {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  font-family: 'Arial', sans-serif;
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+	font-family: "Arial", sans-serif;
 }
 
 body {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 100vh;
-  background-color: #f5f5f5;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	min-height: 100vh;
+	background-color: #f5f5f5;
 }
 
 /* 계산기 컨테이너 */
 .calculator {
-  width: 320px;
-  background-color: #333;
-  border-radius: 10px;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-  overflow: hidden;
+	width: 320px;
+	background-color: #333;
+	border-radius: 10px;
+	box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+	overflow: hidden;
 }
 
 /* 계산기 디스플레이 영역 */
 .calculator-display {
-  background-color: #222;
-  color: white;
-  text-align: right;
-  padding: 20px;
+	background-color: #222;
+	color: white;
+	text-align: right;
+	padding: 20px;
 }
 
 .expression {
-  min-height: 20px;
-  font-size: 14px;
-  color: #aaa;
-  margin-bottom: 5px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+	min-height: 20px;
+	font-size: 14px;
+	color: #aaa;
+	margin-bottom: 5px;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
 }
 
 .result {
-  font-size: 36px;
-  font-weight: bold;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+	font-size: 36px;
+	font-weight: bold;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
 }
 
 /* 계산기 버튼 영역 */
 .calculator-buttons {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 1px;
-  background-color: #444;
+	display: grid;
+	grid-template-columns: repeat(4, 1fr);
+	gap: 1px;
+	background-color: #444;
 }
 
 .row {
-  display: contents;
+	display: contents;
 }
 
 /* 버튼 스타일 */
 button {
-  border: none;
-  outline: none;
-  background-color: #555;
-  color: white;
-  font-size: 20px;
-  padding: 20px;
-  cursor: pointer;
-  transition: background-color 0.2s;
+	border: none;
+	outline: none;
+	background-color: #555;
+	color: white;
+	font-size: 20px;
+	padding: 20px;
+	cursor: pointer;
+	transition: background-color 0.2s;
 }
 
 button:hover {
-  background-color: #666;
+	background-color: #666;
 }
 
 button:active {
-  background-color: #777;
+	background-color: #777;
 }
 
 /* 기능 버튼 스타일 */
 .function {
-  background-color: #444;
+	background-color: #444;
 }
 
 .function:hover {
-  background-color: #555;
+	background-color: #555;
 }
 
 .function:active {
-  background-color: #666;
+	background-color: #666;
 }
 
 /* 연산자 버튼 스타일 */
 .operator {
-  background-color: #ff9500;
-  font-weight: bold;
+	background-color: #ff9500;
+	font-weight: bold;
 }
 
 .operator:hover {
-  background-color: #ffaa33;
+	background-color: #ffaa33;
 }
 
 .operator:active {
-  background-color: #ffbb66;
+	background-color: #ffbb66;
 }
 
 /* 등호 버튼 스타일 */
 .equals {
-  background-color: #ff9500;
-  font-weight: bold;
+	background-color: #ff9500;
+	font-weight: bold;
 }
 
 .equals:hover {
-  background-color: #ffaa33;
+	background-color: #ffaa33;
 }
 
 .equals:active {
-  background-color: #ffbb66;
+	background-color: #ffbb66;
 }
 
 /* 0 버튼 스타일 (더 넓게) */
 .digit:nth-child(1):nth-last-child(4) {
-  grid-column: span 1;
+	grid-column: span 1;
 }
 
 /* 반응형 디자인 */
 @media (max-width: 480px) {
-  .calculator {
-    width: 100%;
-    max-width: 320px;
-    border-radius: 0;
-  }
-  
-  button {
-    padding: 15px;
-  }
+	.calculator {
+		width: 100%;
+		max-width: 320px;
+		border-radius: 0;
+	}
+
+	button {
+		padding: 15px;
+	}
 }
 
 /* 접근성 포커스 스타일 */
 button:focus {
-  outline: 2px solid #fff;
-  outline-offset: -4px;
+	outline: 2px solid #fff;
+	outline-offset: -4px;
 }
 
 /* 오류 메시지 스타일 */
 .result.error {
-  color: #ff5555;
+	color: #ff5555;
 }
