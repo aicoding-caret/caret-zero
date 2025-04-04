@@ -192,7 +192,7 @@ export const ChatRowContent = ({ message, isExpanded, onToggleExpand, lastModifi
 	const isAiMessage = useMemo(() => {
 		return (
 			(message.type === "say" && (message.say === "text" || message.say === "reasoning")) ||
-			(message.type === "ask" && (message.ask === "followup" || message.ask === "plan_mode_response"))
+			(message.type === "ask" && (message.ask === "followup" || message.ask === "plan_mode_respond"))
 		)
 	}, [message.type, message.say, message.ask])
 
@@ -729,7 +729,7 @@ export const ChatRowContent = ({ message, isExpanded, onToggleExpand, lastModifi
 	const renderSpecificContent = () => {
 		// Contains the large switch statement for message.type and message.say/ask
 		// IMPORTANT: Cases like user_feedback, error, diff_error, clineignore_error, checkpoint_created, completion_result, shell_integration_warning, api_req_started SHOULD NOT have avatar/wrapper applied internally.
-		// Only text, reasoning, followup, plan_mode_response should potentially be styled differently by the wrapper.
+		// Only text, reasoning, followup, plan_mode_respond should potentially be styled differently by the wrapper.
 		switch (message.type) {
 			case "say":
 				switch (message.say) {
@@ -1261,7 +1261,7 @@ export const ChatRowContent = ({ message, isExpanded, onToggleExpand, lastModifi
 								</div>
 							</>
 						)
-					case "plan_mode_response": {
+					case "plan_mode_respond": {
 						// Will be wrapped
 						let response: string | undefined
 						let options: string[] | undefined
@@ -1281,7 +1281,7 @@ export const ChatRowContent = ({ message, isExpanded, onToggleExpand, lastModifi
 								<OptionsButtons
 									options={options}
 									selected={selected}
-									isActive={isLast && lastModifiedMessage?.ask === "plan_mode_response"}
+									isActive={isLast && lastModifiedMessage?.ask === "plan_mode_respond"}
 								/>
 							</div>
 						)
@@ -1297,7 +1297,7 @@ export const ChatRowContent = ({ message, isExpanded, onToggleExpand, lastModifi
 	// Conditionally apply avatar and wrapper ONLY for specific AI message types
 	if (isAiMessage && alphaAvatarUri) {
 		// alphaAvatarUri가 있을 때만 아바타 표시
-		// AI text, reasoning, followup, plan_mode_response
+		// AI text, reasoning, followup, plan_mode_respond
 		return (
 			<div style={{ display: "flex", alignItems: "flex-start" }}>
 				<AvatarImage src={alphaAvatarUri} alt="Alpha Avatar" /> {/* alphaAvatarUri 사용 */}

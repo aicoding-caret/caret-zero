@@ -46,7 +46,7 @@
 			"activitybar": [
 				{
 					"id": "claude-dev-ActivityBar",
-					"title": "Cline",
+					"title": "Caret",
 					"icon": "assets/icons/icon.svg"
 				}
 			]
@@ -94,12 +94,12 @@
 			{
 				"command": "cline.openInNewTab",
 				"title": "Open In New Tab",
-				"category": "Cline"
+				"category": "Caret"
 			},
 			{
 				"command": "cline.dev.createTestTasks",
 				"title": "Create Test Tasks",
-				"category": "Cline",
+				"category": "Caret",
 				"when": "cline.isDevMode"
 			},
 			{
@@ -109,18 +109,18 @@
 			},
 			{
 				"command": "cline.addToChat",
-				"title": "Add to Cline",
-				"category": "Cline"
+				"title": "Add to Caret",
+				"category": "Caret"
 			},
 			{
 				"command": "cline.addTerminalOutputToChat",
-				"title": "Add to Cline",
-				"category": "Cline"
+				"title": "Add to Caret",
+				"category": "Caret"
 			},
 			{
-				"command": "cline.fixWithCline",
-				"title": "Fix with Cline",
-				"category": "Cline"
+				"command": "cline.fixWithCaret",
+				"title": "Fix with Caret",
+				"category": "Caret"
 			}
 		],
 		"menus": {
@@ -176,7 +176,7 @@
 			]
 		},
 		"configuration": {
-			"title": "Cline",
+			"title": "Caret",
 			"properties": {
 				"cline.vsCodeLmModelSelector": {
 					"type": "object",
@@ -255,7 +255,7 @@
 						"Turkish - Türkçe"
 					],
 					"default": "English",
-					"description": "The language that Cline should use for communication."
+					"description": "The language that Caret should use for communication."
 				},
 				"cline.mcpMarketplace.enabled": {
 					"type": "boolean",
