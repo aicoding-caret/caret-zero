@@ -69,25 +69,10 @@ for terminal command execution.
 Interestingly, some environments like Cursor enable these APIs even without the latest VSCode engine.
 This approach allows us to leverage advanced features when available while ensuring broad compatibility.
 */
-declare module "vscode" {
-	// https://github.com/microsoft/vscode/blob/f0417069c62e20f3667506f4b7e53ca0004b4e3e/src/vscode-dts/vscode.d.ts#L7442
-	interface Terminal {
-		shellIntegration?: {
-			cwd?: vscode.Uri
-			executeCommand?: (command: string) => {
-				read: () => AsyncIterable<string>
-			}
-		}
-	}
-	// https://github.com/microsoft/vscode/blob/f0417069c62e20f3667506f4b7e53ca0004b4e3e/src/vscode-dts/vscode.d.ts#L10794
-	interface Window {
-		onDidStartTerminalShellExecution?: (
-			listener: (e: any) => any,
-			thisArgs?: any,
-			disposables?: vscode.Disposable[],
-		) => vscode.Disposable
-	}
-}
+
+// Note: The 'declare module "vscode"' block previously here was removed
+// because it conflicted with the official @types/vscode definitions.
+// The necessary types should now be available directly from the 'vscode' import.
 
 export class TerminalManager {
 	private terminalIds: Set<number> = new Set()
@@ -97,9 +82,10 @@ export class TerminalManager {
 	constructor() {
 		let disposable: vscode.Disposable | undefined
 		try {
-			disposable = (vscode.window as vscode.Window).onDidStartTerminalShellExecution?.(async (e) => {
+			// Use correct event type 'vscode.TerminalShellExecutionStartEvent' and access execution via 'e.execution'
+			disposable = vscode.window.onDidStartTerminalShellExecution?.(async (e: vscode.TerminalShellExecutionStartEvent) => {
 				// Creating a read stream here results in a more consistent output. This is most obvious when running the `date` command.
-				e?.execution?.read()
+				e.execution?.read() // Access execution property of the event object
 			})
 		} catch (error) {
 			// console.error("Error setting up onDidEndTerminalShellExecution", error)

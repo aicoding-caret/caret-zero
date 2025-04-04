@@ -1,4 +1,5 @@
 # Default
+models_temp/** # Ignore temporary model files (moved higher)
 .vscode/**
 .vscode-test/**
 out/**
