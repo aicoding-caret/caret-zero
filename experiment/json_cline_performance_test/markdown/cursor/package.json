@@ -1,0 +1,22 @@
+{
+  "name": "markdown-viewer",
+  "version": "1.0.0",
+  "description": "간단한 웹 기반 마크다운 뷰어 애플리케이션",
+  "main": "index.html",
+  "scripts": {
+    "test": "jest",
+    "start": "serve ."
+  },
+  "devDependencies": {
+    "jest": "^29.5.0",
+    "serve": "^14.2.0"
+  },
+  "keywords": [
+    "markdown",
+    "viewer",
+    "html",
+    "parser"
+  ],
+  "author": "",
+  "license": "MIT"
+} 

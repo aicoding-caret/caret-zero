@@ -5,7 +5,7 @@
 **목표:**
 
 1.  vLLM을 로컬 환경(RTX 3090 x2 활용)에 설치 및 설정합니다.
-2.  기존 sLLM 테스트 스크립트(`scripts/sllm_test/`)를 수정하여 vLLM 엔드포인트(OpenAI 호환)를 지원하도록 합니다.
+2.  기존 sLLM 테스트 스크립트(`experiment/sllm_test/`)를 수정하여 vLLM 엔드포인트(OpenAI 호환)를 지원하도록 합니다.
 3.  vLLM 환경에서 `Qwen/Qwen2.5-Coder-32B-Instruct` 모델을 사용하여 태스크 #003과 동일한 조건으로 성능 테스트를 수행합니다.
 4.  Ollama 환경에서의 테스트 결과와 vLLM 환경에서의 테스트 결과를 비교 분석합니다.
 
@@ -13,8 +13,8 @@
 
 -   [x] vLLM 설치 (Docker 권장) 및 멀티 GPU 설정 확인 (`tensor-parallel-size 2`)
 -   [x] vLLM을 통해 `Qwen/Qwen2.5-Coder-32B-Instruct` 모델 로딩 및 API 엔드포인트 확인
--   [x] `scripts/sllm_test/run_test.py` 수정 (vLLM API 타입 및 OpenAI 호환 엔드포인트 처리 확인)
--   [x] `scripts/sllm_test/run_batch_test.ps1` 및 `run_batch_test.sh` 수정 (vLLM Docker 명령어 및 관련 파라미터 반영)
+-   [x] `experiment/sllm_test/run_test.py` 수정 (vLLM API 타입 및 OpenAI 호환 엔드포인트 처리 확인)
+-   [x] `experiment/sllm_test/run_batch_test.ps1` 및 `run_batch_test.sh` 수정 (vLLM Docker 명령어 및 관련 파라미터 반영)
     -   [x] vLLM 환경에서 성능 테스트 실행 (빠른 테스트 진행 중)
         -   [x] `run_test.py`에 `--limit-scenarios`, `--limit-prompts` 옵션 추가
         -   [x] `run_batch_test.ps1` 수정하여 빠른 테스트 (1회 반복, 3개 모델, 제한 옵션 적용) 실행

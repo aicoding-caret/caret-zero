@@ -1,0 +1,56 @@
+@/comparison-instructions.md 알파야 작업해줘
+
+Tokens: up 17  down 233.8k
+Cache:+167.7k   3.2m
+Context Window: 139.7k / 200.0k
+API Cost:$2.0966
+# Logs
+
+Last refresh time: April 3, 2025 at 2:58 PM GMT+9
+
+| Time (GMT+9)        | ID                             | Model                        | Workspace                                                                                    | Input  <br>Tokens | Output  <br>Tokens | Type      | Request |
+| ------------------- | ------------------------------ | ---------------------------- | -------------------------------------------------------------------------------------------- | ----------------- | ------------------ | --------- | ------- |
+| 2025-04-03 14:54:32 | `req_01UA4frygovbt3gWinReQhtJ` | `claude-3-7-sonnet-20250219` | [<br><br>Default<br><br><br><br>](https://console.anthropic.com/settings/workspaces/default) | 138759            | 961                | Streaming |         |
+| 2025-04-03 14:54:26 | `req_014wyLes3MK7QDKhMFEcrsUP` | `claude-3-7-sonnet-20250219` | [<br><br>Default<br><br><br><br>](https://console.anthropic.com/settings/workspaces/default) | 135986            | 281                | Streaming |         |
+| 2025-04-03 14:54:19 | `req_01F9FeZJfQwvzzbkrrN1biNB` | `claude-3-7-sonnet-20250219` | [<br><br>Default<br><br><br><br>](https://console.anthropic.com/settings/workspaces/default) | 135605            | 243                | Streaming |         |
+| 2025-04-03 14:54:06 | `req_01LJthFEMBFiidafnJFzpGvp` | `claude-3-7-sonnet-20250219` | [<br><br>Default<br><br><br><br>](https://console.anthropic.com/settings/workspaces/default) | 133326            | 361                | Streaming |         |
+| 2025-04-03 14:53:07 | `req_01NBgmModt6yzvqRty9RxFQz` | `claude-3-7-sonnet-20250219` | [<br><br>Default<br><br><br><br>](https://console.anthropic.com/settings/workspaces/default) | 123766            | 4794               | Streaming |         |
+| 2025-04-03 14:52:58 | `req_01KjUYckRT9QCP9yQ8CEqWxR` | `claude-3-7-sonnet-20250219` | [<br><br>Default<br><br><br><br>](https://console.anthropic.com/settings/workspaces/default) | 123226            | 372                | Streaming |         |
+| 2025-04-03 14:52:47 | `req_01RvVEfzKg3XCbfSJ7wUJRnt` | `claude-3-7-sonnet-20250219` | [<br><br>Default<br><br><br><br>](https://console.anthropic.com/settings/workspaces/default) | 120756            | 272                | Streaming |         |
+| 2025-04-03 14:51:58 | `req_01GKJU2Kdd2f77DGsghAjZyJ` | `claude-3-7-sonnet-20250219` | [<br><br>Default<br><br><br><br>](https://console.anthropic.com/settings/workspaces/default) | 113428            | 3627               | Streaming |         |
+| 2025-04-03 14:51:39 | `req_01TxzAtPgZFZ1e8czNjp5B17` | `claude-3-7-sonnet-20250219` | [<br><br>Default<br><br><br><br>](https://console.anthropic.com/settings/workspaces/default) | 111439            | 1089               | Streaming |         |
+| 2025-04-03 14:51:31 | `req_014nN8Sx2eJv48f2Wj3cu8Xz` | `claude-3-7-sonnet-20250219` | [<br><br>Default<br><br><br><br>](https://console.anthropic.com/settings/workspaces/default) | 110927            | 376                | Streaming |         |
+| 2025-04-03 14:51:21 | `req_012UuQC8FvmRP6YTwMEfrqeh` | `claude-3-7-sonnet-20250219` | [<br><br>Default<br><br><br><br>](https://console.anthropic.com/settings/workspaces/default) | 108867            | 205                | Streaming |         |
+| 2025-04-03 14:50:57 | `req_014FWk9Fdq1PpiT75JbmGNnn` | `claude-3-7-sonnet-20250219` | [<br><br>Default<br><br><br><br>](https://console.anthropic.com/settings/workspaces/default) | 105925            | 1536               | Streaming |         |
+| 2025-04-03 14:50:50 | `req_01JfWtwqRwaS6aqTShTMdm3o` | `claude-3-7-sonnet-20250219` | [<br><br>Default<br><br><br><br>](https://console.anthropic.com/settings/workspaces/default) | 105389            | 368                | Streaming |         |
+| 2025-04-03 14:50:35 | `req_01NmA9LVKG6LHdDt2Qc1Yo6e` | `claude-3-7-sonnet-20250219` | [<br><br>Default<br><br><br><br>](https://console.anthropic.com/settings/workspaces/default) | 103283            | 249                | Streaming |         |
+| 2025-04-03 14:49:49 | `req_01EF7tac7oqjDdNuoLJrrhck` | `claude-3-7-sonnet-20250219` | [<br><br>Default<br><br><br><br>](https://console.anthropic.com/settings/workspaces/default) | 96516             | 3488               | Streaming |         |
+| 2025-04-03 14:49:41 | `req_01DxKVAqvsSrPmEicdCceuz9` | `claude-3-7-sonnet-20250219` | [<br><br>Default<br><br><br><br>](https://console.anthropic.com/settings/workspaces/default) | 95947             | 401                | Streaming |         |
+| 2025-04-03 14:49:32 | `req_01VkXn8nV3xDYauCurq7qwxk` | `claude-3-7-sonnet-20250219` | [<br><br>Default<br><br><br><br>](https://console.anthropic.com/settings/workspaces/default) | 94041             | 232                | Streaming |         |
+| 2025-04-03 14:49:11 | `req_017DQS7pm4rQ62PNivUcs2mT` | `claude-3-7-sonnet-20250219` | [<br><br>Default<br><br><br><br>](https://console.anthropic.com/settings/workspaces/default) | 89287             | 1253               | Streaming |         |
+| 2025-04-03 14:48:55 | `req_01SGsKUaxE34KBwZXSKgpRsB` | `claude-3-7-sonnet-20250219` | [<br><br>Default<br><br><br><br>](https://console.anthropic.com/settings/workspaces/default) | 85069             | 826                | Streaming |         |
+| 2025-04-03 14:48:34 | `req_019oLJEa1tdgpa56oRQi8WxT` | `claude-3-7-sonnet-20250219` | [<br><br>Default<br><br><br><br>](https://console.anthropic.com/settings/workspaces/default) | 81156             | 614                | Streaming |         |
+| 2025-04-03 14:48:08 | `req_01WtXYkLHdgjru7MVtuQenAM` | `claude-3-7-sonnet-20250219` | [<br><br>Default<br><br><br><br>](https://console.anthropic.com/settings/workspaces/default) | 78020             | 1693               | Streaming |         |
+| 2025-04-03 14:47:59 | `req_01Qcgf6biUtEYWv6EnFnY4cm` | `claude-3-7-sonnet-20250219` | [<br><br>Default<br><br><br><br>](https://console.anthropic.com/settings/workspaces/default) | 77397             | 455                | Streaming |         |
+| 2025-04-03 14:47:50 | `req_018JdrEpPL2TcJN7376x6oMf` | `claude-3-7-sonnet-20250219` | [<br><br>Default<br><br><br><br>](https://console.anthropic.com/settings/workspaces/default) | 75489             | 232                | Streaming |         |
+| 2025-04-03 14:47:28 | `req_01DENCquoEC7sqJ9UHdDwh6h` | `claude-3-7-sonnet-20250219` | [<br><br>Default<br><br><br><br>](https://console.anthropic.com/settings/workspaces/default) | 70841             | 1437               | Streaming |         |
+| 2025-04-03 14:47:16 | `req_019Eo4Qo4e8SPyEDFr7Cgi33` | `claude-3-7-sonnet-20250219` | [<br><br>Default<br><br><br><br>](https://console.anthropic.com/settings/workspaces/default) | 67551             | 340                | Streaming |         |
+| 2025-04-03 14:46:57 | `req_012Di8bW1yKFj6Ri97c2T9YG` | `claude-3-7-sonnet-20250219` | [<br><br>Default<br><br><br><br>](https://console.anthropic.com/settings/workspaces/default) | 63678             | 975                | Streaming |         |
+| 2025-04-03 14:46:49 | `req_01JY1dREoPNjFD554a7Mtmmd` | `claude-3-7-sonnet-20250219` | [<br><br>Default<br><br><br><br>](https://console.anthropic.com/settings/workspaces/default) | 63127             | 383                | Streaming |         |
+| 2025-04-03 14:46:40 | `req_01UEHKfYeo4cEfdmXAJGHERp` | `claude-3-7-sonnet-20250219` | [<br><br>Default<br><br><br><br>](https://console.anthropic.com/settings/workspaces/default) | 61321             | 242                | Streaming |         |
+| 2025-04-03 14:46:23 | `req_01EbDt6g8GLd2TYyC1o4CeaA` | `claude-3-7-sonnet-20250219` | [<br><br>Default<br><br><br><br>](https://console.anthropic.com/settings/workspaces/default) | 57743             | 846                | Streaming |         |
+| 2025-04-03 14:46:07 | `req_016UMmSXRZftQdkFmuULQ3zJ` | `claude-3-7-sonnet-20250219` | [<br><br>Default<br><br><br><br>](https://console.anthropic.com/settings/workspaces/default) | 54461             | 574                | Streaming |         |
+| 2025-04-03 14:45:53 | `req_01Kb2kUQMrqLyBwMzW3JpkRW` | `claude-3-7-sonnet-20250219` | [<br><br>Default<br><br><br><br>](https://console.anthropic.com/settings/workspaces/default) | 52281             | 697                | Streaming |         |
+| 2025-04-03 14:45:43 | `req_01DSZ8zZBmpViuoY1BL4iTEC` | `claude-3-7-sonnet-20250219` | [<br><br>Default<br><br><br><br>](https://console.anthropic.com/settings/workspaces/default) | 50569             | 307                | Streaming |         |
+| 2025-04-03 14:45:27 | `req_018QWRTEMHCdHfRatNeQPjfm` | `claude-3-7-sonnet-20250219` | [<br><br>Default<br><br><br><br>](https://console.anthropic.com/settings/workspaces/default) | 48615             | 621                | Streaming |         |
+| 2025-04-03 14:45:13 | `req_01Kgmt2EpXLdbUZbomCHpBS9` | `claude-3-7-sonnet-20250219` | [<br><br>Default<br><br><br><br>](https://console.anthropic.com/settings/workspaces/default) | 46226             | 969                | Streaming |         |
+| 2025-04-03 14:45:03 | `req_019XeKQtLRL9NEq72gzXKnFQ` | `claude-3-7-sonnet-20250219` | [<br><br>Default<br><br><br><br>](https://console.anthropic.com/settings/workspaces/default) | 45660             | 430                | Streaming |         |
+| 2025-04-03 14:44:55 | `req_01UPskjWKBTHQqrid7huitEJ` | `claude-3-7-sonnet-20250219` | [<br><br>Default<br><br><br><br>](https://console.anthropic.com/settings/workspaces/default) | 43904             | 194                | Streaming |         |
+| 2025-04-03 14:44:17 | `req_01AUVwyzQ8KPnMYZnpmyQNdJ` | `claude-3-7-sonnet-20250219` | [<br><br>Default<br><br><br><br>](https://console.anthropic.com/settings/workspaces/default) | 38559             | 2711               | Streaming |         |
+| 2025-04-03 14:43:52 | `req_01ULXk3HFLRdeyMmhpiGbef7` | `claude-3-7-sonnet-20250219` | [<br><br>Default<br><br><br><br>](https://console.anthropic.com/settings/workspaces/default) | 35175             | 1867               | Streaming |         |
+| 2025-04-03 14:43:31 | `req_01Wn3EEbWHiVDm59n4hL54ZB` | `claude-3-7-sonnet-20250219` | [<br><br>Default<br><br><br><br>](https://console.anthropic.com/settings/workspaces/default) | 31881             | 1767               | Streaming |         |
+| 2025-04-03 14:43:15 | `req_01DqbKzsKRZs8f7DDDLYHdMM` | `claude-3-7-sonnet-20250219` | [<br><br>Default<br><br><br><br>](https://console.anthropic.com/settings/workspaces/default) | 30105             | 1036               | Streaming |         |
+| 2025-04-03 14:42:53 | `req_01AziCDCdzK8XrmtWZrqJySU` | `claude-3-7-sonnet-20250219` | [<br><br>Default<br><br><br><br>](https://console.anthropic.com/settings/workspaces/default) | 27071             | 1708               | Streaming |         |
+| 2025-04-03 14:42:15 | `req_01PFkCT11qUuAr6GiHZkop6w` | `claude-3-7-sonnet-20250219` | [<br><br>Default<br><br><br><br>](https://console.anthropic.com/settings/workspaces/default) | 21334             | 3013               | Streaming |         |
+| 2025-04-03 14:41:41 | `req_01Wwts5khfPXtd5VK4BHgHK3` | `claude-3-7-sonnet-20250219` | [<br><br>Default<br><br><br><br>](https://console.anthropic.com/settings/workspaces/default) | 16685             | 2544               | Streaming |         |
+

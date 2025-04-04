@@ -3,4 +3,4 @@ node_modules
 webview-ui/build/
 *.md
 package-lock.json
-scripts/sllm_test/experiment_results/*
+experiment/sllm_test/experiment_results/*

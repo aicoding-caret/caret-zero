@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Todo 리스트 애플리케이션</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>Todo 리스트</h1>
+    </header>
+    
+    <div class="todo-form">
+      <input type="text" id="todo-input" placeholder="할 일을 입력하세요..." autofocus>
+      <button id="add-button">추가</button>
+    </div>
+    
+    <div class="todo-stats">
+      <span id="todo-count">0개의 할 일</span>
+    </div>
+    
+    <ul id="todo-list">
+      <!-- Todo 항목이 여기에 동적으로 추가됩니다 -->
+    </ul>
+  </div>
+  
+  <!-- 테스트 실행을 위한 스크립트 -->
+  <div id="test-results" class="test-results">
+    <h2>테스트 결과</h2>
+    <div id="test-output"></div>
+  </div>
+  
+  <!-- 로직 및 UI 스크립트 -->
+  <script src="todoLogic.js"></script>
+  <script src="script.js"></script>
+  
+  <!-- 테스트 스크립트 (개발 중에만 활성화) -->
+  <script>
+    // 테스트 출력 리다이렉션
+    const testOutput = document.getElementById('test-output');
+    if (testOutput) {
+      // 콘솔 출력을 테스트 결과 영역으로 리다이렉션
+      const originalConsoleLog = console.log;
+      const originalConsoleError = console.error;
+      
+      console.log = function(...args) {
+        originalConsoleLog.apply(console, args);
+        testOutput.innerHTML += args.join(' ') + '<br>';
+      };
+      
+      console.error = function(...args) {
+        originalConsoleError.apply(console, args);
+        testOutput.innerHTML += '<span style="color: red;">' + args.join(' ') + '</span><br>';
+      };
+    }
+  </script>
+  <script src="todoLogic.test.js"></script>
+</body>
+</html>

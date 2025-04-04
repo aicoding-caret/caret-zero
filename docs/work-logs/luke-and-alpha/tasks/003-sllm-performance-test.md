@@ -65,23 +65,23 @@ Note: All models are pre-installed and verified in Ollama. Models will be proper
   * 구조화된 설명
 
 ## 구현된 스크립트
-1. **[run_test.py](/scripts/sllm_test/run_test.py)**   
+1. **[run_test.py](/experiment/sllm_test/run_test.py)**   
    - 개별 테스트 실행
    - 응답 수집 및 메트릭 측정
    - 정성적 평가 통합
 
-2. **[evaluator.py](/scripts/sllm_test/evaluator.py)**
+2. **[evaluator.py](/experiment/sllm_test/evaluator.py)**
    - 테스트 케이스 정의
    - 정확성 평가 자동화
    - 코드 품질 분석
    - 설명 명확성 평가
 
-3. **[generate_report.py](/scripts/sllm_test/generate_report.py)**
+3. **[generate_report.py](/experiment/sllm_test/generate_report.py)**
    - 성능 메트릭 분석
    - 시각화 그래프 생성
    - 종합 보고서 생성
 
-4. **[run_batch_test.ps1](/scripts/sllm_test/run_batch_test.ps1)** (Windows용)
+4. **[run_batch_test.ps1](/experiment/sllm_test/run_batch_test.ps1)** (Windows용)
    - 전체 실험 자동화
    - 메모리 관리
    - 로그 기록
@@ -89,7 +89,7 @@ Note: All models are pre-installed and verified in Ollama. Models will be proper
 ## 실행 방법
 1. 필요한 패키지 설치:
    ```powershell
-   cd scripts/sllm_test
+   cd experiment/sllm_test
    pip install -r requirements.txt
    ```
 
@@ -104,7 +104,7 @@ Note: All models are pre-installed and verified in Ollama. Models will be proper
    ```
 
 4. 결과 확인:
-  * 실험 결과는 d:/dev/cline/scripts/sllm_test/experiment_results/ 디렉토리에 저장됩니다. 이 디렉토리는 스크립트 실행 시 자동으로 생성되며, 다음과 같은 구조를 가집니다:
+  * 실험 결과는 d:/dev/cline/experiment/sllm_test/experiment_results/ 디렉토리에 저장됩니다. 이 디렉토리는 스크립트 실행 시 자동으로 생성되며, 다음과 같은 구조를 가집니다:
 
       experiment_results/
       ├── batch_test_[timestamp].log        # 실행 로그
@@ -114,8 +114,8 @@ Note: All models are pre-installed and verified in Ollama. Models will be proper
 
 ## 결과
 - 성능 테스트가 완료되었으며, 결과 보고서가 생성되었습니다:
-  - [performance_report_20250327_203217.md](/scripts/sllm_test/experiment_results/performance_report_20250327_203217.md)
-  - [performance_report_20250327_203217.ko.md](/scripts/sllm_test/experiment_results/performance_report_20250327_203217.ko.md)
+  - [performance_report_20250327_203217.md](/experiment/sllm_test/experiment_results/performance_report_20250327_203217.md)
+  - [performance_report_20250327_203217.ko.md](/experiment/sllm_test/experiment_results/performance_report_20250327_203217.ko.md)
 - 주요 결과: `qwen2.5-coder:14b` 모델이 초기 테스트에서 효율적인 성능을 보였습니다. `qwen2.5-coder:32b` 모델은 최대 메모리 사용 환경(컨텍스트 크기 76,800 토큰, Claude 3.5 API의 약 70.8%)에서 테스트되었으며, TabbyAPI 환경에서 어떤 성능을 보일지 추가 테스트가 필요합니다.
 
 ## 다음 단계 (2025-03-28 예정)

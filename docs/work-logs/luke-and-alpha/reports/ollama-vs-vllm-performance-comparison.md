@@ -20,7 +20,7 @@
     *   **Ollama:** (버전 정보는 로그에 명시되지 않았으나, 2025년 3월 27일 테스트 시점 기준)
     *   **vLLM:** Docker 이미지 `vllm/vllm-openai:v0.5.1` 사용 (Tensor Parallel Size: 2)
     *   **운영체제:** Windows 11 (WSL2 환경에서 Docker 실행 추정)
-*   **테스트 스크립트:** `scripts/sllm_test/` 내 스크립트 사용 (`run_test.py`, `generate_report.py`, `evaluator.py` 등)
+*   **테스트 스크립트:** `experiment/sllm_test/` 내 스크립트 사용 (`run_test.py`, `generate_report.py`, `evaluator.py` 등)
 
 ## 3. 테스트 모델 및 환경
 
@@ -154,17 +154,17 @@ Qwen 2.5 Coder 32B 4bit (vLLM GPTQ-Int4) 모델을 싱글 RTX 3090 (24GB VRAM)�
 
 ## 11. 레퍼런스
 
-*   **Ollama (Qwen & Gemma) 테스트 결과 보고서 (영문):** [scripts/sllm_test/experiment_results/performance_report_20250327_203217.md][ollama-gemma-report]
-*   **Ollama (Qwen & Gemma) 테스트 결과 보고서 (국문):** [scripts/sllm_test/experiment_results/performance_report_20250327_203217.ko.md](/scripts/sllm_test/experiment_results/performance_report_20250327_203217.ko.md)
-*   **vLLM 테스트 결과 보고서 (전체):** [scripts/sllm_test/experiment_results/performance_report_20250329_005124.md][vllm-report]
-*   **Ollama (Qwen) 품질 평가 JSON:** [scripts/sllm_test/experiment_results/qwen2.5-coder_32b_ollama_20250328_211339_continuous_1.json](/scripts/sllm_test/experiment_results/qwen2.5-coder_32b_ollama_20250328_211339_continuous_1.json)
-*   **vLLM AWQ 품질 평가 JSON:** [scripts/sllm_test/experiment_results/Qwen_Qwen2.5-Coder-32B-Instruct-AWQ_vllm_20250329_005124_continuous_1.json](/scripts/sllm_test/experiment_results/Qwen_Qwen2.5-Coder-32B-Instruct-AWQ_vllm_20250329_005124_continuous_1.json)
-*   **vLLM GPTQ-Int4 품질 평가 JSON:** [scripts/sllm_test/experiment_results/Qwen_Qwen2.5-Coder-32B-Instruct-GPTQ-Int4_vllm_20250329_005124_continuous_1.json](/scripts/sllm_test/experiment_results/Qwen_Qwen2.5-Coder-32B-Instruct-GPTQ-Int4_vllm_20250329_005124_continuous_1.json)
-*   **Ollama (Gemma 12B) 품질 평가 JSON (일부):** [scripts/sllm_test/experiment_results/gemma3_12b_ctx12800_20250327_203217_continuous_1.json](/scripts/sllm_test/experiment_results/gemma3_12b_ctx12800_20250327_203217_continuous_1.json)
-*   **Ollama (Gemma 27B) 품질 평가 JSON (일부):** [scripts/sllm_test/experiment_results/gemma3_27b_ctx12800_20250327_203217_continuous_1.json](/scripts/sllm_test/experiment_results/gemma3_27b_ctx12800_20250327_203217_continuous_1.json)
+*   **Ollama (Qwen & Gemma) 테스트 결과 보고서 (영문):** [experiment/sllm_test/experiment_results/performance_report_20250327_203217.md][ollama-gemma-report]
+*   **Ollama (Qwen & Gemma) 테스트 결과 보고서 (국문):** [experiment/sllm_test/experiment_results/performance_report_20250327_203217.ko.md](/experiment/sllm_test/experiment_results/performance_report_20250327_203217.ko.md)
+*   **vLLM 테스트 결과 보고서 (전체):** [experiment/sllm_test/experiment_results/performance_report_20250329_005124.md][vllm-report]
+*   **Ollama (Qwen) 품질 평가 JSON:** [experiment/sllm_test/experiment_results/qwen2.5-coder_32b_ollama_20250328_211339_continuous_1.json](/experiment/sllm_test/experiment_results/qwen2.5-coder_32b_ollama_20250328_211339_continuous_1.json)
+*   **vLLM AWQ 품질 평가 JSON:** [experiment/sllm_test/experiment_results/Qwen_Qwen2.5-Coder-32B-Instruct-AWQ_vllm_20250329_005124_continuous_1.json](/experiment/sllm_test/experiment_results/Qwen_Qwen2.5-Coder-32B-Instruct-AWQ_vllm_20250329_005124_continuous_1.json)
+*   **vLLM GPTQ-Int4 품질 평가 JSON:** [experiment/sllm_test/experiment_results/Qwen_Qwen2.5-Coder-32B-Instruct-GPTQ-Int4_vllm_20250329_005124_continuous_1.json](/experiment/sllm_test/experiment_results/Qwen_Qwen2.5-Coder-32B-Instruct-GPTQ-Int4_vllm_20250329_005124_continuous_1.json)
+*   **Ollama (Gemma 12B) 품질 평가 JSON (일부):** [experiment/sllm_test/experiment_results/gemma3_12b_ctx12800_20250327_203217_continuous_1.json](/experiment/sllm_test/experiment_results/gemma3_12b_ctx12800_20250327_203217_continuous_1.json)
+*   **Ollama (Gemma 27B) 품질 평가 JSON (일부):** [experiment/sllm_test/experiment_results/gemma3_27b_ctx12800_20250327_203217_continuous_1.json](/experiment/sllm_test/experiment_results/gemma3_27b_ctx12800_20250327_203217_continuous_1.json)
 *   **관련 태스크 정의:** [docs/work-logs/luke-and-alpha/tasks/004-vllm-setup-and-test.md](/docs/work-logs/luke-and-alpha/tasks/004-vllm-setup-and-test.md)
 *   **관련 일일 작업 로그:** [docs/work-logs/2025-03-28.md](/docs/work-logs/2025-03-28.md)
-*   **평가 스크립트:** [scripts/sllm_test/evaluator.py](/scripts/sllm_test/evaluator.py)
+*   **평가 스크립트:** [experiment/sllm_test/evaluator.py](/experiment/sllm_test/evaluator.py)
 
 ## 12. Cline 연동 설정 (vLLM Qwen 32B GPTQ-Int4)
 
@@ -201,6 +201,6 @@ Qwen 2.5 Coder 32B 4bit (vLLM GPTQ-Int4) 모델을 싱글 RTX 3090 (24GB VRAM)�
 ---
 *본 보고서는 제공된 테스트 결과 로그를 바탕으로 알파가 작성했습니다.*
 
-[ollama-qwen-report]: /scripts/sllm_test/experiment_results/performance_report_20250327_203217.md
-[ollama-gemma-report]: /scripts/sllm_test/experiment_results/performance_report_20250327_203217.md
-[vllm-report]: /scripts/sllm_test/experiment_results/performance_report_20250329_005124.md
+[ollama-qwen-report]: /experiment/sllm_test/experiment_results/performance_report_20250327_203217.md
+[ollama-gemma-report]: /experiment/sllm_test/experiment_results/performance_report_20250327_203217.md
+[vllm-report]: /experiment/sllm_test/experiment_results/performance_report_20250329_005124.md

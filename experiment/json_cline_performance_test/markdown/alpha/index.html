@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>마크다운 뷰어</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <h1>마크다운 뷰어</h1>
+  </header>
+  
+  <main>
+    <div class="container">
+      <div class="editor-pane">
+        <h2>마크다운 입력</h2>
+        <textarea id="markdown-input" placeholder="마크다운을 입력하세요..."></textarea>
+      </div>
+      
+      <div class="preview-pane">
+        <h2>HTML 출력</h2>
+        <div id="html-output"></div>
+      </div>
+    </div>
+  </main>
+  
+  <footer>
+    <p>마크다운 뷰어 애플리케이션</p>
+  </footer>
+  
+  <script src="markdown-parser.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>

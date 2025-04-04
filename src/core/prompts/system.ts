@@ -143,7 +143,9 @@ Always adhere to this format for the tool use to ensure proper parsing and execu
 		for (const sectionRef of modeConfig.sections_ref) {
 			const sectionName = sectionRef.replace(".json", "")
 			// 이미 처리된 TOOL_DEFINITIONS는 건너뜀
-			if (sectionName === "TOOL_DEFINITIONS") continue
+			if (sectionName === "TOOL_DEFINITIONS") {
+				continue
+			}
 
 			try {
 				const sectionContent = await loadSection(sectionsDir, sectionName)

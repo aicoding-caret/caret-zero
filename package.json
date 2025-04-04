@@ -1,6 +1,6 @@
 {
 	"name": "claude-dev",
-	"displayName": "Cline",
+	"displayName": "^Caret",
 	"description": "Autonomous coding agent right in your IDE, capable of creating/editing files, running commands, using the browser, and more with your permission every step of the way.",
 	"version": "3.8.3",
 	"icon": "assets/icons/icon.png",
@@ -8,7 +8,7 @@
 		"vscode": "^1.84.0"
 	},
 	"author": {
-		"name": "Cline Bot Inc."
+		"name": "Pulse9 Inc."
 	},
 	"license": "Apache-2.0",
 	"publisher": "saoudrizwan",
@@ -16,7 +16,7 @@
 		"type": "git",
 		"url": "https://github.com/cline/cline"
 	},
-	"homepage": "https://cline.bot",
+	"homepage": "https://caret.click",
 	"categories": [
 		"AI",
 		"Chat",

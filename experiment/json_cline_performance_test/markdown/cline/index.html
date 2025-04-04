@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>마크다운 뷰어</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <h1>마크다운 뷰어</h1>
+  </header>
+  
+  <main>
+    <div class="container">
+      <div class="editor-section">
+        <h2>마크다운 입력</h2>
+        <textarea id="markdown-input" placeholder="여기에 마크다운을 입력하세요...">
+# 마크다운 뷰어에 오신 것을 환영합니다!
+
+이 애플리케이션은 **마크다운**을 *HTML*로 변환해줍니다.
+
+## 사용 방법
+
+왼쪽 영역에 마크다운을 입력하면 오른쪽에 변환된 결과가 표시됩니다.
+
+### 지원하는 마크다운 문법
+
+- **굵게**: `**텍스트**`
+- *기울임*: `*텍스트*`
+- ***굵은 기울임***: `***텍스트***`
+- [링크](https://example.com): `[링크 텍스트](URL)`
+- 목록:
+  - `- 항목` 또는 `* 항목`
+  - `1. 항목`
+- `인라인 코드`: `` `코드` ``
+- 인용문: `> 인용문`
+
+```
+코드 블록
+```
+
+---
+
+즐거운 마크다운 작성되세요!
+        </textarea>
+      </div>
+      
+      <div class="preview-section">
+        <h2>HTML 미리보기</h2>
+        <div id="html-output" class="preview"></div>
+      </div>
+    </div>
+  </main>
+  
+  <footer>
+    <p>마크다운 뷰어 애플리케이션 &copy; 2025</p>
+  </footer>
+
+  <script src="markdown-parser.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>

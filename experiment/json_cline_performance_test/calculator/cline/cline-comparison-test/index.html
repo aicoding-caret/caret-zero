@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>웹 계산기</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="calculator">
+        <div class="calculator-display">
+            <div id="display">0</div>
+        </div>
+        <div class="calculator-keys">
+            <!-- 첫 번째 행: 초기화 및 백스페이스 -->
+            <button class="key-clear" data-action="clear">C</button>
+            <button class="key-backspace" data-action="backspace">⌫</button>
+            <button class="key-operator" data-action="divide">÷</button>
+            
+            <!-- 두 번째 행: 숫자 7-9 및 곱셈 -->
+            <button class="key-number">7</button>
+            <button class="key-number">8</button>
+            <button class="key-number">9</button>
+            <button class="key-operator" data-action="multiply">×</button>
+            
+            <!-- 세 번째 행: 숫자 4-6 및 뺄셈 -->
+            <button class="key-number">4</button>
+            <button class="key-number">5</button>
+            <button class="key-number">6</button>
+            <button class="key-operator" data-action="subtract">-</button>
+            
+            <!-- 네 번째 행: 숫자 1-3 및 덧셈 -->
+            <button class="key-number">1</button>
+            <button class="key-number">2</button>
+            <button class="key-number">3</button>
+            <button class="key-operator" data-action="add">+</button>
+            
+            <!-- 다섯 번째 행: 숫자 0, 소수점 및 등호 -->
+            <button class="key-number key-zero">0</button>
+            <button class="key-decimal" data-action="decimal">.</button>
+            <button class="key-equal" data-action="calculate">=</button>
+        </div>
+    </div>
+
+    <!-- 테스트 실행을 위한 스크립트 -->
+    <div class="test-results" id="test-results">
+        <h2>테스트 결과</h2>
+        <button id="run-tests">테스트 실행</button>
+        <div id="test-output"></div>
+    </div>
+
+    <!-- 계산기 로직 및 UI 스크립트 -->
+    <script src="calculator.js"></script>
+    <script src="script.js"></script>
+    
+    <!-- 테스트 스크립트 -->
+    <script src="calculator.test.js"></script>
+</body>
+</html>
