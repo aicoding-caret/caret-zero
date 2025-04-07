@@ -33,32 +33,51 @@ const copyWasmFiles = {
 			const sourceDir = path.join(__dirname, "node_modules", "web-tree-sitter")
 			const targetDir = path.join(__dirname, "dist")
 
-			// Copy tree-sitter.wasm
-			fs.copyFileSync(path.join(sourceDir, "tree-sitter.wasm"), path.join(targetDir, "tree-sitter.wasm"))
+			// Create dist directory if it doesn't exist
+			if (!fs.existsSync(targetDir)) {
+				fs.mkdirSync(targetDir, { recursive: true });
+			}
+
+			// Copy tree-sitter.wasm only if it exists
+			const treeSitterWasmPath = path.join(sourceDir, "tree-sitter.wasm");
+			if (fs.existsSync(treeSitterWasmPath)) {
+				fs.copyFileSync(treeSitterWasmPath, path.join(targetDir, "tree-sitter.wasm"));
+			} else {
+				console.warn(`[copy-wasm-files] Warning: ${treeSitterWasmPath} not found, skipping.`);
+			}
 
 			// Copy language-specific WASM files
 			const languageWasmDir = path.join(__dirname, "node_modules", "tree-sitter-wasms", "out")
-			const languages = [
-				"typescript",
-				"tsx",
-				"python",
-				"rust",
-				"javascript",
-				"go",
-				"cpp",
-				"c",
-				"c_sharp",
-				"ruby",
-				"java",
-				"php",
-				"swift",
-				"kotlin",
-			]
+			if (fs.existsSync(languageWasmDir)) {
+				const languages = [
+					"typescript",
+					"tsx",
+					"python",
+					"rust",
+					"javascript",
+					"go",
+					"cpp",
+					"c",
+					"c_sharp",
+					"ruby",
+					"java",
+					"php",
+					"swift",
+					"kotlin",
+				]
 
-			languages.forEach((lang) => {
-				const filename = `tree-sitter-${lang}.wasm`
-				fs.copyFileSync(path.join(languageWasmDir, filename), path.join(targetDir, filename))
-			})
+				languages.forEach((lang) => {
+					const filename = `tree-sitter-${lang}.wasm`;
+					const sourcePath = path.join(languageWasmDir, filename);
+					if (fs.existsSync(sourcePath)) {
+						fs.copyFileSync(sourcePath, path.join(targetDir, filename));
+					} else {
+						console.warn(`[copy-wasm-files] Warning: ${sourcePath} not found, skipping.`);
+					}
+				})
+			} else {
+				console.warn(`[copy-wasm-files] Warning: Language WASM directory ${languageWasmDir} not found, skipping.`);
+			}
 		})
 	},
 }
@@ -101,16 +120,7 @@ const extensionConfig = {
 	plugins: [
 		copyWasmFiles,
         copyAssets, // Add the new plugin here
-		/* add to the end of plugins array */
-		esbuildProblemMatcherPlugin,
-		{
-			name: "alias-plugin",
-			setup(build) {
-				build.onResolve({ filter: /^pkce-challenge$/ }, (args) => {
-					return { path: require.resolve("pkce-challenge/dist/index.browser.js") }
-				})
-			},
-		},
+		esbuildProblemMatcherPlugin
 	],
 	entryPoints: ["src/extension.ts"],
 	format: "cjs",
