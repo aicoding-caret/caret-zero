@@ -63,6 +63,36 @@ const copyWasmFiles = {
 	},
 }
 
+const copyAssets = {
+  name: "copy-assets",
+  setup(build) {
+    build.onEnd(() => {
+      const assetDirs = [
+        { src: path.join(__dirname, "src", "core", "prompts", "sections"), dest: "sections" },
+        { src: path.join(__dirname, "src", "core", "prompts", "rules"), dest: "rules" },
+        { src: path.join(__dirname, "assets"), dest: "assets" } // Root assets folder
+      ];
+      
+      const targetBaseDir = path.join(__dirname, "dist");
+      
+      assetDirs.forEach(({ src, dest }) => {
+        const targetDir = path.join(targetBaseDir, dest);
+        try {
+          if (fs.existsSync(src)) {
+            // Use fs.cpSync for recursive copying
+            fs.cpSync(src, targetDir, { recursive: true, force: true }); 
+            console.log(`[copy-assets] Copied ${src} to ${targetDir}`);
+          } else {
+            console.warn(`[copy-assets] Source directory not found: ${src}`);
+          }
+        } catch (err) {
+            console.error(`[copy-assets] Error copying ${src} to ${targetDir}:`, err);
+        }
+      });
+    });
+  },
+};
+
 const extensionConfig = {
 	bundle: true,
 	minify: production,
@@ -70,6 +100,7 @@ const extensionConfig = {
 	logLevel: "silent",
 	plugins: [
 		copyWasmFiles,
+        copyAssets, // Add the new plugin here
 		/* add to the end of plugins array */
 		esbuildProblemMatcherPlugin,
 		{

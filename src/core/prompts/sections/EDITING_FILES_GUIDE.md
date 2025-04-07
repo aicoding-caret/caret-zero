@@ -20,6 +20,7 @@ You have access to two tools for working with files: **write_to_file** and **rep
 - Using write_to_file requires providing the file's complete final content.  
 - If you only need to make small changes to an existing file, consider using replace_in_file instead to avoid unnecessarily rewriting the entire file.
 - While write_to_file should not be your default choice, don't hesitate to use it when the situation truly calls for it.
+- **CRITICAL:** Before using `write_to_file`, always ensure critical data is backed up or a checkpoint is saved, as this operation overwrites the entire file and cannot be easily undone.
 
 # replace_in_file
 

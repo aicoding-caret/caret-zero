@@ -43,9 +43,9 @@ const ChatRowContainer = styled.div`
 
 // 알파 아바타 스타일
 const AvatarImage = styled.img`
-	width: 32px;
-	height: 32px;
-	border-radius: 50%;
+	width: 48px;
+	height: 48px;
+	border-radius: 20%;
 	margin-right: 10px;
 	flex-shrink: 0; // 크기 고정
 `

@@ -1,22 +1,59 @@
 import {
 	VSCodeButton,
 	VSCodeCheckbox,
+	VSCodeDivider, // Import VSCodeDivider
 	VSCodeLink,
-	VSCodeTextArea,
+	// Re-import Panels components
 	VSCodePanels,
 	VSCodePanelTab,
 	VSCodePanelView,
-} from "@vscode/webview-ui-toolkit/react"
-import { memo, useCallback, useEffect, useState } from "react"
+	VSCodeTextArea,
+	VSCodeTextField,
+} from "@vscode/webview-ui-toolkit/react";
+import { memo, useCallback, useEffect, useState } from "react";
 import { useExtensionState } from "../../context/ExtensionStateContext"
 import { validateApiConfiguration, validateModelId } from "../../utils/validate"
 import { vscode } from "../../utils/vscode"
 import SettingsButton from "../common/SettingsButton"
 import ApiOptions from "./ApiOptions"
 import { TabButton } from "../mcp/McpView"
-import { useEvent } from "react-use"
-import { ExtensionMessage } from "../../../../src/shared/ExtensionMessage"
-const { IS_DEV } = process.env
+import { useEvent } from "react-use";
+import styled from "styled-components"; // Import styled-components
+import { ExtensionMessage } from "../../../../src/shared/ExtensionMessage";
+const { IS_DEV } = process.env;
+
+// Styled components for Mode Settings section (can be adjusted)
+const SettingsSection = styled.div`
+  margin-bottom: 20px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid var(--vscode-settings-headerBorder);
+  &:last-of-type { // Remove border from the last section
+	border-bottom: none;
+	margin-bottom: 0;
+	padding-bottom: 0;
+  }
+`;
+
+const SectionTitle = styled.h4`
+  margin-top: 0;
+  margin-bottom: 10px;
+  font-weight: 600; /* Slightly bolder title */
+`;
+
+const OptionRow = styled.div`
+    display: flex;
+    align-items: center;
+    margin-bottom: 8px;
+    gap: 8px; /* Add gap between label and control */
+`;
+
+// Keep OptionLabel, but maybe don't use it when stacking
+const OptionLabel = styled.label`
+    /* min-width: 150px; */ /* Remove fixed min-width for better stacking */
+    display: block; /* Make label block for stacking */
+    margin-bottom: 4px; /* Add some space below label when stacked */
+`;
+
 
 type SettingsViewProps = {
 	onDone: () => void
@@ -36,32 +73,34 @@ const SettingsView = ({ onDone }: SettingsViewProps) => {
 		setPlanActSeparateModelsSetting,
 	} = useExtensionState()
 	const [apiErrorMessage, setApiErrorMessage] = useState<string | undefined>(undefined)
-	const [modelIdErrorMessage, setModelIdErrorMessage] = useState<string | undefined>(undefined)
-	const [pendingTabChange, setPendingTabChange] = useState<"plan" | "act" | null>(null)
+	const [modelIdErrorMessage, setModelIdErrorMessage] = useState<string | undefined>(undefined);
+	const [pendingTabChange, setPendingTabChange] = useState<"plan" | "act" | null>(null);
+    // Re-introduce activeModeSettingTab state
+	const [activeModeSettingTab, setActiveModeSettingTab] = useState('mode-1');
 
 	const handleSubmit = (withoutDone: boolean = false) => {
 		const apiValidationResult = validateApiConfiguration(apiConfiguration)
 		const modelIdValidationResult = validateModelId(apiConfiguration, openRouterModels)
 
-		// setApiErrorMessage(apiValidationResult)
-		// setModelIdErrorMessage(modelIdValidationResult)
+		// setApiErrorMessage(apiValidationResult) // Keep original comments
+		// setModelIdErrorMessage(modelIdValidationResult) // Keep original comments
 
 		let apiConfigurationToSubmit = apiConfiguration
 		if (!apiValidationResult && !modelIdValidationResult) {
-			// vscode.postMessage({ type: "apiConfiguration", apiConfiguration })
-			// vscode.postMessage({
-			// 	type: "customInstructions",
-			// 	text: customInstructions,
-			// })
-			// vscode.postMessage({
-			// 	type: "telemetrySetting",
-			// 	text: telemetrySetting,
-			// })
-			// console.log("handleSubmit", withoutDone)
-			// vscode.postMessage({
-			// 	type: "separateModeSetting",
-			// 	text: separateModeSetting,
-			// })
+			// vscode.postMessage({ type: "apiConfiguration", apiConfiguration }) // Keep original comments
+			// vscode.postMessage({ // Keep original comments
+			// 	type: "customInstructions", // Keep original comments
+			// 	text: customInstructions, // Keep original comments
+			// }) // Keep original comments
+			// vscode.postMessage({ // Keep original comments
+			// 	type: "telemetrySetting", // Keep original comments
+			// 	text: telemetrySetting, // Keep original comments
+			// }) // Keep original comments
+			// console.log("handleSubmit", withoutDone) // Keep original comments
+			// vscode.postMessage({ // Keep original comments
+			// 	type: "separateModeSetting", // Keep original comments
+			// 	text: separateModeSetting, // Keep original comments
+			// }) // Keep original comments
 		} else {
 			// if the api configuration is invalid, we don't save it
 			apiConfigurationToSubmit = undefined
@@ -73,6 +112,7 @@ const SettingsView = ({ onDone }: SettingsViewProps) => {
 			customInstructionsSetting: customInstructions,
 			telemetrySetting,
 			apiConfiguration: apiConfigurationToSubmit,
+			// TODO: Add mode configurations to the message payload later
 		})
 
 		if (!withoutDone) {
@@ -86,12 +126,12 @@ const SettingsView = ({ onDone }: SettingsViewProps) => {
 	}, [apiConfiguration])
 
 	// validate as soon as the component is mounted
-	/*
-    useEffect will use stale values of variables if they are not included in the dependency array. 
-    so trying to use useEffect with a dependency array of only one value for example will use any 
-    other variables' old values. In most cases you don't want this, and should opt to use react-use 
+	/* // Keep original multi-line comment
+    useEffect will use stale values of variables if they are not included in the dependency array.
+    so trying to use useEffect with a dependency array of only one value for example will use any
+    other variables' old values. In most cases you don't want this, and should opt to use react-use
     hooks.
-    
+
         // uses someVar and anotherVar
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [someVar])
@@ -164,52 +204,43 @@ const SettingsView = ({ onDone }: SettingsViewProps) => {
 					display: "flex",
 					flexDirection: "column",
 				}}>
-				{/* Tabs container */}
+				{/* Plan/Act Mode API Options */}
 				{planActSeparateModelsSetting ? (
-					<div
-						style={{
-							border: "1px solid var(--vscode-panel-border)",
-							borderRadius: "4px",
-							padding: "10px",
-							marginBottom: "20px",
-							background: "var(--vscode-panel-background)",
-						}}>
+					<SettingsSection> {/* Wrap in SettingsSection for consistent styling */}
 						<div
 							style={{
 								display: "flex",
 								gap: "1px",
 								marginBottom: "10px",
-								marginTop: -8,
 								borderBottom: "1px solid var(--vscode-panel-border)",
 							}}>
 							<TabButton isActive={chatSettings.mode === "plan"} onClick={() => handleTabChange("plan")}>
-								Plan Mode
+								Plan Mode API
 							</TabButton>
 							<TabButton isActive={chatSettings.mode === "act"} onClick={() => handleTabChange("act")}>
-								Act Mode
+								Act Mode API
 							</TabButton>
 						</div>
-
-						{/* Content container */}
-						<div style={{ marginBottom: -12 }}>
-							<ApiOptions
-								key={chatSettings.mode}
-								showModelOptions={true}
-								apiErrorMessage={apiErrorMessage}
-								modelIdErrorMessage={modelIdErrorMessage}
-							/>
-						</div>
-					</div>
+						<ApiOptions
+							key={chatSettings.mode}
+							showModelOptions={true}
+							apiErrorMessage={apiErrorMessage}
+							modelIdErrorMessage={modelIdErrorMessage}
+						/>
+					</SettingsSection>
 				) : (
-					<ApiOptions
-						key={"single"}
-						showModelOptions={true}
-						apiErrorMessage={apiErrorMessage}
-						modelIdErrorMessage={modelIdErrorMessage}
-					/>
+					<SettingsSection> {/* Wrap in SettingsSection */}
+						<ApiOptions
+							key={"single"}
+							showModelOptions={true}
+							apiErrorMessage={apiErrorMessage}
+							modelIdErrorMessage={modelIdErrorMessage}
+						/>
+					</SettingsSection>
 				)}
 
-				<div style={{ marginBottom: 5 }}>
+				{/* Custom Instructions */}
+				<SettingsSection>
 					<VSCodeTextArea
 						value={customInstructions ?? ""}
 						style={{ width: "100%" }}
@@ -227,9 +258,10 @@ const SettingsView = ({ onDone }: SettingsViewProps) => {
 						}}>
 						These instructions are added to the end of the system prompt sent with every request.
 					</p>
-				</div>
+				</SettingsSection>
 
-				<div style={{ marginBottom: 5 }}>
+				{/* Separate Models Checkbox */}
+				<SettingsSection>
 					<VSCodeCheckbox
 						style={{ marginBottom: "5px" }}
 						checked={planActSeparateModelsSetting}
@@ -248,9 +280,10 @@ const SettingsView = ({ onDone }: SettingsViewProps) => {
 						Switching between Plan and Act mode will persist the API and model used in the previous mode. This may be
 						helpful e.g. when using a strong reasoning model to architect a plan for a cheaper coding model to act on.
 					</p>
-				</div>
+				</SettingsSection>
 
-				<div style={{ marginBottom: 5 }}>
+				{/* Telemetry Checkbox */}
+				<SettingsSection>
 					<VSCodeCheckbox
 						style={{ marginBottom: "5px" }}
 						checked={telemetrySetting === "enabled"}
@@ -277,11 +310,86 @@ const SettingsView = ({ onDone }: SettingsViewProps) => {
 						</VSCodeLink>{" "}
 						for more details.
 					</p>
-				</div>
+				</SettingsSection>
 
+                {/* === Mode Configuration Section with Tabs === */}
+                <SettingsSection>
+                    <SectionTitle>Mode Configuration</SectionTitle>
+                    {/* Use VSCodePanels for tabs */}
+                    <VSCodePanels activeid={activeModeSettingTab} onChange={(e: any) => setActiveModeSettingTab(e.target.activeid)}>
+                        {/* Generate tabs dynamically */}
+                        {['mode-1', 'mode-2', 'mode-3', 'mode-4', 'mode-5'].map((modeId, index) => (
+                            <VSCodePanelTab key={modeId} id={modeId}>{`Mode ${index + 1}`}</VSCodePanelTab>
+                        ))}
+
+                        {/* Generate panel views dynamically */}
+                        {['mode-1', 'mode-2', 'mode-3', 'mode-4', 'mode-5'].map((modeId, index) => (
+                            // Use VSCodePanelView for each tab's content
+                            <VSCodePanelView
+                                key={`view-${modeId}`}
+                                id={`view-${modeId}`}
+                                // Add width: '100%' and ensure proper box-sizing if needed (though likely default)
+                                style={{ padding: '10px 0', width: '100%', boxSizing: 'border-box' }}>
+
+								<div style={{ width: '100%', display: 'block', marginTop: '15px' }}> {/* New grouping div */}
+
+                                {/* Mode Name: Stack label and input vertically */}
+								<div style={{ marginBottom: '15px', width: '100%', display: 'block' }}>
+									<OptionLabel htmlFor={`${modeId}-name`}>Mode Name:</OptionLabel>
+									<VSCodeTextField id={`${modeId}-name`} placeholder={`Enter name for Mode ${index + 1}`} defaultValue={`Mode ${index + 1}`} style={{ width: '100%' }} />
+								</div>
+
+                                
+								
+								{/* Allowed File Paths Section (Should be okay) */}
+								<div style={{ marginTop: '15px', display: 'block', width: '100%' }}>
+									<OptionLabel htmlFor={`${modeId}-paths`}>Allowed File Paths:</OptionLabel>
+									<VSCodeTextArea id={`${modeId}-paths`} placeholder="e.g., src/, docs/ (one per line)" rows={3} style={{ width: '100%' }} resize="vertical" />
+								</div>
+
+
+                                <SectionTitle style={{ fontSize: 'var(--vscode-font-size)', marginTop: '15px' }}>Permissions</SectionTitle>
+                                <div style={{ marginBottom: '8px', width: '100%', overflowWrap: 'break-word' }}> {/* Add width and wrap */}
+                                    <VSCodeCheckbox id={`${modeId}-edit`}>Enable File Editing</VSCodeCheckbox>
+                                </div>
+                                <div style={{ marginBottom: '8px', width: '100%', overflowWrap: 'break-word' }}> {/* Add width and wrap */}
+                                    <VSCodeCheckbox id={`${modeId}-command`}>Allow Command Execution</VSCodeCheckbox>
+                                </div>
+                                 <div style={{ marginBottom: '8px', width: '100%', overflowWrap: 'break-word' }}> {/* Add width and wrap */}
+                                    <VSCodeCheckbox id={`${modeId}-browser`}>Allow Browser Use</VSCodeCheckbox>
+                                </div>
+
+                                {/* Allowed File Paths: Stack label and input vertically */}
+                                <div style={{ marginTop: '15px' }}> {/* Use div instead of OptionRow for stacking */}
+                                     <OptionLabel htmlFor={`${modeId}-paths`}>Allowed File Paths:</OptionLabel> {/* Keep OptionLabel */}
+                                     <VSCodeTextArea id={`${modeId}-paths`} placeholder="e.g., src/, docs/ (one per line)" rows={3} style={{ width: '100%' }} resize="vertical" />
+                                </div>
+
+                                <VSCodeDivider style={{ margin: '20px 0' }} /> {/* Increased margin */}
+
+                                {/* Rule Configuration */}
+                                <SectionTitle style={{ fontSize: 'var(--vscode-font-size)' }}>Rule Configuration </SectionTitle>
+                                <VSCodeTextArea
+                                    id={`${modeId}-rules`}
+                                    placeholder={`Enter specific rules for this mode (one per line) to override global/project settings...`}
+                                    rows={6}
+                                    style={{ width: '100%' }}
+                                    resize="vertical"
+                                />
+
+                                
+								</div>
+                            </VSCodePanelView>
+                        ))}
+                    </VSCodePanels>
+                </SettingsSection>
+                {/* ===================================== */}
+
+
+				{/* Debug Section */}
 				{IS_DEV && (
-					<>
-						<div style={{ marginTop: "10px", marginBottom: "4px" }}>Debug</div>
+					<SettingsSection>
+						<SectionTitle>Debug</SectionTitle>
 						<VSCodeButton onClick={handleResetState} style={{ marginTop: "5px", width: "auto" }}>
 							Reset State
 						</VSCodeButton>
@@ -293,52 +401,56 @@ const SettingsView = ({ onDone }: SettingsViewProps) => {
 							}}>
 							This will reset all global state and secret storage in the extension.
 						</p>
-					</>
+					</SettingsSection>
 				)}
 
+				{/* Footer */}
 				<div
 					style={{
-						marginTop: "auto",
-						paddingRight: 8,
+						marginTop: "auto", // Pushes footer to bottom
+						paddingTop: '20px', // Add some space before the footer
+						paddingRight: 8, // Keep existing padding
 						display: "flex",
-						justifyContent: "center",
+						flexDirection: 'column', // Stack items vertically
+						alignItems: 'center', // Center items horizontally
+						gap: '15px', // Space between button and text
 					}}>
 					<SettingsButton
 						onClick={() => vscode.postMessage({ type: "openExtensionSettings" })}
 						style={{
-							margin: "0 0 16px 0",
+							margin: 0, // Remove default margins
 						}}>
 						<i className="codicon codicon-settings-gear" />
 						Advanced Settings
 					</SettingsButton>
-				</div>
-				<div
-					style={{
-						textAlign: "center",
-						color: "var(--vscode-descriptionForeground)",
-						fontSize: "12px",
-						lineHeight: "1.2",
-						padding: "0 8px 15px 0",
-					}}>
-					<p
+					<div
 						style={{
-							wordWrap: "break-word",
-							margin: 0,
-							padding: 0,
+							textAlign: "center",
+							color: "var(--vscode-descriptionForeground)",
+							fontSize: "12px",
+							lineHeight: "1.2",
+							padding: "0 8px 15px 0", // Keep existing padding
 						}}>
-						If you have any questions or feedback, feel free to open an issue at{" "}
-						<VSCodeLink href="https://github.com/cline/cline" style={{ display: "inline" }}>
-							https://github.com/cline/cline
-						</VSCodeLink>
-					</p>
-					<p
-						style={{
-							fontStyle: "italic",
-							margin: "10px 0 0 0",
-							padding: 0,
-						}}>
-						v{version}
-					</p>
+						<p
+							style={{
+								wordWrap: "break-word",
+								margin: 0,
+								padding: 0,
+							}}>
+							If you have any questions or feedback, feel free to open an issue at{" "}
+							<VSCodeLink href="https://github.com/cline/cline" style={{ display: "inline" }}>
+								https://github.com/cline/cline
+							</VSCodeLink>
+						</p>
+						<p
+							style={{
+								fontStyle: "italic",
+								margin: "10px 0 0 0",
+								padding: 0,
+							}}>
+							v{version}
+						</p>
+					</div>
 				</div>
 			</div>
 		</div>

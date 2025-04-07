@@ -7,7 +7,7 @@ import { setTimeout as setTimeoutPromise } from "node:timers/promises"
 import os from "os"
 import pWaitFor from "p-wait-for"
 import * as path from "path"
-import * as vscode from "vscode"
+import * as vscode from "vscode" // Ensure vscode is imported
 import { buildApiHandler } from "../../api"
 import { cleanupLegacyCheckpoints } from "../../integrations/checkpoints/CheckpointMigration"
 import { downloadTask } from "../../integrations/misc/export-markdown"
@@ -1625,6 +1625,11 @@ Here is the project's README to help you get started:\n\n${mcpDetails.readmeCont
 			planActSeparateModelsSetting,
 		} = await getAllExtensionState(this.context)
 
+		// Get webview to construct URI
+		const webview = this.webviewProviderRef.deref()?.view?.webview;
+		const alphaAvatarFileUri = vscode.Uri.joinPath(this.context.extensionUri, 'assets', 'alpha.png');
+		const alphaAvatarWebviewUri = webview ? webview.asWebviewUri(alphaAvatarFileUri).toString() : undefined;
+
 		return {
 			version: this.context.extension?.packageJSON?.version ?? "",
 			apiConfiguration,
@@ -1647,6 +1652,7 @@ Here is the project's README to help you get started:\n\n${mcpDetails.readmeCont
 			telemetrySetting,
 			planActSeparateModelsSetting,
 			vscMachineId: vscode.env.machineId,
+			alphaAvatarUri: alphaAvatarWebviewUri, // Add alphaAvatarUri state
 		}
 	}
 

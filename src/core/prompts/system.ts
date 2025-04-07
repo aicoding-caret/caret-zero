@@ -7,6 +7,34 @@ import fs from "fs/promises"
 import path from "path"
 import * as corePrompt from "./core_system_prompt.json"
 
+// Specific interface for the structure of EDITING_FILES_GUIDE.json
+interface EditingFilesGuideData {
+	tools: Array<{
+		name: string;
+		purpose: string;
+		when_to_use: string[];
+		important_considerations?: string[];
+		advantages?: string[];
+	}>;
+	choosing_the_appropriate_tool: string[];
+	auto_formatting_considerations: string[];
+	workflow_tips: string[];
+}
+
+// Specific interface for BASE_PROMPT_INTRO.json
+interface BasePromptIntroData {
+    introduction: string;
+    tool_use_header: string;
+    tool_use_description: string;
+    formatting_header: string;
+    formatting_description: string;
+    formatting_structure_example: string;
+    formatting_example_header: string;
+    formatting_example_code: string;
+    formatting_note: string;
+}
+
+
 interface ToolDefinition {
 	description: string
 	params: {
@@ -22,55 +50,136 @@ interface RulesJson {
 	rules: string[]
 }
 
-interface SectionJson {
-	content: string
+/**
+ * Reads a file and returns its content as a string. Throws if read fails or content is not string.
+ */
+async function readFileSafely(filePath: string): Promise<string> {
+    try {
+        const content = await fs.readFile(filePath, "utf-8");
+        if (typeof content !== 'string') {
+            throw new Error(`readFile did not return a string for ${filePath}. Got type: ${typeof content}`);
+        }
+        return content;
+    } catch (error) {
+        console.error(`Error reading file ${filePath}:`, error);
+        if (error instanceof Error && 'code' in error && error.code === 'ENOENT') {
+             throw new Error(`File not found: ${filePath}`);
+        }
+        throw error;
+    }
 }
 
 /**
- * Loads JSON file from specified path
+ * Loads and parses a JSON file directly using readFileSafely.
  */
-async function loadJsonFile<T>(filePath: string): Promise<T> {
+async function loadAndParseJsonFile<T>(filePath: string): Promise<T> {
+	let fileContent: string | undefined;
 	try {
-		const content = await fs.readFile(filePath, "utf-8")
-		return JSON.parse(content) as T
+        fileContent = await readFileSafely(filePath);
+		return JSON.parse(fileContent) as T;
 	} catch (error) {
-		console.error(`Error loading JSON from ${filePath}:`, error)
-		throw error
+		console.error(`Error loading/parsing JSON from ${filePath}. Content snippet (if read): ${fileContent ? `"${fileContent.substring(0,100)}..."` : 'read failed or empty'}. Error:`, error);
+		throw error;
 	}
 }
 
 /**
- * Loads a section from either JSON or markdown file
+ * Loads section content. Tries JSON first, stringifies it if valid. Falls back to MD.
  */
-async function loadSection(sectionsDir: string, sectionName: string): Promise<string> {
+async function loadAndFormatSectionContent(sectionsDir: string, sectionName: string): Promise<string> {
+	const jsonPath = path.join(sectionsDir, `${sectionName}.json`);
+	const mdPath = path.join(sectionsDir, `${sectionName}.md`);
+
 	try {
-		const jsonPath = path.join(sectionsDir, `${sectionName}.json`)
-		const jsonContent = await loadJsonFile<SectionJson>(jsonPath)
-		return jsonContent.content
-	} catch (error) {
-		console.error(`Error loading section ${sectionName}:`, error)
-		// Fallback to markdown file if JSON loading fails
-		const mdPath = path.join(sectionsDir, `${sectionName}.md`)
-		return await fs.readFile(mdPath, "utf-8")
+		// Try reading and parsing JSON first
+		const fileContent = await readFileSafely(jsonPath);
+		const parsedData = JSON.parse(fileContent); // Check if it's valid JSON of *any* structure
+
+        // If parsing succeeded, stringify the parsed data for inclusion
+        // Special case: if it's just a string (like RULES_HEADER.json), use it directly.
+        if (typeof parsedData === 'string') {
+            return parsedData;
+        } else {
+		    return JSON.stringify(parsedData, null, 2); // Pretty-print JSON object/array
+        }
+	} catch (jsonError) {
+		// Fallback to markdown file if JSON reading/parsing failed
+		try {
+			console.log(`Falling back to markdown for section: ${sectionName} (JSON error: ${jsonError instanceof Error ? jsonError.message : String(jsonError)})`);
+			return await readFileSafely(mdPath); // Read MD content
+		} catch (mdError) {
+			console.error(`Error loading section ${sectionName} (tried both .json and .md):`, mdError);
+			// Return an error message string if both fail
+			return `[ERROR: Failed to load content for this section from both .json and .md]`;
+		}
 	}
 }
 
+
 /**
- * Loads rules from JSON file
+ * Loads rules. Tries JSON first (expecting { "rules": [...] }), then MD.
  */
 async function loadRules(rulesDir: string, ruleName: string): Promise<string[]> {
+	const jsonPath = path.join(rulesDir, `${ruleName}.json`);
+	const mdPath = path.join(rulesDir, `${ruleName}.md`);
+
 	try {
-		const jsonPath = path.join(rulesDir, `${ruleName}.json`)
-		const rulesContent = await loadJsonFile<RulesJson>(jsonPath)
-		return rulesContent.rules
-	} catch (error) {
-		console.error(`Error loading rules ${ruleName}:`, error)
-		// Fallback to markdown if JSON loading fails
-		const mdPath = path.join(rulesDir, `${ruleName}.md`)
-		const content = await fs.readFile(mdPath, "utf-8")
-		return [content]
+		const rulesContent = await loadAndParseJsonFile<RulesJson>(jsonPath);
+		if (Array.isArray(rulesContent?.rules)) {
+			return rulesContent.rules;
+		} else {
+            if (typeof rulesContent === 'string') {
+                 console.warn(`Rule file ${ruleName}.json is a string, not {rules:[]}. Using content as single rule.`);
+                 return [rulesContent];
+            }
+			throw new Error(`Invalid structure in ${ruleName}.json: 'rules' key missing or not an array.`);
+		}
+	} catch (jsonError) {
+		// Fallback to markdown
+		try {
+            console.log(`Falling back to markdown for rule: ${ruleName}`);
+			const content = await readFileSafely(mdPath);
+			return [content];
+		} catch (mdError) {
+			console.error(`Error loading rules ${ruleName} (tried both .json and .md):`, mdError);
+            return [`[ERROR LOADING RULE: ${ruleName} - ${mdError instanceof Error ? mdError.message : String(mdError)}]`];
+		}
 	}
 }
+
+// Helper to format the guide data safely
+function formatEditingGuide(guideData: EditingFilesGuideData | null): string {
+    if (!guideData) return "Error: Invalid guide data provided for formatting (null or undefined).";
+
+    let formatted = "";
+     if (Array.isArray(guideData.tools)) {
+        guideData.tools.forEach((tool: any) => {
+            formatted += `## ${tool?.name || 'Unnamed Tool'}\n\n`;
+            formatted += `### Purpose\n- ${tool?.purpose || 'N/A'}\n\n`;
+            formatted += `### When to Use\n${Array.isArray(tool?.when_to_use) ? tool.when_to_use.map((item: string) => `- ${item}`).join("\n") : 'N/A'}\n\n`;
+            if (Array.isArray(tool?.important_considerations)) {
+                formatted += `### Important Considerations\n${tool.important_considerations.map((item: string) => `- ${item}`).join("\n")}\n\n`;
+            }
+            if (Array.isArray(tool?.advantages)) {
+                formatted += `### Advantages\n${tool.advantages.map((item: string) => `- ${item}`).join("\n")}\n\n`;
+            }
+        });
+    } else {
+         formatted += "Note: 'tools' array not found in guide data.\n\n";
+    }
+
+    if (Array.isArray(guideData.choosing_the_appropriate_tool)) {
+        formatted += `### Choosing the Appropriate Tool\n${guideData.choosing_the_appropriate_tool.map((item: string) => `- ${item}`).join("\n")}\n\n`;
+    }
+     if (Array.isArray(guideData.auto_formatting_considerations)) {
+        formatted += `### Auto-formatting Considerations\n${guideData.auto_formatting_considerations.map((item: string) => `- ${item}`).join("\n")}\n\n`;
+    }
+    if (Array.isArray(guideData.workflow_tips)) {
+        formatted += `### Workflow Tips\n${guideData.workflow_tips.map((item: string) => `- ${item}`).join("\n")}`;
+    }
+    return formatted;
+}
+
 
 export const SYSTEM_PROMPT = async (
 	cwd: string,
@@ -78,130 +187,137 @@ export const SYSTEM_PROMPT = async (
 	mcpHub: McpHub,
 	browserSettings: BrowserSettings,
 ): Promise<string> => {
-	const promptsDir = path.join(__dirname, "..")
-	const sectionsDir = path.join(promptsDir, "sections")
-	const rulesDir = path.join(promptsDir, "rules")
+	const sectionsDir = path.join(__dirname, "sections")
+	const rulesDir = path.join(__dirname, "rules")
 
-	// Use directly imported core system prompt JSON
-	// No need to load from file path which can cause path resolution issues
-
-	// 현재 모드 결정
 	const currentMode = supportsComputerUse ? "act_mode" : "plan_mode"
-	const modeConfig = corePrompt.modes[currentMode]
+	const modeConfig = corePrompt.modes[currentMode] || { sections_ref: [], rules_ref: [] };
 
-	// 기본 프롬프트 구성
-	let systemPrompt = `You are Cline, a highly skilled software engineer with extensive knowledge in many programming languages, frameworks, design patterns, and best practices.
+	let systemPrompt = ""; // Initialize empty
 
-====
+    // Load Base Prompt Intro first
+    try {
+        const introPath = path.join(sectionsDir, "BASE_PROMPT_INTRO.json");
+        const introData = await loadAndParseJsonFile<BasePromptIntroData>(introPath);
+        // Construct the intro string from the structured JSON
+        systemPrompt += `${introData.introduction}\n\n====\n\n`;
+        systemPrompt += `${introData.tool_use_header}\n\n${introData.tool_use_description}\n\n`;
+        systemPrompt += `# ${introData.formatting_header}\n\n${introData.formatting_description}\n\n`;
+        // Ensure examples are wrapped in markdown code blocks
+        systemPrompt += `\`\`\`xml\n${introData.formatting_structure_example}\n\`\`\`\n\n`;
+        systemPrompt += `${introData.formatting_example_header}\n\n\`\`\`xml\n${introData.formatting_example_code}\n\`\`\`\n\n`;
+        systemPrompt += `${introData.formatting_note}`;
+    } catch (error) {
+        console.error("CRITICAL: Error loading or parsing BASE_PROMPT_INTRO.json:", error);
+		systemPrompt += `[ERROR LOADING BASE PROMPT INTRO: ${error instanceof Error ? error.message : String(error)}]`; // Add error message if loading fails
+    }
 
-TOOL USE
 
-You have access to a set of tools that are executed upon the user's approval. You can use one tool per message, and will receive the result of that tool use in the user's response. You use tools step-by-step to accomplish a given task, with each tool use informed by the result of the previous tool use.
-
-# Tool Use Formatting
-
-Tool use is formatted using XML-style tags. The tool name is enclosed in opening and closing tags, and each parameter is similarly enclosed within its own set of tags. Here's the structure:
-
-<tool_name>
-<parameter1_name>value1</parameter1_name>
-<parameter2_name>value2</parameter2_name>
-...
-</tool_name>
-
-For example:
-
-<read_file>
-<path>src/main.js</path>
-</read_file>
-
-Always adhere to this format for the tool use to ensure proper parsing and execution.`
-
-	// 도구 정의 로드 및 포맷팅
+	// Load Tool Definitions
 	try {
-		const toolDefinitionsPath = path.join(sectionsDir, "TOOL_DEFINITIONS.json")
-		const toolDefsData = await loadJsonFile<{ tools: { [key: string]: ToolDefinition } }>(toolDefinitionsPath)
+		const toolDefinitionsPath = path.join(sectionsDir, "TOOL_DEFINITIONS.json");
+		const toolDefsData = await loadAndParseJsonFile<{ tools: { [key: string]: ToolDefinition } }>(toolDefinitionsPath);
 
-		systemPrompt += "\n\n# Tools"
+		// Append Tool section header only if intro was loaded successfully
+        if (!systemPrompt.startsWith("[ERROR")) {
+             systemPrompt += "\n\n====\n\n# Tools"; // Add separator before Tools section
+        } else {
+             systemPrompt += "\n\n# Tools"; // Still add header even if intro failed
+        }
 
-		for (const toolName in toolDefsData.tools) {
-			const tool = toolDefsData.tools[toolName]
-			systemPrompt += `\n\n## ${toolName}\nDescription: ${tool.description}`
-			systemPrompt += "\nParameters:"
-			for (const paramName in tool.params) {
-				const param = tool.params[paramName]
-				systemPrompt += `\n- ${paramName}: (${param.required ? "required" : "optional"}) ${param.desc}`
-			}
-			// 기본 사용법 예시 추가 (필요 시)
-			// systemPrompt += `\nUsage:\n<${toolName}>\n...</${toolName}>`
-		}
-	} catch (error) {
-		console.error("Error loading or formatting tool definitions:", error)
-	}
-
-	// 나머지 섹션 로딩 로직 (헤더와 함께 구조적으로 추가)
-	try {
-		for (const sectionRef of modeConfig.sections_ref) {
-			const sectionName = sectionRef.replace(".json", "")
-			// 이미 처리된 TOOL_DEFINITIONS는 건너뜀
-			if (sectionName === "TOOL_DEFINITIONS") {
-				continue
-			}
-
-			try {
-				const sectionContent = await loadSection(sectionsDir, sectionName)
-				// 섹션 이름으로 헤더 추가 (예: # Tool Use Examples)
-				let formattedContent = sectionContent
-				if (sectionName === "EDITING_FILES_GUIDE") {
-					try {
-						const guideData = JSON.parse(sectionContent)
-						formattedContent = `# EDITING FILES GUIDE\n\n`
-						guideData.tools.forEach((tool: any) => {
-							formattedContent += `## ${tool.name}\n\n`
-							formattedContent += `### Purpose\n- ${tool.purpose}\n\n`
-							formattedContent += `### When to Use\n${tool.when_to_use.map((item: string) => `- ${item}`).join("\n")}\n\n`
-							if (tool.important_considerations) {
-								formattedContent += `### Important Considerations\n${tool.important_considerations.map((item: string) => `- ${item}`).join("\n")}\n\n`
-							}
-							if (tool.advantages) {
-								formattedContent += `### Advantages\n${tool.advantages.map((item: string) => `- ${item}`).join("\n")}\n\n`
-							}
-						})
-						formattedContent += `### Choosing the Appropriate Tool\n${guideData.choosing_the_appropriate_tool.map((item: string) => `- ${item}`).join("\n")}\n\n`
-						formattedContent += `### Auto-formatting Considerations\n${guideData.auto_formatting_considerations.map((item: string) => `- ${item}`).join("\n")}\n\n`
-						formattedContent += `### Workflow Tips\n${guideData.workflow_tips.map((item: string) => `- ${item}`).join("\n")}`
-					} catch (parseError) {
-						console.error("Error parsing EDITING_FILES_GUIDE.json:", parseError)
-						// 파싱 실패 시 원본 내용 사용
-						formattedContent = `# EDITING FILES GUIDE\n\n${sectionContent}`
+		if (toolDefsData && typeof toolDefsData.tools === 'object') {
+			for (const toolName in toolDefsData.tools) {
+				const tool = toolDefsData.tools[toolName];
+				systemPrompt += `\n\n## ${toolName}\nDescription: ${tool?.description || 'No description'}`;
+				systemPrompt += "\nParameters:";
+				if (tool?.params && typeof tool.params === 'object') {
+					for (const paramName in tool.params) {
+						const param = tool.params[paramName];
+						systemPrompt += `\n- ${paramName}: (${param?.required ? "required" : "optional"}) ${param?.desc || 'No description'}`;
 					}
+					systemPrompt += `\nUsage:\n<${toolName}>`;
+					const paramsString = Object.entries(tool.params)
+						.map(([name, details]) => `\n<${name}>${details?.required ? 'Required value' : 'Optional value'}</${name}>`)
+						.join('');
+					systemPrompt += `${paramsString}\n</${toolName}>`;
 				} else {
-					const header = `# ${sectionName.replace(/_/g, " ")}`
-					formattedContent = `${header}\n\n${sectionContent}`
+					systemPrompt += "\n- No parameters defined.";
+					systemPrompt += `\nUsage:\n<${toolName}></${toolName}>`;
 				}
-				systemPrompt += `\n\n====\n\n${formattedContent}`
-			} catch (error) {
-				console.error(`Error loading section ${sectionRef}:`, error)
-				// 오류가 있어도 계속 진행
 			}
+		} else {
+			systemPrompt += "\n\nTool definitions structure is invalid.";
 		}
 	} catch (error) {
-		console.error("Error loading sections:", error)
+		console.error("CRITICAL: Error loading or parsing TOOL_DEFINITIONS.json:", error);
+		systemPrompt += `\n\n====\n\n# ERROR LOADING TOOL DEFINITIONS\n\n[${error instanceof Error ? error.message : String(error)}]`;
 	}
 
-	// 규칙 로딩 로직 (헤더와 함께 구조적으로 추가)
+	// Load other sections
+	try {
+		if (Array.isArray(modeConfig.sections_ref)) {
+			for (const sectionRef of modeConfig.sections_ref) {
+				const sectionName = sectionRef.replace(/\.(json|md)$/i, "");
+				// Skip sections already handled
+				if (sectionName === "TOOL_DEFINITIONS" || sectionName === "BASE_PROMPT_INTRO") continue;
+
+				const header = `# ${sectionName.replace(/_/g, " ")}`;
+				let sectionOutput = "";
+
+				try {
+					if (sectionName === "EDITING_FILES_GUIDE") {
+						const guidePath = path.join(sectionsDir, `${sectionName}.json`);
+						try {
+							const guideData = await loadAndParseJsonFile<EditingFilesGuideData>(guidePath);
+							sectionOutput = formatEditingGuide(guideData);
+						} catch (guideError) {
+							console.error(`Error loading/parsing specific structure for ${sectionName}.json:`, guideError);
+							sectionOutput = await loadAndFormatSectionContent(sectionsDir, sectionName); // Fallback
+						}
+					} else {
+						// Load all other sections: try JSON stringify first, then MD
+						sectionOutput = await loadAndFormatSectionContent(sectionsDir, sectionName);
+					}
+					// Append the final content (either formatted JSON, stringified JSON, MD, or error message)
+					systemPrompt += `\n\n====\n\n${header}\n\n${sectionOutput}`;
+				} catch (error) { // Catch errors from loading attempts
+					console.error(`Error processing section ${sectionName}:`, error);
+					systemPrompt += `\n\n====\n\n${header}\n\n[ERROR: Failed to load content for this section.]`;
+				}
+			}
+		} else {
+			console.error("modeConfig.sections_ref is not an array or is missing");
+		}
+	} catch (error) {
+		console.error("Error processing sections loop:", error);
+	}
+
+	// Load rules
 	try {
 		systemPrompt += "\n\n====\n\n# RULES\n"
-		for (const ruleRef of modeConfig.rules_ref) {
-			const rules = await loadRules(rulesDir, ruleRef.replace(".json", ""))
-			systemPrompt += "\n" + rules.join("\n")
+		if (Array.isArray(modeConfig.rules_ref)) {
+			for (const ruleRef of modeConfig.rules_ref) {
+				const ruleName = ruleRef.replace(/\.(json|md)$/i, "");
+				try {
+					const rules = await loadRules(rulesDir, ruleName);
+					// Join rules into a single string block for the prompt
+					systemPrompt += "\n" + rules.join("\n");
+				} catch (error) {
+					console.error(`Error loading rules ${ruleName}:`, error);
+					systemPrompt += `\n[ERROR LOADING RULE: ${ruleName} - ${error instanceof Error ? error.message : String(error)}]`;
+				}
+			}
+		} else {
+			console.error("modeConfig.rules_ref is not an array or is missing");
 		}
 	} catch (error) {
-		console.error("Error loading rules:", error)
+		console.error("Error processing rules loop:", error);
 	}
 
-	return systemPrompt
+	return systemPrompt;
 }
 
+// This function remains separate and unchanged
 export function addUserInstructions(
 	settingsCustomInstructions?: string,
 	clineRulesFileInstructions?: string,
@@ -222,12 +338,16 @@ export function addUserInstructions(
 		customInstructions += clineIgnoreInstructions
 	}
 
-	return `
+	if (customInstructions.trim()) {
+		return `
 ====
 
 USER'S CUSTOM INSTRUCTIONS
 
 The following additional instructions are provided by the user, and should be followed to the best of your ability without interfering with the TOOL USE guidelines.
 
-${customInstructions.trim()}`
+${customInstructions.trim()}`;
+	} else {
+		return "";
+	}
 }
