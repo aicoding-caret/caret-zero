@@ -9,6 +9,7 @@ import { setTimeout as setTimeoutPromise } from "node:timers/promises"
 import { fileExistsAtPath } from "../../utils/fs"
 import { BrowserActionResult } from "../../shared/ExtensionMessage"
 import { BrowserSettings } from "../../shared/BrowserSettings"
+import { ILogger } from "../logging/ILogger" // Added import
 // import * as chromeLauncher from "chrome-launcher"
 
 interface PCRStats {
@@ -24,10 +25,13 @@ export class BrowserSession {
 	private page?: Page
 	private currentMousePosition?: string
 	browserSettings: BrowserSettings
+	private logger: ILogger // Added logger member
 
-	constructor(context: vscode.ExtensionContext, browserSettings: BrowserSettings) {
+	constructor(context: vscode.ExtensionContext, browserSettings: BrowserSettings, logger: ILogger) {
+		// Added logger parameter
 		this.context = context
 		this.browserSettings = browserSettings
+		this.logger = logger // Assign logger
 	}
 
 	private async ensureChromiumExists(): Promise<PCRStats> {

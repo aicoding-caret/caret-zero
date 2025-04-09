@@ -7,6 +7,7 @@ import { formatResponse } from "../../core/prompts/responses"
 import { DecorationController } from "./DecorationController"
 import * as diff from "diff"
 import { diagnosticsToProblemsString, getNewDiagnostics } from "../diagnostics"
+import { ILogger } from "../../services/logging/ILogger" // Added import
 
 export const DIFF_VIEW_URI_SCHEME = "cline-diff"
 
@@ -23,8 +24,15 @@ export class DiffViewProvider {
 	private activeLineController?: DecorationController
 	private streamedLines: string[] = []
 	private preDiagnostics: [vscode.Uri, vscode.Diagnostic[]][] = []
+	private logger: ILogger // Added logger member
 
-	constructor(private cwd: string) {}
+	constructor(
+		private cwd: string,
+		logger: ILogger,
+	) {
+		// Added logger parameter
+		this.logger = logger // Assign logger
+	}
 
 	async open(relPath: string): Promise<void> {
 		this.relPath = relPath

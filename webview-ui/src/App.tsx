@@ -1,4 +1,4 @@
-	import { useCallback, useEffect, useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 import { useEvent } from "react-use"
 import { ExtensionMessage } from "../../src/shared/ExtensionMessage"
 import ChatView from "./components/chat/ChatView"
@@ -15,17 +15,17 @@ const AppContent = () => {
 	const { didHydrateState, showWelcome, shouldShowAnnouncement, telemetrySetting, vscMachineId } = useExtensionState()
 	const [showSettings, setShowSettings] = useState(false)
 	const [showHistory, setShowHistory] = useState(false)
-	const [showMcp, setShowMcp] = useState(false);
-	const [showAccount, setShowAccount] = useState(false);
-	const [showAnnouncement, setShowAnnouncement] = useState(false);
+	const [showMcp, setShowMcp] = useState(false)
+	const [showAccount, setShowAccount] = useState(false)
+	const [showAnnouncement, setShowAnnouncement] = useState(false)
 
-    // Handler to show the settings view
-    const handleShowSettings = useCallback(() => {
-        setShowSettings(true);
-        setShowHistory(false);
-        setShowMcp(false);
-        setShowAccount(false);
-    }, []); // Dependencies: none, as it only uses setters
+	// Handler to show the settings view
+	const handleShowSettings = useCallback(() => {
+		setShowSettings(true)
+		setShowHistory(false)
+		setShowMcp(false)
+		setShowAccount(false)
+	}, []) // Dependencies: none, as it only uses setters
 
 	const handleMessage = useCallback((e: MessageEvent) => {
 		const message: ExtensionMessage = e.data
@@ -35,35 +35,35 @@ const AppContent = () => {
 					case "settingsButtonClicked":
 						setShowSettings(true)
 						// Use the new handler for settings button click action
-                        handleShowSettings();
-						break;
+						handleShowSettings()
+						break
 					case "historyButtonClicked":
 						setShowSettings(false)
-						setShowSettings(false);
-						setShowHistory(true);
-						setShowMcp(false);
-						setShowAccount(false);
-						break;
+						setShowSettings(false)
+						setShowHistory(true)
+						setShowMcp(false)
+						setShowAccount(false)
+						break
 					case "mcpButtonClicked":
 						setShowSettings(false)
-						setShowSettings(false);
-						setShowHistory(false);
-						setShowMcp(true);
-						setShowAccount(false);
-						break;
+						setShowSettings(false)
+						setShowHistory(false)
+						setShowMcp(true)
+						setShowAccount(false)
+						break
 					case "accountButtonClicked":
 						setShowSettings(false)
-						setShowSettings(false);
-						setShowHistory(false);
-						setShowMcp(false);
-						setShowAccount(true);
-						break;
+						setShowSettings(false)
+						setShowHistory(false)
+						setShowMcp(false)
+						setShowAccount(true)
+						break
 					case "chatButtonClicked": // Brings back to chat view
-						setShowSettings(false);
-						setShowHistory(false);
-						setShowMcp(false);
-						setShowAccount(false);
-						break;
+						setShowSettings(false)
+						setShowHistory(false)
+						setShowMcp(false)
+						setShowAccount(false)
+						break
 				}
 				break
 		}
@@ -109,7 +109,7 @@ const AppContent = () => {
 							setShowAccount(false)
 							setShowHistory(true)
 						}}
-                        onShowSettings={handleShowSettings} // Pass the handler down
+						onShowSettings={handleShowSettings} // Pass the handler down
 						isHidden={showSettings || showHistory || showMcp || showAccount}
 						showAnnouncement={showAnnouncement}
 						hideAnnouncement={() => {

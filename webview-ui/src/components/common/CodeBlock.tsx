@@ -4,6 +4,7 @@ import rehypeHighlight, { Options } from "rehype-highlight"
 import styled from "styled-components"
 import { visit } from "unist-util-visit"
 import { useExtensionState } from "../../context/ExtensionStateContext"
+import ErrorBoundary from "./ErrorBoundary" // Import ErrorBoundary
 
 export const CODE_BLOCK_BG_COLOR = "var(--vscode-editor-background, --vscode-sideBar-background, rgb(30 30 30))"
 
@@ -144,15 +145,34 @@ const CodeBlock = memo(({ source, forceWrap = false }: CodeBlockProps) => {
 		setMarkdownSource(source || "")
 	}, [source, setMarkdownSource, theme])
 
-	return (
+	// Define a simple fallback UI for the CodeBlock
+	const fallbackUI = (
 		<div
 			style={{
-				overflowY: forceWrap ? "visible" : "auto",
-				maxHeight: forceWrap ? "none" : "100%",
+				padding: "10px",
+				border: "1px solid var(--vscode-editorWarning-foreground)",
+				borderRadius: "3px",
+				color: "var(--vscode-editorWarning-foreground)",
 				backgroundColor: CODE_BLOCK_BG_COLOR,
 			}}>
-			<StyledMarkdown forceWrap={forceWrap}>{reactContent}</StyledMarkdown>
+			<p>⚠️ 코드를 표시하는 중 문제가 발생했어요. 원본 코드를 표시합니다.</p>
+			<pre style={{ whiteSpace: "pre-wrap", wordBreak: "break-all", overflowWrap: "anywhere" }}>
+				<code>{source?.replace(/^```.*\n?/, "").replace(/\n?```$/, "") || ""}</code>
+			</pre>
 		</div>
+	)
+
+	return (
+		<ErrorBoundary fallback={fallbackUI}>
+			<div
+				style={{
+					overflowY: forceWrap ? "visible" : "auto",
+					maxHeight: forceWrap ? "none" : "100%",
+					backgroundColor: CODE_BLOCK_BG_COLOR,
+				}}>
+				<StyledMarkdown forceWrap={forceWrap}>{reactContent}</StyledMarkdown>
+			</div>
+		</ErrorBoundary>
 	)
 })
 

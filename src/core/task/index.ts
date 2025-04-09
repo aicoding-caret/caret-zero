@@ -10,6 +10,7 @@ import * as path from "path"
 import { serializeError } from "serialize-error"
 import * as vscode from "vscode"
 import { ApiHandler, buildApiHandler } from "../../api"
+import { ILogger } from "../../services/logging/ILogger" // Added import
 import { AnthropicHandler } from "../../api/providers/anthropic"
 import { ClineHandler } from "../../api/providers/cline"
 import { OpenRouterHandler } from "../../api/providers/openrouter"
@@ -87,6 +88,7 @@ export class Task {
 	readonly taskId: string
 	readonly apiProvider?: string
 	api: ApiHandler
+	private logger: ILogger // Added logger member
 	private terminalManager: TerminalManager
 	private urlContentFetcher: UrlContentFetcher
 	browserSession: BrowserSession
@@ -133,6 +135,7 @@ export class Task {
 
 	constructor(
 		controller: Controller,
+		logger: ILogger, // Added logger parameter
 		apiConfiguration: ApiConfiguration,
 		autoApprovalSettings: AutoApprovalSettings,
 		browserSettings: BrowserSettings,
@@ -142,17 +145,19 @@ export class Task {
 		images?: string[],
 		historyItem?: HistoryItem,
 	) {
+		this.logger = logger // Assign logger
 		this.clineIgnoreController = new ClineIgnoreController(cwd)
 		this.clineIgnoreController.initialize().catch((error) => {
 			console.error("Failed to initialize ClineIgnoreController:", error)
+			this.logger.error("Failed to initialize ClineIgnoreController", error)
 		})
 		this.controllerRef = new WeakRef(controller)
 		this.apiProvider = apiConfiguration.apiProvider
-		this.terminalManager = new TerminalManager()
+		this.terminalManager = new TerminalManager(this.logger) // Pass logger
 		this.urlContentFetcher = new UrlContentFetcher(controller.context)
-		this.browserSession = new BrowserSession(controller.context, browserSettings)
+		this.browserSession = new BrowserSession(controller.context, browserSettings, this.logger) // Pass logger
 		this.contextManager = new ContextManager()
-		this.diffViewProvider = new DiffViewProvider(cwd)
+		this.diffViewProvider = new DiffViewProvider(cwd, this.logger) // Pass logger
 		this.customInstructions = customInstructions
 		this.autoApprovalSettings = autoApprovalSettings
 		this.browserSettings = browserSettings

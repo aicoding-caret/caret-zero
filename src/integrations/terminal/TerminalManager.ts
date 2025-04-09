@@ -1,5 +1,6 @@
 import pWaitFor from "p-wait-for"
 import * as vscode from "vscode"
+import { ILogger } from "../../services/logging/ILogger" // Added import
 import { arePathsEqual } from "../../utils/path"
 import { mergePromise, TerminalProcess, TerminalProcessResultPromise } from "./TerminalProcess"
 import { TerminalInfo, TerminalRegistry } from "./TerminalRegistry"
@@ -78,8 +79,11 @@ export class TerminalManager {
 	private terminalIds: Set<number> = new Set()
 	private processes: Map<number, TerminalProcess> = new Map()
 	private disposables: vscode.Disposable[] = []
+	private logger: ILogger // Added logger member
 
-	constructor() {
+	constructor(logger: ILogger) {
+		// Added logger parameter
+		this.logger = logger // Assign logger
 		let disposable: vscode.Disposable | undefined
 		try {
 			// Use correct event type 'vscode.TerminalShellExecutionStartEvent' and access execution via 'e.execution'

@@ -66,6 +66,11 @@ export type McpToolCallResponse = {
 					blob?: string
 				}
 		  }
+		| {
+				type: "audio"
+				data: string
+				mimeType: string
+		  }
 	>
 	isError?: boolean
 }

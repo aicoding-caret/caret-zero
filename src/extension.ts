@@ -2,7 +2,7 @@
 // Import the module and reference it with the alias vscode in your code below
 import { setTimeout as setTimeoutPromise } from "node:timers/promises"
 import * as vscode from "vscode"
-import { Logger } from "./services/logging/Logger"
+// import { Logger } from "./services/logging/Logger" // Removed static Logger import
 import { createClineAPI } from "./exports"
 import "./utils/path" // necessary to have access to String.prototype.toPosix
 import { DIFF_VIEW_URI_SCHEME } from "./integrations/editor/DiffViewProvider"
@@ -27,10 +27,11 @@ export function activate(context: vscode.ExtensionContext) {
 	outputChannel = vscode.window.createOutputChannel("Cline")
 	context.subscriptions.push(outputChannel)
 
-	Logger.initialize(outputChannel)
-	Logger.log("Cline extension activated")
+	// Logger.initialize(outputChannel) // Removed static initialization
+	// Logger.log("Cline extension activated") // Removed static log call
 
 	const sidebarWebview = new WebviewProvider(context, outputChannel)
+	sidebarWebview.controller.logger.log("Cline extension activated") // Use logger from controller
 
 	vscode.commands.executeCommand("setContext", "cline.isDevMode", IS_DEV && IS_DEV === "true")
 
@@ -76,7 +77,7 @@ export function activate(context: vscode.ExtensionContext) {
 	)
 
 	const openClineInNewTab = async () => {
-		Logger.log("Opening Cline in new tab")
+		sidebarWebview.controller.logger.log("Opening Cline in new tab") // Use logger from controller
 		// (this example uses webviewProvider activation event which is necessary to deserialize cached webview, but since we use retainContextWhenHidden, we don't need to use that event)
 		// https://github.com/microsoft/vscode-extension-samples/blob/main/webview-sample/src/extension.ts
 		const tabWebview = new WebviewProvider(context, outputChannel)
@@ -239,10 +240,10 @@ export function activate(context: vscode.ExtensionContext) {
 			.then((module) => {
 				const devTaskCommands = module.registerTaskCommands(context, sidebarWebview.controller)
 				context.subscriptions.push(...devTaskCommands)
-				Logger.log("Cline dev task commands registered")
+				sidebarWebview.controller.logger.log("Cline dev task commands registered") // Use logger from controller
 			})
 			.catch((error) => {
-				Logger.log("Failed to register dev task commands: " + error)
+				sidebarWebview.controller.logger.error("Failed to register dev task commands", error) // Use logger from controller
 			})
 	}
 
@@ -399,7 +400,7 @@ export function activate(context: vscode.ExtensionContext) {
 // This method is called when your extension is deactivated
 export function deactivate() {
 	telemetryService.shutdown()
-	Logger.log("Cline extension deactivated")
+	// Logger.log("Cline extension deactivated") // Cannot log here as controller might be disposed
 }
 
 // TODO: Find a solution for automatically removing DEV related content from production builds.

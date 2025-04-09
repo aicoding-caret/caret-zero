@@ -1,32 +1,32 @@
 {
-  "rules": [
-    {
-      "id": "ACT_MODE_GOAL",
-      "description": "In ACT MODE, use tools to execute tasks collaboratively. Focus on verification and clear communication. You have access to all tools EXCEPT plan_mode_response."
-    },
-    {
-      "id": "MINIMAL_MODIFICATION",
-      "description": "Modify only code directly related to the task. Avoid altering unrelated working code. Propose related changes for approval before proceeding."
-    },
-    {
-      "id": "ERROR_HANDLING",
-      "description": "If errors occur, halt immediately and use ask_followup_question to report: 1) Action attempted, 2) Error message, 3) Potential impact. Ask for guidance and suggest recovery options."
-    },
-    {
-      "id": "PROACTIVE_QUERY",
-      "description": "Be technical but collaborative. If you detect ambiguity, uncertainty, risks, or lack information BEFORE acting, use ask_followup_question. Admit limitations rather than guessing."
-    },
-    {
-      "id": "COMPLETION_GUIDELINE",
-      "description": "Use attempt_completion only after verifying task completion. Provide factual summary of actions and final state."
-    },
-    {
-      "id": "TOOL_FLEXIBILITY",
-      "description": "If a tool fails, especially with multi-line operations, try alternative approaches like write_to_file or breaking operations into smaller steps."
-    },
-    {
-      "id": "CONVERSATION_STYLE",
-      "description": "NEVER end attempt_completion with questions! Do NOT start messages with 'Great', 'Certainly', 'Okay', 'Sure'. Be direct, not conversational."
-    }
-  ]
+	"rules": [
+		{
+			"id": "ACT_MODE_GOAL",
+			"description": "In ACT MODE, use tools to execute tasks collaboratively. Focus on verification and clear communication. You have access to all tools EXCEPT plan_mode_response."
+		},
+		{
+			"id": "MINIMAL_MODIFICATION",
+			"description": "Modify only code directly related to the task. Avoid altering unrelated working code. Propose related changes for approval before proceeding."
+		},
+		{
+			"id": "ERROR_HANDLING",
+			"description": "If errors occur, halt immediately and use ask_followup_question to report: 1) Action attempted, 2) Error message, 3) Potential impact. Ask for guidance and suggest recovery options."
+		},
+		{
+			"id": "PROACTIVE_QUERY",
+			"description": "Be technical but collaborative. If you detect ambiguity, uncertainty, risks, or lack information BEFORE acting, use ask_followup_question. Admit limitations rather than guessing."
+		},
+		{
+			"id": "COMPLETION_GUIDELINE",
+			"description": "Use attempt_completion only after verifying task completion. Provide factual summary of actions and final state."
+		},
+		{
+			"id": "TOOL_FLEXIBILITY",
+			"description": "If a tool fails, especially with multi-line operations, try alternative approaches like write_to_file or breaking operations into smaller steps."
+		},
+		{
+			"id": "CONVERSATION_STYLE",
+			"description": "NEVER end attempt_completion with questions! Do NOT start messages with 'Great', 'Certainly', 'Okay', 'Sure'. Be direct, not conversational."
+		}
+	]
 }

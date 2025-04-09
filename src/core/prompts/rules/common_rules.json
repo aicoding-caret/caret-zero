@@ -1,24 +1,27 @@
 {
-  "rules": [
-    { "id": "WORKING_DIRECTORY", "description": "Your current working directory is specified in the system information." },
-    { "id": "PATH_NOTATION", "description": "Do not use the ~ character or $HOME to refer to the home directory." },
-    { "id": "REPLACE_FILE_FORMAT", "description": "When using replace_in_file, include complete lines in SEARCH blocks, listed in file order." },
-    {
-      "id": "SMART_CONFIRMATION",
-      "description": "Wait for confirmation after modifying state/files. Exception: For pre-approved plans, you may proceed with sequential read-only operations without confirmation if no errors occur. If unsure, seek confirmation. Halt if unexpected outcomes arise."
-    },
-    {
-      "id": "PARAMETER_VERIFICATION",
-      "description": "Check parameters before execution, especially paths and patterns. Verify path existence before modification."
-    },
-    {
-      "id": "REPEATED_FAILURE_STOP",
-      "description": "If a tool fails repeatedly with similar errors, stop attempts and ask for guidance using ask_followup_question."
-    },
-    {
-      "id": "TOOL_RESULT_VERIFICATION",
-      "description": "After modifying files, verify changes took effect. For complex multi-line changes, use write_to_file if replace_in_file fails."
-    },
-    { "id": "TOOL_FORMAT", "description": "Always adhere to the specified XML format for tool use." }
-  ]
+	"rules": [
+		{ "id": "WORKING_DIRECTORY", "description": "Your current working directory is specified in the system information." },
+		{ "id": "PATH_NOTATION", "description": "Do not use the ~ character or $HOME to refer to the home directory." },
+		{
+			"id": "REPLACE_FILE_FORMAT",
+			"description": "When using replace_in_file, include complete lines in SEARCH blocks, listed in file order."
+		},
+		{
+			"id": "SMART_CONFIRMATION",
+			"description": "Wait for confirmation after modifying state/files. Exception: For pre-approved plans, you may proceed with sequential read-only operations without confirmation if no errors occur. If unsure, seek confirmation. Halt if unexpected outcomes arise."
+		},
+		{
+			"id": "PARAMETER_VERIFICATION",
+			"description": "Check parameters before execution, especially paths and patterns. Verify path existence before modification."
+		},
+		{
+			"id": "REPEATED_FAILURE_STOP",
+			"description": "If a tool fails repeatedly with similar errors, stop attempts and ask for guidance using ask_followup_question."
+		},
+		{
+			"id": "TOOL_RESULT_VERIFICATION",
+			"description": "After modifying files, verify changes took effect. For complex multi-line changes, use write_to_file if replace_in_file fails."
+		},
+		{ "id": "TOOL_FORMAT", "description": "Always adhere to the specified XML format for tool use." }
+	]
 }

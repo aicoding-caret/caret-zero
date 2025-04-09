@@ -18,6 +18,8 @@ import { getTheme } from "../../integrations/theme/getTheme"
 import WorkspaceTracker from "../../integrations/workspace/WorkspaceTracker"
 import { ClineAccountService } from "../../services/account/ClineAccountService"
 import { McpHub } from "../../services/mcp/McpHub"
+import { ILogger } from "../../services/logging/ILogger" // Added import
+import { Logger } from "../../services/logging/Logger" // Changed import from LoggerFactory
 import { telemetryService } from "../../services/telemetry/TelemetryService"
 import { ApiProvider, ModelInfo } from "../../shared/api"
 import { findLast } from "../../shared/array"
@@ -57,18 +59,20 @@ export class Controller {
 	workspaceTracker?: WorkspaceTracker
 	mcpHub?: McpHub
 	accountService?: ClineAccountService
+	public logger: ILogger // Changed logger to public
 	private latestAnnouncementId = "march-22-2025" // update to some unique identifier when we add a new announcement
 	private webviewProviderRef: WeakRef<WebviewProvider>
 
 	constructor(
 		readonly context: vscode.ExtensionContext,
-		private readonly outputChannel: vscode.OutputChannel,
+		readonly outputChannel: vscode.OutputChannel, // Made readonly
 		webviewProvider: WebviewProvider,
 	) {
-		this.outputChannel.appendLine("ClineProvider instantiated")
+		this.logger = new Logger("Controller", context) // Use new Logger() instead of LoggerFactory
+		this.logger.log("ClineProvider instantiated")
 		this.webviewProviderRef = new WeakRef(webviewProvider)
 
-		this.workspaceTracker = new WorkspaceTracker(this)
+		this.workspaceTracker = new WorkspaceTracker(this) // Pass logger? No, it uses controller ref
 		this.mcpHub = new McpHub(this)
 		this.accountService = new ClineAccountService(this)
 
@@ -126,6 +130,7 @@ export class Controller {
 			await getAllExtensionState(this.context)
 		this.task = new Task(
 			this,
+			this.logger, // Pass logger
 			apiConfiguration,
 			autoApprovalSettings,
 			browserSettings,
@@ -142,6 +147,7 @@ export class Controller {
 			await getAllExtensionState(this.context)
 		this.task = new Task(
 			this,
+			this.logger, // Pass logger
 			apiConfiguration,
 			autoApprovalSettings,
 			browserSettings,
@@ -1626,9 +1632,9 @@ Here is the project's README to help you get started:\n\n${mcpDetails.readmeCont
 		} = await getAllExtensionState(this.context)
 
 		// Get webview to construct URI
-		const webview = this.webviewProviderRef.deref()?.view?.webview;
-		const alphaAvatarFileUri = vscode.Uri.joinPath(this.context.extensionUri, 'assets', 'alpha.png');
-		const alphaAvatarWebviewUri = webview ? webview.asWebviewUri(alphaAvatarFileUri).toString() : undefined;
+		const webview = this.webviewProviderRef.deref()?.view?.webview
+		const alphaAvatarFileUri = vscode.Uri.joinPath(this.context.extensionUri, "assets", "alpha.png")
+		const alphaAvatarWebviewUri = webview ? webview.asWebviewUri(alphaAvatarFileUri).toString() : undefined
 
 		return {
 			version: this.context.extension?.packageJSON?.version ?? "",

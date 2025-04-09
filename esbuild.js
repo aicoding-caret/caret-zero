@@ -35,15 +35,15 @@ const copyWasmFiles = {
 
 			// Create dist directory if it doesn't exist
 			if (!fs.existsSync(targetDir)) {
-				fs.mkdirSync(targetDir, { recursive: true });
+				fs.mkdirSync(targetDir, { recursive: true })
 			}
 
 			// Copy tree-sitter.wasm only if it exists
-			const treeSitterWasmPath = path.join(sourceDir, "tree-sitter.wasm");
+			const treeSitterWasmPath = path.join(sourceDir, "tree-sitter.wasm")
 			if (fs.existsSync(treeSitterWasmPath)) {
-				fs.copyFileSync(treeSitterWasmPath, path.join(targetDir, "tree-sitter.wasm"));
+				fs.copyFileSync(treeSitterWasmPath, path.join(targetDir, "tree-sitter.wasm"))
 			} else {
-				console.warn(`[copy-wasm-files] Warning: ${treeSitterWasmPath} not found, skipping.`);
+				console.warn(`[copy-wasm-files] Warning: ${treeSitterWasmPath} not found, skipping.`)
 			}
 
 			// Copy language-specific WASM files
@@ -67,50 +67,50 @@ const copyWasmFiles = {
 				]
 
 				languages.forEach((lang) => {
-					const filename = `tree-sitter-${lang}.wasm`;
-					const sourcePath = path.join(languageWasmDir, filename);
+					const filename = `tree-sitter-${lang}.wasm`
+					const sourcePath = path.join(languageWasmDir, filename)
 					if (fs.existsSync(sourcePath)) {
-						fs.copyFileSync(sourcePath, path.join(targetDir, filename));
+						fs.copyFileSync(sourcePath, path.join(targetDir, filename))
 					} else {
-						console.warn(`[copy-wasm-files] Warning: ${sourcePath} not found, skipping.`);
+						console.warn(`[copy-wasm-files] Warning: ${sourcePath} not found, skipping.`)
 					}
 				})
 			} else {
-				console.warn(`[copy-wasm-files] Warning: Language WASM directory ${languageWasmDir} not found, skipping.`);
+				console.warn(`[copy-wasm-files] Warning: Language WASM directory ${languageWasmDir} not found, skipping.`)
 			}
 		})
 	},
 }
 
 const copyAssets = {
-  name: "copy-assets",
-  setup(build) {
-    build.onEnd(() => {
-      const assetDirs = [
-        { src: path.join(__dirname, "src", "core", "prompts", "sections"), dest: "sections" },
-        { src: path.join(__dirname, "src", "core", "prompts", "rules"), dest: "rules" },
-        { src: path.join(__dirname, "assets"), dest: "assets" } // Root assets folder
-      ];
-      
-      const targetBaseDir = path.join(__dirname, "dist");
-      
-      assetDirs.forEach(({ src, dest }) => {
-        const targetDir = path.join(targetBaseDir, dest);
-        try {
-          if (fs.existsSync(src)) {
-            // Use fs.cpSync for recursive copying
-            fs.cpSync(src, targetDir, { recursive: true, force: true }); 
-            console.log(`[copy-assets] Copied ${src} to ${targetDir}`);
-          } else {
-            console.warn(`[copy-assets] Source directory not found: ${src}`);
-          }
-        } catch (err) {
-            console.error(`[copy-assets] Error copying ${src} to ${targetDir}:`, err);
-        }
-      });
-    });
-  },
-};
+	name: "copy-assets",
+	setup(build) {
+		build.onEnd(() => {
+			const assetDirs = [
+				{ src: path.join(__dirname, "src", "core", "prompts", "sections"), dest: "sections" },
+				{ src: path.join(__dirname, "src", "core", "prompts", "rules"), dest: "rules" },
+				{ src: path.join(__dirname, "assets"), dest: "assets" }, // Root assets folder
+			]
+
+			const targetBaseDir = path.join(__dirname, "dist")
+
+			assetDirs.forEach(({ src, dest }) => {
+				const targetDir = path.join(targetBaseDir, dest)
+				try {
+					if (fs.existsSync(src)) {
+						// Use fs.cpSync for recursive copying
+						fs.cpSync(src, targetDir, { recursive: true, force: true })
+						console.log(`[copy-assets] Copied ${src} to ${targetDir}`)
+					} else {
+						console.warn(`[copy-assets] Source directory not found: ${src}`)
+					}
+				} catch (err) {
+					console.error(`[copy-assets] Error copying ${src} to ${targetDir}:`, err)
+				}
+			})
+		})
+	},
+}
 
 const extensionConfig = {
 	bundle: true,
@@ -119,8 +119,8 @@ const extensionConfig = {
 	logLevel: "silent",
 	plugins: [
 		copyWasmFiles,
-        copyAssets, // Add the new plugin here
-		esbuildProblemMatcherPlugin
+		copyAssets, // Add the new plugin here
+		esbuildProblemMatcherPlugin,
 	],
 	entryPoints: ["src/extension.ts"],
 	format: "cjs",
@@ -131,12 +131,13 @@ const extensionConfig = {
 }
 
 async function main() {
-	const extensionCtx = await esbuild.context(extensionConfig)
 	if (watch) {
+		// Use context for watch mode to enable incremental builds
+		const extensionCtx = await esbuild.context(extensionConfig)
 		await extensionCtx.watch()
 	} else {
-		await extensionCtx.rebuild()
-		await extensionCtx.dispose()
+		// Use simple build for production (no watch) - automatically cleans up
+		await esbuild.build(extensionConfig)
 	}
 }
 
