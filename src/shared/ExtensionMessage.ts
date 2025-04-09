@@ -41,7 +41,15 @@ export interface ExtensionMessage {
 		| "userCreditsPayments"
 		| "totalTasksSize"
 		| "addToInput"
+		| "browserConnectionResult"
+		| "browserConnectionInfo"
+		| "detectedChromePath"
+		| "scrollToSettings"
+		| "browserRelaunchResult"
+		| "relativePathsResponse" // Handles single and multiple path responses
+		| "fileSearchResults"
 	text?: string
+	paths?: (string | null)[] // Used for relativePathsResponse
 	action?:
 		| "chatButtonClicked"
 		| "mcpButtonClicked"
@@ -67,6 +75,18 @@ export interface ExtensionMessage {
 	error?: string
 	mcpDownloadDetails?: McpDownloadResponse
 	commits?: GitCommit[]
+	success?: boolean // Added for browserConnectionResult
+	endpoint?: string // Added for browserConnectionResult
+	isBundled?: boolean // Added for detectedChromePath
+	isConnected?: boolean // Added for browserConnectionInfo
+	isRemote?: boolean // Added for browserConnectionInfo
+	host?: string // Added for browserConnectionInfo
+	mentionsRequestId?: string // Added for fileSearchResults
+	results?: Array<{ // Added for fileSearchResults
+		path: string
+		type: "file" | "folder"
+		label?: string
+	}>
 	openGraphData?: {
 		title?: string
 		description?: string
@@ -98,6 +118,7 @@ export interface ExtensionState {
 	apiConfiguration?: ApiConfiguration
 	autoApprovalSettings: AutoApprovalSettings
 	browserSettings: BrowserSettings
+	remoteBrowserHost?: string // Added
 	chatSettings: ChatSettings
 	checkpointTrackerErrorMessage?: string
 	clineMessages: ClineMessage[]
@@ -149,6 +170,7 @@ export type ClineAsk =
 	| "auto_approval_max_req_reached"
 	| "browser_action_launch"
 	| "use_mcp_server"
+	| "new_task" // Added
 
 export type ClineSay =
 	| "task"
@@ -202,6 +224,12 @@ export interface ClineSayBrowserAction {
 	text?: string
 }
 
+export interface BrowserConnectionInfo { // Added
+	isConnected: boolean
+	isRemote: boolean
+	host?: string
+}
+
 export type BrowserActionResult = {
 	screenshot?: string
 	logs?: string
@@ -227,6 +255,10 @@ export interface ClineAskQuestion {
 	question: string
 	options?: string[]
 	selected?: string
+}
+
+export interface ClineAskNewTask { // Added
+	context: string
 }
 
 export interface ClineApiReqInfo {

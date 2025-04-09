@@ -7,7 +7,7 @@ import { setTimeout as setTimeoutPromise } from "node:timers/promises"
 import os from "os"
 import pWaitFor from "p-wait-for"
 import * as path from "path"
-import * as vscode from "vscode" // Ensure vscode is imported
+import * as vscode from "vscode"
 import { buildApiHandler } from "../../api"
 import { cleanupLegacyCheckpoints } from "../../integrations/checkpoints/CheckpointMigration"
 import { downloadTask } from "../../integrations/misc/export-markdown"
@@ -18,8 +18,6 @@ import { getTheme } from "../../integrations/theme/getTheme"
 import WorkspaceTracker from "../../integrations/workspace/WorkspaceTracker"
 import { ClineAccountService } from "../../services/account/ClineAccountService"
 import { McpHub } from "../../services/mcp/McpHub"
-import { ILogger } from "../../services/logging/ILogger" // Added import
-import { Logger } from "../../services/logging/Logger" // Changed import from LoggerFactory
 import { telemetryService } from "../../services/telemetry/TelemetryService"
 import { ApiProvider, ModelInfo } from "../../shared/api"
 import { findLast } from "../../shared/array"
@@ -32,6 +30,7 @@ import { TelemetrySetting } from "../../shared/TelemetrySetting"
 import { ClineCheckpointRestore, WebviewMessage } from "../../shared/WebviewMessage"
 import { fileExistsAtPath } from "../../utils/fs"
 import { searchCommits } from "../../utils/git"
+import { getWorkspacePath } from "../../utils/path"
 import { getTotalTasksSize } from "../../utils/storage"
 import { Task } from "../task"
 import { openMention } from "../mentions"
@@ -45,7 +44,10 @@ import {
 	updateGlobalState,
 } from "../storage/state"
 import { WebviewProvider } from "../webview"
+import { BrowserSession } from "../../services/browser/BrowserSession"
 import { GlobalFileNames } from "../storage/disk"
+import { discoverChromeInstances } from "../../services/browser/BrowserDiscovery"
+import { searchWorkspaceFiles } from "../../services/search/file-search"
 
 /*
 https://github.com/microsoft/vscode-webview-ui-toolkit-samples/blob/main/default/weather-webview/src/providers/WeatherViewProvider.ts
@@ -59,20 +61,18 @@ export class Controller {
 	workspaceTracker?: WorkspaceTracker
 	mcpHub?: McpHub
 	accountService?: ClineAccountService
-	public logger: ILogger // Changed logger to public
-	private latestAnnouncementId = "march-22-2025" // update to some unique identifier when we add a new announcement
+	private latestAnnouncementId = "april-7-2025" // update to some unique identifier when we add a new announcement
 	private webviewProviderRef: WeakRef<WebviewProvider>
 
 	constructor(
 		readonly context: vscode.ExtensionContext,
-		readonly outputChannel: vscode.OutputChannel, // Made readonly
+		private readonly outputChannel: vscode.OutputChannel,
 		webviewProvider: WebviewProvider,
 	) {
-		this.logger = new Logger("Controller", context) // Use new Logger() instead of LoggerFactory
-		this.logger.log("ClineProvider instantiated")
+		this.outputChannel.appendLine("ClineProvider instantiated")
 		this.webviewProviderRef = new WeakRef(webviewProvider)
 
-		this.workspaceTracker = new WorkspaceTracker(this) // Pass logger? No, it uses controller ref
+		this.workspaceTracker = new WorkspaceTracker(this)
 		this.mcpHub = new McpHub(this)
 		this.accountService = new ClineAccountService(this)
 
@@ -130,7 +130,6 @@ export class Controller {
 			await getAllExtensionState(this.context)
 		this.task = new Task(
 			this,
-			this.logger, // Pass logger
 			apiConfiguration,
 			autoApprovalSettings,
 			browserSettings,
@@ -147,7 +146,6 @@ export class Controller {
 			await getAllExtensionState(this.context)
 		this.task = new Task(
 			this,
-			this.logger, // Pass logger
 			apiConfiguration,
 			autoApprovalSettings,
 			browserSettings,
@@ -283,12 +281,135 @@ export class Controller {
 				break
 			case "browserSettings":
 				if (message.browserSettings) {
+					// remoteBrowserEnabled now means "enable remote browser connection"
+					// commenting out since this is being done in BrowserSettingsSection updateRemoteBrowserEnabled
+					// if (!message.browserSettings.remoteBrowserEnabled) {
+					// 	// If disabling remote browser connection, clear the remoteBrowserHost
+					// 	message.browserSettings.remoteBrowserHost = undefined
+					// }
 					await updateGlobalState(this.context, "browserSettings", message.browserSettings)
 					if (this.task) {
 						this.task.browserSettings = message.browserSettings
 						this.task.browserSession.browserSettings = message.browserSettings
 					}
 					await this.postStateToWebview()
+				}
+				break
+			case "getBrowserConnectionInfo":
+				try {
+					// Get the current browser session from Cline if it exists
+					if (this.task?.browserSession) {
+						const connectionInfo = this.task.browserSession.getConnectionInfo()
+						await this.postMessageToWebview({
+							type: "browserConnectionInfo",
+							isConnected: connectionInfo.isConnected,
+							isRemote: connectionInfo.isRemote,
+							host: connectionInfo.host,
+						})
+					} else {
+						// If no active browser session, just return the settings
+						const { browserSettings } = await getAllExtensionState(this.context)
+						await this.postMessageToWebview({
+							type: "browserConnectionInfo",
+							isConnected: false,
+							isRemote: !!browserSettings.remoteBrowserEnabled,
+							host: browserSettings.remoteBrowserHost,
+						})
+					}
+				} catch (error) {
+					console.error("Error getting browser connection info:", error)
+					await this.postMessageToWebview({
+						type: "browserConnectionInfo",
+						isConnected: false,
+						isRemote: false,
+					})
+				}
+				break
+			case "testBrowserConnection":
+				try {
+					const { browserSettings } = await getAllExtensionState(this.context)
+					const browserSession = new BrowserSession(this.context, browserSettings, this.logger) // Added logger
+					// If no text is provided, try auto-discovery
+					if (!message.text) {
+						try {
+							const discoveredHost = await discoverChromeInstances()
+							if (discoveredHost) {
+								// Test the connection to the discovered host
+								const result = await browserSession.testConnection(discoveredHost)
+								// Send the result back to the webview
+								await this.postMessageToWebview({
+									type: "browserConnectionResult",
+									success: result.success,
+									text: `Auto-discovered and tested connection to Chrome at ${discoveredHost}: ${result.message}`,
+									endpoint: result.endpoint,
+								})
+							} else {
+								await this.postMessageToWebview({
+									type: "browserConnectionResult",
+									success: false,
+									text: "No Chrome instances found on the network. Make sure Chrome is running with remote debugging enabled (--remote-debugging-port=9222).",
+								})
+							}
+						} catch (error) {
+							await this.postMessageToWebview({
+								type: "browserConnectionResult",
+								success: false,
+								text: `Error during auto-discovery: ${error instanceof Error ? error.message : String(error)}`,
+							})
+						}
+					} else {
+						// Test the provided URL
+						const result = await browserSession.testConnection(message.text)
+
+						// Send the result back to the webview
+						await this.postMessageToWebview({
+							type: "browserConnectionResult",
+							success: result.success,
+							text: result.message,
+							endpoint: result.endpoint,
+						})
+					}
+				} catch (error) {
+					await this.postMessageToWebview({
+						type: "browserConnectionResult",
+						success: false,
+						text: `Error testing connection: ${error instanceof Error ? error.message : String(error)}`,
+					})
+				}
+				break
+			case "discoverBrowser":
+				try {
+					const discoveredHost = await discoverChromeInstances()
+
+					if (discoveredHost) {
+						// Don't update the remoteBrowserHost state when auto-discovering
+						// This way we don't override the user's preference
+
+						// Test the connection to get the endpoint
+						const { browserSettings } = await getAllExtensionState(this.context)
+						const browserSession = new BrowserSession(this.context, browserSettings, this.logger) // Added logger
+						const result = await browserSession.testConnection(discoveredHost)
+
+						// Send the result back to the webview
+						await this.postMessageToWebview({
+							type: "browserConnectionResult",
+							success: true,
+							text: `Successfully discovered and connected to Chrome at ${discoveredHost}`,
+							endpoint: result.endpoint,
+						})
+					} else {
+						await this.postMessageToWebview({
+							type: "browserConnectionResult",
+							success: false,
+							text: "No Chrome instances found on the network. Make sure Chrome is running with remote debugging enabled (--remote-debugging-port=9222).",
+						})
+					}
+				} catch (error) {
+					await this.postMessageToWebview({
+						type: "browserConnectionResult",
+						success: false,
+						text: `Error discovering browser: ${error instanceof Error ? error.message : String(error)}`,
+					})
 				}
 				break
 			case "togglePlanActMode":
@@ -303,11 +424,11 @@ export class Controller {
 					text: message.text,
 				})
 				break
-			// case "relaunchChromeDebugMode":
-			// 	if (this.task) {
-			// 		this.task.browserSession.relaunchChromeDebugMode()
-			// 	}
-			// 	break
+			case "relaunchChromeDebugMode":
+				const { browserSettings: bs } = await getAllExtensionState(this.context)
+				const browserSession = new BrowserSession(this.context, bs, this.logger) // Added logger
+				await browserSession.relaunchChromeDebugMode(this)
+				break
 			case "askResponse":
 				this.task?.handleWebviewAskResponse(message.askResponse!, message.text, message.images)
 				break
@@ -627,6 +748,13 @@ export class Controller {
 				})
 				break
 			}
+			case "scrollToSettings": {
+				await this.postMessageToWebview({
+					type: "scrollToSettings",
+					text: message.text,
+				})
+				break
+			}
 			case "telemetrySetting": {
 				if (message.telemetrySetting) {
 					await this.updateTelemetrySetting(message.telemetrySetting)
@@ -665,6 +793,100 @@ export class Controller {
 				await this.postStateToWebview()
 				this.refreshTotalTasksSize()
 				this.postMessageToWebview({ type: "relinquishControl" })
+				break
+			}
+			case "getDetectedChromePath": {
+				try {
+					const { browserSettings } = await getAllExtensionState(this.context)
+					const browserSession = new BrowserSession(this.context, browserSettings, this.logger) // Added logger
+					const { path, isBundled } = await browserSession.getDetectedChromePath()
+					await this.postMessageToWebview({
+						type: "detectedChromePath",
+						text: path,
+						isBundled,
+					})
+				} catch (error) {
+					console.error("Error getting detected Chrome path:", error)
+				}
+				break
+			}
+			case "getRelativePaths": {
+				if (message.uris && message.uris.length > 0) {
+					const resolvedPaths = await Promise.all(
+						message.uris.map(async (uriString) => {
+							try {
+								const fileUri = vscode.Uri.parse(uriString, true)
+								const relativePath = vscode.workspace.asRelativePath(fileUri, false)
+
+								if (path.isAbsolute(relativePath)) {
+									console.warn(`Dropped file ${relativePath} is outside the workspace. Sending original path.`)
+									return fileUri.fsPath.replace(/\\/g, "/")
+								} else {
+									let finalPath = "/" + relativePath.replace(/\\/g, "/")
+									try {
+										const stat = await vscode.workspace.fs.stat(fileUri)
+										if (stat.type === vscode.FileType.Directory) {
+											finalPath += "/"
+										}
+									} catch (statError) {
+										console.error(`Error stating file ${fileUri.fsPath}:`, statError)
+									}
+									return finalPath
+								}
+							} catch (error) {
+								console.error(`Error calculating relative path for ${uriString}:`, error)
+								return null
+							}
+						}),
+					)
+					await this.postMessageToWebview({
+						type: "relativePathsResponse",
+						paths: resolvedPaths,
+					})
+				}
+				break
+			}
+			case "searchFiles": {
+				const workspacePath = getWorkspacePath()
+
+				if (!workspacePath) {
+					// Handle case where workspace path is not available
+					await this.postMessageToWebview({
+						type: "fileSearchResults",
+						results: [],
+						mentionsRequestId: message.mentionsRequestId,
+						error: "No workspace path available",
+					})
+					break
+				}
+				try {
+					// Call file search service with query from message
+					const results = await searchWorkspaceFiles(
+						message.query || "",
+						workspacePath,
+						20, // Use default limit, as filtering is now done in the backend
+					)
+
+					// debug logging to be removed
+					//console.log(`controller/index.ts: Search results: ${results.length}`)
+
+					// Send results back to webview
+					await this.postMessageToWebview({
+						type: "fileSearchResults",
+						results,
+						mentionsRequestId: message.mentionsRequestId,
+					})
+				} catch (error) {
+					const errorMessage = error instanceof Error ? error.message : String(error)
+
+					// Send error response to webview
+					await this.postMessageToWebview({
+						type: "fileSearchResults",
+						results: [],
+						error: errorMessage,
+						mentionsRequestId: message.mentionsRequestId,
+					})
+				}
 				break
 			}
 			// Add more switch case statements here as more webview message commands
@@ -1241,22 +1463,6 @@ Here is the project's README to help you get started:\n\n${mcpDetails.readmeCont
 
 	private async ensureCacheDirectoryExists(): Promise<string> {
 		const cacheDir = path.join(this.context.globalStorageUri.fsPath, "cache")
-		await fs.mkdir(cacheDir, { recursive: true })
-		return cacheDir
-	}
-
-	async readOpenRouterModels(): Promise<Record<string, ModelInfo> | undefined> {
-		const openRouterModelsFilePath = path.join(await this.ensureCacheDirectoryExists(), GlobalFileNames.openRouterModels)
-		const fileExists = await fileExistsAtPath(openRouterModelsFilePath)
-		if (fileExists) {
-			const fileContents = await fs.readFile(openRouterModelsFilePath, "utf8")
-			return JSON.parse(fileContents)
-		}
-		return undefined
-	}
-
-	async refreshOpenRouterModels() {
-		const openRouterModelsFilePath = path.join(await this.ensureCacheDirectoryExists(), GlobalFileNames.openRouterModels)
 
 		let models: Record<string, ModelInfo> = {}
 		try {
@@ -1455,7 +1661,7 @@ Here is the project's README to help you get started:\n\n${mcpDetails.readmeCont
 				case vscode.DiagnosticSeverity.Error:
 					label = "Error"
 					break
-				case vscode.DiagnosticSeverity.Warning:
+		await vscode.commands.executeCommand("claude-dev.SidebarProvider.focus")
 					label = "Warning"
 					break
 				case vscode.DiagnosticSeverity.Information:

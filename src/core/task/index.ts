@@ -10,12 +10,13 @@ import * as path from "path"
 import { serializeError } from "serialize-error"
 import * as vscode from "vscode"
 import { ApiHandler, buildApiHandler } from "../../api"
-import { ILogger } from "../../services/logging/ILogger" // Added import
+import { ILogger } from "../../services/logging/ILogger" // Added ILogger back
 import { AnthropicHandler } from "../../api/providers/anthropic"
 import { ClineHandler } from "../../api/providers/cline"
 import { OpenRouterHandler } from "../../api/providers/openrouter"
+import { getContextWindowInfo } from "../context-management/context-window-utils"
 import { ApiStream } from "../../api/transform/stream"
-import { GlobalFileNames } from "../storage/disk"
+// Removed duplicate import lines and comments
 import CheckpointTracker from "../../integrations/checkpoints/CheckpointTracker"
 import { DIFF_VIEW_URI_SCHEME, DiffViewProvider } from "../../integrations/editor/DiffViewProvider"
 import { formatContentBlockToMarkdown } from "../../integrations/misc/export-markdown"
@@ -66,6 +67,7 @@ import { ClineIgnoreController } from ".././ignore/ClineIgnoreController"
 import { parseMentions } from ".././mentions"
 import { formatResponse } from ".././prompts/responses"
 import { addUserInstructions, SYSTEM_PROMPT } from ".././prompts/system"
+// Removed duplicate FileContextTracker import
 import {
 	checkIsAnthropicContextWindowError,
 	checkIsOpenRouterContextWindowError,
@@ -77,6 +79,7 @@ import {
 	getSavedClineMessages,
 	saveApiConversationHistory,
 	saveClineMessages,
+	GlobalFileNames, // Added back
 } from "../storage/disk"
 
 const cwd = vscode.workspace.workspaceFolders?.map((folder) => folder.uri.fsPath).at(0) ?? path.join(os.homedir(), "Desktop") // may or may not exist but fs checking existence would immediately ask for permission which would be bad UX, need to come up with a better solution
