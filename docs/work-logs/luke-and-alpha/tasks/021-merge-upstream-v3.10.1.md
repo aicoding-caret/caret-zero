@@ -159,3 +159,16 @@
     1.  `src/core/controller/index.ts`의 남은 컴파일 오류 해결 (Upstream과 비교하여 누락된 메서드/속성 추가 및 로직 수정).
     2.  `src/extension.ts`의 로거 접근 오류 해결 (컨트롤러 로거 접근 방식 확인 및 수정).
     3.  `src/core/task/index.ts`의 나머지 Upstream 변경 사항 병합 시작.
+
+### 8. 작업 중단 (2025-04-10 07:15 KST)
+
+*   **사유:** 컨텍스트 창 사용량(79%)이 높아지고, `src/core/controller/index.ts` 파일의 `BrowserSession` 관련 오류 해결을 위해 추가적인 파일 비교 및 분석이 필요하여 작업 중단.
+*   **현재 상태:**
+    *   `src/core/controller/index.ts` 파일에 `ILogger` import 및 속성 추가, `Task` 생성자에 로거 전달 코드 수정 완료.
+    *   `BrowserSession` 관련 메서드/속성 호출 부분 제거 시도 중 `replace_in_file` 오류 발생 (SEARCH 블록 불일치). 파일은 이전 상태로 복원됨.
+    *   `npm run compile` 실행 시 여전히 다수의 오류 발생 상태 (주요 오류는 이전 중단 시점과 유사).
+*   **다음 작업:**
+    1.  `src/core/controller/index.ts`의 `BrowserSession` 관련 오류 해결 (Upstream의 `BrowserSession.ts` 및 `BrowserSettings.ts` 파일과 비교하여 현재 프로젝트의 `BrowserSession.ts` 수정 또는 Controller 로직 수정).
+    2.  `src/core/controller/index.ts`의 나머지 컴파일 오류 해결.
+    3.  `src/extension.ts`의 로거 접근 오류 해결.
+    4.  `src/core/task/index.ts` 병합 계속 진행.

@@ -82,7 +82,8 @@ export interface ExtensionMessage {
 	isRemote?: boolean // Added for browserConnectionInfo
 	host?: string // Added for browserConnectionInfo
 	mentionsRequestId?: string // Added for fileSearchResults
-	results?: Array<{ // Added for fileSearchResults
+	results?: Array<{
+		// Added for fileSearchResults
 		path: string
 		type: "file" | "folder"
 		label?: string
@@ -224,7 +225,8 @@ export interface ClineSayBrowserAction {
 	text?: string
 }
 
-export interface BrowserConnectionInfo { // Added
+export interface BrowserConnectionInfo {
+	// Added
 	isConnected: boolean
 	isRemote: boolean
 	host?: string
@@ -257,7 +259,8 @@ export interface ClineAskQuestion {
 	selected?: string
 }
 
-export interface ClineAskNewTask { // Added
+export interface ClineAskNewTask {
+	// Added
 	context: string
 }
 

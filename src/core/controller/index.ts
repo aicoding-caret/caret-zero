@@ -48,6 +48,7 @@ import { BrowserSession } from "../../services/browser/BrowserSession"
 import { GlobalFileNames } from "../storage/disk"
 import { discoverChromeInstances } from "../../services/browser/BrowserDiscovery"
 import { searchWorkspaceFiles } from "../../services/search/file-search"
+import { ILogger } from "../../services/logging/ILogger" // Import ILogger
 
 /*
 https://github.com/microsoft/vscode-webview-ui-toolkit-samples/blob/main/default/weather-webview/src/providers/WeatherViewProvider.ts
@@ -63,14 +64,22 @@ export class Controller {
 	accountService?: ClineAccountService
 	private latestAnnouncementId = "april-7-2025" // update to some unique identifier when we add a new announcement
 	private webviewProviderRef: WeakRef<WebviewProvider>
+	logger: ILogger // Add logger property
 
 	constructor(
 		readonly context: vscode.ExtensionContext,
-		private readonly outputChannel: vscode.OutputChannel,
+		readonly outputChannel: vscode.OutputChannel, // Make outputChannel readonly
 		webviewProvider: WebviewProvider,
 	) {
 		this.outputChannel.appendLine("ClineProvider instantiated")
 		this.webviewProviderRef = new WeakRef(webviewProvider)
+		// Simple console logger implementation for ILogger
+		this.logger = {
+			log: (message: string, ...meta: any[]) => this.outputChannel.appendLine(`[INFO] ${message} ${meta.length > 0 ? JSON.stringify(meta) : ""}`),
+			error: (message: string, ...meta: any[]) => this.outputChannel.appendLine(`[ERROR] ${message} ${meta.length > 0 ? JSON.stringify(meta) : ""}`),
+			warn: (message: string, ...meta: any[]) => this.outputChannel.appendLine(`[WARN] ${message} ${meta.length > 0 ? JSON.stringify(meta) : ""}`),
+			debug: (message: string, ...meta: any[]) => this.outputChannel.appendLine(`[DEBUG] ${message} ${meta.length > 0 ? JSON.stringify(meta) : ""}`),
+		}
 
 		this.workspaceTracker = new WorkspaceTracker(this)
 		this.mcpHub = new McpHub(this)
@@ -130,6 +139,7 @@ export class Controller {
 			await getAllExtensionState(this.context)
 		this.task = new Task(
 			this,
+			this.logger, // Pass the controller's logger
 			apiConfiguration,
 			autoApprovalSettings,
 			browserSettings,
@@ -146,6 +156,7 @@ export class Controller {
 			await getAllExtensionState(this.context)
 		this.task = new Task(
 			this,
+			this.logger, // Pass the controller's logger
 			apiConfiguration,
 			autoApprovalSettings,
 			browserSettings,
@@ -328,7 +339,7 @@ export class Controller {
 			case "testBrowserConnection":
 				try {
 					const { browserSettings } = await getAllExtensionState(this.context)
-					const browserSession = new BrowserSession(this.context, browserSettings, this.logger) // Added logger
+					const browserSession = new BrowserSession(this.context, browserSettings, this.logger) // Pass logger
 					// If no text is provided, try auto-discovery
 					if (!message.text) {
 						try {
@@ -387,7 +398,7 @@ export class Controller {
 
 						// Test the connection to get the endpoint
 						const { browserSettings } = await getAllExtensionState(this.context)
-						const browserSession = new BrowserSession(this.context, browserSettings, this.logger) // Added logger
+						const browserSession = new BrowserSession(this.context, browserSettings, this.logger) // Pass logger
 						const result = await browserSession.testConnection(discoveredHost)
 
 						// Send the result back to the webview
@@ -425,8 +436,8 @@ export class Controller {
 				})
 				break
 			case "relaunchChromeDebugMode":
-				const { browserSettings: bs } = await getAllExtensionState(this.context)
-				const browserSession = new BrowserSession(this.context, bs, this.logger) // Added logger
+				const { browserSettings } = await getAllExtensionState(this.context)
+				const browserSession = new BrowserSession(this.context, browserSettings, this.logger) // Pass logger
 				await browserSession.relaunchChromeDebugMode(this)
 				break
 			case "askResponse":
@@ -798,7 +809,7 @@ export class Controller {
 			case "getDetectedChromePath": {
 				try {
 					const { browserSettings } = await getAllExtensionState(this.context)
-					const browserSession = new BrowserSession(this.context, browserSettings, this.logger) // Added logger
+					const browserSession = new BrowserSession(this.context, browserSettings, this.logger) // Pass logger
 					const { path, isBundled } = await browserSession.getDetectedChromePath()
 					await this.postMessageToWebview({
 						type: "detectedChromePath",
@@ -1661,7 +1672,7 @@ Here is the project's README to help you get started:\n\n${mcpDetails.readmeCont
 				case vscode.DiagnosticSeverity.Error:
 					label = "Error"
 					break
-		await vscode.commands.executeCommand("claude-dev.SidebarProvider.focus")
+					await vscode.commands.executeCommand("claude-dev.SidebarProvider.focus")
 					label = "Warning"
 					break
 				case vscode.DiagnosticSeverity.Information:
@@ -1999,5 +2010,144 @@ Here is the project's README to help you get started:\n\n${mcpDetails.readmeCont
 			type: "action",
 			action: "chatButtonClicked",
 		})
+	}
+
+	// OpenRouter Caching Logic (Moved from constructor to avoid async operations there)
+	private async ensureCacheDirectoryExists(): Promise<string> {
+		const cacheDir = path.join(this.context.globalStorageUri.fsPath, "cache")
+		await fs.mkdir(cacheDir, { recursive: true })
+		return cacheDir
+	}
+
+	async readOpenRouterModels(): Promise<Record<string, ModelInfo> | undefined> {
+		const openRouterModelsFilePath = path.join(await this.ensureCacheDirectoryExists(), GlobalFileNames.openRouterModels)
+		const fileExists = await fileExistsAtPath(openRouterModelsFilePath)
+		if (fileExists) {
+			const fileContents = await fs.readFile(openRouterModelsFilePath, "utf8")
+			return JSON.parse(fileContents)
+		}
+		return undefined
+	}
+
+	async refreshOpenRouterModels() {
+		const openRouterModelsFilePath = path.join(await this.ensureCacheDirectoryExists(), GlobalFileNames.openRouterModels)
+
+		let models: Record<string, ModelInfo> = {}
+		try {
+			const response = await axios.get("https://openrouter.ai/api/v1/models")
+			/*
+			{
+				"id": "anthropic/claude-3.5-sonnet",
+				"name": "Anthropic: Claude 3.5 Sonnet",
+				"created": 1718841600,
+				"description": "Claude 3.5 Sonnet delivers better-than-Opus capabilities, faster-than-Sonnet speeds, at the same Sonnet prices. Sonnet is particularly good at:\n\n- Coding: Autonomously writes, edits, and runs code with reasoning and troubleshooting\n- Data science: Augments human data science expertise; navigates unstructured data while using multiple tools for insights\n- Visual processing: excelling at interpreting charts, graphs, and images, accurately transcribing text to derive insights beyond just the text alone\n- Agentic tasks: exceptional tool use, making it great at agentic tasks (i.e. complex, multi-step problem solving tasks that require engaging with other systems)\n\n#multimodal",
+				"context_length": 200000,
+				"architecture": {
+					"modality": "text+image-\u003Etext",
+					"tokenizer": "Claude",
+					"instruct_type": null
+				},
+				"pricing": {
+					"prompt": "0.000003",
+					"completion": "0.000015",
+					"image": "0.0048",
+					"request": "0"
+				},
+				"top_provider": {
+					"context_length": 200000,
+					"max_completion_tokens": 8192,
+					"is_moderated": true
+				},
+				"per_request_limits": null
+			},
+			*/
+			if (response.data?.data) {
+				const rawModels = response.data.data
+				const parsePrice = (price: any) => {
+					if (price) {
+						return parseFloat(price) * 1_000_000
+					}
+					return undefined
+				}
+				for (const rawModel of rawModels) {
+					const modelInfo: ModelInfo = {
+						maxTokens: rawModel.top_provider?.max_completion_tokens,
+						contextWindow: rawModel.context_length,
+						supportsImages: rawModel.architecture?.modality?.includes("image"),
+						supportsPromptCache: false,
+						inputPrice: parsePrice(rawModel.pricing?.prompt),
+						outputPrice: parsePrice(rawModel.pricing?.completion),
+						description: rawModel.description,
+					}
+
+					switch (rawModel.id) {
+						case "anthropic/claude-3-7-sonnet":
+						case "anthropic/claude-3-7-sonnet:beta":
+						case "anthropic/claude-3.7-sonnet":
+						case "anthropic/claude-3.7-sonnet:beta":
+						case "anthropic/claude-3.7-sonnet:thinking":
+						case "anthropic/claude-3.5-sonnet":
+						case "anthropic/claude-3.5-sonnet:beta":
+							// NOTE: this needs to be synced with api.ts/openrouter default model info
+							modelInfo.supportsComputerUse = true
+							modelInfo.supportsPromptCache = true
+							modelInfo.cacheWritesPrice = 3.75
+							modelInfo.cacheReadsPrice = 0.3
+							break
+						case "anthropic/claude-3.5-sonnet-20240620":
+						case "anthropic/claude-3.5-sonnet-20240620:beta":
+							modelInfo.supportsPromptCache = true
+							modelInfo.cacheWritesPrice = 3.75
+							modelInfo.cacheReadsPrice = 0.3
+							break
+						case "anthropic/claude-3-5-haiku":
+						case "anthropic/claude-3-5-haiku:beta":
+						case "anthropic/claude-3-5-haiku-20241022":
+						case "anthropic/claude-3-5-haiku-20241022:beta":
+						case "anthropic/claude-3.5-haiku":
+						case "anthropic/claude-3.5-haiku:beta":
+						case "anthropic/claude-3.5-haiku-20241022":
+						case "anthropic/claude-3.5-haiku-20241022:beta":
+							modelInfo.supportsPromptCache = true
+							modelInfo.cacheWritesPrice = 1.25
+							modelInfo.cacheReadsPrice = 0.1
+							break
+						case "anthropic/claude-3-opus":
+						case "anthropic/claude-3-opus:beta":
+							modelInfo.supportsPromptCache = true
+							modelInfo.cacheWritesPrice = 18.75
+							modelInfo.cacheReadsPrice = 1.5
+							break
+						case "anthropic/claude-3-haiku":
+						case "anthropic/claude-3-haiku:beta":
+							modelInfo.supportsPromptCache = true
+							modelInfo.cacheWritesPrice = 0.3
+							modelInfo.cacheReadsPrice = 0.03
+							break
+						case "deepseek/deepseek-chat":
+							modelInfo.supportsPromptCache = true
+							// see api.ts/deepSeekModels for more info
+							modelInfo.inputPrice = 0
+							modelInfo.cacheWritesPrice = 0.14
+							modelInfo.cacheReadsPrice = 0.014
+							break
+					}
+
+					models[rawModel.id] = modelInfo
+				}
+			} else {
+				console.error("Invalid response from OpenRouter API")
+			}
+			await fs.writeFile(openRouterModelsFilePath, JSON.stringify(models))
+			console.log("OpenRouter models fetched and saved", models)
+		} catch (error) {
+			console.error("Error fetching OpenRouter models:", error)
+		}
+
+		await this.postMessageToWebview({
+			type: "openRouterModels",
+			openRouterModels: models,
+		})
+		return models
 	}
 }
