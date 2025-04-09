@@ -17,3 +17,4 @@ models/
 # Environment variables
 .env
 models_temp/
+models_backup/
