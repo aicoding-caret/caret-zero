@@ -35,10 +35,10 @@ export interface WebviewMessage {
 		| "deleteMcpServer"
 		| "autoApprovalSettings"
 		| "browserSettings"
-		| "discoverBrowser" // Added
-		| "testBrowserConnection" // Added
-		| "browserConnectionResult" // Added (already present in upstream, ensure it's here)
-		| "browserRelaunchResult" // Added (already present in upstream, ensure it's here)
+		| "discoverBrowser"
+		| "testBrowserConnection"
+		| "browserConnectionResult"
+		| "browserRelaunchResult"
 		| "togglePlanActMode"
 		| "checkpointDiff"
 		| "checkpointRestore"

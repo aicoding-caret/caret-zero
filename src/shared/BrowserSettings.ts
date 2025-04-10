@@ -5,7 +5,7 @@ export interface BrowserSettings {
 		height: number
 	}
 	// Chrome installation to use
-	// chromeType: "chromium" | "system" // Removed in upstream
+	// chromeType: "chromium" | "system"
 	remoteBrowserHost?: string
 	remoteBrowserEnabled?: boolean
 }
@@ -17,7 +17,7 @@ export const DEFAULT_BROWSER_SETTINGS: BrowserSettings = {
 	},
 	remoteBrowserEnabled: false,
 	remoteBrowserHost: "http://localhost:9222",
-	// chromeType: "chromium", // Removed in upstream
+	// chromeType: "chromium",
 }
 
 export const BROWSER_VIEWPORT_PRESETS = {

@@ -2753,7 +2753,8 @@ export class Task {
 								await this.ask("new_task", removeClosingTag("content", content), block.partial).catch(() => {}) // Renamed from context
 								break
 							} else {
-								if (!content) { // Renamed from context
+								if (!content) {
+									// Renamed from context
 									this.consecutiveMistakeCount++
 									pushToolResult(await this.sayAndCreateMissingParamError("new_task", "context"))
 									break

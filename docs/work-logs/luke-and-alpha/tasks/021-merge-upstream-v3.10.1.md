@@ -241,6 +241,80 @@
         *   `src/core/task/index.ts`: `new_task` 도구 파라미터명 수정 (`context` -> `content`) (TS2551, TS2345).
         *   `src/core/task/index.ts`: `loadContext` 함수 내 `parseMentions` 호출 시 네 번째 인자(`this.fileContextTracker`) 제거 (TS2554).
 *   **컴파일 확인:** `npm run compile` 명령어를 실행하여 모든 컴파일 오류가 해결되었음을 확인했습니다. (TypeScript 버전 관련 경고는 존재)
-*   **다음 작업:** `src/core/webview/index.ts` 병합 시작.
+
+### 14. `src/core/webview/index.ts` 병합 (2025-04-10)
+
+*   **변경 내용 비교:** 현재 프로젝트와 Upstream v3.10.1 버전의 `src/core/webview/index.ts` 파일을 비교한 결과, 내용이 완전히 동일했습니다.
+*   **결론:** 별도의 병합 작업이 필요하지 않습니다.
+
+### 15. `src/api/` 디렉토리 병합 (2025-04-10)
+
+*   **접근 방식:** Git 로그 및 상태 확인 결과 로컬 커밋/변경 사항이 없어, 파일별 비교 후 Upstream 버전으로 업데이트하기로 결정했습니다.
+*   **파일 비교 (`git diff --no-index`):**
+    *   `src/api/index.ts`: 변경 사항 확인.
+    *   `src/api/retry.ts`: 변경 사항 없음.
+    *   `src/api/providers/`:
+        *   `doubao.ts`: Upstream에만 존재 (신규 파일).
+        *   `litellm.ts`: 변경 사항 확인.
+        *   `vscode-lm.ts`: 변경 사항 확인.
+        *   나머지 파일 (`anthropic.ts`, `asksage.ts`, `bedrock.ts`, `cline.ts`, `deepseek.ts`, `gemini.ts`, `lmstudio.ts`, `mistral.ts`, `ollama.ts`, `openai-native.ts`, `openai.ts`, `openrouter.ts`, `qwen.ts`, `requesty.ts`, `sambanova.ts`, `together.ts`, `types.ts`, `vertex.ts`, `xai.ts`): 변경 사항 없음.
+    *   `src/api/transform/`: 모든 파일 (`gemini-format.ts`, `mistral-format.ts`, `o1-format.ts`, `ollama-format.ts`, `openai-format.ts`, `openrouter-stream.ts`, `r1-format.ts`, `stream.ts`, `vscode-lm-format.ts`) 변경 사항 없음.
+*   **병합 작업:**
+    *   `src/api/index.ts`: Upstream 버전으로 덮어쓰기 (`write_to_file`).
+    *   `src/api/providers/doubao.ts`: Upstream에서 복사 (`execute_command copy`).
+    *   `src/shared/api.ts`: `index.ts` 업데이트 후 발생한 타입 오류 해결 위해 `ApiProvider` 타입에 `"doubao"` 추가 (`replace_in_file`).
+    *   `src/api/providers/litellm.ts`: Upstream 버전으로 덮어쓰기 (`write_to_file`).
+    *   `src/shared/api.ts`: `litellm.ts` 업데이트 후 발생한 타입 오류 해결 위해 `ApiHandlerOptions`에 `liteLlmUsePromptCache` 속성 추가 (`replace_in_file`).
+    *   `src/api/providers/vscode-lm.ts`: Upstream 버전으로 덮어쓰기 (`write_to_file`).
+    *   `src/api/providers/vscode-lm.ts`: `vscode-lm.ts` 업데이트 후 발생한 타입 충돌 오류 해결 위해 `declare module "vscode"` 블록 제거 (`replace_in_file`).
+*   **결론:** `src/api` 디렉토리 병합 완료.
+
+### 16. `src/services/` 디렉토리 병합 (2025-04-10)
+
+*   **접근 방식:** `logging` 서브디렉토리는 현재 프로젝트의 `ILogger` 기반 커스텀 구현을 유지하기로 결정하고 병합에서 제외했습니다. 나머지 서브디렉토리(`account`, `auth`, `browser`, `glob`, `mcp`, `ripgrep`, `search`, `telemetry`, `tree-sitter`)는 파일 구조가 동일하여, 파일별 비교 후 변경 사항이 있는 경우 Upstream 버전으로 업데이트했습니다.
+*   **파일 비교 (`git diff --no-index`):**
+    *   `src/services/logging/`: 병합 제외 (현재 프로젝트 커스텀 로깅 유지).
+    *   `src/services/mcp/McpHub.ts`: 변경 사항 확인.
+    *   `src/services/search/file-search.ts`: 변경 사항 확인.
+    *   나머지 모든 파일 (`account/ClineAccountService.ts`, `auth/config.ts`, `browser/BrowserDiscovery.ts`, `browser/BrowserSession.ts`, `browser/UrlContentFetcher.ts`, `glob/list-files.ts`, `ripgrep/index.ts`, `telemetry/TelemetryService.ts`, `tree-sitter/index.ts`, `tree-sitter/languageParser.ts`, `tree-sitter/queries/*`): 변경 사항 없음 (줄바꿈 문자 경고만 발생).
+*   **병합 작업:**
+    *   `src/services/mcp/McpHub.ts`: Upstream 버전으로 덮어쓰기 (`write_to_file`).
+    *   `src/services/search/file-search.ts`: Upstream 버전으로 덮어쓰기 (`write_to_file`).
+*   **결론:** `src/services` 디렉토리 병합 완료 (단, `logging` 제외).
+
+### 17. `src/integrations/` 디렉토리 병합 (2025-04-10)
+
+*   **접근 방식:** 파일 구조는 `.bak` 파일을 제외하고 동일하여, 파일별 비교 후 변경 사항이 있는 경우 Upstream 버전으로 업데이트했습니다.
+*   **파일 비교 (`git diff --no-index`):**
+    *   `src/integrations/terminal/TerminalProcess.test.ts`: 변경 사항 확인.
+    *   `src/integrations/terminal/TerminalManager.ts`: 변경 사항 확인 (이전 `declare module "vscode"` 제거로 인한 차이).
+    *   나머지 모든 파일 (`checkpoints/*`, `debug/*`, `diagnostics/*`, `editor/*` (DiffViewProvider.ts 포함), `misc/*`, `notifications/*`, `terminal/ansiUtils.ts`, `terminal/get-latest-output.ts`, `terminal/TerminalProcess.ts`, `terminal/TerminalRegistry.ts`, `theme/*`, `workspace/*`): 변경 사항 없음 (줄바꿈 문자 경고만 발생).
+*   **병합 작업:**
+    *   `src/integrations/terminal/TerminalProcess.test.ts`: Upstream 버전으로 덮어쓰기 (`write_to_file`).
+    *   `src/integrations/terminal/TerminalProcess.test.ts`: `TerminalProcess.test.ts` 업데이트 후 발생한 타입 충돌 오류 해결 위해 `declare module "vscode"` 블록 제거 (`replace_in_file`).
+    *   `src/integrations/terminal/TerminalManager.ts`: 현재 프로젝트 버전(이전 수정 사항 반영됨) 유지.
+*   **결론:** `src/integrations` 디렉토리 병합 완료.
+
+### 18. `src/shared/` 디렉토리 병합 (2025-04-10)
+
+*   **접근 방식:** 파일 구조는 동일하여, 파일별 비교 후 변경 사항이 있는 경우 Upstream 버전으로 업데이트했습니다. 단, 이전에 타입 오류 해결을 위해 수정했던 `api.ts`, `ExtensionMessage.ts`, `WebviewMessage.ts` 파일은 신중하게 처리했습니다.
+*   **파일 비교 (`git diff --no-index`):**
+    *   `src/shared/api.ts`: 변경 사항 확인 (이전 수정 사항 + Upstream 변경 사항).
+    *   `src/shared/BrowserSettings.ts`: 변경 사항 확인.
+    *   `src/shared/ExtensionMessage.ts`: 변경 사항 확인 (이전 수정 사항).
+    *   `src/shared/mcp.ts`: 변경 사항 확인.
+    *   `src/shared/WebviewMessage.ts`: 변경 사항 확인 (이전 수정 사항 + Upstream 변경 사항).
+    *   나머지 모든 파일 (`array.test.ts`, `array.ts`, `AutoApprovalSettings.ts`, `ChatContent.ts`, `ChatSettings.ts`, `ClineAccount.ts`, `combineApiRequests.ts`, `combineCommandSequences.ts`, `context-mentions.ts`, `getApiMetrics.ts`, `HistoryItem.ts`, `Languages.ts`, `TelemetrySetting.ts`, `UserInfo.ts`, `vsCodeSelectorUtils.ts`, `__tests__/context-mentions.test.ts`): 변경 사항 없음.
+*   **병합 작업:**
+    *   `src/shared/api.ts`: Upstream 버전으로 덮어쓰기 (`write_to_file`). (실수로 environment_details가 3번 포함되어 빌드 오류 발생 후 재수정)
+    *   `src/shared/BrowserSettings.ts`: Upstream 버전으로 덮어쓰기 (`write_to_file`).
+    *   `src/shared/ExtensionMessage.ts`: 현재 프로젝트 버전(이전 수정 사항 반영됨) 유지.
+    *   `src/shared/mcp.ts`: Upstream 버전으로 덮어쓰기 (`write_to_file`).
+    *   `src/shared/WebviewMessage.ts`: Upstream 버전으로 덮어쓰기 (`write_to_file`).
+*   **빌드 오류 해결:**
+    *   `npm run compile` 실행 후 `src/services/mcp/McpHub.ts`에서 `McpToolCallResponse` 타입 오류 발생.
+    *   `src/shared/mcp.ts` 파일의 `McpToolCallResponse` 타입 정의에 'audio' 타입 추가하여 오류 해결 (`replace_in_file`).
+*   **결론:** `src/shared` 디렉토리 병합 및 관련 빌드 오류 해결 완료.
+*   **다음 작업:** `webview-ui/` 디렉토리 병합 시작.
 
 --

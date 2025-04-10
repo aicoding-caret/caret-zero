@@ -7,10 +7,6 @@ import { convertToVsCodeLmMessages } from "../transform/vscode-lm-format"
 import { SELECTOR_SEPARATOR, stringifyVsCodeLmModelSelector } from "../../shared/vsCodeSelectorUtils"
 import { ApiHandlerOptions, ModelInfo, openAiModelInfoSaneDefaults } from "../../shared/api"
 
-// Note: The 'declare module "vscode"' block previously here was removed
-// because it conflicted with the official @types/vscode definitions.
-// The necessary types should now be available directly from the 'vscode' import.
-
 /**
  * Handles interaction with VS Code's Language Model API for chat-based operations.
  * This handler implements the ApiHandler interface to provide VS Code LM specific functionality.

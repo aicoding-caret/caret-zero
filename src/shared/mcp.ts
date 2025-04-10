@@ -58,6 +58,11 @@ export type McpToolCallResponse = {
 				mimeType: string
 		  }
 		| {
+				type: "audio" // Added audio type based on McpHub.ts error
+				data: string
+				mimeType: string
+		  }
+		| {
 				type: "resource"
 				resource: {
 					uri: string
@@ -65,11 +70,6 @@ export type McpToolCallResponse = {
 					text?: string
 					blob?: string
 				}
-		  }
-		| {
-				type: "audio"
-				data: string
-				mimeType: string
 		  }
 	>
 	isError?: boolean

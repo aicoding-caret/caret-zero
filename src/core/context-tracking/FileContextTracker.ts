@@ -29,7 +29,8 @@ export class FileContextTracker {
 	private recentlyModifiedFiles = new Set<string>()
 	private recentlyEditedByCline = new Set<string>()
 
-	constructor(controller: Controller, taskId: string) { // Use Controller type
+	constructor(controller: Controller, taskId: string) {
+		// Use Controller type
 		this.controllerRef = new WeakRef(controller)
 		this.taskId = taskId
 	}
@@ -119,7 +120,8 @@ export class FileContextTracker {
 			const now = Date.now()
 
 			// Mark existing entries for this file as stale
-			metadata.files_in_context.forEach((entry: FileMetadataEntry) => { // Add type annotation
+			metadata.files_in_context.forEach((entry: FileMetadataEntry) => {
+				// Add type annotation
 				if (entry.path === filePath && entry.record_state === "active") {
 					entry.record_state = "stale"
 				}

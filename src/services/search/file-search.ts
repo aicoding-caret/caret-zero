@@ -3,7 +3,7 @@ import * as path from "path"
 import * as fs from "fs"
 import * as childProcess from "child_process"
 import * as readline from "readline"
-import { getBinPath } from "../ripgrep/index"
+import { getBinPath } from "../ripgrep"
 import type { Fzf, FzfResultItem } from "fzf"
 
 // Wrapper function for childProcess.spawn
