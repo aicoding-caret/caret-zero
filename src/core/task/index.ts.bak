@@ -153,11 +153,11 @@ export class Task {
 		})
 		this.controllerRef = new WeakRef(controller)
 		this.apiProvider = apiConfiguration.apiProvider
-		this.terminalManager = new TerminalManager()
+		this.terminalManager = new TerminalManager(controller.logger)
 		this.urlContentFetcher = new UrlContentFetcher(controller.context)
-		this.browserSession = new BrowserSession(controller.context, browserSettings)
+		this.browserSession = new BrowserSession(controller.context, browserSettings, controller.logger)
 		this.contextManager = new ContextManager()
-		this.diffViewProvider = new DiffViewProvider(cwd)
+		this.diffViewProvider = new DiffViewProvider(cwd, controller.logger)
 		this.customInstructions = customInstructions
 		this.autoApprovalSettings = autoApprovalSettings
 		this.browserSettings = browserSettings
@@ -1475,9 +1475,6 @@ export class Task {
 							return `[${block.name}]`
 						case "new_task":
 							return `[${block.name} for creating a new task]`
-						default:
-							// Added default case to satisfy TS7030
-							return `[${block.name}]`
 					}
 				}
 
@@ -2271,7 +2268,7 @@ export class Task {
 									const localContext = this.controllerRef.deref()?.context
 									if (localContext) {
 										await this.browserSession.dispose()
-										this.browserSession = new BrowserSession(localContext, this.browserSettings)
+										this.browserSession = new BrowserSession(localContext, this.browserSettings, this.controllerRef.deref()?.logger || console)
 									} else {
 										console.warn("no controller context available for browserSession")
 									}
@@ -2728,11 +2725,11 @@ export class Task {
 											selected: text,
 										} satisfies ClineAskQuestion)
 										await this.saveClineMessagesAndUpdateHistory()
-										telemetryService.captureOptionSelected(this.taskId, options.length, "act")
+										// telemetryService.captureOptionSelected(this.taskId, options.length, "act")
 									}
 								} else {
 									// Option not selected, send user feedback
-									telemetryService.captureOptionsIgnored(this.taskId, options.length, "act")
+									// telemetryService.captureOptionsIgnored(this.taskId, options.length, "act")
 									await this.say("user_feedback", text ?? "", images)
 								}
 
@@ -2747,27 +2744,29 @@ export class Task {
 						}
 					}
 					case "new_task": {
-						const content: string | undefined = block.params.content // Renamed from context
+						const context: string | undefined = block.params.context
 						try {
 							if (block.partial) {
-								await this.ask("new_task", removeClosingTag("content", content), block.partial).catch(() => {}) // Renamed from context
+								await this.ask("new_task", removeClosingTag("context", context), block.partial).catch(() => {})
 								break
 							} else {
-								if (!content) { // Renamed from context
+								// Type checking for context parameter
+								if (!block.params.context) {
 									this.consecutiveMistakeCount++
 									pushToolResult(await this.sayAndCreateMissingParamError("new_task", "context"))
 									break
 								}
+								const context = block.params.context;
 								this.consecutiveMistakeCount = 0
 
 								if (this.autoApprovalSettings.enabled && this.autoApprovalSettings.enableNotifications) {
 									showSystemNotification({
 										subtitle: "Cline wants to start a new task...",
-										message: `Cline is suggesting to start a new task with: ${content}`, // Renamed from context
+										message: `Cline is suggesting to start a new task with: ${context}`,
 									})
 								}
 
-								const { text, images } = await this.ask("new_task", content, false) // Renamed from context
+								const { text, images } = await this.ask("new_task", context, false)
 
 								// If the user provided a response, treat it as feedback
 								if (text || images?.length) {
@@ -2841,7 +2840,7 @@ export class Task {
 											selected: text,
 										} satisfies ClinePlanModeResponse)
 										await this.saveClineMessagesAndUpdateHistory()
-										telemetryService.captureOptionSelected(this.taskId, options.length, "plan")
+										// telemetryService.captureOptionSelected(this.taskId, options.length, "plan")
 									}
 								} else {
 									// Option not selected, send user feedback
@@ -3473,7 +3472,7 @@ export class Task {
 								block.text,
 								cwd,
 								this.urlContentFetcher,
-								// this.fileContextTracker, // Removed 4th argument
+								this.fileContextTracker,
 							)
 
 							return {

@@ -72,16 +72,6 @@ export const BrowserSettingsMenu: React.FC<BrowserSettingsMenuProps> = ({ disabl
 		}
 	}
 
-	const updateHeadless = (headless: boolean) => {
-		vscode.postMessage({
-			type: "browserSettings",
-			browserSettings: {
-				...browserSettings,
-				headless,
-			},
-		})
-	}
-
 	// const updateChromeType = (chromeType: BrowserSettings["chromeType"]) => {
 	// 	vscode.postMessage({
 	// 		type: "browserSettings",
@@ -105,16 +95,7 @@ export const BrowserSettingsMenu: React.FC<BrowserSettingsMenuProps> = ({ disabl
 			</VSCodeButton>
 			{showMenu && (
 				<SettingsMenu ref={menuRef} maxWidth={maxWidth} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
-					<SettingsGroup>
-						{/* <SettingsHeader>Headless Mode</SettingsHeader> */}
-						<VSCodeCheckbox
-							style={{ marginBottom: "8px", marginTop: -1 }}
-							checked={browserSettings.headless}
-							onChange={(e) => updateHeadless((e.target as HTMLInputElement).checked)}>
-							Run in headless mode
-						</VSCodeCheckbox>
-						<SettingsDescription>When enabled, Chrome will run in the background.</SettingsDescription>
-					</SettingsGroup>
+					{/* Headless mode settings removed */}
 
 					{/* <SettingsGroup>
 						<SettingsHeader>Chrome Executable</SettingsHeader>

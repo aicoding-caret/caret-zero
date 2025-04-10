@@ -1,5 +1,6 @@
 import pWaitFor from "p-wait-for"
 import * as vscode from "vscode"
+import { ILogger } from "../../services/logging/ILogger" // Added import
 import { arePathsEqual } from "../../utils/path"
 import { mergePromise, TerminalProcess, TerminalProcessResultPromise } from "./TerminalProcess"
 import { TerminalInfo, TerminalRegistry } from "./TerminalRegistry"
@@ -70,17 +71,25 @@ Interestingly, some environments like Cursor enable these APIs even without the 
 This approach allows us to leverage advanced features when available while ensuring broad compatibility.
 */
 
+// Note: The 'declare module "vscode"' block previously here was removed
+// because it conflicted with the official @types/vscode definitions.
+// The necessary types should now be available directly from the 'vscode' import.
+
 export class TerminalManager {
 	private terminalIds: Set<number> = new Set()
 	private processes: Map<number, TerminalProcess> = new Map()
 	private disposables: vscode.Disposable[] = []
+	private logger: ILogger // Added logger member
 
-	constructor() {
+	constructor(logger: ILogger) {
+		// Added logger parameter
+		this.logger = logger // Assign logger
 		let disposable: vscode.Disposable | undefined
 		try {
-			disposable = (vscode.window as any).onDidStartTerminalShellExecution?.(async (e: any) => {
+			// Use correct event type 'vscode.TerminalShellExecutionStartEvent' and access execution via 'e.execution'
+			disposable = vscode.window.onDidStartTerminalShellExecution?.(async (e: vscode.TerminalShellExecutionStartEvent) => {
 				// Creating a read stream here results in a more consistent output. This is most obvious when running the `date` command.
-				e?.execution?.read()
+				e.execution?.read() // Access execution property of the event object
 			})
 		} catch (error) {
 			// console.error("Error setting up onDidEndTerminalShellExecution", error)

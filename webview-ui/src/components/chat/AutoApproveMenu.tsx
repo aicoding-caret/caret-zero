@@ -29,7 +29,7 @@ const ACTION_METADATA: {
 		description: "Allows modification of any files on your computer.",
 	},
 	{
-		id: "executeCommands",
+		id: "executeAllCommands", // Changed from executeCommands
 		label: "Execute safe commands",
 		shortName: "Commands",
 		description:

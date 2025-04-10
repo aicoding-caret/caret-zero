@@ -1,0 +1,180 @@
+{
+  "main": {
+    "id": "40f7a880a8b62a9f",
+    "type": "split",
+    "children": [
+      {
+        "id": "ebca90168af486aa",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "01fd36ff9898634a",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "prompting/Plan-Act Mode 시스템 프롬프트와 A2A(Agent-to-Agent) 프로토콜의 통합 방안 및 기대효과.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "Plan-Act Mode 시스템 프롬프트와 A2A(Agent-to-Agent) 프로토콜의 통합 방안 및 기대효과"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "7093f7ed424484f5",
+    "type": "split",
+    "children": [
+      {
+        "id": "9d55f680de05037d",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "05e68df3968a1d4d",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {
+                "sortOrder": "alphabetical",
+                "autoReveal": false
+              },
+              "icon": "lucide-folder-closed",
+              "title": "파일 탐색기"
+            }
+          },
+          {
+            "id": "95da2c6cc95617db",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              },
+              "icon": "lucide-search",
+              "title": "검색"
+            }
+          },
+          {
+            "id": "1565177a1cd76b06",
+            "type": "leaf",
+            "state": {
+              "type": "bookmarks",
+              "state": {},
+              "icon": "lucide-bookmark",
+              "title": "북마크"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300
+  },
+  "right": {
+    "id": "220b464956349042",
+    "type": "split",
+    "children": [
+      {
+        "id": "eabf22fa1630c83e",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "308f9be381cfa268",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "file": "prompting/Plan-Act Mode 시스템 프롬프트와 A2A(Agent-to-Agent) 프로토콜의 통합 방안 및 기대효과.md",
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-coming-in",
+              "title": "Plan-Act Mode 시스템 프롬프트와 A2A(Agent-to-Agent) 프로토콜의 통합 방안 및 기대효과 의 백링크"
+            }
+          },
+          {
+            "id": "311b2b04c0b44be4",
+            "type": "leaf",
+            "state": {
+              "type": "outgoing-link",
+              "state": {
+                "file": "prompting/Plan-Act Mode 시스템 프롬프트와 A2A(Agent-to-Agent) 프로토콜의 통합 방안 및 기대효과.md",
+                "linksCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-going-out",
+              "title": "Plan-Act Mode 시스템 프롬프트와 A2A(Agent-to-Agent) 프로토콜의 통합 방안 및 기대효과 의 나가는 링크"
+            }
+          },
+          {
+            "id": "eb6b89d30a06a08f",
+            "type": "leaf",
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "frequency",
+                "useHierarchy": true,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-tags",
+              "title": "태그"
+            }
+          },
+          {
+            "id": "1c542081d2d4235d",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {
+                "file": "prompting/Plan-Act Mode 시스템 프롬프트와 A2A(Agent-to-Agent) 프로토콜의 통합 방안 및 기대효과.md",
+                "followCursor": false,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-list",
+              "title": "Plan-Act Mode 시스템 프롬프트와 A2A(Agent-to-Agent) 프로토콜의 통합 방안 및 기대효과 의 개요"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300,
+    "collapsed": true
+  },
+  "left-ribbon": {
+    "hiddenItems": {
+      "switcher:빠른 전환기 열기": false,
+      "graph:그래프 뷰 열기": false,
+      "canvas:새 캔버스 만들기": false,
+      "daily-notes:오늘의 일일 노트 열기": false,
+      "templates:템플릿 삽입": false,
+      "command-palette:명령어 팔레트 열기": false
+    }
+  },
+  "active": "01fd36ff9898634a",
+  "lastOpenFiles": [
+    "prompting/custom instructions library/README.md",
+    "prompting/Plan-Act Mode 시스템 프롬프트와 A2A(Agent-to-Agent) 프로토콜의 통합 방안 및 기대효과.md",
+    "prompting/custom instructions library/raw-instructions/cline-memory-bank.md",
+    "sLLM/benchmark.md",
+    "sLLM/vllm-setup-guide.md",
+    "mcp/mcp-server-from-github.md"
+  ]
+}
