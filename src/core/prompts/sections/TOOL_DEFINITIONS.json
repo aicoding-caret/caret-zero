@@ -1,7 +1,7 @@
 {
 	"tools": {
 		"execute_command": {
-			"description": "Execute CLI commands on the system",
+			"description": "Request to execute a CLI command on the system",
 			"params": {
 				"command": {
 					"type": "string",
@@ -16,7 +16,7 @@
 			}
 		},
 		"read_file": {
-			"description": "Read file contents",
+			"description": "Request to read the contents of a file at the specified path",
 			"params": {
 				"path": {
 					"type": "string",
@@ -101,7 +101,7 @@
 			}
 		},
 		"browser_action": {
-			"description": "Interact with a Puppeteer-controlled browser",
+			"description": "Request to interact with a Puppeteer-controlled browser. Every action, except `close`, will be responded to with a screenshot of the browser's current state, along with any new console logs. You may only perform one browser action per message, and wait for the user's response including a screenshot and logs to determine the next action.\\n- The sequence of actions **must always start with** launching the browser at a URL, and **must always end with** closing the browser. If you need to visit a new URL that is not possible to navigate to from the current webpage, you must first close the browser, then launch again at the new URL.\\n- While the browser is active, only the `browser_action` tool can be used. No other tools should be called during this time. You may proceed to use other tools only after closing the browser. For example if you run into an error and need to fix a file, you must close the browser, then use other tools to make the necessary changes, then re-launch the browser to verify the result.\\n- The browser window has a resolution of **${browserSettings.viewport.width}x${browserSettings.viewport.height}** pixels. When performing any click actions, ensure the coordinates are within this resolution range.",
 			"params": {
 				"action": {
 					"type": "string",
@@ -111,17 +111,17 @@
 				"url": {
 					"type": "string",
 					"required": false,
-					"desc": "URL for launch action (optional)"
+					"desc": "URL to launch the browser at (optional). Ensure the URL is valid and includes the appropriate protocol (e.g. http://localhost:3000/page, file:///path/to/file.html, etc.)"
 				},
 				"coordinate": {
 					"type": "string",
 					"required": false,
-					"desc": "x,y coordinates for click action (optional)"
+					"desc": "The X and Y coordinates for the `click` action. Coordinates should be within the **${browserSettings.viewport.width}x${browserSettings.viewport.height}** resolution. Always click in the center of an element (icon, button, link, etc.) based on coordinates derived from a screenshot."
 				},
 				"text": {
 					"type": "string",
 					"required": false,
-					"desc": "Text for type action (optional)"
+					"desc": "Use this for providing the text for the `type` action."
 				}
 			}
 		},

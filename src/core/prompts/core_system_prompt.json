@@ -3,7 +3,7 @@
 		"act_mode": {
 			"name": "ACT MODE",
 			"description": "In this mode, you use tools to accomplish the user's task.",
-			"rules_ref": ["common_rules.json", "act_mode_rules.json"],
+			"rules_ref": ["common_rules.json", "act_mode_rules.json", "replace_in_file_rules.json", "cost_consideration_rules.json"],
 			"sections_ref": [
 				"TOOL_DEFINITIONS.json",
 				"TOOL_USE_FORMAT.json",

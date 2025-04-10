@@ -20,6 +20,6 @@
 		"useDefineForClassFields": true,
 		"useUnknownInCatchVariables": false
 	},
-	"include": ["src/**/*", "experiment/**/*"],
-	"exclude": ["node_modules", ".vscode-test", "webview-ui", "models_temp"]
+	"include": ["src/**/*", "scripts/**/*"],
+	"exclude": ["node_modules", ".vscode-test", "webview-ui"]
 }
