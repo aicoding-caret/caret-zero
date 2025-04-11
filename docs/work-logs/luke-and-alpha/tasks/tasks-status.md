@@ -1,0 +1,32 @@
+# 태스크 상태 관리
+
+## 진행 중인 태스크 (Pending)
+
+- [ ] **Task #001:** Cline 규칙 시스템 수정 ([001-cline-rule-syste-modify.md](./001-cline-rule-syste-modify.md))
+- [ ] **Task #002:** 알파 설정 및 계획 ([002-cline-alpha-setup-and-planning.md](./002-cline-alpha-setup-and-planning.md))
+- [ ] **Task #008:** Cline 멀티 모드 코어 개발 ([008-cline-multi-mode-core.md](./008-cline-multi-mode-core.md))
+- [ ] **Task #009:** 프롬프트 로딩 규칙 참조 구현 ([009-prompt-loading-rule-referencing.md](./009-prompt-loading-rule-referencing.md))
+- [ ] **Task #010:** 프롬프트 규칙 관리 UI 개발 ([010-prompt-rule-management-ui.md](./010-prompt-rule-management-ui.md))
+- [ ] **Task #011:** Cline UI 현지화 ([011-cline-ui-localization.md](./011-cline-ui-localization.md))
+- [ ] **Task #012:** 다국어 규칙 지원 ([012-multilingual-rule-support.md](./012-multilingual-rule-support.md))
+- [ ] **Task #013:** AI 기반 규칙 관리 ([013-ai-assisted-rule-management.md](./013-ai-assisted-rule-management.md))
+- [ ] **Task #014:** UI 개선 (생각/채팅 분리) ([014-ui_improvement_thinking_chat_separation.md](./014-ui_improvement_thinking_chat_separation.md))
+- [ ] **Task #015:** `replace_in_file` 버그 조사 보고서 ([015-investigate-replace_in_file-bug-report.md](./015-investigate-replace_in_file-bug-report.md))
+- [ ] **Task #015:** `replace_in_file` 버그 조사 ([015-investigate-replace_in_file-bug.md](./015-investigate-replace_in_file-bug.md))
+- [ ] **Task #016:** 공통 로깅 시스템 구현 보고서 ([016-implement-common-logging-system-report.md](./016-implement-common-logging-system-report.md))
+- [ ] **Task #016:** 공통 로깅 시스템 구현 ([016-implement-common-logging-system.md](./016-implement-common-logging-system.md))
+- [ ] **Task #017:** Caret 창 버그 수정 ([017-Caret-window-bug.md](./017-Caret-window-bug.md))
+- [ ] **Task #018:** 빌드 문제 디버깅 ([018-debug-build-issues.md](./018-debug-build-issues.md))
+- [ ] **Task #020:** 로깅 및 테스트 강화 ([020-enhance-logging-and-testing.md](./020-enhance-logging-and-testing.md))
+- [ ] **Task #022:** `read_file` 도구 인코딩 처리 개선 (별도 파일 없음 - [관련 로그](../2025-04-11.md))
+- [ ] **Task #023:** 커스텀 UI 복구 (현재 진행 중 - 관련 로그: [2025-04-11.md](../2025-04-11.md))
+
+## 완료된 태스크 (Complete)
+
+- [x] **Task #003:** sLLM 성능 테스트 ([complete/003-sllm-performance-test.md](./complete/003-sllm-performance-test.md))
+- [x] **Task #004:** vLLM 설정 및 테스트 ([complete/004-vllm-setup-and-test.md](./complete/004-vllm-setup-and-test.md))
+- [x] **Task #005:** vLLM Qwen2.5 4bit Cline 테스트 ([complete/005-vllm-qwen2.5-4bit-cline-test.md](./complete/005-vllm-qwen2.5-4bit-cline-test.md))
+- [x] **Task #006:** Cline 프로젝트 로드맵 계획 ([complete/006-cline-project-roadmap-planning.md](./complete/006-cline-project-roadmap-planning.md))
+- [x] **Task #007:** Cline 모드 개선 ([complete/007-cline-mode-improvement.md](./complete/007-cline-mode-improvement.md))
+- [x] **Task #014:** 도구 실행 불안정성 수정 ([complete/014-tool-execution-instability-fix.md](./complete/014-tool-execution-instability-fix.md))
+- [x] **Task #021:** Upstream v3.10.1 병합 ([complete/021-merge-upstream-v3.10.1.md](./complete/021-merge-upstream-v3.10.1.md))

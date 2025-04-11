@@ -1,7 +1,7 @@
 export interface ChatSettings {
-	mode: "plan" | "act"
+	mode: string // Allow any string for flexibility with custom modes
 }
 
 export const DEFAULT_CHAT_SETTINGS: ChatSettings = {
-	mode: "act",
+	mode: "do", // Default to 'Do' mode (previously 'act')
 }

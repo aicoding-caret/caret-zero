@@ -6,7 +6,7 @@
 			"rules_ref": [
 				"common_rules.json",
 				"act_mode_rules.json",
-				"replace_in_file_rules.json",
+				"file_editing_rules.json",
 				"cost_consideration_rules.json"
 			],
 			"sections_ref": [

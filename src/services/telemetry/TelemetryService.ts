@@ -240,7 +240,7 @@ class PostHogClient {
 	 * @param taskId Unique identifier for the task
 	 * @param mode The mode being switched to (plan or act)
 	 */
-	public captureModeSwitch(taskId: string, mode: "plan" | "act") {
+	public captureModeSwitch(taskId: string, mode: string) {
 		this.capture({
 			event: PostHogClient.EVENTS.TASK.MODE_SWITCH,
 			properties: {

@@ -171,17 +171,7 @@
 				"Determine editing strategy",
 				"Break large changes into sections",
 				"Verify token limits"
-			],
-			"replace_in_file_guidelines": {
-				"search_block_accuracy": "SEARCH block content MUST exactly match the current file content.",
-				"use_latest_content": "ALWAYS use the latest file content provided by the system (final_file_content or file_content on error) for the next SEARCH block.",
-				"small_changes": "Apply changes in small, logical units.",
-				"single_block_per_request": "Use only one SEARCH/REPLACE block per replace_in_file request for clarity and safety."
-			},
-			"write_to_file_guidelines": {
-				"backup_required": "ALWAYS back up the original file before overwriting with write_to_file, especially for critical files.",
-				"confirm_overwrite": "Confirm with the user before overwriting significant files if unsure."
-			}
+			]
 		},
 		"command_rules": {
 			"validation": "Validate before execution",

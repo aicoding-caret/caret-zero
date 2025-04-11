@@ -839,46 +839,52 @@ export const ChatRowContent = ({ message, isExpanded, onToggleExpand, lastModifi
 					case "mcp_server_response": // No Avatar/Wrapper
 						return <McpResponseDisplay responseText={message.text || ""} />
 					case "text": // Will be wrapped
+						// AI 일반 텍스트 메시지
 						return (
 							<div>
 								<Markdown markdown={message.text} />
 							</div>
 						)
 					case "reasoning": // Will be wrapped
+						// AI 리즈닝 메시지 (독립 스타일 + 접기/펼치기)
 						return (
 							<>
 								{message.text && (
 									<div
 										onClick={onToggleExpand}
 										style={{
-											// marginBottom: 15,
-											cursor: "pointer",
-											color: "var(--vscode-descriptionForeground)",
-
+											backgroundColor: "var(--vscode-editorWidget-background)", // 약간 다른 배경색
+											borderLeft: "2px solid var(--vscode-descriptionForeground)", // 왼쪽 테두리
+											padding: "5px 8px", // 내부 여백
+											borderRadius: "3px", // 모서리 둥글게
+											cursor: "pointer", // 클릭 가능 표시
+											color: "var(--vscode-descriptionForeground)", // 기본 텍스트 색상 유지
 											fontStyle: "italic",
 											overflow: "hidden",
 										}}>
 										{isExpanded ? (
-											<div style={{ marginTop: -3 }}>
+											// 펼쳐진 상태
+											<div style={{ marginTop: 0 }}> {/* marginTop 조정 */}
 												<span style={{ fontWeight: "bold", display: "block", marginBottom: "4px" }}>
-													Thinking
+													Thinking {/* 아이콘 추가 고려 */}
 													<span
 														className="codicon codicon-chevron-down"
 														style={{
 															display: "inline-block",
-															transform: "translateY(3px)",
-															marginLeft: "1.5px",
+															transform: "translateY(1px)", // 아이콘 위치 미세 조정
+															marginLeft: "4px", // 아이콘과 텍스트 간격
 														}}
 													/>
 												</span>
 												{message.text}
 											</div>
 										) : (
+											// 접힌 상태
 											<div style={{ display: "flex", alignItems: "center" }}>
 												<span style={{ fontWeight: "bold", marginRight: "4px" }}>Thinking:</span>
 												<span
 													style={{
-														whiteSpace: "nowrap",
+														whiteSpace: "nowrap", // 한 줄로 표시
 														overflow: "hidden",
 														textOverflow: "ellipsis",
 														direction: "rtl",
@@ -1299,20 +1305,21 @@ export const ChatRowContent = ({ message, isExpanded, onToggleExpand, lastModifi
 		// alphaAvatarUri가 있을 때만 아바타 표시
 		// AI text, reasoning, followup, plan_mode_respond
 		return (
+			// AI 메시지일 경우 아바타와 함께 표시
 			<div style={{ display: "flex", alignItems: "flex-start" }}>
 				<AvatarImage src={alphaAvatarUri} alt="Alpha Avatar" /> {/* alphaAvatarUri 사용 */}
 				<MessageContentWrapper isAiMessage={true}>{renderSpecificContent()}</MessageContentWrapper>
 			</div>
 		)
+	} else if (message.type === "say" && message.say === "user_feedback") {
+		// 사용자 피드백 메시지 (아바타 없음, 배경색 다름)
+		return <div>{renderSpecificContent()}</div>
 	} else {
-		// User messages, tool messages, commands, errors, warnings, etc.
+		// 사용자 메시지 또는 기타 시스템 메시지 (아바타 없음, 기본 배경)
 		// Render without avatar and special wrapper
 		return (
-			<div>
-				{" "}
-				{/* Simple div container */}
-				{renderSpecificContent()}
-			</div>
+			// 기본 div 컨테이너 사용
+			<div>{renderSpecificContent()}</div>
 		)
 	}
 }

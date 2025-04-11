@@ -1,6 +1,0 @@
-{
-	"rules": [
-		"When using the replace_in_file tool, always refer to the latest file content provided by the system (final_file_content or file_content in case of error) to create the next SEARCH block.",
-		"Divide changes into small units and use only one SEARCH/REPLACE block per replace_in_file request, especially for complex files."
-	]
-}
