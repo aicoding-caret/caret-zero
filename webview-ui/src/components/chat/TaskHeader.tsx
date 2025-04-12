@@ -119,18 +119,38 @@ const TaskHeader: React.FC<TaskHeaderProps> = ({
 	}, [task.text, windowWidth, isTaskExpanded])
 
 	const isCostAvailable = useMemo(() => {
+		// 오픈AI 호환 모델의 가격 정보 확인
 		const openAiCompatHasPricing =
 			apiConfiguration?.apiProvider === "openai" &&
-			apiConfiguration?.openAiModelInfo?.inputPrice &&
-			apiConfiguration?.openAiModelInfo?.outputPrice
-		if (openAiCompatHasPricing) {
+			(apiConfiguration?.openAiModelInfo?.inputPrice || 
+			(apiConfiguration?.openAiModelInfo?.inputPriceTiers && 
+			apiConfiguration?.openAiModelInfo?.inputPriceTiers.length > 0)) &&
+			(apiConfiguration?.openAiModelInfo?.outputPrice || 
+			(apiConfiguration?.openAiModelInfo?.outputPriceTiers && 
+			apiConfiguration?.openAiModelInfo?.outputPriceTiers.length > 0))
+
+		// Gemini 모델의 가격 정보 확인
+		const geminiHasPricing = 
+			apiConfiguration?.apiProvider === "gemini" &&
+			((
+				apiConfiguration?.openAiModelInfo?.inputPrice || 
+				(apiConfiguration?.openAiModelInfo?.inputPriceTiers && 
+				apiConfiguration?.openAiModelInfo?.inputPriceTiers.length > 0)
+			) || (
+				apiConfiguration?.openAiModelInfo?.outputPrice || 
+				(apiConfiguration?.openAiModelInfo?.outputPriceTiers && 
+				apiConfiguration?.openAiModelInfo?.outputPriceTiers.length > 0)
+			))
+
+		if (openAiCompatHasPricing || geminiHasPricing) {
 			return true
 		}
+
+		// 가격 정보가 없는 모델들 제외
 		return (
 			apiConfiguration?.apiProvider !== "vscode-lm" &&
 			apiConfiguration?.apiProvider !== "ollama" &&
-			apiConfiguration?.apiProvider !== "lmstudio" &&
-			apiConfiguration?.apiProvider !== "gemini"
+			apiConfiguration?.apiProvider !== "lmstudio"
 		)
 	}, [apiConfiguration?.apiProvider, apiConfiguration?.openAiModelInfo])
 

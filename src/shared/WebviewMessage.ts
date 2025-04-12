@@ -6,7 +6,7 @@ import { UserInfo } from "./UserInfo"
 import { ChatContent } from "./ChatContent"
 import { TelemetrySetting } from "./TelemetrySetting"
 
-export interface WebviewMessage {
+	export interface WebviewMessage {
 	type:
 		| "addRemoteServer"
 		| "apiConfiguration"
@@ -78,6 +78,15 @@ export interface WebviewMessage {
 		| "scrollToSettings"
 		| "getRelativePaths" // Handles single and multiple URI resolution
 		| "searchFiles"
+		// 모드 설정 관련 메시지 타입
+		| "loadModesConfig"
+		| "saveModeSettings"
+		| "resetModesToDefaults"
+		| "showInformationMessage"
+		// 프로필 이미지 관련 메시지 타입
+		| "selectAgentProfileImage"
+		| "resetAgentProfileImage"
+		| "updateAgentProfileImage"
 	// | "relaunchChromeDebugMode"
 	text?: string
 	uris?: string[] // Used for getRelativePaths
@@ -107,6 +116,7 @@ export interface WebviewMessage {
 	planActSeparateModelsSetting?: boolean
 	telemetrySetting?: TelemetrySetting
 	customInstructionsSetting?: string
+	profileImage?: string
 	// For task feedback
 	feedbackType?: TaskFeedbackType
 	mentionsRequestId?: string

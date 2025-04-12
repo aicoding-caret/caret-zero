@@ -46,7 +46,7 @@
 			"activitybar": [
 				{
 					"id": "claude-dev-ActivityBar",
-					"title": "Cline",
+					"title": "Caret",
 					"icon": "assets/icons/icon.svg"
 				}
 			]
@@ -54,6 +54,7 @@
 		"views": {
 			"claude-dev-ActivityBar": [
 				{
+					"icon": "assets/icons/icon.svg",
 					"type": "webview",
 					"id": "claude-dev.SidebarProvider",
 					"name": ""

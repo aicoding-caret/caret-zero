@@ -3686,10 +3686,22 @@ export class Task {
 		details += `\n${lastApiReqTotalTokens.toLocaleString()} / ${(contextWindow / 1000).toLocaleString()}K tokens used (${usagePercentage}%)`
 
 		details += "\n\n# Current Mode"
-		if (this.chatSettings.mode === "plan") {
-			details += "\nPLAN MODE\n" + formatResponse.planModeInstructions()
-		} else {
-			details += "\nACT MODE"
+		switch (this.chatSettings.mode) {
+			case "plan":
+				details += "\nPLAN MODE\n" + formatResponse.planModeInstructions()
+				break
+			case "do":
+				details += "\nDO MODE\n" + "You are in DO mode. Focus on executing tasks efficiently."
+				break
+			case "rule":
+				details += "\nRULE MODE\n" + "You are in RULE mode. Focus on system rules and configurations."
+				break
+			case "talk":
+				details += "\nTALK MODE\n" + "You are in TALK mode. Engage in friendly conversation."
+				break
+			default:
+				details += "\nACT MODE"
+				break
 		}
 
 		return `<environment_details>\n${details.trim()}\n</environment_details>`

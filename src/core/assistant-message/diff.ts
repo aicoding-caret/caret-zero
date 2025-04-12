@@ -200,7 +200,26 @@ function blockAnchorFallbackMatch(originalContent: string, searchContent: string
  * - If the search block cannot be matched using any of the available matching strategies,
  *   an error is thrown.
  */
-export async function constructNewFileContent(diffContent: string, originalContent: string, isFinal: boolean): Promise<string> {
+import { ILogger } from "../../services/logging/ILogger"
+import * as crypto from "crypto"
+
+// 내용의 해시값을 생성하는 헬퍼 함수
+function generateContentHash(content: string): string {
+	return crypto.createHash('sha256').update(content).digest('hex').substring(0, 8);
+}
+
+export async function constructNewFileContent(diffContent: string, originalContent: string, isFinal: boolean, logger?: ILogger): Promise<string> {
+	// ILogger가 없는 경우 콘솔에만 출력
+	const log = logger || console;
+	const diffHash = generateContentHash(diffContent);
+	
+	log.debug(`constructNewFileContent 시작`, {
+		diffContentLength: diffContent.length,
+		originalContentLength: originalContent.length,
+		isFinal,
+		diffHash
+	});
+
 	let result = ""
 	let lastProcessedIndex = 0
 
@@ -213,6 +232,7 @@ export async function constructNewFileContent(diffContent: string, originalConte
 	let searchEndIndex = -1
 
 	let lines = diffContent.split("\n")
+	log.debug(`처리할 라인 수: ${lines.length}`)
 
 	// If the last line looks like a partial marker but isn't recognized,
 	// remove it because it might be incomplete.
@@ -232,12 +252,18 @@ export async function constructNewFileContent(diffContent: string, originalConte
 			inSearch = true
 			currentSearchContent = ""
 			currentReplaceContent = ""
+			log.debug(`SEARCH 블록 시작`);
 			continue
 		}
 
 		if (line === "=======") {
 			inSearch = false
 			inReplace = true
+			log.debug(`SEARCH 블록 완료, REPLACE 블록 시작`, {
+				searchContentLength: currentSearchContent.length,
+				searchContentLines: currentSearchContent.split("\n").length,
+				searchContentHash: generateContentHash(currentSearchContent)
+			});
 
 			// Remove trailing linebreak for adding the === marker
 			// if (currentSearchContent.endsWith("\r\n")) {
@@ -252,10 +278,12 @@ export async function constructNewFileContent(diffContent: string, originalConte
 					// New file scenario: nothing to match, just start inserting
 					searchMatchIndex = 0
 					searchEndIndex = 0
+					log.debug(`빈 SEARCH 블록 (새 파일 생성 시나리오)`);
 				} else {
 					// Complete file replacement scenario: treat the entire file as matched
 					searchMatchIndex = 0
 					searchEndIndex = originalContent.length
+					log.debug(`빈 SEARCH 블록 (파일 전체 대체 시나리오)`);
 				}
 			} else {
 				// Add check for inefficient full-file search
@@ -272,17 +300,38 @@ export async function constructNewFileContent(diffContent: string, originalConte
 				if (exactIndex !== -1) {
 					searchMatchIndex = exactIndex
 					searchEndIndex = exactIndex + currentSearchContent.length
+					log.debug(`정확한 매칭 성공:`, {
+						matchType: "exact",
+						searchMatchIndex,
+						searchEndIndex,
+						matched: true
+					});
 				} else {
+					log.debug(`정확한 매칭 실패, 대체 매칭 시도...`);
 					// Attempt fallback line-trimmed matching
 					const lineMatch = lineTrimmedFallbackMatch(originalContent, currentSearchContent, lastProcessedIndex)
 					if (lineMatch) {
 						;[searchMatchIndex, searchEndIndex] = lineMatch
+						log.debug(`라인 트림 매칭 성공:`, {
+							matchType: "lineTrimmed",
+							searchMatchIndex,
+							searchEndIndex,
+							matched: true
+						});
 					} else {
+						log.debug(`라인 트림 매칭 실패, 블록 앤커 매칭 시도...`);
 						// Try block anchor fallback for larger blocks
 						const blockMatch = blockAnchorFallbackMatch(originalContent, currentSearchContent, lastProcessedIndex)
 						if (blockMatch) {
 							;[searchMatchIndex, searchEndIndex] = blockMatch
+							log.debug(`블록 앤커 매칭 성공:`, {
+								matchType: "blockAnchor",
+								searchMatchIndex,
+								searchEndIndex,
+								matched: true
+							});
 						} else {
+							log.debug(`모든 매칭 시도 실패, 오류 발생`)
 							throw new Error(
 								`The SEARCH block:\n${currentSearchContent.trimEnd()}\n...does not match anything in the file.`,
 							)
@@ -293,11 +342,21 @@ export async function constructNewFileContent(diffContent: string, originalConte
 
 			// Output everything up to the match location
 			result += originalContent.slice(lastProcessedIndex, searchMatchIndex)
+			log.debug(`매칭 위치까지의 내용을 결과에 추가`, {
+				lastProcessedIndex,
+				searchMatchIndex,
+				addedContentLength: searchMatchIndex - lastProcessedIndex
+			});
 			continue
 		}
 
 		if (line === ">>>>>>> REPLACE") {
 			// Finished one replace block
+			log.debug(`REPLACE 블록 완료`, {
+				replaceContentLength: currentReplaceContent.length,
+				replaceContentLines: currentReplaceContent.split("\n").length,
+				replaceContentHash: generateContentHash(currentReplaceContent)
+			});
 
 			// // Remove the artificially added linebreak in the last line of the REPLACE block
 			// if (result.endsWith("\r\n")) {
@@ -308,6 +367,7 @@ export async function constructNewFileContent(diffContent: string, originalConte
 
 			// Advance lastProcessedIndex to after the matched section
 			lastProcessedIndex = searchEndIndex
+			log.debug(`lastProcessedIndex 이동: ${lastProcessedIndex}`);
 
 			// Reset for next block
 			inSearch = false
@@ -337,7 +397,31 @@ export async function constructNewFileContent(diffContent: string, originalConte
 	// If this is the final chunk, append any remaining original content
 	if (isFinal && lastProcessedIndex < originalContent.length) {
 		result += originalContent.slice(lastProcessedIndex)
+		log.debug(`마지막 처리: 나머지 원본 내용 추가`, {
+			lastProcessedIndex,
+			originalContentLength: originalContent.length,
+			remainderLength: originalContent.length - lastProcessedIndex
+		});
 	}
+
+	const resultHash = generateContentHash(result);
+	log.debug(`constructNewFileContent 완료`, {
+		originalContentLength: originalContent.length,
+		resultContentLength: result.length,
+		change: result.length - originalContent.length > 0 ? `+${result.length - originalContent.length}` : result.length - originalContent.length,
+		originalHash: generateContentHash(originalContent),
+		resultHash
+	});
+
+	// 파일 내용 비교
+	log.debug(`파일 내용 비교 (diff result)`, {
+		beforeLines: originalContent.split('\n').length,
+		afterLines: result.split('\n').length,
+		beforeSize: originalContent.length,
+		afterSize: result.length,
+		changeSize: result.length - originalContent.length,
+		hash: resultHash
+	});
 
 	return result
 }

@@ -130,7 +130,7 @@ export class WebviewProvider implements vscode.WebviewViewProvider {
 						// Sends latest theme name to webview
 						await this.controller.postMessageToWebview({
 							type: "theme",
-							text: JSON.stringify(await getTheme()),
+							text: JSON.stringify(await getTheme(this.context.extensionUri)), // Pass extensionUri here
 						})
 					}
 					if (e && e.affectsConfiguration("cline.mcpMarketplace.enabled")) {

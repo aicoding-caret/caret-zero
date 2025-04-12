@@ -1,7 +1,7 @@
 import React, { createContext, useCallback, useContext, useEffect, useState } from "react"
 import { useEvent } from "react-use"
 import { DEFAULT_AUTO_APPROVAL_SETTINGS } from "../../../src/shared/AutoApprovalSettings"
-import { ExtensionMessage, ExtensionState, DEFAULT_PLATFORM } from "../../../src/shared/ExtensionMessage"
+import { ExtensionMessage, ExtensionState, DEFAULT_PLATFORM, ModeInfo } from "../../../src/shared/ExtensionMessage" // Import ModeInfo
 import { ApiConfiguration, ModelInfo, openRouterDefaultModelId, openRouterDefaultModelInfo } from "../../../src/shared/api"
 import { findLastIndex } from "../../../src/shared/array"
 import { McpMarketplaceCatalog, McpServer } from "../../../src/shared/mcp"
@@ -26,6 +26,12 @@ interface ExtensionStateContextType extends ExtensionState {
 	setTelemetrySetting: (value: TelemetrySetting) => void
 	setShowAnnouncement: (value: boolean) => void
 	setPlanActSeparateModelsSetting: (value: boolean) => void
+	availableModes: ModeInfo[] // Add availableModes
+	// 프로필 이미지 관련 상태 및 처리기
+	alphaAvatarUri: string
+	selectAgentProfileImage: () => void
+	resetAgentProfileImage: () => void
+	updateAgentProfileImage: (imageUrl: string) => void
 }
 
 const ExtensionStateContext = createContext<ExtensionStateContextType | undefined>(undefined)
@@ -45,6 +51,8 @@ export const ExtensionStateContextProvider: React.FC<{
 		telemetrySetting: "unset",
 		vscMachineId: "",
 		planActSeparateModelsSetting: true,
+		availableModes: [], // Initialize availableModes
+		alphaAvatarUri: "https://raw.githubusercontent.com/fstory97/cline-avatar/main/alpha-maid.png", // 기본 프로필 이미지
 	})
 	const [didHydrateState, setDidHydrateState] = useState(false)
 	const [showWelcome, setShowWelcome] = useState(false)
@@ -188,6 +196,22 @@ export const ExtensionStateContextProvider: React.FC<{
 				...prevState,
 				shouldShowAnnouncement: value,
 			})),
+		availableModes: state.availableModes, // Add availableModes to context value
+		// 프로필 이미지 관련 처리기
+		alphaAvatarUri: state.alphaAvatarUri || "https://raw.githubusercontent.com/fstory97/cline-avatar/main/alpha-maid.png",
+		selectAgentProfileImage: () => {
+			vscode.postMessage({ type: "selectAgentProfileImage" })
+		},
+		resetAgentProfileImage: () => {
+			vscode.postMessage({ type: "resetAgentProfileImage" })
+		},
+		updateAgentProfileImage: (imageUrl: string) => {
+			vscode.postMessage({ type: "updateAgentProfileImage", text: imageUrl })
+			setState((prevState) => ({
+				...prevState,
+				alphaAvatarUri: imageUrl,
+			}))
+		}
 	}
 
 	return <ExtensionStateContext.Provider value={contextValue}>{children}</ExtensionStateContext.Provider>

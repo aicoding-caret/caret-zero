@@ -66,7 +66,15 @@ export const MAX_IMAGES_PER_MESSAGE = 20 // Anthropic limits to 20 images
 
 const ChatView = ({ isHidden, showAnnouncement, hideAnnouncement, showHistoryView, onShowSettings }: ChatViewProps) => {
 	// Destructure onShowSettings
-	const { version, clineMessages: messages, taskHistory, apiConfiguration, telemetrySetting } = useExtensionState()
+	const {
+		version,
+		clineMessages: messages,
+		taskHistory,
+		apiConfiguration,
+		telemetrySetting,
+		availableModes, // Get available modes from context
+		chatSettings, // Get chat settings from context
+	} = useExtensionState()
 
 	const task = useMemo(() => messages.at(0), [messages])
 	const modifiedMessages = useMemo(() => combineApiRequests(combineCommandSequences(messages.slice(1))), [messages])
@@ -802,6 +810,88 @@ const ChatView = ({ isHidden, showAnnouncement, hideAnnouncement, showHistoryVie
 					)}
 				</>
 			)}
+
+			{/* Mode Selector Buttons - 항상 표시 */}
+			<ModeSelectorContainer>
+				{availableModes && availableModes.length > 0 ? (
+					// 모드 데이터가 있는 경우
+					availableModes.map((modeInfo) => (
+						<ModeButton
+							key={modeInfo.id}
+							appearance={chatSettings.mode === modeInfo.id ? "primary" : "secondary"}
+							onClick={() => {
+								if (chatSettings.mode !== modeInfo.id) {
+									vscode.postMessage({
+										type: "togglePlanActMode", // 모드 전환 메시지 타입
+										chatSettings: { ...chatSettings, mode: modeInfo.id },
+									})
+								}
+							}}>
+							{modeInfo.label || modeInfo.id}
+						</ModeButton>
+					))
+				) : (
+					// 모드 데이터가 없는 경우 기본 모드 버튼 표시
+					<>
+						<ModeButton
+							key="plan"
+							appearance={chatSettings.mode === "plan" ? "primary" : "secondary"}
+							onClick={() => {
+								if (chatSettings.mode !== "plan") {
+									vscode.postMessage({
+										type: "togglePlanActMode",
+										chatSettings: { ...chatSettings, mode: "plan" },
+									})
+								}
+							}}>
+							Plan
+						</ModeButton>
+						<ModeButton
+							key="do"
+							appearance={chatSettings.mode === "do" ? "primary" : "secondary"}
+							onClick={() => {
+								if (chatSettings.mode !== "do") {
+									vscode.postMessage({
+										type: "togglePlanActMode",
+										chatSettings: { ...chatSettings, mode: "do" },
+									})
+								}
+							}}>
+							Do
+						</ModeButton>
+						<ModeButton
+							key="rule"
+							appearance={chatSettings.mode === "rule" ? "primary" : "secondary"}
+							onClick={() => {
+								if (chatSettings.mode !== "rule") {
+									vscode.postMessage({
+										type: "togglePlanActMode",
+										chatSettings: { ...chatSettings, mode: "rule" },
+									})
+								}
+							}}>
+							Rule
+						</ModeButton>
+						<ModeButton
+							key="talk"
+							appearance={chatSettings.mode === "talk" ? "primary" : "secondary"}
+							onClick={() => {
+								if (chatSettings.mode !== "talk") {
+									vscode.postMessage({
+										type: "togglePlanActMode",
+										chatSettings: { ...chatSettings, mode: "talk" },
+									})
+								}
+							}}>
+							Talk
+						</ModeButton>
+					</>
+				)}
+				{/* 설정 버튼 추가 (필요한 경우) */}
+				{/* <SettingsButton appearance="icon" aria-label="Settings" onClick={onShowSettings}>
+					<span className="codicon codicon-gear" />
+				</SettingsButton> */}
+			</ModeSelectorContainer>
 
 			<ChatTextArea
 				ref={textAreaRef}

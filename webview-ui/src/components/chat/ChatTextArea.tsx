@@ -878,21 +878,7 @@ const ChatTextArea = forwardRef<HTMLTextAreaElement, ChatTextAreaProps>(
 					<ModeSelectorContainer>
 						{/* Example: Add state later to manage active button. Using aria-pressed for now. */}
 						{/* Assuming 'Plan' is initially selected */}
-						<ModeButton appearance="secondary" aria-pressed={true}>
-							Plan
-						</ModeButton>
-						<ModeButton appearance="secondary" aria-pressed={false}>
-							Act
-						</ModeButton>
-						<ModeButton appearance="secondary" aria-pressed={false}>
-							M1
-						</ModeButton>
-						<ModeButton appearance="secondary" aria-pressed={false}>
-							M2
-						</ModeButton>
-						<ModeButton appearance="secondary" aria-pressed={false}>
-							M3
-						</ModeButton>
+						{/* 하단 모드 버튼을 제거하고 상단 모드 버튼으로 대체 */}
 						{/* Settings button is removed from here, as it exists in the top bar */}
 					</ModeSelectorContainer>
 				</ControlsContainer>

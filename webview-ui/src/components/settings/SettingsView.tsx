@@ -48,7 +48,34 @@ const OptionRow = styled.div`
 	gap: 8px; /* Add gap between label and control */
 `
 
+// 프로필 이미지 관련 스타일 컴포넌트는 아래에 이미 정의되어 있음
+
 // Keep OptionLabel, but maybe don't use it when stacking
+
+const ProfileImagePreview = styled.div`
+	width: 100px;
+	height: 100px;
+	border-radius: 50%;
+	background-color: var(--vscode-editor-background);
+	border: 2px solid var(--vscode-button-background);
+	overflow: hidden;
+	margin-right: 15px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+`
+
+const ProfileImageWrapper = styled.div`
+	display: flex;
+	align-items: center;
+	margin-bottom: 15px;
+`
+
+const ProfileImageActions = styled.div`
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+`
 const OptionLabel = styled.label`
 	/* min-width: 150px; */ /* Remove fixed min-width for better stacking */
 	display: block; /* Make label block for stacking */
@@ -71,7 +98,14 @@ const SettingsView = ({ onDone }: SettingsViewProps) => {
 		chatSettings,
 		planActSeparateModelsSetting,
 		setPlanActSeparateModelsSetting,
+		// 프로필 이미지 관련 값
+		alphaAvatarUri,
+		selectAgentProfileImage,
+		resetAgentProfileImage,
+		updateAgentProfileImage,
 	} = useExtensionState()
+	
+	// API 및 모델 관련 상태 관리
 	const [apiErrorMessage, setApiErrorMessage] = useState<string | undefined>(undefined)
 	const [modelIdErrorMessage, setModelIdErrorMessage] = useState<string | undefined>(undefined)
 	const [pendingTabChange, setPendingTabChange] = useState<"plan" | "act" | null>(null)
@@ -112,6 +146,7 @@ const SettingsView = ({ onDone }: SettingsViewProps) => {
 			customInstructionsSetting: customInstructions,
 			telemetrySetting,
 			apiConfiguration: apiConfigurationToSubmit,
+			profileImage: alphaAvatarUri,
 			// TODO: Add mode configurations to the message payload later
 		})
 
@@ -286,6 +321,49 @@ const SettingsView = ({ onDone }: SettingsViewProps) => {
 					</p>
 				</SettingsSection>
 
+				{/* AI 에이전트 프로필 이미지 설정 */}
+				<SettingsSection>
+					<SectionTitle>알파 프로필 이미지</SectionTitle>
+					<ProfileImageWrapper>
+						<ProfileImagePreview>
+							<img 
+								src={alphaAvatarUri} 
+								alt="Alpha Profile" 
+								style={{ width: "100%", height: "100%", objectFit: "cover" }} 
+							/>
+						</ProfileImagePreview>
+						<ProfileImageActions>
+							<VSCodeButton 
+								appearance="secondary"
+								onClick={selectAgentProfileImage}
+							>
+								이미지 파일 선택
+							</VSCodeButton>
+							<VSCodeButton 
+								appearance="secondary"
+								onClick={() => {
+									// 이미지 URL 입력 팝업
+									const url = prompt("이미지 URL을 입력하세요", alphaAvatarUri);
+									if (url && url.trim() !== "") {
+										updateAgentProfileImage(url);
+									}
+								}}
+							>
+								이미지 URL 입력
+							</VSCodeButton>
+							<VSCodeButton 
+								appearance="secondary"
+								onClick={resetAgentProfileImage}
+							>
+								기본 이미지로 재설정
+							</VSCodeButton>
+						</ProfileImageActions>
+					</ProfileImageWrapper>
+					<p style={{ fontSize: "12px", color: "var(--vscode-descriptionForeground)" }}>
+						알파의 프로필 이미지를 원하는 이미지로 변경할 수 있어요. 직사각형 이미지는 자동으로 정사각형으로 크롭됩니다.
+					</p>
+				</SettingsSection>
+
 				{/* Telemetry Checkbox */}
 				<SettingsSection>
 					<VSCodeCheckbox
@@ -348,51 +426,7 @@ const SettingsView = ({ onDone }: SettingsViewProps) => {
 											defaultValue={`Mode ${index + 1}`}
 											style={{ width: "100%" }}
 										/>
-									</div>
-									{/* Allowed File Paths Section (Should be okay) */}
-									<div style={{ marginTop: "15px", display: "block", width: "100%" }}>
-										<OptionLabel htmlFor={`${modeId}-paths`}>Allowed File Paths:</OptionLabel>
-										<VSCodeTextArea
-											id={`${modeId}-paths`}
-											placeholder="e.g., src/, docs/ (one per line)"
-											rows={3}
-											style={{ width: "100%" }}
-											resize="vertical"
-										/>
-									</div>
-									<SectionTitle style={{ fontSize: "var(--vscode-font-size)", marginTop: "15px" }}>
-										Permissions
-									</SectionTitle>
-									<div style={{ marginBottom: "8px", width: "100%", overflowWrap: "break-word" }}>
-										{" "}
-										{/* Add width and wrap */}
-										<VSCodeCheckbox id={`${modeId}-edit`}>Enable File Editing</VSCodeCheckbox>
-									</div>
-									<div style={{ marginBottom: "8px", width: "100%", overflowWrap: "break-word" }}>
-										{" "}
-										{/* Add width and wrap */}
-										<VSCodeCheckbox id={`${modeId}-command`}>Allow Command Execution</VSCodeCheckbox>
-									</div>
-									<div style={{ marginBottom: "8px", width: "100%", overflowWrap: "break-word" }}>
-										{" "}
-										{/* Add width and wrap */}
-										<VSCodeCheckbox id={`${modeId}-browser`}>Allow Browser Use</VSCodeCheckbox>
-									</div>
-									{/* Allowed File Paths: Stack label and input vertically */}
-									<div style={{ marginTop: "15px" }}>
-										{" "}
-										{/* Use div instead of OptionRow for stacking */}
-										<OptionLabel htmlFor={`${modeId}-paths`}>Allowed File Paths:</OptionLabel>{" "}
-										{/* Keep OptionLabel */}
-										<VSCodeTextArea
-											id={`${modeId}-paths`}
-											placeholder="e.g., src/, docs/ (one per line)"
-											rows={3}
-											style={{ width: "100%" }}
-											resize="vertical"
-										/>
-									</div>
-									<VSCodeDivider style={{ margin: "20px 0" }} /> {/* Increased margin */}
+									</div>																		
 									{/* Rule Configuration */}
 									<SectionTitle style={{ fontSize: "var(--vscode-font-size)" }}>
 										Rule Configuration{" "}

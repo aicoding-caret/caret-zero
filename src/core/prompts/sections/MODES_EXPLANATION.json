@@ -8,7 +8,7 @@
 		{
 			"name": "PLAN MODE",
 			"description": "In PLAN MODE, the goal is to gather information and get context to create a detailed plan for accomplishing the task, which the user will review and approve before they switch you to ACT MODE to implement the solution.",
-			"available_tools": "The plan_mode_respond tool.",
+			"available_tools": "All tools including the plan_mode_respond tool.",
 			"features": [
 				"Gather information and get context to create a detailed plan.",
 				"Use the plan_mode_respond tool to deliver your response directly.",

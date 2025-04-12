@@ -503,8 +503,13 @@ export const geminiModels = {
 		contextWindow: 1_048_576,
 		supportsImages: true,
 		supportsPromptCache: false,
-		inputPrice: 0,
-		outputPrice: 0,
+		inputPriceTiers: [
+			{ tokenLimit: Infinity, price: 0.7 }, // $0.0007 per 1K tokens
+		],
+		outputPriceTiers: [
+			{ tokenLimit: Infinity, price: 2.1 }, // $0.0021 per 1K tokens
+		],
+		description: "Fast and efficient AI model for most tasks"
 	},
 	"gemini-2.0-flash-lite-preview-02-05": {
 		maxTokens: 8192,

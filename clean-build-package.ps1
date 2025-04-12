@@ -107,6 +107,14 @@ Write-Host "✅ Production build complete."
 
 # 4. VS Code 확장 파일(.vsix) 생성 (타입 체크 건너뛰기)
 Write-Host "🎁 Packaging the extension (.vsix)..."
+
+# 파일 이름 설정 (이름-버전-날짜시간.vsix)
+$extensionName = "caret-dev" # package.json에서 가져옴
+$extensionVersion = "3.10.1" # package.json에서 가져옴
+$timestamp = Get-Date -Format 'yyyyMMdd-HHmmss'
+$outputFileName = "$($extensionName)-$($extensionVersion)-$($timestamp).vsix"
+Write-Host "  Output filename will be: $outputFileName"
+
 # 타입 체크를 건너뛰고 직접 npx vsce package 실행
 # 환경 변수 설정으로 타입 체크 건너뛰기
 $env:VSCE_SKIP_TYPE_CHECK = "true"
@@ -119,22 +127,22 @@ if ($LASTEXITCODE -ne 0) {
     npm install -g @vscode/vsce
     if ($LASTEXITCODE -ne 0) {
         Write-Warning "⚠️ Failed to install @vscode/vsce globally. Trying to use npx instead."
-        npx @vscode/vsce package --no-dependencies --no-git-tag-version
+        npx @vscode/vsce package --no-dependencies --no-git-tag-version --out $outputFileName # 출력 파일 이름 지정
     } else {
-        vsce package --no-dependencies --no-git-tag-version
+        vsce package --no-dependencies --no-git-tag-version --out $outputFileName # 출력 파일 이름 지정
     }
 } else {
-    vsce package --no-dependencies --no-git-tag-version
+    vsce package --no-dependencies --no-git-tag-version --out $outputFileName # 출력 파일 이름 지정
 }
 
 if ($LASTEXITCODE -ne 0) {
     Write-Warning "⚠️ vsce package command failed. Trying with npx as fallback..."
-    npx @vscode/vsce package --no-dependencies --no-git-tag-version
+    npx @vscode/vsce package --no-dependencies --no-git-tag-version --out $outputFileName # 출력 파일 이름 지정 (Fallback)
     if ($LASTEXITCODE -ne 0) {
         Write-Error "❌ Packaging failed! Could not run vsce package command."
         exit 1
     }
 }
-Write-Host "✅ Extension packaged successfully!"
+Write-Host "✅ Extension packaged successfully as $outputFileName!"
 
 Write-Host "🎉 Clean rebuild and packaging process finished successfully!"

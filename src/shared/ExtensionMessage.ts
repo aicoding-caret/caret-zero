@@ -10,6 +10,13 @@ import { McpServer, McpMarketplaceCatalog, McpMarketplaceItem, McpDownloadRespon
 import { TelemetrySetting } from "./TelemetrySetting"
 import type { BalanceResponse, UsageTransaction, PaymentTransaction } from "../shared/ClineAccount"
 
+// Define ModeInfo interface
+export interface ModeInfo {
+	id: string
+	label?: string
+	description?: string
+}
+
 // webview will hold state
 export interface ExtensionMessage {
 	type:
@@ -48,6 +55,7 @@ export interface ExtensionMessage {
 		| "browserRelaunchResult"
 		| "relativePathsResponse" // Handles single and multiple path responses
 		| "fileSearchResults"
+		| "modesConfigLoaded"
 	text?: string
 	paths?: (string | null)[] // Used for relativePathsResponse
 	action?:
@@ -140,6 +148,7 @@ export interface ExtensionState {
 	version: string
 	vscMachineId: string
 	alphaAvatarUri?: string // 알파 아바타 URI 추가
+	availableModes: ModeInfo[] // Add availableModes to ExtensionState
 }
 
 export interface ClineMessage {

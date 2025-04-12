@@ -30,7 +30,8 @@ function parseThemeString(themeString: string | undefined): any {
 	return JSON.parse(themeString ?? "{}")
 }
 
-export async function getTheme() {
+// Pass extensionUri as an argument
+export async function getTheme(extensionUri: vscode.Uri) {
 	let currentTheme = undefined
 	const colorTheme = vscode.workspace.getConfiguration("workbench").get<string>("colorTheme") || "Default Dark Modern"
 
@@ -54,7 +55,7 @@ export async function getTheme() {
 		if (currentTheme === undefined && defaultThemes[colorTheme]) {
 			const filename = `${defaultThemes[colorTheme]}.json`
 			currentTheme = await fs.readFile(
-				path.join(getExtensionUri().fsPath, "src", "integrations", "theme", "default-themes", filename),
+				path.join(extensionUri.fsPath, "src", "integrations", "theme", "default-themes", filename), // Use passed extensionUri
 				"utf-8",
 			)
 		}
@@ -64,7 +65,7 @@ export async function getTheme() {
 
 		if (parsed.include) {
 			const includeThemeString = await fs.readFile(
-				path.join(getExtensionUri().fsPath, "src", "integrations", "theme", "default-themes", parsed.include),
+				path.join(extensionUri.fsPath, "src", "integrations", "theme", "default-themes", parsed.include), // Use passed extensionUri
 				"utf-8",
 			)
 			const includeTheme = parseThemeString(includeThemeString)
@@ -136,6 +137,7 @@ export function mergeJson(
 	}
 }
 
-function getExtensionUri(): vscode.Uri {
-	return vscode.extensions.getExtension("saoudrizwan.claude-dev")!.extensionUri
-}
+// Remove the standalone getExtensionUri function as it's no longer needed here
+// function getExtensionUri(): vscode.Uri {
+// 	return vscode.extensions.getExtension("saoudrizwan.claude-dev")!.extensionUri
+// }
