@@ -20,6 +20,7 @@
 - [ ] **Task #020:** 로깅 및 테스트 강화 ([020-enhance-logging-and-testing.md](./020-enhance-logging-and-testing.md))
 - [ ] **Task #022:** `read_file` 도구 인코딩 처리 개선 (별도 파일 없음 - [관련 로그](../2025-04-11.md))
 - [ ] **Task #023:** 커스텀 UI 복구 (현재 진행 중 - 관련 로그: [2025-04-11.md](../2025-04-11.md))
+- [ ] **Task #024:** AI 에이전트 프로필 커스터마이징 ([024-ai-agent-profile-customization.md](./024-ai-agent-profile-customization.md))
 
 ## 완료된 태스크 (Complete)
 
