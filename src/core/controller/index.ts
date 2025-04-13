@@ -121,7 +121,14 @@ export class Controller {
 		} catch (error) {
 			console.error("Error loading modes.json:", error)
 			this.logger.error("Error loading modes.json:", error)
-			this.availableModes = [] // Default to empty on error
+			// 파일 로드 오류 시 기본 모드 데이터 설정
+			this.availableModes = [
+				{ id: "plan", label: "Plan", description: "Planning and discussion mode" },
+				{ id: "do", label: "Do", description: "Execute planned actions mode" },
+				{ id: "rule", label: "Rule", description: "Rule system improvement mode" },
+				{ id: "talk", label: "Talk", description: "Free conversation mode" },
+				{ id: "empty", label: "Empty", description: "No specific mode" }
+			]
 		}
 	}
 
