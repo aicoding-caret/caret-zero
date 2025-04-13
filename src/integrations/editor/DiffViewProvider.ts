@@ -56,11 +56,24 @@ async open(relPath: string): Promise<void> {
 
 		if (fileExists) {
 			try {
-				this.originalContent = await fs.readFile(absolutePath, "utf-8")
-				this.logger.debug(`원본 파일 내용 읽기 성공 (${absolutePath})`, {
-					contentLength: this.originalContent.length,
-					contentHash: this.generateContentHash(this.originalContent)
-				});
+				// 파일 읽기 강화: 오류 처리 및 유효성 검사 개선
+				const fileContent = await fs.readFile(absolutePath, "utf-8");
+				
+				// 파일 내용 유효성 검증
+				if (fileContent === undefined || fileContent === null) {
+					this.logger.warn(`파일이 비어있거나 정의되지 않음 (${absolutePath})`, {
+						fileExistsButEmpty: true
+					});
+					this.originalContent = "";
+				} else {
+					this.originalContent = fileContent;
+					this.logger.debug(`원본 파일 내용 읽기 성공 (${absolutePath})`, {
+						contentLength: this.originalContent.length,
+						contentHash: this.generateContentHash(this.originalContent),
+						firstFewChars: this.originalContent.substring(0, Math.min(20, this.originalContent.length)),
+						lastFewChars: this.originalContent.substring(Math.max(0, this.originalContent.length - 20))
+					});
+				}
 			} catch (error) {
 				this.logger.error(`파일 읽기 실패 (${absolutePath})`, { error });
 				this.originalContent = "";

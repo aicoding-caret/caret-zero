@@ -323,7 +323,7 @@ const SettingsView = ({ onDone }: SettingsViewProps) => {
 
 				{/* AI 에이전트 프로필 이미지 설정 */}
 				<SettingsSection>
-					<SectionTitle>알파 프로필 이미지</SectionTitle>
+					<SectionTitle>AI 에이전트 프로필 이미지</SectionTitle>
 					<ProfileImageWrapper>
 						<ProfileImagePreview>
 							<img 
@@ -360,7 +360,7 @@ const SettingsView = ({ onDone }: SettingsViewProps) => {
 						</ProfileImageActions>
 					</ProfileImageWrapper>
 					<p style={{ fontSize: "12px", color: "var(--vscode-descriptionForeground)" }}>
-						알파의 프로필 이미지를 원하는 이미지로 변경할 수 있어요. 직사각형 이미지는 자동으로 정사각형으로 크롭됩니다.
+						AI에이전트의 프로필 이미지를 원하는 이미지로 변경할 수 있어요. 직사각형 이미지는 자동으로 정사각형으로 크롭됩니다.
 					</p>
 				</SettingsSection>
 

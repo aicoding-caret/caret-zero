@@ -1,8 +1,10 @@
 {
 	"extends": "./tsconfig.json",
 	"compilerOptions": {
-		"module": "commonjs"
+		"module": "commonjs",
+		"lib": ["es2022", "DOM"], // "node" 제거
+		"types": ["node", "mocha", "should"] // types 명시적 추가됨
 	},
-	"include": ["test/**/*.ts"],
+	"include": ["src/test/**/*.ts"], // 경로 원복/수정됨
 	"exclude": ["node_modules"]
 }

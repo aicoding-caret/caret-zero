@@ -48,7 +48,7 @@ const ModeButton = styled(VSCodeButton)`
 	height: 18px; /* 높이 설정 */
 	&::part(control) {
 		padding: 1px 4px;
-		font-size: 0.4rem; /* 글자 크기 더더더더 축소 */
+		font-size: 0.8rem; /* 글자 크기 축소 */
 		line-height: 1;
 	}
 	/* Add tooltip for keyboard shortcuts */

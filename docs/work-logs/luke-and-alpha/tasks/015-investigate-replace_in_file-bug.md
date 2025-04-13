@@ -1,4 +1,4 @@
-# 태스크 #015: `replace_in_file` 도구 버그 조사
+# 태스크 #015: `replace_in_file` 도구 버그 조사 및 해결
 
 ## 담당자
 *   루크 (마스터)
@@ -57,11 +57,120 @@
             *   각 단계에서 예외가 발생하는 경우, 오류 메시지를 표시하고 도구 실행을 중단합니다.
             *   파일 수정 후, 파일 내용을 다시 읽어와 실제로 수정되었는지 확인합니다.
 
-## 다음 단계
+## 구현 내용
 
-1.  **버그 재현 테스트를 위한 시나리오 준비:**
-    *   `docs/work-logs/luke-and-alpha/reports/rules/final_rule_proposal_report.md` 파일을 수정하여 여러 줄로 구성된 JSON 블록을 추가합니다.
-    *   `replace_in_file` 도구를 사용하여 해당 JSON 블록을 삭제하는 `diffContent`를 생성합니다.
-    *   `replace_in_file` 도구를 실행하고, 파일이 실제로 수정되지 않는지 확인합니다.
-2.  **`constructNewFileContent` 함수 및 `diffViewProvider.saveChanges()` 함수 분석 및 디버깅:**
-    *   위에서 제시된 해결 아이디어를 바탕으로 코드를 분석하고, 디버깅을 통해 버그 원인을 파악합니다.
+### 1. 코드 수정 (`diff.ts`)
+
+1. **줄바꿈 문자 정규화 개선**
+   * **문제**: 기존 코드는 Windows(`\r\n`)와 기타 줄바꿈 문자(`\r`) 처리가 불완전했음
+   * **해결**: 모든 줄바꿈 형식을 `\n`으로 일관되게 정규화하도록 개선
+   ```typescript
+   // 수정 전
+   const normalizedOriginalContent = originalContent.replace(/\r\n/g, "\n");
+   
+   // 수정 후
+   const normalizedOriginalContent = originalContent.replace(/\r\n|\r/g, "\n");
+   ```
+
+2. **한글 및 유니코드 정규화 추가**
+   * **문제**: 한글 등 다국어 문자는 NFC/NFD 두 가지 유니코드 정규화 형태에 따라 동일한 문자도 다르게 처리될 수 있음
+   * **해결**: 유니코드 정규화 과정을 추가하여 일관된 처리 보장
+   ```typescript
+   const normalizedOriginalContent = originalContent
+       .replace(/\r\n|\r/g, "\n")
+       .normalize('NFC'); // 한글 등 다국어 문자 정규화
+   ```
+
+3. **다단계 매칭 전략 구현**
+   * **문제**: 정확한 문자열 매칭만으로는 약간의 공백이나 줄바꿈 차이로 인해 매칭 실패
+   * **해결**: 3단계 매칭 전략 구현
+     * 1단계: 정확한 매칭 시도
+     * 2단계: 줄 트림 매칭 (각 줄의 앞뒤 공백 무시)
+     * 3단계: 블록 앵커 매칭 (블록의 첫 줄과 마지막 줄만 매칭)
+
+4. **한글 문자 특별 처리**
+   * **문제**: 한글이 포함된 콘텐츠는 인코딩 차이로 매칭이 실패할 수 있음
+   * **해결**: 한글 포함 여부를 감지하고 NFC/NFD 두 가지 정규화 형태 모두 시도
+   ```typescript
+   // 한글 감지
+   const containsKorean = /[가-힣]/.test(currentSearchContent);
+   
+   // NFD 정규화 매칭 시도
+   if (containsKorean) {
+     const nfdNormalizedSearch = currentSearchContent.normalize('NFD');
+     const nfdNormalizedOriginal = normalizedOriginalContent.normalize('NFD');
+     // NFD 기반 매칭 시도...
+   }
+   ```
+
+5. **로깅 및 오류 처리 개선**
+   * 상세한 디버그 로그 추가로 문제 원인 파악 용이성 향상
+   * 매칭 실패 시 더 명확한 오류 메시지 제공
+   * 한글 및 특수 유니코드 문자 포함 여부 로깅
+
+### 2. AI 프롬프트 가이드라인 업데이트 (`EDITING_FILES_GUIDE.json`)
+
+1. **replace_in_file 도구에 대한 중요 가이드라인 추가**
+   ```json
+   "critical_guidelines": [
+     "SEARCH block content MUST exactly match the current file content, with matching whitespace and line breaks.",
+     "ALWAYS use the latest file content provided by the system for the next SEARCH block.",
+     "Apply changes in small, logical units, especially for complex multiline blocks.",
+     "Use only one SEARCH/REPLACE block per replace_in_file request for clarity and safety."
+   ]
+   ```
+
+2. **문제 해결 팁 추가**
+   ```json
+   "troubleshooting_tips": [
+     "If a replace operation fails despite showing correct content, check for invisible characters, line break differences (\r\n vs \n), or trailing whitespace.",
+     "For complex multiline blocks, start with the exact content from the file viewer without modifying whitespace.",
+     "When adding content to the end of a file, include the last few lines of the file in your SEARCH block to ensure accurate positioning."
+   ]
+   ```
+
+3. **특별 시나리오 섹션 추가**
+   * 파일 끝에 내용 추가하는 방법
+   * 복잡한 멀티라인 블록 처리 방법
+   * 줄 끝 차이(Windows vs Unix) 인식 방법
+
+### 3. 테스트 및 검증
+
+1. **테스트 파일 생성**
+   * 다양한 시나리오를 테스트할 수 있는 파일 (`test/replace-in-file-bug-test.md`) 생성
+   * 간단한 텍스트 변경부터 복잡한 JSON 블록 삭제까지 다양한 케이스 포함
+
+2. **테스트 스크립트 구현**
+   * JavaScript 기반 테스트 스크립트 (`test/replace-in-file-simple-test.js`) 구현
+   * 각 테스트 케이스별로 원본 파일 백업 및 복원 기능 포함
+   * 성공/실패 케이스에 대한 자세한 로깅 제공
+
+## 결과 및 향후 계획
+
+### 🎯 주요 성과
+
+* **코어 기능 개선**: 파일 내용 수정 기능의 안정성과 신뢰성을 크게 향상시킴
+* **방어 매커니즘 강화**: 다양한 환경과 문자 처리에 대한 견고한 방어 매커니즘 구현
+* **사용자 경험 개선**: 오류 발생 시 더 명확한 피드백과 대안 제시
+
+### 📋 남은 과제
+
+1. **추가 방어 전략 고려**
+   * 유사도 기반 매칭 알고리즘 추가
+   * 파일 끝 추가 시나리오에 대한 특별 처리 개선
+   * 더 다양한 인코딩 및 문자셋 대응
+
+2. **성능 최적화**
+   * 다단계 매칭 전략의 성능 영향 분석 및 최적화
+   * 대용량 파일 처리 시 효율성 개선
+
+3. **추가 테스트 확장**
+   * 더 많은 언어 및 문자셋에 대한 테스트 케이스 추가
+   * 스트레스 테스트 및 경계 케이스 테스트 확대
+
+## 📍 수정된 파일
+
+1. `src/core/assistant-message/diff.ts` - 핵심 파일 내용 수정 로직
+2. `src/core/prompts/sections/EDITING_FILES_GUIDE.json` - AI 가이드라인
+3. `test/replace-in-file-bug-test.md` - 테스트 케이스 파일
+4. `test/replace-in-file-simple-test.js` - 테스트 스크립트

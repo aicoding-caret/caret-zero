@@ -27,6 +27,18 @@
 			"advantages": [
 				"More efficient for minor edits, since you don't need to supply the entire file content.",
 				"Reduces the chance of errors that can occur when overwriting large files."
+			],
+			"critical_guidelines": [
+				"SEARCH block content MUST exactly match the current file content, with matching whitespace and line breaks.",
+				"ALWAYS use the latest file content provided by the system (final_file_content or file_content on error) for the next SEARCH block.",
+				"Apply changes in small, logical units, especially for complex multiline blocks.",
+				"Use only one SEARCH/REPLACE block per replace_in_file request for clarity and safety."
+			],
+			"troubleshooting_tips": [
+				"If a replace operation fails despite showing correct content, check for invisible characters, line break differences (\r\n vs \n), or trailing whitespace.",
+				"For complex multiline blocks, start with the exact content from the file viewer without modifying whitespace.",
+				"When adding content to the end of a file, include the last few lines of the file in your SEARCH block to ensure accurate positioning.",
+				"If repeatedly failing to match content, try breaking the change into smaller, simpler replace operations."
 			]
 		}
 	],
@@ -46,5 +58,19 @@
 		"For major overhauls or initial file creation, rely on write_to_file.",
 		"Once the file has been edited with either write_to_file or replace_in_file, the system will provide you with the final state of the modified file. Use this updated content as the reference point for any subsequent SEARCH/REPLACE operations, since it reflects any auto-formatting or user-applied changes.",
 		"By thoughtfully selecting between write_to_file and replace_in_file, you can make your file editing process smoother, safer, and more efficient."
+	],
+	"special_scenarios": [
+		{
+			"name": "Appending to end of file", 
+			"strategy": "When adding content to the end of a file, include the exact last 2-3 lines of the file in your SEARCH block, and in your REPLACE block include those same lines followed by a blank line and then your new content. Never use special markers like #EOF# or similar as they won't match actual content."
+		},
+		{
+			"name": "Complex multiline blocks",
+			"strategy": "For complex multiline blocks (like JSON, code blocks with indentation), copy the exact content from the file without modifying any whitespace or line breaks. Common failures happen when manually typing content with different spacing or line endings."
+		},
+		{
+			"name": "Line ending differences",
+			"strategy": "Be aware that different operating systems use different line endings (Windows: \r\n, Unix/Mac: \n). When matching fails despite visually identical content, line ending differences might be the cause."
+		}
 	]
 }
