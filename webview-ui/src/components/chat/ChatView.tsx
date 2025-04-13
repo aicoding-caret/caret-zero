@@ -28,21 +28,47 @@ import ChatTextArea from "./ChatTextArea"
 import TaskHeader from "./TaskHeader"
 import TelemetryBanner from "../common/TelemetryBanner"
 
-// Define styled components for the new mode buttons (Adjust styles for bottom placement)
+// Define styled components for the new mode buttons (Adjust styles for bottom-right placement)
 // Ensure these are defined only ONCE at the top level of the module
 const ModeSelectorContainer = styled.div`
 	display: flex;
-	gap: 5px;
-	padding: 0px 8px 5px 8px; /* Adjust padding for bottom placement */
-	flex-wrap: wrap;
-	align-items: center; /* Align items vertically */
+	gap: 3px;
+	padding: 3px 5px;
+	position: fixed;
+	bottom: 8px;
+	right: 8px;
+	z-index: 100;
+	background-color: var(--vscode-editor-background);
+	border-radius: 4px;
+	box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
 `
 
 const ModeButton = styled(VSCodeButton)`
-	min-width: 40px; /* Adjust min-width */
+	min-width: 32px; /* 너비 축소 */
+	height: 18px; /* 높이 설정 */
 	&::part(control) {
-		padding-left: 8px;
-		padding-right: 8px;
+		padding: 1px 4px;
+		font-size: 0.4rem; /* 글자 크기 더더더더 축소 */
+		line-height: 1;
+	}
+	/* Add tooltip for keyboard shortcuts */
+	&::after {
+		content: attr(data-shortcut);
+		position: absolute;
+		top: -18px;
+		left: 50%;
+		transform: translateX(-50%);
+		background-color: var(--vscode-editor-background);
+		color: var(--vscode-foreground);
+		font-size: 9px;
+		padding: 1px 3px;
+		border-radius: 2px;
+		opacity: 0;
+		transition: opacity 0.2s;
+	}
+	
+	&:hover::after {
+		opacity: 1;
 	}
 `
 
@@ -759,7 +785,7 @@ const ChatView = ({ isHidden, showAnnouncement, hideAnnouncement, showHistoryVie
 							atBottomThreshold={10}
 							initialTopMostItemIndex={groupedMessages.length - 1}
 						/>
-					</div>
+											</div>
 					<AutoApproveMenu />
 					{showScrollToBottom ? (
 						<div style={{ display: "flex", padding: "10px 15px 0px 15px" }}>

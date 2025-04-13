@@ -188,7 +188,7 @@ export const ChatRowContent = ({ message, isExpanded, onToggleExpand, lastModifi
 		}
 	}
 
-	// AI 메시지인지 확인 (텍스트, 질문, 계획 응답 등)
+	// AI 메시지인지 확인 (텍스트, 추론과정, 질문, 계획 응답 등)
 	const isAiMessage = useMemo(() => {
 		return (
 			(message.type === "say" && (message.say === "text" || message.say === "reasoning")) ||
@@ -840,64 +840,194 @@ export const ChatRowContent = ({ message, isExpanded, onToggleExpand, lastModifi
 						return <McpResponseDisplay responseText={message.text || ""} />
 					case "text": // Will be wrapped
 						// AI 일반 텍스트 메시지
-						return (
-							<div>
-								<Markdown markdown={message.text} />
-							</div>
-						)
+						// message.reasoning이 있으면 추론 메시지로 처리
+						if (message.reasoning) {
+							return (
+								<>
+									{message.reasoning && (
+										<div
+											onClick={onToggleExpand} // 기존 props의 토글 함수 사용
+											style={{
+												backgroundColor: "var(--vscode-editorWidget-background)",
+												borderLeft: "3px solid var(--vscode-descriptionForeground)",
+												padding: isExpanded ? "12px 15px" : "8px 10px", // 패딩 조정
+												borderRadius: "4px",
+												cursor: "pointer",
+												color: "var(--vscode-descriptionForeground)",
+												overflow: "hidden",
+												transition: "all 0.3s ease",
+												margin: "6px 0",
+												boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
+											}}>
+											{isExpanded ? (
+												// 펼쳐진 상태
+												<div style={{ marginTop: 0 }}>
+													<div style={{ 
+														display: "flex", 
+														alignItems: "center", 
+														marginBottom: "8px",
+														color: "var(--vscode-descriptionForeground)",
+													}}>
+														<img 
+															src="https://raw.githubusercontent.com/fstory97/cline-avatar/main/default_ai_agent_thinking.png" 
+															alt="Thinking" 
+															style={{ 
+																width: "16px", 
+																height: "16px", 
+																marginRight: "8px", 
+																objectFit: "contain" 
+															}} 
+														/>
+														<span style={{ fontWeight: "bold" }}>알파의 생각</span>
+														<span
+															className="codicon codicon-chevron-up"
+															style={{
+																marginLeft: "auto",
+															}}
+														/>
+													</div>
+													<div style={{ lineHeight: "1.5" }}>
+														{message.reasoning}
+													</div>
+												</div>
+											) : (
+												// 접힌 상태 - 미리보기 추가
+												<div style={{ display: "flex", alignItems: "center" }}>
+													<img 
+														src="https://raw.githubusercontent.com/fstory97/cline-avatar/main/default_ai_agent_thinking.png" 
+														alt="Thinking" 
+														style={{ 
+															width: "16px", 
+															height: "16px", 
+															marginRight: "8px", 
+															objectFit: "contain" 
+														}} 
+													/>
+													<span style={{ fontWeight: "bold" }}>알파의 생각</span>
+													<div 
+														style={{
+															marginLeft: "12px",
+															whiteSpace: "nowrap",
+															overflow: "hidden",
+															textOverflow: "ellipsis",
+															maxWidth: "200px",
+															opacity: 0.7,
+															fontStyle: "italic",
+															fontSize: "0.9em",
+															color: "var(--vscode-descriptionForeground)"
+														}}
+													>
+														{message.reasoning?.substring(0, 50)}...
+													</div>
+													<span
+														className="codicon codicon-chevron-right"
+														style={{
+															marginLeft: "auto",
+															color: "var(--vscode-descriptionForeground)",
+															opacity: 0.7
+														}}
+													/>
+												</div>
+											)}
+										</div>
+									)}
+									<div>
+										<Markdown markdown={message.text} />
+									</div>
+								</>
+							);
+						} else {
+							return (
+								<div>
+									<Markdown markdown={message.text} />
+								</div>
+							);
+						}
 					case "reasoning": // Will be wrapped
-						// AI 리즈닝 메시지 (독립 스타일 + 접기/펼치기)
+						// AI 추론 과정 메시지 - 렌더링을 위한 UI만 반환, useState 관련 로직은 제거
 						return (
 							<>
 								{message.text && (
 									<div
-										onClick={onToggleExpand}
+										onClick={onToggleExpand} // 기존 props의 토글 함수 사용
 										style={{
-											backgroundColor: "var(--vscode-editorWidget-background)", // 약간 다른 배경색
-											borderLeft: "2px solid var(--vscode-descriptionForeground)", // 왼쪽 테두리
-											padding: "5px 8px", // 내부 여백
-											borderRadius: "3px", // 모서리 둥글게
-											cursor: "pointer", // 클릭 가능 표시
-											color: "var(--vscode-descriptionForeground)", // 기본 텍스트 색상 유지
+											backgroundColor: "var(--vscode-editorWidget-background)",
+											borderLeft: "3px solid var(--vscode-descriptionForeground)",
+											padding: isExpanded ? "12px 15px" : "8px 10px", // 패딩 조정
+											borderRadius: "4px",
+											cursor: "pointer",
+											color: "var(--vscode-descriptionForeground)",
 											fontStyle: "italic",
 											overflow: "hidden",
+											transition: "all 0.3s ease",
+											margin: "6px 0",
 										}}>
 										{isExpanded ? (
 											// 펼쳐진 상태
-											<div style={{ marginTop: 0 }}> {/* marginTop 조정 */}
-												<span style={{ fontWeight: "bold", display: "block", marginBottom: "4px" }}>
-													Thinking {/* 아이콘 추가 고려 */}
+											<div style={{ marginTop: 0 }}>
+												<div style={{ 
+													display: "flex", 
+													alignItems: "center", 
+													marginBottom: "8px",
+													color: "var(--vscode-descriptionForeground)",
+												}}>
+													<img 
+													src="https://raw.githubusercontent.com/fstory97/cline-avatar/main/default_ai_agent_thinking.png" 
+													alt="Thinking" 
+													style={{ 
+														width: "16px", 
+														height: "16px", 
+														marginRight: "8px", 
+														objectFit: "contain" 
+													}} 
+												/>
+													<span style={{ fontWeight: "bold" }}>알파의 생각</span>
 													<span
-														className="codicon codicon-chevron-down"
+														className="codicon codicon-chevron-up"
 														style={{
-															display: "inline-block",
-															transform: "translateY(1px)", // 아이콘 위치 미세 조정
-															marginLeft: "4px", // 아이콘과 텍스트 간격
+															marginLeft: "auto",
 														}}
 													/>
-												</span>
-												{message.text}
+												</div>
+												<div style={{ lineHeight: "1.5" }}>
+													{message.text}
+												</div>
 											</div>
 										) : (
 											// 접힌 상태
 											<div style={{ display: "flex", alignItems: "center" }}>
-												<span style={{ fontWeight: "bold", marginRight: "4px" }}>Thinking:</span>
-												<span
+												<img 
+													src="https://raw.githubusercontent.com/fstory97/cline-avatar/main/default_ai_agent_thinking.png" 
+													alt="Thinking" 
+													style={{ 
+														width: "16px", 
+														height: "16px", 
+														marginRight: "8px", 
+														objectFit: "contain" 
+													}} 
+												/>
+												<span style={{ fontWeight: "bold" }}>알파의 생각</span>
+												<div 
 													style={{
-														whiteSpace: "nowrap", // 한 줄로 표시
+														marginLeft: "12px",
+														whiteSpace: "nowrap",
 														overflow: "hidden",
 														textOverflow: "ellipsis",
-														direction: "rtl",
-														textAlign: "left",
-														flex: 1,
-													}}>
-													{message.text + "\u200E"}
-												</span>
+														maxWidth: "200px",
+														opacity: 0.7,
+														fontStyle: "italic",
+														fontSize: "0.9em",
+														color: "var(--vscode-descriptionForeground)"
+													}}
+												>
+													{message.text?.substring(0, 50)}...
+												</div>
 												<span
 													className="codicon codicon-chevron-right"
 													style={{
-														marginLeft: "4px",
-														flexShrink: 0,
+														marginLeft: "auto",
+														color: "var(--vscode-descriptionForeground)",
+														opacity: 0.7
 													}}
 												/>
 											</div>
@@ -1301,13 +1431,24 @@ export const ChatRowContent = ({ message, isExpanded, onToggleExpand, lastModifi
 
 	// --- Final Return Structure ---
 	// Conditionally apply avatar and wrapper ONLY for specific AI message types
+	// 메시지 유형에 따라 표시할 아바타 이미지 결정
+	const getAvatarSrc = () => {
+		// 추론 과정 메시지인 경우 추론 중 아바타 사용
+		if (message.type === "say" && message.say === "reasoning") {
+			// 절대 경로로 사용
+			return "https://raw.githubusercontent.com/fstory97/cline-avatar/main/default_ai_agent_thinking.png";
+		}
+		// 일반 대화 메시지인 경우 기본 아바타 사용
+		return alphaAvatarUri;
+	}
+
 	if (isAiMessage && alphaAvatarUri) {
 		// alphaAvatarUri가 있을 때만 아바타 표시
 		// AI text, reasoning, followup, plan_mode_respond
 		return (
 			// AI 메시지일 경우 아바타와 함께 표시
 			<div style={{ display: "flex", alignItems: "flex-start" }}>
-				<AvatarImage src={alphaAvatarUri} alt="Alpha Avatar" /> {/* alphaAvatarUri 사용 */}
+				<AvatarImage src={getAvatarSrc()} alt="Alpha Avatar" />
 				<MessageContentWrapper isAiMessage={true}>{renderSpecificContent()}</MessageContentWrapper>
 			</div>
 		)
