@@ -19,7 +19,116 @@
     *   도구 실행 환경 또는 의존성 문제 가능성 검토.
 3.  **버그 수정:** 분석된 원인을 바탕으로 `replace_in_file` 도구의 코드를 수정합니다.
 4.  **검증:** 수정된 도구를 사용하여 이전에 실패했던 시나리오 및 다양한 테스트 케이스를 실행하여 버그가 해결되었는지 확인합니다.
-5.  **문서화:** 발견된 버그의 원인과 해결 과정을 기록합니다.
+
+## 진행 상황
+
+### 1. 문제 파악 및 재현
+
+간단한 테스트 파일을 통해 `replace_in_file` 도구의 버그를 재현했습니다. 다음과 같은 테스트 케이스를 작성하여 문제를 확인했습니다:
+
+1. 테스트 파일 생성: 다음 내용으로 `replace_test_documented.txt` 파일 생성
+   ```
+   첫 번째 줄입니다.
+   두 번째 줄은 조금 더 길어요.
+   세 번째 줄입니다.
+   마지막 네 번째 줄.
+   ```
+
+2. 단순 교체 시도: `"세 번째" -> "3번째"`
+   ```
+   <<<<<<< SEARCH
+   세 번째
+   =======
+   3번째
+   >>>>>>> REPLACE
+   ```
+
+3. 결과: 성공 메시지가 표시되었으나, 실제 파일 내용이 `"3번째"` 로만 변경됨. 즉, 파일의 전체 내용이 REPLACE 블록의 내용으로 덮어써짐.
+
+마크다운 파일과 같은 복잡한 구조에서는 파일 내용이 완전히 훼손되는 상황이 발생했습니다.
+
+### 2. 원인 분석
+
+`diff.ts` 파일 분석을 통해 다음과 같은 문제점을 발견했습니다:
+
+1. **프롬프트 형식 문제**:
+   - JSON 설정 파일과 마크다운 문서 간에 diff 형식에 대한 일관성이 부족했습니다.
+   - AI 에이전트가 다양한 형식으로 diff 내용을 전송하고 있었습니다.
+
+2. **코드 구현 문제**:
+   - REPLACE 블록을 처리할 때 줄바꿈(\n)이 잘못 처리되어 원본 파일 내용이 손상됩니다.
+   - 정확한 매칭 후에도 결과를 구성하는 과정에서 원본 파일 내용이 유실됩니다.
+
+### 3. 해결 방안
+
+1. **프롬프트 수정**:
+   - `TOOL_DEFINITIONS.json`, `EDITING_FILES_GUIDE.json` 파일의 `replace_in_file` 관련 설명을 일관되게 수정했습니다.
+   - SEARCH/REPLACE 블록 형식을 명확히 하고 줄바꿈 문자를 명시적으로 표시했습니다.
+
+2. **코드 수정**:
+   - `diff.ts` 파일에서 줄바꿈 처리 로직 개선:
+     - REPLACE 블록의 마지막 줄바꿈 처리 개선
+     - 원본 파일의 줄바꿈 형식 보존 로직 추가
+     - 원본 내용 중복 추가 방지 로직 구현
+   - 파일 종료 처리 로직 개선:
+     - `remainderProcessed` 플래그 추가하여 중복 처리 방지
+     - 디버깅을 위한 상세 로깅 추가
+
+### 4. 개선 결과 검증
+
+다음 시나리오에서 개선된 결과를 확인했습니다:
+
+1. **복잡한 멀티라인 REPLACE 블록 처리**:
+   - 수정 전: 전체 파일이 REPLACE 블록 내용으로 대체되는 문제
+   - 수정 후: 정확히 일치하는 부분만 대체되고 나머지 파일 내용 유지
+
+2. **줄바꿈 처리 정확성**:
+   - 수정 전: 줄바꿈이 추가되거나 누락되는 문제
+   - 수정 후: 원본 파일의 줄바꿈 구조 정확히 유지
+
+3. **파일 종료 부분 처리**:
+   - 수정 전: 파일 종료 처리 시 일부 내용이 중복 추가되는 문제
+   - 수정 후: `remainderProcessed` 플래그로 내용 중복 추가 방지
+
+### 5. 핵심 코드 수정 사항
+
+```typescript
+// 1. remainderProcessed 플래그 추가 - 중복 처리 방지
+let remainderProcessed = false
+
+// 2. 블록 간 나머지 내용 처리 시 플래그 설정
+const remainingContent = originalContent.slice(searchEndIndex);
+if (remainingContent.length > 0) {
+  result += remainingContent;
+  remainderProcessed = true; // 남은 내용 처리 완료 표시
+}
+
+// 3. 파일 종료 처리 시 중복 방지
+if (isFinal && lastProcessedIndex < originalContent.length && !remainderProcessed) {
+  // 남은 내용 추가
+  result += originalContent.slice(lastProcessedIndex);
+} else if (isFinal && remainderProcessed) {
+  // 이미 처리된 경우 로그 기록
+  log.debug(`[파일 종료 처리] 남은 내용이 이미 처리되어 중복 추가 하지 않음`);
+}
+```
+
+## 결론 및 후속 작업
+
+1. **해결된 문제**:
+   - SEARCH/REPLACE 블록 형식 불일치 문제 해결
+   - 줄바꿈 처리 로직 개선으로 파일 내용 손상 방지
+   - 원본 내용 중복 추가 문제 해결
+
+2. **남은 개선 사항**:
+   - 더 광범위한 테스트 케이스 개발
+   - 다양한 언어(특히 유니코드와 다국어) 지원 개선
+   - 줄바꿈 처리 자동화 로직 강화
+
+3. **Cline 프로젝트에 기여 계획**:
+   - 발견된 버그와 해결 방안에 대한 PR 준비
+   - 다양한 OS 환경(특히 Windows)에서의 테스트 결과 공유
+   - 문서화 개선 제안
 
 ## 예상 결과물
 *   수정된 `replace_in_file` 도구 코드.
@@ -168,9 +277,67 @@
    * 더 많은 언어 및 문자셋에 대한 테스트 케이스 추가
    * 스트레스 테스트 및 경계 케이스 테스트 확대
 
+## ⚠️ 업스트림 코드의 잠재적 문제점
+
+롤백 후에도 여전히 존재하는 잠재적 문제점들을 아래에 문서화합니다:
+
+1. **Windows 줄바꿈 문자(CRLF) 처리 문제**
+   * 업스트림 코드는 Unix 스타일 줄바꿈(LF)만 제대로 처리하며 Windows 줄바꿈(CRLF)을 올바르게 처리하지 못함
+   * 특히 `diff.ts`의 `constructNewFileContent()` 함수에서 발생
+   * 줄바꿈 처리 시 `\n`으로만 검사하여 CRLF 환경에서 '\r\n'이 올바르게 처리되지 않음
+
+2. **문자열 종료 조건 처리 불완전**
+   * SEARCH/REPLACE 블록 처리 시 문자열 종료 조건이 불완전하게 구현됨
+   * 문자열 끝 부분의 줄바꿈 문자 처리 로직에 결함이 있음
+   * 예: `currentReplaceContent.endsWith("\n")` 확인 시 CRLF를 고려하지 않음
+
+3. **파일 내용 보존 메커니즘 부재**
+   * 매칭되지 않는 부분에 대한 파일 내용 보존 로직이 부실함
+   * 복잡한 매칭 패턴에서 원본 파일 내용이 유실될 위험 존재
+   * 특히 멀티라인 블록에서 정확한 위치 매칭 실패 시 파일 내용 손상 가능성 높음
+
+4. **EOL(End of Line) 일관성 미확보**
+   * 파일 시스템의 EOL 설정을 읽어오지 않고 하드코딩된 줄바꿈 문자 사용
+   * 결과적으로 OS 간 이동 시 줄바꿈 형식이 손상될 수 있음
+
+이러한 문제들은 향후 `replace_in_file` 도구의 안정적인 사용을 위해 반드시 해결되어야 할 과제입니다.
+
 ## 📍 수정된 파일
 
 1. `src/core/assistant-message/diff.ts` - 핵심 파일 내용 수정 로직
 2. `src/core/prompts/sections/EDITING_FILES_GUIDE.json` - AI 가이드라인
 3. `test/replace-in-file-bug-test.md` - 테스트 케이스 파일
 4. `test/replace-in-file-simple-test.js` - 테스트 스크립트
+
+## 🔍 2025-04-14 핵심 버그 원인 발견 및 수정
+
+### 🐛 결정적 버그 원인 발견
+1. **프롬프트 불일치 문제**
+   * JSON 형식과 마크다운 형식 간의 SEARCH/REPLACE 블록 형식 불일치 발견
+   * JSON 프롬프트: `<<<<<<< SEARCH [exact content to find]` (같은 줄에 마커와 내용)
+   * 마크다운 프롬프트: `<<<<<<< SEARCH\n[exact content to find]` (줄바꿈 후 내용)
+
+2. **결과적 동작**
+   * AI는 JSON 형식(`<<<<<<< SEARCH 다시 테스트`)으로 응답 생성
+   * 파서는 마크다운 형식을 기대하고 있어 SEARCH 블록이 비어있다고 잘못 해석
+   * 빈 SEARCH 블록은 "파일 전체 대체 시나리오"로 처리되어 원본 내용 손실
+
+### 📝 수정 내용
+1. **JSON 프롬프트 파일 수정**
+   * `src/core/prompts/sections/TOOL_DEFINITIONS.json` - SEARCH/REPLACE 블록 형식에 줄바꿈 문자(`\n`) 명시적 추가
+   * `src/core/prompts/sections/EDITING_FILES_GUIDE.json` - 동일하게 줄바꿈 형식으로 수정
+
+```diff
+- "desc": "SEARCH/REPLACE blocks following this exact format: '<<<<<<< SEARCH [exact content to find] ======= [new content to replace with] >>>>>>> REPLACE'"
++ "desc": "SEARCH/REPLACE blocks following this exact format: '<<<<<<< SEARCH\n[exact content to find]\n=======\n[new content to replace with]\n>>>>>>> REPLACE'"
+```
+
+### 💡 추가 개선 방향
+1. **코드 파서 개선**
+   * `diff.ts`의 `constructNewFileContent()` 함수 개선 필요
+   * 두 가지 형식(줄바꿈 있는 경우와 없는 경우) 모두 처리 가능하도록 로직 수정
+   * SEARCH 마커 뒤에 공백과 내용이 바로 있는 경우도 적절히 처리하는 로직 추가
+
+2. **포괄적인 형식 검사**
+   * 프로젝트 전체에서 유사한 형식 불일치가 있는지 확인 필요
+   * AI 프롬프트와 실제 파서 간의 기대치 일치 확인

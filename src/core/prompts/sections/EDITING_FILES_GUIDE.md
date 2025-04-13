@@ -39,6 +39,27 @@ You have access to two tools for working with files: **write_to_file** and **rep
 - More efficient for minor edits, since you don't need to supply the entire file content.  
 - Reduces the chance of errors that can occur when overwriting large files.
 
+## Critical Format
+
+All SEARCH/REPLACE blocks MUST follow this exact format:
+
+```
+<<<<<<< SEARCH
+[exact content to find]
+=======
+[new content to replace with]
+>>>>>>> REPLACE
+```
+
+**Example:**
+```
+<<<<<<< SEARCH
+const version = "1.0.0";
+=======
+const version = "1.1.0";
+>>>>>>> REPLACE
+```
+
 # Choosing the Appropriate Tool
 
 - **Default to replace_in_file** for most changes. It's the safer, more precise option that minimizes potential issues.

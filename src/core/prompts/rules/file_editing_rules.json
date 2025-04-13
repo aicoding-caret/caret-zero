@@ -4,6 +4,7 @@
 	  {
 		"tool": "replace_in_file",
 		"guidelines": [
+		  "SEARCH/REPLACE blocks MUST follow this exact format: '<<<<<<< SEARCH [exact content to find] ======= [new content to replace with] >>>>>>> REPLACE'",
 		  "SEARCH block content MUST exactly match the current file content.",
 		  "ALWAYS use the latest file content provided by the system (final_file_content or file_content on error) for the next SEARCH block.",
 		  "Apply changes in small, logical units.",

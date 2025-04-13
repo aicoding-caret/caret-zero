@@ -1,7 +1,7 @@
 // 타입스크립트 컴파일 문제를 피하기 위한 JavaScript 버전 테스트 스크립트
 const fs = require('fs').promises;
 const path = require('path');
-const diff = require('../src/core/assistant-message/diff');
+const { constructNewFileContent } = require('../src/core/assistant-message/diff');
 
 // 간단한 로거 객체
 const logger = {
@@ -91,7 +91,7 @@ ${replaceContent}
         console.log("\n1. constructNewFileContent 함수 테스트:");
         let newContent;
         try {
-            newContent = await diff.constructNewFileContent(diffContent, originalContent, true, logger);
+            newContent = await constructNewFileContent(diffContent, originalContent, true, logger);
             console.log(`새 내용 생성 성공, 크기: ${newContent.length} 바이트`);
             
             // 원본 내용과 다른지 확인
