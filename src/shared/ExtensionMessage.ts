@@ -18,6 +18,18 @@ export interface ModeInfo {
 }
 
 // webview will hold state
+/**
+ * API 재시도 상태를 위한 인터페이스
+ */
+export interface RetryStatusMessage {
+	status: number            // HTTP 상태 코드 (429, 503 등)
+	errorType: string        // 에러 유형 (한글 메시지)
+	attempt: number          // 현재 시도 횟수
+	delay: number            // 대기 시간 (ms)
+	quotaViolation?: string  // 할당량 위반 정보
+	retryTimestamp?: number  // 재시도 예정 시간(ms 타임스탬프)
+}
+
 export interface ExtensionMessage {
 	type:
 		| "action"
@@ -56,6 +68,7 @@ export interface ExtensionMessage {
 		| "relativePathsResponse" // Handles single and multiple path responses
 		| "fileSearchResults"
 		| "modesConfigLoaded"
+		| "retryStatus"         // API 재시도 상태 전송 시 사용
 	text?: string
 	paths?: (string | null)[] // Used for relativePathsResponse
 	action?:
@@ -115,6 +128,7 @@ export interface ExtensionMessage {
 		serverName: string
 		error?: string
 	}
+	retryState?: RetryStatusMessage // API 재시도 상태 정보
 }
 
 export type Invoke = "sendMessage" | "primaryButtonClick" | "secondaryButtonClick"
@@ -273,6 +287,9 @@ export interface ClineAskNewTask {
 	context: string
 }
 
+/**
+ * API 요청 정보 인터페이스 - 재시도 관련 필드 추가
+ */
 export interface ClineApiReqInfo {
 	request?: string
 	tokensIn?: number
@@ -282,6 +299,13 @@ export interface ClineApiReqInfo {
 	cost?: number
 	cancelReason?: ClineApiReqCancelReason
 	streamingFailedMessage?: string
+	// 재시도 관련 필드 추가
+	retryAttempt?: number   // 현재 재시도 횟수
+	maxRetries?: number     // 최대 재시도 횟수
+	errorType?: string      // 오류 유형 (한글 메시지)
+	quotaViolation?: string // 할당량 위반 정보
+	index?: number          // API 요청 인덱스
+	model?: string          // 사용된 모델
 }
 
 export type ClineApiReqCancelReason = "streaming_failed" | "user_cancelled"

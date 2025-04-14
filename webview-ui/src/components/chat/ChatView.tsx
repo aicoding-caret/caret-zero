@@ -11,6 +11,7 @@ import {
 	ClineSayBrowserAction,
 	ClineSayTool,
 	ExtensionMessage,
+	RetryStatusMessage, // 추가: 재시도 상태 메시지 타입
 } from "../../../../src/shared/ExtensionMessage"
 import { findLast } from "../../../../src/shared/array"
 import { combineApiRequests } from "../../../../src/shared/combineApiRequests"
@@ -80,6 +81,52 @@ const SettingsButton = styled(VSCodeButton)`
 	}
 `
 
+// API 재시도 상태 UI 컴포넌트
+const RetryStatusContainer = styled.div`
+	margin: 8px 0;
+	padding: 10px;
+	border-radius: 4px;
+	background-color: var(--vscode-notifications-background);
+	border-left: 3px solid var(--vscode-notificationsWarningIcon-foreground);
+	color: var(--vscode-notifications-foreground);
+	font-size: 0.9rem;
+	position: relative;
+`
+
+const RetryStatusHeader = styled.div`
+	display: flex;
+	align-items: center;
+	margin-bottom: 8px;
+	font-weight: 500;
+`
+
+const RetryStatusIcon = styled.span`
+	margin-right: 8px;
+	color: var(--vscode-notificationsWarningIcon-foreground);
+`
+
+const RetryStatusInfo = styled.div`
+	margin-left: 24px;
+	display: flex;
+	flex-direction: column;
+	gap: 4px;
+`
+
+const RetryStatusProgress = styled.div`
+	margin-top: 8px;
+	height: 4px;
+	background-color: var(--vscode-progressBar-background);
+	border-radius: 2px;
+	overflow: hidden;
+`
+
+const RetryStatusProgressBar = styled.div<{ progress: number }>`
+	height: 100%;
+	width: ${props => props.progress}%;
+	background-color: var(--vscode-notificationsWarningIcon-foreground);
+	transition: width 1s linear;
+`
+
 interface ChatViewProps {
 	isHidden: boolean
 	showAnnouncement: boolean
@@ -101,6 +148,12 @@ const ChatView = ({ isHidden, showAnnouncement, hideAnnouncement, showHistoryVie
 		availableModes, // Get available modes from context
 		chatSettings, // Get chat settings from context
 	} = useExtensionState()
+	
+	// API 재시도 상태 관리
+	const [retryStatus, setRetryStatus] = useState<RetryStatusMessage | null>(null)
+	const [retryProgress, setRetryProgress] = useState<number>(0)
+	// 재시도 진행 상태를 업데이트하는 타이머 참조
+	const retryProgressTimerRef = useRef<number | null>(null)
 
 	const task = useMemo(() => messages.at(0), [messages])
 	const modifiedMessages = useMemo(() => combineApiRequests(combineCommandSequences(messages.slice(1))), [messages])
@@ -307,6 +360,88 @@ const ChatView = ({ isHidden, showAnnouncement, hideAnnouncement, showHistoryVie
 	useEffect(() => {
 		setExpandedRows({})
 	}, [task?.ts])
+	
+	// API 재시도 상태 처리
+	useEffect(() => {
+		// 메시지 수신 이벤트 핸들러
+		const handleMessage = (event: MessageEvent) => {
+			const message = event.data as ExtensionMessage
+			
+			// retryStatus 메시지 처리
+			if (message.type === 'retryStatus' && message.retryState) {
+				console.log('[ChatView] 재시도 상태 수신:', message.retryState)
+				console.debug('[ChatView Debug] 전체 메시지 데이터:', message)
+				
+				// 기존 타이머 있으면 제거
+				if (retryProgressTimerRef.current !== null) {
+					window.clearInterval(retryProgressTimerRef.current)
+					retryProgressTimerRef.current = null
+				}
+				
+				// 재시도 상태 저장
+				console.log('[ChatView] 재시도 상태 업데이트 시도:', message.retryState)
+				setRetryStatus(message.retryState)
+				setRetryProgress(0) // 진행률 초기화
+				console.log('[ChatView] 재시도 상태 업데이트 후 retryStatus:', message.retryState)
+				
+				// 재시도 예정 시간이 있는 경우
+				if (message.retryState.retryTimestamp) {
+					const totalTime = message.retryState.delay
+					const endTime = message.retryState.retryTimestamp
+					const startTime = endTime - totalTime
+					
+					// 현재 시간과 남은 시간 계산
+					const now = Date.now()
+					const remainingTime = Math.max(0, endTime - now)
+					const initialProgress = Math.min(100, Math.max(0, ((now - startTime) / totalTime) * 100))
+					
+					// 초기 진행률 설정
+					setRetryProgress(initialProgress)
+					
+					// 진행률 업데이트를 위한 타이머 설정 (100ms 마다 업데이트)
+					if (remainingTime > 0) {
+						const step = 100 / (remainingTime / 100) // 100ms마다 증가할 퍼센트
+						
+						retryProgressTimerRef.current = window.setInterval(() => {
+							setRetryProgress(prev => {
+								const nextProgress = prev + step
+								
+								// 100%에 도달했거나 재시도 시간이 지났으면 타이머 종료
+								if (nextProgress >= 100 || Date.now() >= endTime) {
+									if (retryProgressTimerRef.current !== null) {
+										window.clearInterval(retryProgressTimerRef.current)
+										retryProgressTimerRef.current = null
+									}
+									
+									// 재시도 시간이 지나면 표시 상태 초기화
+									if (Date.now() >= endTime + 1000) { // 1초 더 대기한 후 상태 초기화
+										setRetryStatus(null)
+									}
+									
+									return 100
+								}
+								
+								return nextProgress
+							})
+						}, 100)
+					}
+				}
+			}
+		}
+		
+		// 이벤트 리스너 등록
+		window.addEventListener('message', handleMessage)
+		
+		// 클린업 함수
+		return () => {
+			window.removeEventListener('message', handleMessage)
+			
+			if (retryProgressTimerRef.current !== null) {
+				window.clearInterval(retryProgressTimerRef.current)
+				retryProgressTimerRef.current = null
+			}
+		}
+	}, [])
 
 	const isStreaming = useMemo(() => {
 		const isLastAsk = !!modifiedMessages.at(-1)?.ask
@@ -369,7 +504,7 @@ const ChatView = ({ isHidden, showAnnouncement, hideAnnouncement, showHistoryVie
 	const handlePrimaryButtonClick = useCallback(
 		(text?: string, images?: string[]) => {
 			const trimmedInput = text?.trim()
-			switch (clineAsk) {
+			switch (clineAsk) {  // API 오류에서도 재시도 지원
 				case "api_req_failed":
 				case "command":
 				case "command_output":
@@ -378,7 +513,7 @@ const ChatView = ({ isHidden, showAnnouncement, hideAnnouncement, showHistoryVie
 				case "use_mcp_server":
 				case "resume_task":
 				case "mistake_limit_reached":
-				case "auto_approval_max_req_reached":
+				case "auto_approval_max_req_reached":				
 					vscode.postMessage({
 						type: "askResponse",
 						askResponse: "yesButtonClicked",
@@ -786,6 +921,29 @@ const ChatView = ({ isHidden, showAnnouncement, hideAnnouncement, showHistoryVie
 							initialTopMostItemIndex={groupedMessages.length - 1}
 						/>
 					</div>
+					{/* API 재시도 상태 UI */}
+					{retryStatus && (
+						<RetryStatusContainer>
+							<RetryStatusHeader>
+								<RetryStatusIcon>⚠️</RetryStatusIcon>
+								{retryStatus.errorType}
+							</RetryStatusHeader>
+							
+							<RetryStatusInfo>
+								<div>
+									{retryStatus.attempt}번째 재시도 중...
+									{retryStatus.quotaViolation && (
+										<span> (위반된 할당량: {retryStatus.quotaViolation})</span>
+									)}
+								</div>
+								<div>대기 시간: {Math.round(retryStatus.delay / 1000)}초</div>
+							</RetryStatusInfo>
+							
+							<RetryStatusProgress>
+								<RetryStatusProgressBar progress={retryProgress} />
+							</RetryStatusProgress>
+						</RetryStatusContainer>
+					)}
 					<AutoApproveMenu />
 					{showScrollToBottom ? (
 						<div style={{ display: "flex", padding: "10px 15px 0px 15px" }}>

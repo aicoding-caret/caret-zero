@@ -347,23 +347,46 @@ export const ChatRowContent = ({ message, isExpanded, onToggleExpand, lastModifi
 						<ProgressIndicator />
 					),
 					(() => {
+						// API 요청 상태에 따른 메시지 표시 개선
+						// 1. 취소된 경우
 						if (apiReqCancelReason != null) {
 							return apiReqCancelReason === "user_cancelled" ? (
-								<span style={{ color: normalColor, fontWeight: "bold" }}>API Request Cancelled</span>
+								<span style={{ color: normalColor, fontWeight: "bold" }}>API 요청 취소됨</span>
 							) : (
-								<span style={{ color: errorColor, fontWeight: "bold" }}>API Streaming Failed</span>
+								<span style={{ color: errorColor, fontWeight: "bold" }}>API 스트리밍 실패</span>
 							)
 						}
 
+						// 2. 성공한 경우
 						if (cost != null) {
-							return <span style={{ color: normalColor, fontWeight: "bold" }}>API Request</span>
+							return <span style={{ color: normalColor, fontWeight: "bold" }}>API 요청 완료</span>
 						}
 
+						// 3. 실패한 경우
 						if (apiRequestFailedMessage) {
-							return <span style={{ color: errorColor, fontWeight: "bold" }}>API Request Failed</span>
+							return <span style={{ color: errorColor, fontWeight: "bold" }}>API 요청 실패</span>
 						}
 
-						return <span style={{ color: normalColor, fontWeight: "bold" }}>API Request...</span>
+						// 4. 재시도 중인 경우 - 재시도 정보 표시 추가
+						let apiReqInfo;
+						try {
+							if (message.text) {
+								apiReqInfo = JSON.parse(message.text);
+								if (apiReqInfo.retryAttempt && apiReqInfo.retryAttempt > 0) {
+									return (
+										<span style={{ color: normalColor, fontWeight: "bold" }}>
+											API 재시도 중... ({apiReqInfo.retryAttempt}/{apiReqInfo.maxRetries || 5}) 
+											{apiReqInfo.errorType && <span style={{ color: errorColor }}> - {apiReqInfo.errorType}</span>}
+										</span>
+									);
+								}
+							}
+						} catch (e) {
+							// 파싱 오류 무시
+						}
+
+						// 5. 일반 요청 중
+						return <span style={{ color: normalColor, fontWeight: "bold" }}>API 요청 중...</span>
 					})(),
 				]
 			case "followup":
