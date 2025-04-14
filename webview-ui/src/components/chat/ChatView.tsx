@@ -861,7 +861,7 @@ const ChatView = ({ isHidden, showAnnouncement, hideAnnouncement, showHistoryVie
 					<>
 						<ModeButton
 							key="strategy"
-							appearance={chatSettings.mode === "strategy" ? "primary" : "secondary"}							
+							appearance={chatSettings.mode === "strategy" ? "primary" : "secondary"}
 							onClick={() => {
 								if (chatSettings.mode !== "plan") {
 									vscode.postMessage({

@@ -23,7 +23,8 @@ $env:VSCE_SKIP_TYPE_CHECK = "true"
 
 # 디버그 모드로 esbuild 실행
 Write-Host "🔨 Running esbuild in development mode..." -ForegroundColor Blue
-node esbuild.js
+Write-Host "📝 Saving esbuild logs to: $logFile" -ForegroundColor Cyan
+node esbuild.js > "$logFile" 2>&1
 if ($LASTEXITCODE -ne 0) {
     Write-Warning "⚠️ Debug build failed!"
     exit 1
@@ -37,7 +38,8 @@ $outputFileName = "$($extensionName)-$($extensionVersion)-$($timestamp)-debug.vs
 Write-Host "📦 Packaging debug version as: $outputFileName" -ForegroundColor Green
 
 # vsce 명령 실행
-npx @vscode/vsce package --no-dependencies --no-git-tag-version --out $outputFileName
+Write-Host "📝 Appending vsce packaging logs to: $logFile" -ForegroundColor Cyan
+npx @vscode/vsce package --no-dependencies --no-git-tag-version --out $outputFileName >> "$logFile" 2>&1
 if ($LASTEXITCODE -ne 0) {
     Write-Error "❌ Packaging failed! Could not create debug VSIX."
     exit 1
@@ -47,30 +49,9 @@ Write-Host "✅ Debug build packaged successfully as $outputFileName!" -Foregrou
 
 # 3. 로그 사용 방법 안내
 Write-Host "📝 Log Configuration:" -ForegroundColor Cyan
-Write-Host "  - Logs will be saved to: $logFile" -ForegroundColor Cyan
+Write-Host "  - Logs have been saved to: $logFile" -ForegroundColor Cyan
+Write-Host "  - To view logs, run: Get-Content -Path `"$logFile`"" -ForegroundColor Yellow
 Write-Host "  - To run VS Code with debug logging, use:" -ForegroundColor Cyan
-Write-Host "    code --extensionDevelopmentPath=`"$PSScriptRoot`" > `"$logFile`" 2>&1" -ForegroundColor Yellow
-Write-Host "  - To view logs in real-time, run:" -ForegroundColor Cyan
-Write-Host "    Get-Content -Path `"$logFile`" -Wait" -ForegroundColor Yellow
+Write-Host "    code --extensionDevelopmentPath=`"$PSScriptRoot`" >> `"$logFile`" 2>&1" -ForegroundColor Yellow
 
-# 4. 사용자에게 선택 제공
-Write-Host ""
-Write-Host "🚀 What would you like to do next?" -ForegroundColor Magenta
-Write-Host "  [1] Run VS Code with debug logging (logs saved to $logFile)"
-Write-Host "  [2] Exit"
-
-$choice = Read-Host "Enter your choice (1 or 2)"
-
-if ($choice -eq "1") {
-    Write-Host "🚀 Launching VS Code with debug logging..." -ForegroundColor Green
-    Write-Host "📝 Debug logs will be saved to: $logFile" -ForegroundColor Cyan
-    
-    # VS Code 실행 및 로그 저장
-    Start-Process powershell -ArgumentList "-Command", "code --extensionDevelopmentPath=`"$PSScriptRoot`" > `"$logFile`" 2>&1"
-    
-    Write-Host "✅ VS Code launched with debug logging enabled!" -ForegroundColor Green
-    Write-Host "📋 To view logs in real-time, run: Get-Content -Path `"$logFile`" -Wait" -ForegroundColor Yellow
-} else {
-    Write-Host "👋 Exiting. You can run VS Code with debug logging later using:" -ForegroundColor Cyan
-    Write-Host "   code --extensionDevelopmentPath=`"$PSScriptRoot`" > `"$logFile`" 2>&1" -ForegroundColor Yellow
-}
+Write-Host "✅ Debug build and packaging completed successfully!" -ForegroundColor Green

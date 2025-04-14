@@ -18,3 +18,4 @@ models/
 .env
 models_temp/
 models_backup/
+logs/
