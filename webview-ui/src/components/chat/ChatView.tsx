@@ -860,8 +860,8 @@ const ChatView = ({ isHidden, showAnnouncement, hideAnnouncement, showHistoryVie
 					// 모드 데이터가 없는 경우 기본 모드 버튼 표시
 					<>
 						<ModeButton
-							key="plan"
-							appearance={chatSettings.mode === "plan" ? "primary" : "secondary"}
+							key="strategy"
+							appearance={chatSettings.mode === "strategy" ? "primary" : "secondary"}							
 							onClick={() => {
 								if (chatSettings.mode !== "plan") {
 									vscode.postMessage({
@@ -873,13 +873,13 @@ const ChatView = ({ isHidden, showAnnouncement, hideAnnouncement, showHistoryVie
 							Plan
 						</ModeButton>
 						<ModeButton
-							key="do"
-							appearance={chatSettings.mode === "do" ? "primary" : "secondary"}
+							key="dev"
+							appearance={chatSettings.mode === "dev" ? "primary" : "secondary"}
 							onClick={() => {
-								if (chatSettings.mode !== "do") {
+								if (chatSettings.mode !== "dev") {
 									vscode.postMessage({
 										type: "togglePlanActMode",
-										chatSettings: { ...chatSettings, mode: "do" },
+										chatSettings: { ...chatSettings, mode: "dev" },
 									})
 								}
 							}}>
