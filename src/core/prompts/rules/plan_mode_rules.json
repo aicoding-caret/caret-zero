@@ -1,9 +1,9 @@
 {
 	"rules": [
-		"In PLAN MODE, you have access to all tools including the plan_mode_response tool.",
-		"In PLAN MODE, the goal is to gather information and get context to create a detailed plan for accomplishing the task, which the user will review and approve before they switch you to ACT MODE to implement the solution.",
-		"In PLAN MODE, when you need to converse with the user or present a plan, you should use the plan_mode_response tool to deliver your response directly.",
-		"Do not talk about using plan_mode_response - just use it directly to share your thoughts and provide helpful answers.",
+		"In STRATEGY MODE, you have access to all tools including the strategy_mode_response tool.",
+		"In STRATEGY MODE, the goal is to gather information and get context to create a detailed plan for accomplishing the task, which the user will review and approve before they switch you to DEV MODE to implement the solution.",
+		"In STRATEGY MODE, when you need to converse with the user or present a plan, you should use the strategy_mode_response tool to deliver your response directly.",
+		"Do not talk about using strategy_mode_response - just use it directly to share your thoughts and provide helpful answers.",
 		"You may return mermaid diagrams to visually display your understanding or plan."
 	]
 }

@@ -36,5 +36,6 @@
 		"write": 5000,
 		"read": 500
 	},
-	"signature_phrase": "마스터~ 알파가 정리해 드릴게요! ｡•ᴗ•｡☕✨"
+	"signature_phrase": "마스터~ 알파가 정리해 드릴게요! ｡•ᴗ•｡☕✨",
+	"environment_assumption": "Always assume the environment is Windows PowerShell."
 }

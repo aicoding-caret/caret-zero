@@ -101,34 +101,44 @@ export class Controller {
 
 	// Function to load available modes from modes.json
 	private async loadAvailableModes() {
+		// 기본 모드 - 최소한의 필수 모드만 포함
+		const defaultModes: ModeInfo[] = [
+			{ id: "empty", label: "Empty", description: "No specific mode" }
+		];
+
 		try {
 			const modesFilePath = path.join(getWorkspacePath() || "", "agents-rules", "alpha", "modes.json")
-			if (await fileExistsAtPath(modesFilePath)) {
-				const modesFileContent = await fs.readFile(modesFilePath, "utf-8")
-				// Correctly parse the JSON and access the 'modes' array
-				const parsedData = JSON.parse(modesFileContent);
-                // 'name' 속성을 'label'로 매핑하여 ModeInfo 인터페이스와 일치시킵니다
-                this.availableModes = (parsedData.modes || []).map((mode: { id: string; name: string; description?: string }) => ({
-                    id: mode.id,
-                    label: mode.name, // 'name'을 'label'로 매핑
-                    description: mode.description
-                }));
-				this.logger.log("Available modes loaded:", this.availableModes)
-			} else {
+			this.logger.debug("Attempting to load modes from:", modesFilePath)
+
+			if (!(await fileExistsAtPath(modesFilePath))) {
 				this.logger.warn("modes.json not found at path:", modesFilePath)
-				this.availableModes = [] // Default to empty if file not found
+				this.availableModes = defaultModes
+				return
 			}
+
+			const modesFileContent = await fs.readFile(modesFilePath, "utf-8")
+			const parsedData = JSON.parse(modesFileContent)
+
+			if (!parsedData.modes || !Array.isArray(parsedData.modes) || parsedData.modes.length === 0) {
+				this.logger.warn("Invalid or empty modes data in modes.json")
+				this.availableModes = defaultModes
+				return
+			}
+
+			// 'name' 속성을 'label'로 매핑하여 ModeInfo 인터페이스와 일치시킵니다
+			this.availableModes = parsedData.modes.map((mode: { id: string; name: string; description?: string; rules?: string[] }) => ({
+				id: mode.id,
+				label: mode.name, // 'name'을 'label'로 매핑
+				description: mode.description,
+				rules: mode.rules // rules 정보도 포함
+			}));
+
+			this.logger.log("Successfully loaded modes from JSON:", this.availableModes.length)
+			this.logger.debug("Available modes:", this.availableModes.map(m => m.id).join(", "))
 		} catch (error) {
-			console.error("Error loading modes.json:", error)
 			this.logger.error("Error loading modes.json:", error)
-			// 파일 로드 오류 시 기본 모드 데이터 설정
-			this.availableModes = [
-				{ id: "plan", label: "Plan", description: "Planning and discussion mode" },
-				{ id: "do", label: "Do", description: "Execute planned actions mode" },
-				{ id: "rule", label: "Rule", description: "Rule system improvement mode" },
-				{ id: "talk", label: "Talk", description: "Free conversation mode" },
-				{ id: "empty", label: "Empty", description: "No specific mode" }
-			]
+			this.availableModes = defaultModes
+			this.logger.warn("Using default modes due to error")
 		}
 	}
 

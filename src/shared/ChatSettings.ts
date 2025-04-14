@@ -3,5 +3,5 @@ export interface ChatSettings {
 }
 
 export const DEFAULT_CHAT_SETTINGS: ChatSettings = {
-	mode: "do", // Default to 'Do' mode (previously 'act')
+	mode: "strategy", // Default to 'Strategy' mode (previously 'plan')
 }

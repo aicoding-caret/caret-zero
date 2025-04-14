@@ -945,7 +945,7 @@ export class Task {
 		newUserContent.push({
 			type: "text",
 			text: formatResponse.taskResumption(
-				this.chatSettings?.mode === "plan" ? "plan" : "act",
+				this.chatSettings?.mode === "strategy" ? "strategy" : "dev",
 				agoText,
 				cwd,
 				wasRecent,
@@ -1216,12 +1216,12 @@ export class Task {
 			preferredLanguage && preferredLanguage !== DEFAULT_LANGUAGE_SETTINGS
 				? `# Preferred Language\n\nSpeak in ${preferredLanguage}.`
 				: ""
-		const clineRulesFilePath = path.resolve(cwd, GlobalFileNames.clineRules)
+		const clineRulesFilePath = path.resolve(cwd, process.env.CARET_RULES_FILE || ".caretrules")
 		let clineRulesFileInstructions: string | undefined
 		if (await fileExistsAtPath(clineRulesFilePath)) {
 			if (await isDirectory(clineRulesFilePath)) {
 				try {
-					// Read all files in the .clinerules/ directory.
+					// Read all files in the rules directory.
 					const ruleFiles = await fs
 						.readdir(clineRulesFilePath, { withFileTypes: true, recursive: true })
 						.then((files) => files.filter((file) => file.isFile()))
