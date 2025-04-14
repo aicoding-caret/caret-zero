@@ -122,25 +122,22 @@ const TaskHeader: React.FC<TaskHeaderProps> = ({
 		// 오픈AI 호환 모델의 가격 정보 확인
 		const openAiCompatHasPricing =
 			apiConfiguration?.apiProvider === "openai" &&
-			(apiConfiguration?.openAiModelInfo?.inputPrice || 
-			(apiConfiguration?.openAiModelInfo?.inputPriceTiers && 
-			apiConfiguration?.openAiModelInfo?.inputPriceTiers.length > 0)) &&
-			(apiConfiguration?.openAiModelInfo?.outputPrice || 
-			(apiConfiguration?.openAiModelInfo?.outputPriceTiers && 
-			apiConfiguration?.openAiModelInfo?.outputPriceTiers.length > 0))
+			(apiConfiguration?.openAiModelInfo?.inputPrice ||
+				(apiConfiguration?.openAiModelInfo?.inputPriceTiers &&
+					apiConfiguration?.openAiModelInfo?.inputPriceTiers.length > 0)) &&
+			(apiConfiguration?.openAiModelInfo?.outputPrice ||
+				(apiConfiguration?.openAiModelInfo?.outputPriceTiers &&
+					apiConfiguration?.openAiModelInfo?.outputPriceTiers.length > 0))
 
 		// Gemini 모델의 가격 정보 확인
-		const geminiHasPricing = 
+		const geminiHasPricing =
 			apiConfiguration?.apiProvider === "gemini" &&
-			((
-				apiConfiguration?.openAiModelInfo?.inputPrice || 
-				(apiConfiguration?.openAiModelInfo?.inputPriceTiers && 
-				apiConfiguration?.openAiModelInfo?.inputPriceTiers.length > 0)
-			) || (
-				apiConfiguration?.openAiModelInfo?.outputPrice || 
-				(apiConfiguration?.openAiModelInfo?.outputPriceTiers && 
-				apiConfiguration?.openAiModelInfo?.outputPriceTiers.length > 0)
-			))
+			(apiConfiguration?.openAiModelInfo?.inputPrice ||
+				(apiConfiguration?.openAiModelInfo?.inputPriceTiers &&
+					apiConfiguration?.openAiModelInfo?.inputPriceTiers.length > 0) ||
+				apiConfiguration?.openAiModelInfo?.outputPrice ||
+				(apiConfiguration?.openAiModelInfo?.outputPriceTiers &&
+					apiConfiguration?.openAiModelInfo?.outputPriceTiers.length > 0))
 
 		if (openAiCompatHasPricing || geminiHasPricing) {
 			return true

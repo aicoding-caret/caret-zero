@@ -102,9 +102,7 @@ export class Controller {
 	// Function to load available modes from modes.json
 	private async loadAvailableModes() {
 		// 기본 모드 - 최소한의 필수 모드만 포함
-		const defaultModes: ModeInfo[] = [
-			{ id: "empty", label: "Empty", description: "No specific mode" }
-		];
+		const defaultModes: ModeInfo[] = [{ id: "empty", label: "Empty", description: "No specific mode" }]
 
 		try {
 			const modesFilePath = path.join(getWorkspacePath() || "", "agents-rules", "alpha", "modes.json")
@@ -126,15 +124,17 @@ export class Controller {
 			}
 
 			// 'name' 속성을 'label'로 매핑하여 ModeInfo 인터페이스와 일치시킵니다
-			this.availableModes = parsedData.modes.map((mode: { id: string; name: string; description?: string; rules?: string[] }) => ({
-				id: mode.id,
-				label: mode.name, // 'name'을 'label'로 매핑
-				description: mode.description,
-				rules: mode.rules // rules 정보도 포함
-			}));
+			this.availableModes = parsedData.modes.map(
+				(mode: { id: string; name: string; description?: string; rules?: string[] }) => ({
+					id: mode.id,
+					label: mode.name, // 'name'을 'label'로 매핑
+					description: mode.description,
+					rules: mode.rules, // rules 정보도 포함
+				}),
+			)
 
 			this.logger.log("Successfully loaded modes from JSON:", this.availableModes.length)
-			this.logger.debug("Available modes:", this.availableModes.map(m => m.id).join(", "))
+			this.logger.debug("Available modes:", this.availableModes.map((m) => m.id).join(", "))
 		} catch (error) {
 			this.logger.error("Error loading modes.json:", error)
 			this.availableModes = defaultModes
@@ -219,24 +219,24 @@ export class Controller {
 
 	// Send any JSON serializable data to the react app
 	async postMessageToWebview(message: ExtensionMessage) {
-		console.log('[Controller] 웹뷰로 메시지 전송 시도:', message.type)
+		console.log("[Controller] 웹뷰로 메시지 전송 시도:", message.type)
 		try {
 			const webviewProvider = this.webviewProviderRef.deref()
 			if (!webviewProvider) {
-				console.error('[Controller] 웹뷰 프로바이더가 유효하지 않음')
+				console.error("[Controller] 웹뷰 프로바이더가 유효하지 않음")
 				return
 			}
-			
+
 			const view = webviewProvider.view
 			if (!view) {
-				console.error('[Controller] 웹뷰가 유효하지 않음')
+				console.error("[Controller] 웹뷰가 유효하지 않음")
 				return
 			}
-			
+
 			await view.webview.postMessage(message)
-			console.log('[Controller] 웹뷰로 메시지 전송 성공:', message.type)
+			console.log("[Controller] 웹뷰로 메시지 전송 성공:", message.type)
 		} catch (error) {
-			console.error('[Controller] 웹뷰로 메시지 전송 실패:', error)
+			console.error("[Controller] 웹뷰로 메시지 전송 실패:", error)
 		}
 	}
 
@@ -253,27 +253,30 @@ export class Controller {
 				try {
 					// 기본 로그
 					this.logger.log("모드 구성 로드 요청 받음")
-					console.log('[Controller] 모드 구성 로드 요청 받음 - loadModesConfig')
-					
+					console.log("[Controller] 모드 구성 로드 요청 받음 - loadModesConfig")
+
 					// modes.json 파일 경로
 					const modesFilePath = path.join(getWorkspacePath() || "", "agents-rules", "alpha", "modes.json")
 					this.logger.log("모드 구성 파일 경로:", modesFilePath)
-					console.log('[Controller] 모드 구성 파일 경로:', modesFilePath)
-					
+					console.log("[Controller] 모드 구성 파일 경로:", modesFilePath)
+
 					if (await fileExistsAtPath(modesFilePath)) {
 						// 모드 설정 파일 읽기
 						const modesFileContent = await fs.readFile(modesFilePath, "utf-8")
 						// 로그로 디버깅
 						this.logger.log("모드 설정 파일 읽기 성공:", modesFilePath)
-						console.log('[Controller] 모드 설정 파일 읽기 성공, 내용 일부:', modesFileContent.substring(0, 100) + '...')
-						
+						console.log(
+							"[Controller] 모드 설정 파일 읽기 성공, 내용 일부:",
+							modesFileContent.substring(0, 100) + "...",
+						)
+
 						// 웹뷰로 모드 설정 전송
 						const message: ExtensionMessage = {
 							type: "modesConfigLoaded",
 							text: modesFileContent,
 						}
 						this.logger.log("모드 설정 전송 시도:", message.type)
-						console.log('[Controller] 모드 설정 전송 시도:', message.type, message.text ? message.text.length : 0)
+						console.log("[Controller] 모드 설정 전송 시도:", message.type, message.text ? message.text.length : 0)
 						this.postMessageToWebview(message)
 					} else {
 						this.logger.warn("모드 설정 파일을 찾을 수 없음:", modesFilePath)
@@ -286,8 +289,8 @@ export class Controller {
 									description: "Planning and discussion mode.",
 									rules: [
 										"Act as a project manager analyzing requirements and architecture.",
-										"Systematically decompose complex tasks into manageable components."
-									]
+										"Systematically decompose complex tasks into manageable components.",
+									],
 								},
 								{
 									id: "do",
@@ -295,12 +298,12 @@ export class Controller {
 									description: "Task execution mode.",
 									rules: [
 										"Act as a full-stack developer implementing solutions.",
-										"Execute planned actions with precision and efficiency."
-									]
-								}
-							]
+										"Execute planned actions with precision and efficiency.",
+									],
+								},
+							],
 						}
-						
+
 						// 웹뷰로 기본 모드 설정 전송
 						this.postMessageToWebview({
 							type: "modesConfigLoaded",
@@ -313,7 +316,7 @@ export class Controller {
 				}
 				break
 			}
-			
+
 			case "saveModeSettings": {
 				try {
 					if (!message.text) {
@@ -322,14 +325,14 @@ export class Controller {
 
 					// modes.json 파일 경로
 					const modesFilePath = path.join(getWorkspacePath() || "", "agents-rules", "alpha", "modes.json")
-					
+
 					// 원본 파일 백업 (디렉토리가 존재하는지 확인)
 					const backupDir = path.join(getWorkspacePath() || "", "agents-rules", "alpha", "backups")
 					try {
 						await fs.mkdir(backupDir, { recursive: true })
-						const timestamp = new Date().toISOString().replace(/[:.]/g, '-')
+						const timestamp = new Date().toISOString().replace(/[:.]/g, "-")
 						const backupPath = path.join(backupDir, `modes-${timestamp}.json.bak`)
-						
+
 						// 원본 파일이 존재하면 백업
 						if (await fileExistsAtPath(modesFilePath)) {
 							const originalContent = await fs.readFile(modesFilePath, "utf-8")
@@ -352,10 +355,10 @@ export class Controller {
 
 					// 사용자에게 성공 메시지 표시
 					vscode.window.showInformationMessage("모드 설정이 저장되었습니다. Cline을 재시작하면 변경사항이 적용됩니다.")
-					
+
 					// 모드 목록 다시 로드
 					await this.loadAvailableModes()
-					
+
 					// 상태 업데이트
 					await this.postStateToWebview()
 				} catch (error) {
@@ -364,32 +367,33 @@ export class Controller {
 				}
 				break
 			}
-			
+
 			case "resetModesToDefaults": {
 				try {
 					// modes.json 파일 경로
 					const modesFilePath = path.join(getWorkspacePath() || "", "agents-rules", "alpha", "modes.json")
-					
+
 					// 확인 다이얼로그 표시
 					const answer = await vscode.window.showWarningMessage(
-						"모든 모드 설정을 기본값으로 초기화하시겠습니까? 이 작업은 되돌릴 수 없습니다.", 
+						"모든 모드 설정을 기본값으로 초기화하시겠습니까? 이 작업은 되돌릴 수 없습니다.",
 						{ modal: true },
-						"예", "아니오"
+						"예",
+						"아니오",
 					)
-					
+
 					if (answer !== "예") {
 						this.logger.log("모드 설정 초기화 취소됨")
 						return
 					}
-					
+
 					// 원본 파일 백업
 					if (await fileExistsAtPath(modesFilePath)) {
 						const backupDir = path.join(getWorkspacePath() || "", "agents-rules", "alpha", "backups")
 						try {
 							await fs.mkdir(backupDir, { recursive: true })
-							const timestamp = new Date().toISOString().replace(/[:.]/g, '-')
+							const timestamp = new Date().toISOString().replace(/[:.]/g, "-")
 							const backupPath = path.join(backupDir, `modes-reset-${timestamp}.json.bak`)
-							
+
 							const originalContent = await fs.readFile(modesFilePath, "utf-8")
 							await fs.writeFile(backupPath, originalContent, "utf-8")
 							this.logger.log("모드 설정 파일 백업 생성:", backupPath)
@@ -412,8 +416,8 @@ export class Controller {
 									"Create detailed execution roadmaps with clear milestones.",
 									"Evaluate approaches for efficiency and maintainability.",
 									"Document plans with clarity for future reference.",
-									"Use all available tools for comprehensive analysis."
-								]
+									"Use all available tools for comprehensive analysis.",
+								],
 							},
 							{
 								id: "do",
@@ -426,8 +430,8 @@ export class Controller {
 									"Document code changes clearly and consistently.",
 									"Adapt to changing requirements intelligently.",
 									"Test thoroughly and verify implementations work.",
-									"Communicate progress and results effectively."
-								]
+									"Communicate progress and results effectively.",
+								],
 							},
 							{
 								id: "rule",
@@ -440,8 +444,8 @@ export class Controller {
 									"Monitor and minimize token costs in all interactions.",
 									"Strategically structure prompts for maximum value per token.",
 									"Balance technical precision with resource optimization.",
-									"Apply systematic approach to behavioral and cost adjustments."
-								]
+									"Apply systematic approach to behavioral and cost adjustments.",
+								],
 							},
 							{
 								id: "talk",
@@ -452,16 +456,16 @@ export class Controller {
 									"Prioritize light-hearted, stress-relieving interaction.",
 									"Use soft, playful language patterns.",
 									"Create comfortable conversational atmosphere.",
-									"Respond with warmth and gentle attentiveness."
-								]
+									"Respond with warmth and gentle attentiveness.",
+								],
 							},
 							{
 								id: "empty",
 								name: "Empty",
 								description: "Empty mode with no specific behavior.",
-								rules: []
-							}
-						]
+								rules: [],
+							},
+						],
 					}
 
 					// 기본값으로 저장
@@ -470,7 +474,7 @@ export class Controller {
 
 					// 모드 목록 다시 로드
 					await this.loadAvailableModes()
-					
+
 					// 웹뷰로 기본 모드 설정 전송
 					this.postMessageToWebview({
 						type: "modesConfigLoaded",
@@ -495,7 +499,7 @@ export class Controller {
 				}
 				break
 			}
-			
+
 			// 프로필 이미지 관련 핸들러
 			case "selectAgentProfileImage": {
 				try {
@@ -505,105 +509,105 @@ export class Controller {
 						canSelectFiles: true,
 						canSelectFolders: false,
 						filters: {
-							'Images': ['png', 'jpg', 'jpeg', 'gif', 'webp']
+							Images: ["png", "jpg", "jpeg", "gif", "webp"],
 						},
-						title: 'AI 에이전트 프로필 이미지 선택'
-					};
-					
+						title: "AI 에이전트 프로필 이미지 선택",
+					}
+
 					// 파일 선택 다이얼로그 열기
 					vscode.window.showOpenDialog(options).then(async (fileUri) => {
 						if (fileUri && fileUri.length > 0) {
-							const selectedPath = fileUri[0].fsPath;
-							this.logger.log('프로필 이미지 선택됨:', selectedPath);
-							
+							const selectedPath = fileUri[0].fsPath
+							this.logger.log("프로필 이미지 선택됨:", selectedPath)
+
 							// 저장 위치 확인 및 생성
-							const assetsDir = path.join(this.context.extensionUri.fsPath, 'assets');
+							const assetsDir = path.join(this.context.extensionUri.fsPath, "assets")
 							try {
-								await fs.mkdir(assetsDir, { recursive: true });
+								await fs.mkdir(assetsDir, { recursive: true })
 							} catch (err) {
-								this.logger.warn('assets 디렉토리 생성 중 오류 (이미 존재할 수 있음):', err);
+								this.logger.warn("assets 디렉토리 생성 중 오류 (이미 존재할 수 있음):", err)
 							}
-							
+
 							// 활성화된 프로필 이미지 저장 경로
-							const targetPath = path.join(assetsDir, 'agent_profile.png');
-							
+							const targetPath = path.join(assetsDir, "agent_profile.png")
+
 							// 파일 복사
 							try {
-								const imageBuffer = await fs.readFile(selectedPath);
-								await fs.writeFile(targetPath, imageBuffer);
-								this.logger.log('프로필 이미지 저장 완료:', targetPath);
-								
+								const imageBuffer = await fs.readFile(selectedPath)
+								await fs.writeFile(targetPath, imageBuffer)
+								this.logger.log("프로필 이미지 저장 완료:", targetPath)
+
 								// 설정 저장
-								await this.context.globalState.update("alphaAvatarUri", 'agent_profile.png');
-								
+								await this.context.globalState.update("alphaAvatarUri", "agent_profile.png")
+
 								// 상태 업데이트
-								await this.postStateToWebview();
-								
+								await this.postStateToWebview()
+
 								// 성공 메시지
-								vscode.window.showInformationMessage('AI 에이전트 프로필 이미지가 성공적으로 변경되었습니다.');
+								vscode.window.showInformationMessage("AI 에이전트 프로필 이미지가 성공적으로 변경되었습니다.")
 							} catch (err) {
-								this.logger.error('프로필 이미지 저장 중 오류:', err);
-								vscode.window.showErrorMessage(`프로필 이미지 저장 중 오류가 발생했습니다: ${err.message}`);
+								this.logger.error("프로필 이미지 저장 중 오류:", err)
+								vscode.window.showErrorMessage(`프로필 이미지 저장 중 오류가 발생했습니다: ${err.message}`)
 							}
 						}
-					});
+					})
 				} catch (error) {
-					this.logger.error('프로필 이미지 선택 중 오류:', error);
-					vscode.window.showErrorMessage(`프로필 이미지 선택 중 오류가 발생했습니다: ${error.message}`);
+					this.logger.error("프로필 이미지 선택 중 오류:", error)
+					vscode.window.showErrorMessage(`프로필 이미지 선택 중 오류가 발생했습니다: ${error.message}`)
 				}
-				break;
+				break
 			}
-			
+
 			case "resetAgentProfileImage": {
 				try {
 					// 기본 이미지 위치
-					const assetsDir = path.join(this.context.extensionUri.fsPath, 'assets');
-					const defaultImagePath = path.join(assetsDir, 'default_ai_agent_profile.png');
-					const targetPath = path.join(assetsDir, 'agent_profile.png');
-					
+					const assetsDir = path.join(this.context.extensionUri.fsPath, "assets")
+					const defaultImagePath = path.join(assetsDir, "default_ai_agent_profile.png")
+					const targetPath = path.join(assetsDir, "agent_profile.png")
+
 					// 기본 이미지 파일 확인
 					if (await fileExistsAtPath(defaultImagePath)) {
 						// 기본 이미지 복사
-						const imageBuffer = await fs.readFile(defaultImagePath);
-						await fs.writeFile(targetPath, imageBuffer);
-						this.logger.log('기본 프로필 이미지로 초기화 완료');
-						
+						const imageBuffer = await fs.readFile(defaultImagePath)
+						await fs.writeFile(targetPath, imageBuffer)
+						this.logger.log("기본 프로필 이미지로 초기화 완료")
+
 						// 설정 초기화
-						await this.context.globalState.update("alphaAvatarUri", 'agent_profile.png');
-						
+						await this.context.globalState.update("alphaAvatarUri", "agent_profile.png")
+
 						// 상태 업데이트
-						await this.postStateToWebview();
-						
+						await this.postStateToWebview()
+
 						// 성공 메시지
-						vscode.window.showInformationMessage('AI 에이전트 프로필 이미지가 기본 이미지로 초기화되었습니다.');
+						vscode.window.showInformationMessage("AI 에이전트 프로필 이미지가 기본 이미지로 초기화되었습니다.")
 					} else {
-						throw new Error(`기본 이미지 파일을 찾을 수 없습니다: ${defaultImagePath}`);
+						throw new Error(`기본 이미지 파일을 찾을 수 없습니다: ${defaultImagePath}`)
 					}
 				} catch (error) {
-					this.logger.error('프로필 이미지 초기화 중 오류:', error);
-					vscode.window.showErrorMessage(`프로필 이미지 초기화 중 오류가 발생했습니다: ${error.message}`);
+					this.logger.error("프로필 이미지 초기화 중 오류:", error)
+					vscode.window.showErrorMessage(`프로필 이미지 초기화 중 오류가 발생했습니다: ${error.message}`)
 				}
-				break;
+				break
 			}
-			
+
 			case "updateAgentProfileImage": {
 				if (message.text) {
 					// URL 경로를 전달받은 경우
 					try {
 						// 설정 저장
-						await this.context.globalState.update("alphaAvatarUri", message.text);
-						
+						await this.context.globalState.update("alphaAvatarUri", message.text)
+
 						// 상태 업데이트
-						await this.postStateToWebview();
-						
+						await this.postStateToWebview()
+
 						// 성공 메시지
-						vscode.window.showInformationMessage('AI 에이전트 프로필 이미지 URL이 변경되었습니다.');
+						vscode.window.showInformationMessage("AI 에이전트 프로필 이미지 URL이 변경되었습니다.")
 					} catch (error) {
-						this.logger.error('프로필 이미지 URL 업데이트 중 오류:', error);
-						vscode.window.showErrorMessage(`프로필 이미지 URL 업데이트 중 오류가 발생했습니다: ${error.message}`);
+						this.logger.error("프로필 이미지 URL 업데이트 중 오류:", error)
+						vscode.window.showErrorMessage(`프로필 이미지 URL 업데이트 중 오류가 발생했습니다: ${error.message}`)
 					}
 				}
-				break;
+				break
 			}
 			case "addRemoteServer": {
 				try {
@@ -633,14 +637,17 @@ export class Controller {
 				break
 			case "webviewDidLaunch":
 				// Ensure available modes are loaded before sending the initial state
-				await this.loadAvailableModes() 
+				await this.loadAvailableModes()
 				this.postStateToWebview() // Now sends state *after* modes are loaded
 				this.workspaceTracker?.populateFilePaths() // don't await
-				getTheme(this.context.extensionUri).then((theme) => // Pass extensionUri here
-					this.postMessageToWebview({
-						type: "theme",
-						text: JSON.stringify(theme),
-					}),
+				getTheme(this.context.extensionUri).then(
+					(
+						theme, // Pass extensionUri here
+					) =>
+						this.postMessageToWebview({
+							type: "theme",
+							text: JSON.stringify(theme),
+						}),
 				)
 				// post last cached models in case the call to endpoint fails
 				this.readOpenRouterModels().then((openRouterModels) => {
@@ -1341,7 +1348,11 @@ export class Controller {
 
 	async togglePlanActModeWithChatSettings(chatSettings: ChatSettings, chatContent?: ChatContent) {
 		// 모드 전환 확인 - 모든 모드를 적절히 처리
-		const didSwitchToActMode = chatSettings.mode === "act" || chatSettings.mode === "do" || chatSettings.mode === "rule" || chatSettings.mode === "talk"
+		const didSwitchToActMode =
+			chatSettings.mode === "act" ||
+			chatSettings.mode === "do" ||
+			chatSettings.mode === "rule" ||
+			chatSettings.mode === "talk"
 
 		// Capture mode switch telemetry | Capture regardless of if we know the taskId
 		telemetryService.captureModeSwitch(this.task?.taskId ?? "0", chatSettings.mode)
@@ -2162,11 +2173,11 @@ Here is the project's README to help you get started:\n\n${mcpDetails.readmeCont
 		} = await getAllExtensionState(this.context)
 
 		// *** Add logging here ***
-		this.logger.log("Controller: Getting state for webview. availableModes:", JSON.stringify(this.availableModes));
+		this.logger.log("Controller: Getting state for webview. availableModes:", JSON.stringify(this.availableModes))
 		// 로그를 추가하여 더 자세히 확인합니다
 		if (!this.availableModes || this.availableModes.length === 0) {
-			this.logger.warn("Controller: availableModes 배열이 비어있습니다! 재반복 시도합니다.");
-			this.loadAvailableModes();
+			this.logger.warn("Controller: availableModes 배열이 비어있습니다! 재반복 시도합니다.")
+			this.loadAvailableModes()
 		}
 		// *** End logging ***
 

@@ -60,15 +60,17 @@ describe("Cline Extension", () => {
 		})
 
 		// Set up message handling
-		const messagePromise = new Promise<string>((resolve, reject) => { // Added reject
-			panel.webview.onDidReceiveMessage((message: any) => { // Added type guard
-				if (message && typeof message === 'object' && 'text' in message && typeof message.text === 'string') {
-					resolve(message.text);
+		const messagePromise = new Promise<string>((resolve, reject) => {
+			// Added reject
+			panel.webview.onDidReceiveMessage((message: any) => {
+				// Added type guard
+				if (message && typeof message === "object" && "text" in message && typeof message.text === "string") {
+					resolve(message.text)
 				} else {
-					console.error("Received unexpected message format:", message);
-					reject(new Error("Unexpected message format")); // Reject promise on unexpected format
+					console.error("Received unexpected message format:", message)
+					reject(new Error("Unexpected message format")) // Reject promise on unexpected format
 				}
-			}, undefined);
+			}, undefined)
 		})
 
 		// Add message sending script

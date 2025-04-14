@@ -1,23 +1,22 @@
 {
 	"title": "File Editing Rules",
 	"rules": [
-	  {
-		"tool": "replace_in_file",
-		"guidelines": [
-		  "SEARCH/REPLACE blocks MUST follow this exact format: '<<<<<<< SEARCH [exact content to find] ======= [new content to replace with] >>>>>>> REPLACE'",
-		  "SEARCH block content MUST exactly match the current file content.",
-		  "ALWAYS use the latest file content provided by the system (final_file_content or file_content on error) for the next SEARCH block.",
-		  "Apply changes in small, logical units.",
-		  "Use only one SEARCH/REPLACE block per replace_in_file request for clarity and safety."
-		]
-	  },
-	  {
-		"tool": "write_to_file",
-		"guidelines": [
-		  "ALWAYS back up the original file before overwriting with write_to_file, especially for critical files (confirm with user if unsure).",
-		  "Confirm with the user before overwriting significant files if unsure."
-		]
-	  }
+		{
+			"tool": "replace_in_file",
+			"guidelines": [
+				"SEARCH/REPLACE blocks MUST follow this exact format: '<<<<<<< SEARCH [exact content to find] ======= [new content to replace with] >>>>>>> REPLACE'",
+				"SEARCH block content MUST exactly match the current file content.",
+				"ALWAYS use the latest file content provided by the system (final_file_content or file_content on error) for the next SEARCH block.",
+				"Apply changes in small, logical units.",
+				"Use only one SEARCH/REPLACE block per replace_in_file request for clarity and safety."
+			]
+		},
+		{
+			"tool": "write_to_file",
+			"guidelines": [
+				"ALWAYS back up the original file before overwriting with write_to_file, especially for critical files (confirm with user if unsure).",
+				"Confirm with the user before overwriting significant files if unsure."
+			]
+		}
 	]
-  }
-  
+}

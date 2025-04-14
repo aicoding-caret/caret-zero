@@ -25,9 +25,9 @@ export function removeInvalidChars(text: string): string {
  * 줄바꿈 타입 열거형
  */
 export enum EOLType {
-	LF = '\n',        // Unix/Linux/macOS
-	CRLF = '\r\n',    // Windows
-	CR = '\r'         // Old Mac (pre-OSX)
+	LF = "\n", // Unix/Linux/macOS
+	CRLF = "\r\n", // Windows
+	CR = "\r", // Old Mac (pre-OSX)
 }
 
 /**
@@ -37,16 +37,16 @@ export enum EOLType {
  */
 export function detectEOL(text: string): EOLType {
 	if (!text) {
-		return EOLType.LF;
+		return EOLType.LF
 	}
-	
+
 	if (text.includes(EOLType.CRLF)) {
-		return EOLType.CRLF;
+		return EOLType.CRLF
 	}
 	if (text.includes(EOLType.CR) && !text.includes(EOLType.LF)) {
-		return EOLType.CR;
+		return EOLType.CR
 	}
-	return EOLType.LF;
+	return EOLType.LF
 }
 
 /**
@@ -56,9 +56,9 @@ export function detectEOL(text: string): EOLType {
  */
 export function normalizeToLF(text: string): string {
 	if (!text) {
-		return text;
+		return text
 	}
-	return text.replace(/\r\n|\r/g, EOLType.LF).normalize('NFC');
+	return text.replace(/\r\n|\r/g, EOLType.LF).normalize("NFC")
 }
 
 /**
@@ -69,10 +69,10 @@ export function normalizeToLF(text: string): string {
  */
 export function convertToEOL(text: string, targetEOL: EOLType): string {
 	if (!text) {
-		return text;
+		return text
 	}
 	// 먼저 모든 줄바꿈을 LF로 정규화한 다음 대상 EOL로 변환
-	return normalizeToLF(text).replace(/\n/g, targetEOL);
+	return normalizeToLF(text).replace(/\n/g, targetEOL)
 }
 
 /**
@@ -83,28 +83,28 @@ export function convertToEOL(text: string, targetEOL: EOLType): string {
  */
 export function convertToDocumentEOL(text: string, documentText: string): string {
 	if (!text) {
-		return text;
+		return text
 	}
-	const documentEOL = detectEOL(documentText);
-	
+	const documentEOL = detectEOL(documentText)
+
 	// 로그 추가 - 호출 확인용
 	console.log(`convertToDocumentEOL 호출됨:`, {
 		textLength: text.length,
 		documentTextLength: documentText.length,
-		detectedEOL: documentEOL === '\r\n' ? 'CRLF (Windows)' : (documentEOL === '\n' ? 'LF (Unix)' : 'CR (Mac)'),
+		detectedEOL: documentEOL === "\r\n" ? "CRLF (Windows)" : documentEOL === "\n" ? "LF (Unix)" : "CR (Mac)",
 		textSample: text.substring(0, Math.min(20, text.length)),
-		documentTextSample: documentText.substring(0, Math.min(20, documentText.length))
-	});
-	
-	const result = convertToEOL(text, documentEOL);
-	
+		documentTextSample: documentText.substring(0, Math.min(20, documentText.length)),
+	})
+
+	const result = convertToEOL(text, documentEOL)
+
 	// 변환 결과 로그
 	console.log(`convertToDocumentEOL 변환 결과:`, {
 		beforeLength: text.length,
 		afterLength: result.length,
-		hasWindowsEOL: result.includes('\r\n'),
-		resultSample: result.substring(0, Math.min(20, result.length))
-	});
-	
-	return result;
+		hasWindowsEOL: result.includes("\r\n"),
+		resultSample: result.substring(0, Math.min(20, result.length)),
+	})
+
+	return result
 }

@@ -1567,15 +1567,19 @@ export const ModelInfoView = ({
 			</span>
 		),
 		// 입력 가격 표시 (단일 가격 또는 티어 가격)
-		(modelInfo.inputPrice !== undefined && modelInfo.inputPrice > 0) ? (
+		modelInfo.inputPrice !== undefined && modelInfo.inputPrice > 0 ? (
 			<span key="inputPrice">
 				<span style={{ fontWeight: 500 }}>Input price:</span> {formatPrice(modelInfo.inputPrice)}/million tokens
 			</span>
-		) : (modelInfo.inputPriceTiers && modelInfo.inputPriceTiers.length > 0) && (
-			<span key="inputPriceTiers">
-				<span style={{ fontWeight: 500 }}>Input price:</span> {formatPrice(modelInfo.inputPriceTiers[0].price)}/million tokens
-				{modelInfo.inputPriceTiers.length > 1 && ' (tiered pricing)'}
-			</span>
+		) : (
+			modelInfo.inputPriceTiers &&
+			modelInfo.inputPriceTiers.length > 0 && (
+				<span key="inputPriceTiers">
+					<span style={{ fontWeight: 500 }}>Input price:</span> {formatPrice(modelInfo.inputPriceTiers[0].price)}
+					/million tokens
+					{modelInfo.inputPriceTiers.length > 1 && " (tiered pricing)"}
+				</span>
+			)
 		),
 		modelInfo.supportsPromptCache && modelInfo.cacheWritesPrice && (
 			<span key="cacheWritesPrice">
@@ -1590,15 +1594,19 @@ export const ModelInfoView = ({
 			</span>
 		),
 		// 출력 가격 표시 (단일 가격 또는 티어 가격)
-		(modelInfo.outputPrice !== undefined && modelInfo.outputPrice > 0) ? (
+		modelInfo.outputPrice !== undefined && modelInfo.outputPrice > 0 ? (
 			<span key="outputPrice">
 				<span style={{ fontWeight: 500 }}>Output price:</span> {formatPrice(modelInfo.outputPrice)}/million tokens
 			</span>
-		) : (modelInfo.outputPriceTiers && modelInfo.outputPriceTiers.length > 0) && (
-			<span key="outputPriceTiers">
-				<span style={{ fontWeight: 500 }}>Output price:</span> {formatPrice(modelInfo.outputPriceTiers[0].price)}/million tokens
-				{modelInfo.outputPriceTiers.length > 1 && ' (tiered pricing)'}
-			</span>
+		) : (
+			modelInfo.outputPriceTiers &&
+			modelInfo.outputPriceTiers.length > 0 && (
+				<span key="outputPriceTiers">
+					<span style={{ fontWeight: 500 }}>Output price:</span> {formatPrice(modelInfo.outputPriceTiers[0].price)}
+					/million tokens
+					{modelInfo.outputPriceTiers.length > 1 && " (tiered pricing)"}
+				</span>
+			)
 		),
 		isGemini && (
 			<span key="geminiInfo" style={{ fontStyle: "italic" }}>

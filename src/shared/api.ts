@@ -509,7 +509,7 @@ export const geminiModels = {
 		outputPriceTiers: [
 			{ tokenLimit: Infinity, price: 2.1 }, // $0.0021 per 1K tokens
 		],
-		description: "Fast and efficient AI model for most tasks"
+		description: "Fast and efficient AI model for most tasks",
 	},
 	"gemini-2.0-flash-lite-preview-02-05": {
 		maxTokens: 8192,

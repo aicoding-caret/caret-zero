@@ -14,7 +14,7 @@ export class DiffLogger extends EnhancedLogger {
 	constructor(context: vscode.ExtensionContext) {
 		super("Cline Diff", context, {
 			logToFile: true,
-			logFileName: "cline-diff.log"
+			logFileName: "cline-diff.log",
 		})
 	}
 
@@ -161,23 +161,23 @@ export class DiffLogger extends EnhancedLogger {
 			operation,
 			success,
 			timestamp: new Date().toISOString(),
-			detail
+			detail,
 		})
 	}
 
 	/**
 	 * 변환된 파일 내용을 비교하여 로깅합니다.
-	 * @param path 파일 경로 
+	 * @param path 파일 경로
 	 * @param before 변환 전 내용
 	 * @param after 변환 후 내용
 	 * @param hash 해시값 (변경 여부 추적용)
 	 */
 	logFileContentComparison(path: string, before: string, after: string, hash?: string): void {
-		const beforeLines = before.split('\n').length;
-		const afterLines = after.split('\n').length;
-		const beforeLen = before.length;
-		const afterLen = after.length;
-		const sizeDiff = afterLen - beforeLen;
+		const beforeLines = before.split("\n").length
+		const afterLines = after.split("\n").length
+		const beforeLen = before.length
+		const afterLen = after.length
+		const sizeDiff = afterLen - beforeLen
 
 		this.debug(`파일 내용 비교 [${path}]`, {
 			path,
@@ -188,7 +188,7 @@ export class DiffLogger extends EnhancedLogger {
 			afterSize: afterLen,
 			sizeDiff: sizeDiff > 0 ? `+${sizeDiff}` : sizeDiff,
 			timestamp: new Date().toISOString(),
-			contentHash: hash || "없음"
+			contentHash: hash || "없음",
 		})
 	}
 

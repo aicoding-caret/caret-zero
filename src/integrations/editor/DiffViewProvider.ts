@@ -25,20 +25,27 @@ export class DiffViewProvider {
 	private activeLineController?: DecorationController
 	private streamedLines: string[] = []
 	private preDiagnostics: [vscode.Uri, vscode.Diagnostic[]][] = []
-	private logger: ILogger = console;
+	private logger: ILogger = console
 
-	constructor(private cwd: string, logger?: ILogger) {
+	constructor(
+		private cwd: string,
+		logger?: ILogger,
+	) {
 		if (logger) {
-			this.logger = logger;
+			this.logger = logger
 		}
 	}
 
 	// 내용의 해시값을 생성하는 헬퍼 함수
-private generateContentHash(content: string): string {
-	return crypto.createHash('sha256').update(content || '').digest('hex').substring(0, 8);
-}
+	private generateContentHash(content: string): string {
+		return crypto
+			.createHash("sha256")
+			.update(content || "")
+			.digest("hex")
+			.substring(0, 8)
+	}
 
-async open(relPath: string): Promise<void> {
+	async open(relPath: string): Promise<void> {
 		this.relPath = relPath
 		const fileExists = this.editType === "modify"
 		const absolutePath = path.resolve(this.cwd, relPath)
@@ -57,26 +64,26 @@ async open(relPath: string): Promise<void> {
 		if (fileExists) {
 			try {
 				// 파일 읽기 강화: 오류 처리 및 유효성 검사 개선
-				const fileContent = await fs.readFile(absolutePath, "utf-8");
-				
+				const fileContent = await fs.readFile(absolutePath, "utf-8")
+
 				// 파일 내용 유효성 검증
 				if (fileContent === undefined || fileContent === null) {
 					this.logger.warn(`파일이 비어있거나 정의되지 않음 (${absolutePath})`, {
-						fileExistsButEmpty: true
-					});
-					this.originalContent = "";
+						fileExistsButEmpty: true,
+					})
+					this.originalContent = ""
 				} else {
-					this.originalContent = fileContent;
+					this.originalContent = fileContent
 					this.logger.debug(`원본 파일 내용 읽기 성공 (${absolutePath})`, {
 						contentLength: this.originalContent.length,
 						contentHash: this.generateContentHash(this.originalContent),
 						firstFewChars: this.originalContent.substring(0, Math.min(20, this.originalContent.length)),
-						lastFewChars: this.originalContent.substring(Math.max(0, this.originalContent.length - 20))
-					});
+						lastFewChars: this.originalContent.substring(Math.max(0, this.originalContent.length - 20)),
+					})
 				}
 			} catch (error) {
-				this.logger.error(`파일 읽기 실패 (${absolutePath})`, { error });
-				this.originalContent = "";
+				this.logger.error(`파일 읽기 실패 (${absolutePath})`, { error })
+				this.originalContent = ""
 			}
 		} else {
 			this.originalContent = ""
@@ -84,18 +91,18 @@ async open(relPath: string): Promise<void> {
 		// for new files, create any necessary directories and keep track of new directories to delete if the user denies the operation
 		try {
 			this.createdDirs = await createDirectoriesForFile(absolutePath)
-			this.logger.debug(`디렉토리 생성 성공`, { createdDirs: this.createdDirs });
+			this.logger.debug(`디렉토리 생성 성공`, { createdDirs: this.createdDirs })
 		} catch (error) {
-			this.logger.error(`디렉토리 생성 실패`, { error });
+			this.logger.error(`디렉토리 생성 실패`, { error })
 		}
-		
+
 		// make sure the file exists before we open it
 		if (!fileExists) {
 			try {
 				await fs.writeFile(absolutePath, "")
-				this.logger.debug(`빈 파일 생성 성공 (${absolutePath})`);
+				this.logger.debug(`빈 파일 생성 성공 (${absolutePath})`)
 			} catch (error) {
-				this.logger.error(`빈 파일 생성 실패 (${absolutePath})`, { error });
+				this.logger.error(`빈 파일 생성 실패 (${absolutePath})`, { error })
 			}
 		}
 		// if the file was already open, close it (must happen after showing the diff view since if it's the only tab the column will close)
@@ -194,14 +201,14 @@ async open(relPath: string): Promise<void> {
 		autoFormattingEdits: string | undefined
 		finalContent: string | undefined
 	}> {
-		this.logger.debug(`saveChanges 호출됨`);
-		
+		this.logger.debug(`saveChanges 호출됨`)
+
 		if (!this.relPath || !this.newContent || !this.activeDiffEditor) {
 			this.logger.debug(`saveChanges 필수 요소 없음 (실패)`, {
 				hasRelPath: !!this.relPath,
 				hasNewContent: !!this.newContent,
-				hasActiveDiffEditor: !!this.activeDiffEditor
-			});
+				hasActiveDiffEditor: !!this.activeDiffEditor,
+			})
 			return {
 				newProblemsMessage: undefined,
 				userEdits: undefined,
@@ -210,65 +217,65 @@ async open(relPath: string): Promise<void> {
 			}
 		}
 		const absolutePath = path.resolve(this.cwd, this.relPath)
-		this.logger.debug(`파일 저장 준비: ${absolutePath}`);
+		this.logger.debug(`파일 저장 준비: ${absolutePath}`)
 		const updatedDocument = this.activeDiffEditor.document
 
 		// get the contents before save operation which may do auto-formatting
 		const preSaveContent = updatedDocument.getText()
-		const preSaveHash = this.generateContentHash(preSaveContent);
+		const preSaveHash = this.generateContentHash(preSaveContent)
 		this.logger.debug(`저장 전 내용 해시: ${preSaveHash}`, {
-			preSaveContentLength: preSaveContent.length
-		});
+			preSaveContentLength: preSaveContent.length,
+		})
 
 		try {
 			if (updatedDocument.isDirty) {
-				this.logger.debug(`문서가 변경됨(dirty), 저장 시도...`);
+				this.logger.debug(`문서가 변경됨(dirty), 저장 시도...`)
 				await updatedDocument.save()
-				this.logger.debug(`문서 저장 성공`);
+				this.logger.debug(`문서 저장 성공`)
 			} else {
-				this.logger.debug(`문서가 변경되지 않음(not dirty), 저장 불필요`);
+				this.logger.debug(`문서가 변경되지 않음(not dirty), 저장 불필요`)
 			}
 		} catch (error) {
-			this.logger.error(`문서 저장 실패`, { error });
+			this.logger.error(`문서 저장 실패`, { error })
 		}
 
 		// get text after save in case there is any auto-formatting done by the editor
 		const postSaveContent = updatedDocument.getText()
-		const postSaveHash = this.generateContentHash(postSaveContent);
+		const postSaveHash = this.generateContentHash(postSaveContent)
 		this.logger.debug(`저장 후 내용 해시: ${postSaveHash}`, {
 			postSaveContentLength: postSaveContent.length,
-			hashChanged: preSaveHash !== postSaveHash
-		});
+			hashChanged: preSaveHash !== postSaveHash,
+		})
 
 		// 실제 파일의 내용도 확인
 		try {
-			const fileContent = await fs.readFile(absolutePath, "utf-8");
-			const fileContentHash = this.generateContentHash(fileContent);
-			this.logger.debug(`저장된 파일 내용 확인`, { 
+			const fileContent = await fs.readFile(absolutePath, "utf-8")
+			const fileContentHash = this.generateContentHash(fileContent)
+			this.logger.debug(`저장된 파일 내용 확인`, {
 				fileContentLength: fileContent.length,
 				fileContentHash,
-				matchesPostSave: fileContentHash === postSaveHash
-			});
+				matchesPostSave: fileContentHash === postSaveHash,
+			})
 			this.logger.debug(`파일 내용 비교 ${absolutePath}`, {
-				beforeLines: (this.originalContent || "").split('\n').length,
-				afterLines: fileContent.split('\n').length,
+				beforeLines: (this.originalContent || "").split("\n").length,
+				afterLines: fileContent.split("\n").length,
 				beforeSize: (this.originalContent || "").length,
 				afterSize: fileContent.length,
 				changeSize: fileContent.length - (this.originalContent || "").length,
-				fileContentHash
-			});
+				fileContentHash,
+			})
 		} catch (error) {
-			this.logger.error(`저장된 파일 내용 확인 실패`, { error });
+			this.logger.error(`저장된 파일 내용 확인 실패`, { error })
 		}
-		
+
 		try {
 			await vscode.window.showTextDocument(vscode.Uri.file(absolutePath), {
 				preview: false,
 			})
 			await this.closeAllDiffViews()
-			this.logger.debug(`편집기에 파일 열기 성공 및 DiffView 닫기 완료`);
+			this.logger.debug(`편집기에 파일 열기 성공 및 DiffView 닫기 완료`)
 		} catch (error) {
-			this.logger.error(`편집기에 파일 열기 또는 DiffView 닫기 실패`, { error });
+			this.logger.error(`편집기에 파일 열기 또는 DiffView 닫기 실패`, { error })
 		}
 
 		/*

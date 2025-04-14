@@ -6,7 +6,7 @@ import { UserInfo } from "./UserInfo"
 import { ChatContent } from "./ChatContent"
 import { TelemetrySetting } from "./TelemetrySetting"
 
-	export interface WebviewMessage {
+export interface WebviewMessage {
 	type:
 		| "addRemoteServer"
 		| "apiConfiguration"

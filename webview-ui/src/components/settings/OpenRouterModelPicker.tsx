@@ -18,7 +18,8 @@ export interface OpenRouterModelPickerProps {
 }
 
 // Featured models for Cline provider
-const featuredModels = [ // Added featured models array
+const featuredModels = [
+	// Added featured models array
 	{
 		id: "anthropic/claude-3.7-sonnet",
 		description: "Leading model for agentic coding",
@@ -164,7 +165,8 @@ const OpenRouterModelPicker: React.FC<OpenRouterModelPickerProps> = ({ isPopup }
 		}
 	}, [selectedIndex])
 
-	const showBudgetSlider = useMemo(() => { // Updated condition
+	const showBudgetSlider = useMemo(() => {
+		// Updated condition
 		return (
 			selectedModelId?.toLowerCase().includes("claude-3-7-sonnet") ||
 			selectedModelId?.toLowerCase().includes("claude-3.7-sonnet") ||

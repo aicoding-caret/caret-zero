@@ -211,7 +211,7 @@ export const ExtensionStateContextProvider: React.FC<{
 				...prevState,
 				alphaAvatarUri: imageUrl,
 			}))
-		}
+		},
 	}
 
 	return <ExtensionStateContext.Provider value={contextValue}>{children}</ExtensionStateContext.Provider>

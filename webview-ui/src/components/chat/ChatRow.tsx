@@ -862,21 +862,22 @@ export const ChatRowContent = ({ message, isExpanded, onToggleExpand, lastModifi
 											{isExpanded ? (
 												// 펼쳐진 상태
 												<div style={{ marginTop: 0 }}>
-													<div style={{ 
-														display: "flex", 
-														alignItems: "center", 
-														marginBottom: "8px",
-														color: "var(--vscode-descriptionForeground)",
-													}}>
-														<img 
-															src="https://raw.githubusercontent.com/fstory97/cline-avatar/main/default_ai_agent_thinking.png" 
-															alt="Thinking" 
-															style={{ 
-																width: "16px", 
-																height: "16px", 
-																marginRight: "8px", 
-																objectFit: "contain" 
-															}} 
+													<div
+														style={{
+															display: "flex",
+															alignItems: "center",
+															marginBottom: "8px",
+															color: "var(--vscode-descriptionForeground)",
+														}}>
+														<img
+															src="https://raw.githubusercontent.com/fstory97/cline-avatar/main/default_ai_agent_thinking.png"
+															alt="Thinking"
+															style={{
+																width: "16px",
+																height: "16px",
+																marginRight: "8px",
+																objectFit: "contain",
+															}}
 														/>
 														<span style={{ fontWeight: "bold" }}>알파의 생각</span>
 														<span
@@ -886,25 +887,23 @@ export const ChatRowContent = ({ message, isExpanded, onToggleExpand, lastModifi
 															}}
 														/>
 													</div>
-													<div style={{ lineHeight: "1.5" }}>
-														{message.reasoning}
-													</div>
+													<div style={{ lineHeight: "1.5" }}>{message.reasoning}</div>
 												</div>
 											) : (
 												// 접힌 상태 - 미리보기 추가
 												<div style={{ display: "flex", alignItems: "center" }}>
-													<img 
-														src="https://raw.githubusercontent.com/fstory97/cline-avatar/main/default_ai_agent_thinking.png" 
-														alt="Thinking" 
-														style={{ 
-															width: "16px", 
-															height: "16px", 
-															marginRight: "8px", 
-															objectFit: "contain" 
-														}} 
+													<img
+														src="https://raw.githubusercontent.com/fstory97/cline-avatar/main/default_ai_agent_thinking.png"
+														alt="Thinking"
+														style={{
+															width: "16px",
+															height: "16px",
+															marginRight: "8px",
+															objectFit: "contain",
+														}}
 													/>
 													<span style={{ fontWeight: "bold" }}>알파의 생각</span>
-													<div 
+													<div
 														style={{
 															marginLeft: "12px",
 															whiteSpace: "nowrap",
@@ -914,9 +913,8 @@ export const ChatRowContent = ({ message, isExpanded, onToggleExpand, lastModifi
 															opacity: 0.7,
 															fontStyle: "italic",
 															fontSize: "0.9em",
-															color: "var(--vscode-descriptionForeground)"
-														}}
-													>
+															color: "var(--vscode-descriptionForeground)",
+														}}>
 														{message.reasoning?.substring(0, 50)}...
 													</div>
 													<span
@@ -924,7 +922,7 @@ export const ChatRowContent = ({ message, isExpanded, onToggleExpand, lastModifi
 														style={{
 															marginLeft: "auto",
 															color: "var(--vscode-descriptionForeground)",
-															opacity: 0.7
+															opacity: 0.7,
 														}}
 													/>
 												</div>
@@ -935,13 +933,13 @@ export const ChatRowContent = ({ message, isExpanded, onToggleExpand, lastModifi
 										<Markdown markdown={message.text} />
 									</div>
 								</>
-							);
+							)
 						} else {
 							return (
 								<div>
 									<Markdown markdown={message.text} />
 								</div>
-							);
+							)
 						}
 					case "reasoning": // Will be wrapped
 						// AI 추론 과정 메시지 - 렌더링을 위한 UI만 반환, useState 관련 로직은 제거
@@ -965,22 +963,23 @@ export const ChatRowContent = ({ message, isExpanded, onToggleExpand, lastModifi
 										{isExpanded ? (
 											// 펼쳐진 상태
 											<div style={{ marginTop: 0 }}>
-												<div style={{ 
-													display: "flex", 
-													alignItems: "center", 
-													marginBottom: "8px",
-													color: "var(--vscode-descriptionForeground)",
-												}}>
-													<img 
-													src="https://raw.githubusercontent.com/fstory97/cline-avatar/main/default_ai_agent_thinking.png" 
-													alt="Thinking" 
-													style={{ 
-														width: "16px", 
-														height: "16px", 
-														marginRight: "8px", 
-														objectFit: "contain" 
-													}} 
-												/>
+												<div
+													style={{
+														display: "flex",
+														alignItems: "center",
+														marginBottom: "8px",
+														color: "var(--vscode-descriptionForeground)",
+													}}>
+													<img
+														src="https://raw.githubusercontent.com/fstory97/cline-avatar/main/default_ai_agent_thinking.png"
+														alt="Thinking"
+														style={{
+															width: "16px",
+															height: "16px",
+															marginRight: "8px",
+															objectFit: "contain",
+														}}
+													/>
 													<span style={{ fontWeight: "bold" }}>알파의 생각</span>
 													<span
 														className="codicon codicon-chevron-up"
@@ -989,25 +988,23 @@ export const ChatRowContent = ({ message, isExpanded, onToggleExpand, lastModifi
 														}}
 													/>
 												</div>
-												<div style={{ lineHeight: "1.5" }}>
-													{message.text}
-												</div>
+												<div style={{ lineHeight: "1.5" }}>{message.text}</div>
 											</div>
 										) : (
 											// 접힌 상태
 											<div style={{ display: "flex", alignItems: "center" }}>
-												<img 
-													src="https://raw.githubusercontent.com/fstory97/cline-avatar/main/default_ai_agent_thinking.png" 
-													alt="Thinking" 
-													style={{ 
-														width: "16px", 
-														height: "16px", 
-														marginRight: "8px", 
-														objectFit: "contain" 
-													}} 
+												<img
+													src="https://raw.githubusercontent.com/fstory97/cline-avatar/main/default_ai_agent_thinking.png"
+													alt="Thinking"
+													style={{
+														width: "16px",
+														height: "16px",
+														marginRight: "8px",
+														objectFit: "contain",
+													}}
 												/>
 												<span style={{ fontWeight: "bold" }}>알파의 생각</span>
-												<div 
+												<div
 													style={{
 														marginLeft: "12px",
 														whiteSpace: "nowrap",
@@ -1017,9 +1014,8 @@ export const ChatRowContent = ({ message, isExpanded, onToggleExpand, lastModifi
 														opacity: 0.7,
 														fontStyle: "italic",
 														fontSize: "0.9em",
-														color: "var(--vscode-descriptionForeground)"
-													}}
-												>
+														color: "var(--vscode-descriptionForeground)",
+													}}>
 													{message.text?.substring(0, 50)}...
 												</div>
 												<span
@@ -1027,7 +1023,7 @@ export const ChatRowContent = ({ message, isExpanded, onToggleExpand, lastModifi
 													style={{
 														marginLeft: "auto",
 														color: "var(--vscode-descriptionForeground)",
-														opacity: 0.7
+														opacity: 0.7,
 													}}
 												/>
 											</div>
@@ -1436,10 +1432,10 @@ export const ChatRowContent = ({ message, isExpanded, onToggleExpand, lastModifi
 		// 추론 과정 메시지인 경우 추론 중 아바타 사용
 		if (message.type === "say" && message.say === "reasoning") {
 			// 절대 경로로 사용
-			return "https://raw.githubusercontent.com/fstory97/cline-avatar/main/default_ai_agent_thinking.png";
+			return "https://raw.githubusercontent.com/fstory97/cline-avatar/main/default_ai_agent_thinking.png"
 		}
 		// 일반 대화 메시지인 경우 기본 아바타 사용
-		return alphaAvatarUri;
+		return alphaAvatarUri
 	}
 
 	if (isAiMessage && alphaAvatarUri) {

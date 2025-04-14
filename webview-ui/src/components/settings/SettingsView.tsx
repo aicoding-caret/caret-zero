@@ -104,7 +104,7 @@ const SettingsView = ({ onDone }: SettingsViewProps) => {
 		resetAgentProfileImage,
 		updateAgentProfileImage,
 	} = useExtensionState()
-	
+
 	// API 및 모델 관련 상태 관리
 	const [apiErrorMessage, setApiErrorMessage] = useState<string | undefined>(undefined)
 	const [modelIdErrorMessage, setModelIdErrorMessage] = useState<string | undefined>(undefined)
@@ -326,41 +326,35 @@ const SettingsView = ({ onDone }: SettingsViewProps) => {
 					<SectionTitle>AI 에이전트 프로필 이미지</SectionTitle>
 					<ProfileImageWrapper>
 						<ProfileImagePreview>
-							<img 
-								src={alphaAvatarUri} 
-								alt="Alpha Profile" 
-								style={{ width: "100%", height: "100%", objectFit: "cover" }} 
+							<img
+								src={alphaAvatarUri}
+								alt="Alpha Profile"
+								style={{ width: "100%", height: "100%", objectFit: "cover" }}
 							/>
 						</ProfileImagePreview>
 						<ProfileImageActions>
-							<VSCodeButton 
-								appearance="secondary"
-								onClick={selectAgentProfileImage}
-							>
+							<VSCodeButton appearance="secondary" onClick={selectAgentProfileImage}>
 								이미지 파일 선택
 							</VSCodeButton>
-							<VSCodeButton 
+							<VSCodeButton
 								appearance="secondary"
 								onClick={() => {
 									// 이미지 URL 입력 팝업
-									const url = prompt("이미지 URL을 입력하세요", alphaAvatarUri);
+									const url = prompt("이미지 URL을 입력하세요", alphaAvatarUri)
 									if (url && url.trim() !== "") {
-										updateAgentProfileImage(url);
+										updateAgentProfileImage(url)
 									}
-								}}
-							>
+								}}>
 								이미지 URL 입력
 							</VSCodeButton>
-							<VSCodeButton 
-								appearance="secondary"
-								onClick={resetAgentProfileImage}
-							>
+							<VSCodeButton appearance="secondary" onClick={resetAgentProfileImage}>
 								기본 이미지로 재설정
 							</VSCodeButton>
 						</ProfileImageActions>
 					</ProfileImageWrapper>
 					<p style={{ fontSize: "12px", color: "var(--vscode-descriptionForeground)" }}>
-						AI에이전트의 프로필 이미지를 원하는 이미지로 변경할 수 있어요. 직사각형 이미지는 자동으로 정사각형으로 크롭됩니다.
+						AI에이전트의 프로필 이미지를 원하는 이미지로 변경할 수 있어요. 직사각형 이미지는 자동으로 정사각형으로
+						크롭됩니다.
 					</p>
 				</SettingsSection>
 
@@ -426,7 +420,7 @@ const SettingsView = ({ onDone }: SettingsViewProps) => {
 											defaultValue={`Mode ${index + 1}`}
 											style={{ width: "100%" }}
 										/>
-									</div>																		
+									</div>
 									{/* Rule Configuration */}
 									<SectionTitle style={{ fontSize: "var(--vscode-font-size)" }}>
 										Rule Configuration{" "}

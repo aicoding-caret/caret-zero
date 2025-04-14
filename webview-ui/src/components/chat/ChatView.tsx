@@ -66,7 +66,7 @@ const ModeButton = styled(VSCodeButton)`
 		opacity: 0;
 		transition: opacity 0.2s;
 	}
-	
+
 	&:hover::after {
 		opacity: 1;
 	}
@@ -785,7 +785,7 @@ const ChatView = ({ isHidden, showAnnouncement, hideAnnouncement, showHistoryVie
 							atBottomThreshold={10}
 							initialTopMostItemIndex={groupedMessages.length - 1}
 						/>
-											</div>
+					</div>
 					<AutoApproveMenu />
 					{showScrollToBottom ? (
 						<div style={{ display: "flex", padding: "10px 15px 0px 15px" }}>
