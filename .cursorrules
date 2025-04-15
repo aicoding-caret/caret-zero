@@ -1,202 +1,72 @@
 {
-  "version": "1.1.0",
-  "agent": {
-    "modes": {
-      "plan": {
-        "purpose": "Task analysis and planning phase with restricted actions",
-        "rules": {
-          "task_validation": true,
-          "context_check": true,
-          "required_steps": [
-            "context_analysis",
-            "task_breakdown",
-            "approach_planning"
-          ],
-          "tool_usage": {
-            "allowed": [
-              "read_file",
-              "search_files", 
-              "list_files",
-              "list_code_definition_names",
-              "ask_followup_question",
-              "plan_mode_response",
-              "write_to_file",
-              "replace_in_file"
-            ],
-            "blocked": [
-              "execute_command",
-              "browser_action",
-              "attempt_completion"
-            ]
-          }
-        }
-      },
-      "act": {
-        "purpose": "Task execution phase with full capabilities",
-        "rules": {
-          "requires_validated_plan": true,
-          "step_by_step": true,
-          "tool_usage": {
-            "requires_approval": true,
-            "wait_for_confirmation": true,
-            "allowed": "all"
-          }
-        }
-      },
-      "rule": {
-        "purpose": "Rule system improvement",
-        "rules": {
-          "version_control": {
-            "storage": {
-              "base_path": "agents-rules/alpha/versions/",
-              "format": "project-rules-v[major].[minor].[patch].json"
-            },
-            "changelog": {
-              "required": true,
-              "format": "- [Change Type]: [Description]"
-            }
-          },
-          "basic_operations": {
-            "review": "Analyze current rules and identify issues",
-            "modify": "Make changes based on analysis",
-            "backup": "Create version backup before changes",
-            "rollback": "Restore previous version if needed"
-          }
-        }
-      },
-      "talk": {
-        "purpose": "Free conversation",
-        "rules": {
-          "context_preservation": true,
-          "casual_tone": true
-        }
-      }
-    },
-    "task_management": {
-      "validation_required": true,
-      "hallucination_prevention": {
-        "file_verification": true,
-        "context_checking": true,
-        "explicit_speculation": true,
-        "verification_markers": {
-          "confirmed": {
-            "syntax": "✓ (confirmed: statement)",
-            "when_to_use": "Directly verified in source"
-          },
-          "unconfirmed": {
-            "syntax": "? (unconfirmed: statement)",
-            "when_to_use": "Mentioned but not verified"
-          },
-          "speculative": {
-            "syntax": "~ (speculative: statement)",
-            "when_to_use": "Reasonable inference"
-          }
-        },
-        "pre_analysis_checklist": [
-          "Define clear scope boundaries",
-          "Identify primary sources",
-          "Verify source existence",
-          "Document missing materials"
-        ]
-      },
-      "session_rules": {
-        "one_task_per_session": true,
-        "context_preservation": {
-          "save_points": ["mode_switch", "task_completion"],
-          "required_metadata": [
-            "current_mode",
-            "progress_state",
-            "pending_actions"
-          ]
-        }
-      }
-    }
+  "project_overview": {
+    "name": "Caret (formerly Cline-Alpha)",
+    "description": "VSCode extension for AI assistance, focusing on personalized development partnership.",
+    "repository_url": "https://github.com/fstory97/cline"
   },
-  "project_reference": {
-    "guide": {
-      "path": "docs/architecture/project-guide.md",
-      "purpose": "Project architecture and development guidelines",
-      "required_reading": true
-    },
-    "documentation": {
-      "work_logs": {
-        "base_path": "docs/work-logs/",
-        "daily_log": {
-          "format": "{date}.md",
-          "sections": [
-            "Current Active Task",
-            "Today's Work Plan",
-            "Progress",
-            "Notes",
-            "Next Steps"
-          ]
-        },
-        "task_log": {
-          "format": "tasks/{task-number}-{task-name}.md",
-          "sections": [
-            "Task Information",
-            "Task Purpose",
-            "Execution Steps",
-            "Reference Materials",
-            "Progress Status",
-            "Notes"
-          ]
-        }
+  "architecture": {
+    "summary": "Modular: Core TypeScript backend, React webview frontend.",
+    "key_components": [
+      {
+        "name": "Core Extension",
+        "path": "src/",
+        "entry_point": "src/extension.ts",
+        "description": "Backend logic, task execution, state, tools, webview communication."
       },
-      "reference_format": {
-        "internal_links": {
-          "format": "[description](/path/to/file.ext)",
-          "example": "[Project Guide](/docs/architecture/project-guide.md)"
-        },
-        "code_references": {
-          "format": "[`path:line-range`](/path/to/file.ext)",
-          "example": "[`src/core/Cline.ts:10-15`](/src/core/Cline.ts)"
-        }
+      {
+        "name": "Webview UI",
+        "path": "webview-ui/",
+        "entry_point": "webview-ui/src/App.tsx",
+        "description": "React frontend for user interaction and UI state."
+      },
+      {
+        "name": "State Management",
+        "core_provider": "src/core/webview/ClineProvider.ts",
+        "webview_context": "webview-ui/src/context/ExtensionStateContext.tsx",
+        "description": "Core state in ClineProvider, synced to webview via messages."
+      },
+      {
+        "name": "Task Management",
+        "class": "src/core/task/index.ts",
+        "description": "Manages task lifecycle, API calls, tools, state persistence."
+      },
+      {
+        "name": "Storage",
+        "location": "Internal VSCode Extension Storage",
+        "components": ["Task Storage", "Checkpoints (Git)"],
+        "description": "Handles persistence of task data and workspace snapshots."
       }
-    }
+    ],
+    "diagram_reference": "caret-docs/architecture/extension-architecture.mmd"
   },
-  "development": {
+  "development_process": {
+    "state_management_guideline": "Core Extension (ClineProvider) is the source of truth. Sync state via messages.",
+    "tool_integration": "Follow patterns in src/integrations/, respect .caretignore.",
+    "api_providers": "Implementations in src/api/providers/.",
+    "testing": "Refer to caret-docs/testing/ for plans.",
+    "logging": "Use common logging system (see caret-docs/development/logging-guide.md).",
+    "checkpoints": "Managed by src/integrations/checkpoints/CheckpointTracker.ts (Git-based).",
+    "documentation": "Update relevant docs in caret-docs/.",
+    "contributing": "Refer to CONTRIBUTING.md for guidelines.",
+    "work_logs": {
+      "location": "caret-docs/work-logs/",
+      "daily_log_format": "{date}.md",
+      "task_log_format": "tasks/{task-number}-{task-name}.md",
+      "purpose": "Maintain context, track progress."
+    },
     "git_rules": {
-      "commit_format": {
-        "pattern": "[type]: [description]",
-        "types": [
-          "feat - New feature",
-          "fix - Bug fix",
-          "docs - Documentation",
-          "style - Formatting",
-          "refactor - Code restructuring",
-          "test - Testing",
-          "chore - Maintenance"
-        ]
-      },
-      "version_tagging": {
-        "format": "v[major].[minor].[patch]",
-        "when": "After significant changes"
-      }
-    },
-    "file_handling": {
-      "edit_size_limits": {
-        "small": "Under 1000 tokens",
-        "medium": "1000-2000 tokens",
-        "large": "Multiple operations"
-      },
-      "tool_limits": {
-        "max_tokens_per_call": 4000,
-        "concurrent_calls": false
-      },
-      "pre_edit_checklist": [
-        "Assess file size and complexity",
-        "Determine editing strategy",
-        "Break large changes into sections",
-        "Verify token limits"
-      ]
-    },
-    "command_rules": {
-      "validation": "Validate before execution",
-      "output_handling": {
-        "streaming": true,
-        "history": true
-      }
+      "commit_format": "[type]: [description]",
+      "branching_strategy": "Standard Gitflow/feature branching (TBD)."
     }
-  }
+  },
+  "key_files_reference": [
+    ".caretrules",
+    "caret-docs/",
+    "src/extension.ts",
+    "src/core/task/index.ts",
+    "src/core/webview/ClineProvider.ts",
+    "webview-ui/src/App.tsx",
+    "webview-ui/src/context/ExtensionStateContext.tsx",
+    "agents-rules/alpha/"
+  ]
 }

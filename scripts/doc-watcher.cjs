@@ -110,7 +110,7 @@ const envVars = loadEnvFile()
 const rulesFile = envVars.RULES_FILE || "./agents-rules/alpha/project-rules.json"
 const targetCursorRules = envVars.CURSOR_RULES_FILE || ".cursorrules"
 const targetWindsurfRules = envVars.WINDSURF_RULES_FILE || ".windsurfrules"
-const targetClinefRules = envVars.CLINE_RULES_FILE || ".clinerules"
+const targetClinefRules = envVars.CLINE_RULES_FILE || ".caretrules"
 
 log(`Using rules file: ${rulesFile}`, "debug")
 log(`Target Cursor rules: ${targetCursorRules}`, "debug")

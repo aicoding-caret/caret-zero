@@ -1254,7 +1254,7 @@ export class Task {
 					).then((contents) => contents.join("\n\n"))
 					clineRulesFileInstructions = formatResponse.clineRulesDirectoryInstructions(cwd, ruleFilesTotalContent)
 				} catch {
-					console.error(`Failed to read .clinerules directory at ${clineRulesFilePath}`)
+					console.error(`Failed to read .caretrules directory at ${clineRulesFilePath}`)
 				}
 			} else {
 				try {

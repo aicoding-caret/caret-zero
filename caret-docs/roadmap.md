@@ -12,7 +12,7 @@ This document outlines the development roadmap for the Cline-Alpha project, prio
 
 These are the initial steps focused on foundational improvements and enabling core functionalities.
 
-1.  **Mode Enhancements:** Refine agent modes defined in `.clinerules` for better control and clarity.
+1.  **Mode Enhancements:** Refine agent modes defined in `.caretrules` for better control and clarity.
     *   Define specific file access permissions (Read/Write) per mode:
         *   `plan`: RW access to `/docs/`, improve system prompt for planning.
         *   `rule`: RW access to `/agents-rules/alpha/`.
