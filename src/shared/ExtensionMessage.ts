@@ -25,6 +25,7 @@ export interface RetryStatusMessage {
 	status: number            // HTTP 상태 코드 (429, 503 등)
 	errorType: string        // 에러 유형 (한글 메시지)
 	attempt: number          // 현재 시도 횟수
+	maxRetries: number       // 최대 재시도 횟수
 	delay: number            // 대기 시간 (ms)
 	quotaViolation?: string  // 할당량 위반 정보
 	retryTimestamp?: number  // 재시도 예정 시간(ms 타임스탬프)
@@ -68,7 +69,6 @@ export interface ExtensionMessage {
 		| "relativePathsResponse" // Handles single and multiple path responses
 		| "fileSearchResults"
 		| "modesConfigLoaded"
-		| "retryStatus"         // API 재시도 상태 전송 시 사용
 	text?: string
 	paths?: (string | null)[] // Used for relativePathsResponse
 	action?:
@@ -128,7 +128,6 @@ export interface ExtensionMessage {
 		serverName: string
 		error?: string
 	}
-	retryState?: RetryStatusMessage // API 재시도 상태 정보
 }
 
 export type Invoke = "sendMessage" | "primaryButtonClick" | "secondaryButtonClick"
@@ -163,6 +162,7 @@ export interface ExtensionState {
 	vscMachineId: string
 	alphaAvatarUri?: string // 알파 아바타 URI 추가
 	availableModes: ModeInfo[] // Add availableModes to ExtensionState
+	retryStatus?: RetryStatusMessage; // Add retryStatus to ExtensionState
 }
 
 export interface ClineMessage {

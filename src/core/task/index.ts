@@ -34,6 +34,8 @@ import { BrowserSettings } from "../../shared/BrowserSettings"
 import { ChatSettings } from "../../shared/ChatSettings"
 import { combineApiRequests } from "../../shared/combineApiRequests"
 import { combineCommandSequences, COMMAND_REQ_APP_STRING } from "../../shared/combineCommandSequences"
+import { ExtensionState } from "../../shared/ExtensionMessage"
+
 import {
 	BrowserAction,
 	BrowserActionResult,
@@ -177,11 +179,20 @@ export class Task {
 		this.fileContextTracker = new FileContextTracker(controller, this.taskId)
 
 		// Now that taskId is initialized, we can build the API handler
-		this.api = buildApiHandler({
-			...apiConfiguration,
-			taskId: this.taskId,
-		})
-
+		// apiProvider가 있는지 확인하고, 있으면 provider로 사용
+		if (apiConfiguration.apiProvider) {
+			const provider = apiConfiguration.apiProvider as string; // 명시적 타입 단언
+			this.api = buildApiHandler(
+			{ ...apiConfiguration, provider },
+			this.updateState.bind(this)
+			);
+		} else {
+			// apiProvider가 없는 경우 기본값 설정 (예: "anthropic")
+			this.api = buildApiHandler(
+			{ ...apiConfiguration, provider: "anthropic" },
+			this.updateState.bind(this)
+			);
+		}
 		// Set taskId on browserSession for telemetry tracking
 		this.browserSession.setTaskId(this.taskId)
 
@@ -273,6 +284,14 @@ export class Task {
 			console.error("Failed to save cline messages:", error)
 		}
 	}
+
+	async updateState(partialState: Partial<ExtensionState>) {
+		if (partialState.retryStatus) {
+		  await this.controllerRef.deref()?.context.globalState.update("retryStatus", partialState.retryStatus)
+		}
+		await this.controllerRef.deref()?.postStateToWebview()
+	}
+
 
 	async restoreCheckpoint(messageTs: number, restoreType: ClineCheckpointRestore) {
 		const messageIndex = this.clineMessages.findIndex((m) => m.ts === messageTs)

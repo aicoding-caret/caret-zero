@@ -1,21 +1,23 @@
-import { Anthropic } from "@anthropic-ai/sdk"
 import { GoogleGenerativeAI } from "@google/generative-ai"
 import { withRetry } from "../retry"
 import { ApiHandler } from "../"
 import { ApiHandlerOptions, geminiDefaultModelId, GeminiModelId, geminiModels, ModelInfo } from "../../shared/api"
 import { convertAnthropicMessageToGemini } from "../transform/gemini-format"
 import { ApiStream } from "../transform/stream"
+import { ExtensionState } from "../../shared/ExtensionMessage"
 
 export class GeminiHandler implements ApiHandler {
 	private options: ApiHandlerOptions
 	private client: GoogleGenerativeAI
+	private _updateState?: (state: Partial<ExtensionState>) => void
 
-	constructor(options: ApiHandlerOptions) {
+	constructor(options: ApiHandlerOptions, updateState?: (state: Partial<ExtensionState>) => void) {
 		if (!options.geminiApiKey) {
 			throw new Error("API key is required for Google Gemini")
 		}
 		this.options = options
 		this.client = new GoogleGenerativeAI(options.geminiApiKey)
+		this._updateState = updateState
 	}
 
 	@withRetry({
@@ -69,7 +71,7 @@ export class GeminiHandler implements ApiHandler {
 			console.warn(message)
 		},
 	})
-	async *createMessage(systemPrompt: string, messages: Anthropic.Messages.MessageParam[]): ApiStream {
+	async *createMessage(systemPrompt: string, messages: any[]): ApiStream {
 		const model = this.client.getGenerativeModel({
 			model: this.getModel().id,
 			systemInstruction: systemPrompt,

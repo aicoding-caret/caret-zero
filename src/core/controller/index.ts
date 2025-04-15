@@ -23,7 +23,7 @@ import { ApiProvider, ModelInfo } from "../../shared/api"
 import { findLast } from "../../shared/array"
 import { ChatContent } from "../../shared/ChatContent"
 import { ChatSettings } from "../../shared/ChatSettings"
-import { ExtensionMessage, ExtensionState, Invoke, Platform, ModeInfo } from "../../shared/ExtensionMessage" // Import ModeInfo
+import { ExtensionMessage, ExtensionState, Invoke, Platform, ModeInfo, RetryStatusMessage } from "../../shared/ExtensionMessage" // Import ModeInfo and
 import { HistoryItem } from "../../shared/HistoryItem"
 import { McpDownloadResponse, McpMarketplaceCatalog, McpServer } from "../../shared/mcp"
 import { TelemetrySetting } from "../../shared/TelemetrySetting"
@@ -49,6 +49,7 @@ import { GlobalFileNames } from "../storage/disk"
 import { discoverChromeInstances } from "../../services/browser/BrowserDiscovery" // Corrected import path if needed
 import { searchWorkspaceFiles } from "../../services/search/file-search"
 import { ILogger } from "../../services/logging/ILogger" // Import ILogger
+
 
 /*
 https://github.com/microsoft/vscode-webview-ui-toolkit-samples/blob/main/default/weather-webview/src/providers/WeatherViewProvider.ts
@@ -710,9 +711,16 @@ export class Controller {
 			case "apiConfiguration":
 				if (message.apiConfiguration) {
 					await updateApiConfiguration(this.context, message.apiConfiguration)
-					if (this.task) {
-						this.task.api = buildApiHandler(message.apiConfiguration)
-					}
+					if (this.task && message.apiConfiguration && message.apiConfiguration.apiProvider) {
+						const provider = message.apiConfiguration.apiProvider as string; // 명시적 타입 단언
+						const apiHandlerOptions = { ...message.apiConfiguration, provider }
+						this.task.api = buildApiHandler(
+						  apiHandlerOptions,
+						  async (partialState: Partial<ExtensionState>) => {
+							// ...
+						  },
+						)
+					  }
 				}
 				await this.postStateToWebview()
 				break
@@ -858,9 +866,9 @@ export class Controller {
 					})
 				}
 				break
-			case "togglePlanActMode":
+			case "toggleMode":
 				if (message.chatSettings) {
-					await this.togglePlanActModeWithChatSettings(message.chatSettings, message.chatContent)
+					await this.toggleModeWithChatSettings(message.chatSettings, message.chatContent)
 				}
 				break
 			case "optionsResponse":
@@ -1040,7 +1048,7 @@ export class Controller {
 					// 1. Toggle to act mode if we are in plan mode
 					const { chatSettings } = await this.getStateToPostToWebview()
 					if (chatSettings.mode === "plan") {
-						await this.togglePlanActModeWithChatSettings({ mode: "act" })
+						await this.toggleModeWithChatSettings({ mode: "act" })
 					}
 
 					// 2. Enable MCP settings if disabled
@@ -1212,8 +1220,17 @@ export class Controller {
 				// api config
 				if (message.apiConfiguration) {
 					await updateApiConfiguration(this.context, message.apiConfiguration)
-					if (this.task) {
-						this.task.api = buildApiHandler(message.apiConfiguration)
+					if (this.task && message.apiConfiguration && message.apiConfiguration.apiProvider) {
+						const apiHandlerOptions = { ...message.apiConfiguration, provider: message.apiConfiguration.apiProvider }
+						this.task.api = buildApiHandler(
+							apiHandlerOptions,
+							async (partialState: Partial<ExtensionState>) => {
+								if (partialState.retryStatus) {
+									await this.context.globalState.update("retryStatus", partialState.retryStatus)
+								}
+								await this.postStateToWebview()
+							},
+						)
 					}
 				}
 
@@ -1346,7 +1363,7 @@ export class Controller {
 		telemetryService.updateTelemetryState(isOptedIn)
 	}
 
-	async togglePlanActModeWithChatSettings(chatSettings: ChatSettings, chatContent?: ChatContent) {
+	async toggleModeWithChatSettings(chatSettings: ChatSettings, chatContent?: ChatContent) {
 		// 모드 전환 확인 - 모든 모드를 적절히 처리
 		const didSwitchToActMode =
 			chatSettings.mode === "act" ||
@@ -1459,8 +1476,17 @@ export class Controller {
 
 				if (this.task) {
 					const { apiConfiguration: updatedApiConfiguration } = await getAllExtensionState(this.context)
-					this.task.api = buildApiHandler(updatedApiConfiguration)
-				}
+					const apiHandlerOptions = { ...updatedApiConfiguration, provider: updatedApiConfiguration.apiProvider }
+					this.task.api = buildApiHandler(
+						apiHandlerOptions,
+						async (partialState: Partial<ExtensionState>) => {
+							if (partialState.retryStatus) {
+								await this.context.globalState.update("retryStatus", partialState.retryStatus)
+							}
+							await this.postStateToWebview()
+						},
+					)
+				}				
 			}
 		}
 
@@ -1674,7 +1700,16 @@ export class Controller {
 			}
 
 			if (this.task) {
-				this.task.api = buildApiHandler(updatedConfig)
+				const apiHandlerOptions = { ...updatedConfig, provider: updatedConfig.apiProvider }
+				this.task.api = buildApiHandler(
+					apiHandlerOptions,
+					async (partialState: Partial<ExtensionState>) => {
+						if (partialState.retryStatus) {
+							await this.context.globalState.update("retryStatus", partialState.retryStatus)
+						}
+						await this.postStateToWebview()
+					},
+				)
 			}
 
 			await this.postStateToWebview()
@@ -1797,8 +1832,6 @@ export class Controller {
 				throw new Error("Invalid response from MCP marketplace API")
 			}
 
-			console.log("[downloadMcp] Response from download API", { response })
-
 			const mcpDetails = response.data
 
 			// Validate required fields
@@ -1904,11 +1937,18 @@ Here is the project's README to help you get started:\n\n${mcpDetails.readmeCont
 		await storeSecret(this.context, "openRouterApiKey", apiKey)
 		await this.postStateToWebview()
 		if (this.task) {
-			this.task.api = buildApiHandler({
-				apiProvider: openrouter,
-				openRouterApiKey: apiKey,
-			})
-		}
+			const apiHandlerOptions = { 
+			  provider: openrouter, // provider 속성 추가
+			  apiProvider: openrouter, 
+			  openRouterApiKey: apiKey 
+			}
+			this.task.api = buildApiHandler(
+			  apiHandlerOptions,
+			  async (partialState: Partial<ExtensionState>) => {
+				// ...
+			  },
+			)
+		  }
 		// await this.postMessageToWebview({ type: "action", action: "settingsButtonClicked" }) // bad ux if user is on welcome
 	}
 
@@ -2171,6 +2211,9 @@ Here is the project's README to help you get started:\n\n${mcpDetails.readmeCont
 			telemetrySetting,
 			planActSeparateModelsSetting,
 		} = await getAllExtensionState(this.context)
+		
+		const retryStatus = await getGlobalState(this.context, "retryStatus") as RetryStatusMessage | undefined;
+		this.logger.log("Controller: Reading retryStatus from global state for webview:", JSON.stringify(retryStatus)); // 로그 추가
 
 		// *** Add logging here ***
 		this.logger.log("Controller: Getting state for webview. availableModes:", JSON.stringify(this.availableModes))
@@ -2210,6 +2253,7 @@ Here is the project's README to help you get started:\n\n${mcpDetails.readmeCont
 			vscMachineId: vscode.env.machineId,
 			alphaAvatarUri: alphaAvatarWebviewUri, // Add alphaAvatarUri state
 			availableModes: this.availableModes, // Add availableModes, get from controller's loaded modes
+			retryStatus: retryStatus
 		}
 	}
 

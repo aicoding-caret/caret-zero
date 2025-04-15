@@ -39,7 +39,7 @@ export interface WebviewMessage {
 		| "testBrowserConnection"
 		| "browserConnectionResult"
 		| "browserRelaunchResult"
-		| "togglePlanActMode"
+		| "toggleMode"
 		| "checkpointDiff"
 		| "checkpointRestore"
 		| "taskCompletionViewChanges"
@@ -87,6 +87,8 @@ export interface WebviewMessage {
 		| "selectAgentProfileImage"
 		| "resetAgentProfileImage"
 		| "updateAgentProfileImage"
+		// 모드 전환 관련 메시지 타입
+		| "togglePlanActMode"
 	// | "relaunchChromeDebugMode"
 	text?: string
 	uris?: string[] // Used for getRelativePaths

@@ -180,7 +180,7 @@ const SettingsView = ({ onDone }: SettingsViewProps) => {
 				case "didUpdateSettings":
 					if (pendingTabChange) {
 						vscode.postMessage({
-							type: "togglePlanActMode",
+							type: "toggleMode",
 							chatSettings: {
 								mode: pendingTabChange,
 							},

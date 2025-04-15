@@ -23,18 +23,7 @@ interface RetryState {
 	delay: number
 	quotaViolation?: string
 	retryTimestamp?: number
-}
-
-/**
- * 웹뷰에 표시할 재시도 상태 메시지 인터페이스
- */
-interface RetryStatusMessage {
-	errorType: string
-	quotaViolation?: string
-	delayMs: number
-	startTime: number
-	attempt: number
-	maxRetries: number
+	maxRetries?: number
 }
 
 /**
@@ -54,11 +43,23 @@ export function withRetry(options: RetryOptions = {}) {
 		const originalMethod = descriptor.value
 
 		descriptor.value = async function* (...args: any[]) {
+			const instance = this; // <-- 원래 메서드의 'this' 컨텍스트를 캡처합니다.
+			let lastError: any = null
 			for (let attempt = 0; attempt < maxRetries; attempt++) {
 				try {
-					yield* originalMethod.apply(this, args)
-					return
+					const result = yield* originalMethod.apply(this, args)
+					// 성공 시 retryStatus 초기화
+					console.log(`[Retry] API call successful after ${attempt} retries. Resetting retryStatus.`)
+					if ((instance as any)._updateState) {
+						;(instance as any)._updateState({ retryStatus: null }); // <-- 성공 시 여기서 초기화
+					} else {
+						console.warn("[Retry] _updateState function not provided to the handler instance for reset.");
+					}
+					return result // 성공 시 결과 반환
 				} catch (error: any) {
+					lastError = error // 에러 저장
+					console.warn(`[Retry] Attempt ${attempt} failed:`, error?.message || error)
+
 					// Retryable error status codes based on Google Vertex AI documentation
 					const retryableErrors = new Set([429, 503, 504, 500])
 					const isRetryableError = error?.status && retryableErrors.has(error.status)
@@ -266,11 +267,12 @@ export function withRetry(options: RetryOptions = {}) {
 						attempt: attempt + 1,
 						delay,
 						quotaViolation,
-						retryTimestamp: Date.now() + delay // 언제 재시도가 발생할지 타임스탬프 저장
+						retryTimestamp: Date.now() + delay, // 언제 재시도가 발생할지 타임스탬프 저장
+						maxRetries, // maxRetries 추가
 					}
 					
 					// 웹뷰에 표시할 재시도 상태 메시지 생성
-					const retryStatusMessage: RetryStatusMessage = {
+					const retryStatusMessage = {
 						errorType,
 						quotaViolation,
 						delayMs: delay,
@@ -290,18 +292,12 @@ export function withRetry(options: RetryOptions = {}) {
 						;(this as any).say(retryMessage, { retryState, retryStatusMessage })
 					}
 					
-					// WebView 상태 업데이트 - Controller의 postMessageToWebview 메서드 사용
-					if ((this as any).controller && typeof (this as any).controller.postMessageToWebview === 'function') {
-						try {
-							(this as any).controller.postMessageToWebview({
-								type: 'retryStatus',
-								retryState,
-								retryStatusMessage // 추가: 디테일한 상태 정보 전송
-							})
-							console.log("[Retry] 웹뷰로 재시도 상태 전송 성공")
-						} catch (err) {
-							console.error("[Retry] 웹뷰로 재시도 상태 전송 실패:", err)
-						}
+					// ExtensionState의 retryStatus 업데이트
+					console.log(`[Retry] Updating state with retryStatus:`, retryState)
+					if ((instance as any)._updateState) {
+						;(instance as any)._updateState({ retryStatus: retryState }); // <-- 저장된 _updateState 사용
+					} else {
+						console.warn("[Retry] _updateState function not provided to the handler instance.");
 					}
 
 					// API에서 권장하는 시간만큼 정확히 대기
@@ -309,7 +305,16 @@ export function withRetry(options: RetryOptions = {}) {
 					await new Promise((resolve) => setTimeout(resolve, delay))
 				}
 			}
+			// 모든 재시도 실패 시 에러 throw 및 retryStatus 초기화
+			if (lastError) {
+				console.error(`[Retry] API call failed after ${maxRetries} retries. Last error:`, lastError)
+				if ((instance as any)._updateState) {
+					;(instance as any)._updateState({ retryStatus: null }); // <-- 최종 실패 시 여기서 초기화
+				} else {
+					console.warn("[Retry] _updateState function not provided to the handler instance on final failure.");
+				}
+				throw lastError // 최종 에러 throw
+			}
 		}
-		return descriptor
 	}
 }

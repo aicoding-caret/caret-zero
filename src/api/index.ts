@@ -22,6 +22,7 @@ import { LiteLlmHandler } from "./providers/litellm"
 import { AskSageHandler } from "./providers/asksage"
 import { XAIHandler } from "./providers/xai"
 import { SambanovaHandler } from "./providers/sambanova"
+import { ExtensionState } from "../shared/ExtensionMessage"
 
 export interface ApiHandler {
 	createMessage(systemPrompt: string, messages: Anthropic.Messages.MessageParam[]): ApiStream
@@ -33,52 +34,60 @@ export interface SingleCompletionHandler {
 	completePrompt(prompt: string): Promise<string>
 }
 
-export function buildApiHandler(configuration: ApiConfiguration): ApiHandler {
-	const { apiProvider, ...options } = configuration
-	switch (apiProvider) {
+export interface ApiHandlerOptions {
+	provider: string
+	[options: string]: any
+}
+
+export function buildApiHandler(
+	options: ApiHandlerOptions,
+	updateStateCallback: (state: Partial<ExtensionState>) => void
+): ApiHandler {
+	const { provider, ...optionsWithoutProvider } = options
+	switch (provider) {
 		case "anthropic":
-			return new AnthropicHandler(options)
+			return new AnthropicHandler(optionsWithoutProvider)
 		case "openrouter":
-			return new OpenRouterHandler(options)
+			return new OpenRouterHandler(optionsWithoutProvider)
 		case "bedrock":
-			return new AwsBedrockHandler(options)
+			return new AwsBedrockHandler(optionsWithoutProvider)
 		case "vertex":
-			return new VertexHandler(options)
+			return new VertexHandler(optionsWithoutProvider)
 		case "openai":
-			return new OpenAiHandler(options)
+			return new OpenAiHandler(optionsWithoutProvider)
 		case "ollama":
-			return new OllamaHandler(options)
+			return new OllamaHandler(optionsWithoutProvider)
 		case "lmstudio":
-			return new LmStudioHandler(options)
+			return new LmStudioHandler(optionsWithoutProvider)
 		case "gemini":
-			return new GeminiHandler(options)
+			return new GeminiHandler(optionsWithoutProvider, updateStateCallback)
 		case "openai-native":
-			return new OpenAiNativeHandler(options)
+			return new OpenAiNativeHandler(optionsWithoutProvider)
 		case "deepseek":
-			return new DeepSeekHandler(options)
+			return new DeepSeekHandler(optionsWithoutProvider)
 		case "requesty":
-			return new RequestyHandler(options)
+			return new RequestyHandler(optionsWithoutProvider)
 		case "together":
-			return new TogetherHandler(options)
+			return new TogetherHandler(optionsWithoutProvider)
 		case "qwen":
-			return new QwenHandler(options)
+			return new QwenHandler(optionsWithoutProvider)
 		case "doubao":
-			return new DoubaoHandler(options)
+			return new DoubaoHandler(optionsWithoutProvider)
 		case "mistral":
-			return new MistralHandler(options)
+			return new MistralHandler(optionsWithoutProvider)
 		case "vscode-lm":
-			return new VsCodeLmHandler(options)
+			return new VsCodeLmHandler(optionsWithoutProvider)
 		case "cline":
-			return new ClineHandler(options)
+			return new ClineHandler(optionsWithoutProvider)
 		case "litellm":
-			return new LiteLlmHandler(options)
+			return new LiteLlmHandler(optionsWithoutProvider)
 		case "asksage":
-			return new AskSageHandler(options)
+			return new AskSageHandler(optionsWithoutProvider)
 		case "xai":
-			return new XAIHandler(options)
+			return new XAIHandler(optionsWithoutProvider)
 		case "sambanova":
-			return new SambanovaHandler(options)
+			return new SambanovaHandler(optionsWithoutProvider)
 		default:
-			return new AnthropicHandler(options)
+			return new AnthropicHandler(optionsWithoutProvider)
 	}
 }
