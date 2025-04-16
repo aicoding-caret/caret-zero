@@ -964,7 +964,23 @@ export class Task {
 		newUserContent.push({
 			type: "text",
 			text: formatResponse.taskResumption(
-				this.chatSettings?.mode === "strategy" ? "strategy" : "dev",
+				// 현재 모드에 따라 적절한 모드 선택
+			(() => {
+				// 모드가 없으면 기본값 사용
+				if (!this.chatSettings?.mode) { return "dev"; }
+				
+				const controllerRef = this.controllerRef.deref();
+				// 컨트롤러 참조가 유효하지 않으면 기본값 사용
+				if (!controllerRef) { return "dev"; }
+				
+				// chatSettings의 mode에 따라 적절한 모드 처리
+				// 네이밍 규칙에 따라 arch는 계획 모드, dev는 실행 모드로 처리
+				if (this.chatSettings.mode === "arch" || this.chatSettings.mode === "plan") {
+					return "arch";
+				} else {
+					return "dev";
+				}
+			})(),
 				agoText,
 				cwd,
 				wasRecent,
@@ -3705,22 +3721,30 @@ export class Task {
 		details += `\n${lastApiReqTotalTokens.toLocaleString()} / ${(contextWindow / 1000).toLocaleString()}K tokens used (${usagePercentage}%)`
 
 		details += "\n\n# Current Mode"
-		switch (this.chatSettings.mode) {
-			case "plan":
-				details += "\nPLAN MODE\n" + formatResponse.planModeInstructions()
-				break
-			case "do":
-				details += "\nDO MODE\n" + "You are in DO mode. Focus on executing tasks efficiently."
-				break
-			case "rule":
-				details += "\nRULE MODE\n" + "You are in RULE mode. Focus on system rules and configurations."
-				break
-			case "talk":
-				details += "\nTALK MODE\n" + "You are in TALK mode. Engage in friendly conversation."
-				break
-			default:
-				details += "\nACT MODE"
-				break
+		// 모드 타입에 맞는 표시 로직 사용
+		const currentModeId = this.chatSettings?.mode || "dev";
+		
+		// 특별한 처리가 필요한 모드 처리
+		if (currentModeId === "arch" || currentModeId === "plan") {
+			// 계획 모드 (arch, plan) 처리
+			const modeName = currentModeId.toUpperCase();
+			details += `\n${modeName} MODE\n` + formatResponse.archModeInstructions();
+		} else if (currentModeId === "do" || currentModeId === "dev") {
+			// 실행 모드 (do, dev) 처리
+			const modeName = currentModeId.toUpperCase();
+			details += `\n${modeName} MODE\n` + `You are in ${modeName} mode. Focus on executing tasks efficiently.`;
+		} else if (currentModeId === "rule") {
+			// 규칙 모드 처리
+			details += `\nRULE MODE\n` + `You are in RULE mode. Focus on system rules and configurations.`;
+		} else if (currentModeId === "talk") {
+			// 대화 모드 처리
+			details += `\nTALK MODE\n` + `You are in TALK mode. Engage in friendly conversation.`;
+		} else if (currentModeId === "empty") {
+			// 빈 모드 처리
+			details += `\nEMPTY MODE\n` + `You are in EMPTY mode. No specific guidance is provided.`;
+		} else {
+			// 기타 모드들 - 일반적인 처리
+			details += `\n${currentModeId.toUpperCase()} MODE\n` + `You are in ${currentModeId.toUpperCase()} mode.`;
 		}
 
 		return `<environment_details>\n${details.trim()}\n</environment_details>`

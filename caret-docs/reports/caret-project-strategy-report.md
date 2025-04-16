@@ -861,12 +861,12 @@ logger.info(message);
     "reset": "기본값으로 재설정"
   },
   "modes": {
-    "plan": {
-      "name": "계획 모드",
+    "acrch": {
+      "name": "설계 및 기술 검토 모드",
       "description": "프로젝트 분석 및 계획 수립"
     },
-    "do": {
-      "name": "실행 모드",
+    "dev": {
+      "name": "개발 모드",
       "description": "코드 작성 및 명령 실행"
     },
     "rule": {

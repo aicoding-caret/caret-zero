@@ -1,6 +1,6 @@
 {
   "project_overview": {
-    "name": "Caret (formerly Cline-Alpha)",
+    "name": "Caret",
     "description": "VSCode extension for AI assistance, focusing on personalized development partnership.",
     "repository_url": "https://github.com/fstory97/cline"
   },
@@ -57,6 +57,9 @@
     "git_rules": {
       "commit_format": "[type]: [description]",
       "branching_strategy": "Standard Gitflow/feature branching (TBD)."
+    },
+    "ai_agent_skills": {
+      "vscode_plugin_support": "The AI agent has specific skills and knowledge related to VSCode plugin development, which should be utilized when relevant."
     }
   },
   "key_files_reference": [

@@ -103,20 +103,60 @@ export class Controller {
 	// Function to load available modes from modes.json
 	private async loadAvailableModes() {
 		// 기본 모드 - 최소한의 필수 모드만 포함
-		const defaultModes: ModeInfo[] = [{ id: "empty", label: "Empty", description: "No specific mode" }]
+		const defaultModes: ModeInfo[] = [
+			{ 
+				id: "empty", 
+				label: "Empty", 
+				description: "User Defined: Customizable mode", 
+				modetype: "act" 
+			},
+			{ 
+				id: "arch", 
+				label: "Arch", 
+				description: "Architect: Tech strategy, design, scope", 
+				modetype: "plan" 
+			},
+			{ 
+				id: "dev", 
+				label: "Dev", 
+				description: "Pair Coder: Collaborative development", 
+				modetype: "act" 
+			}
+		]
 
 		try {
-			const modesFilePath = path.join(getWorkspacePath() || "", "agents-rules", "alpha", "modes.json")
-			this.logger.debug("Attempting to load modes from:", modesFilePath)
+			// 모드 파일 경로 설정 (assets/rules 폴더 사용)
+			const modesFilePath = path.join(this.context.extensionUri.fsPath, "assets", "rules", "modes.json");
+			console.log("[MODES DEBUG] Full path to modes.json:", modesFilePath)
 
-			if (!(await fileExistsAtPath(modesFilePath))) {
-				this.logger.warn("modes.json not found at path:", modesFilePath)
+			// 파일 존재 확인
+			try {
+				await fs.access(modesFilePath)
+			} catch (error) {
+				// 파일이 존재하지 않음
 				this.availableModes = defaultModes
+				this.logger.warn("[DEBUG] modes.json file not found, using default modes")
 				return
 			}
 
-			const modesFileContent = await fs.readFile(modesFilePath, "utf-8")
-			const parsedData = JSON.parse(modesFileContent)
+			// 파일 읽기
+			let modesFileContent;
+			try {
+				modesFileContent = await fs.readFile(modesFilePath, "utf-8");
+				this.logger.log("[DEBUG] modes.json content loaded");
+			} catch (readError) {
+				throw readError;
+			}
+
+			let parsedData
+			try {
+				parsedData = JSON.parse(modesFileContent)
+				this.logger.log("[DEBUG] Parsed modes data successfully")
+			} catch (parseError) {
+				this.logger.error("[DEBUG] JSON parse error:", parseError)
+				this.availableModes = defaultModes
+				return
+			}
 
 			if (!parsedData.modes || !Array.isArray(parsedData.modes) || parsedData.modes.length === 0) {
 				this.logger.warn("Invalid or empty modes data in modes.json")
@@ -125,21 +165,29 @@ export class Controller {
 			}
 
 			// 'name' 속성을 'label'로 매핑하여 ModeInfo 인터페이스와 일치시킵니다
-			this.availableModes = parsedData.modes.map(
-				(mode: { id: string; name: string; description?: string; rules?: string[] }) => ({
-					id: mode.id,
-					label: mode.name, // 'name'을 'label'로 매핑
-					description: mode.description,
-					rules: mode.rules, // rules 정보도 포함
-				}),
-			)
+			// 모드 데이터 처리
+			try {
+				this.availableModes = parsedData.modes.map(
+					(mode: { id: string; name: string; description?: string; rules?: string[]; modetype?: "plan" | "act" }) => {
+						this.logger.log(`[DEBUG] Processing mode: ${mode.id}`);
+						return {
+							id: mode.id,
+							label: mode.name, // 'name'을 'label'로 맵핑
+							description: mode.description,
+							modetype: mode.modetype || "act", // modetype 추가, 기본값은 "act"
+							rules: mode.rules, // rules 정보도 포함
+						};
+					}
+				);
+			} catch (mapError) {
+				throw mapError;
+			}
 
-			this.logger.log("Successfully loaded modes from JSON:", this.availableModes.length)
-			this.logger.debug("Available modes:", this.availableModes.map((m) => m.id).join(", "))
+			this.logger.log("[DEBUG] Available mode IDs:", this.availableModes.map((m) => m.id).join(", "))
 		} catch (error) {
-			this.logger.error("Error loading modes.json:", error)
+			this.logger.error("[DEBUG] Error loading modes.json:", error)
 			this.availableModes = defaultModes
-			this.logger.warn("Using default modes due to error")
+			this.logger.warn("[DEBUG] Using default modes due to error")
 		}
 	}
 
@@ -713,7 +761,7 @@ export class Controller {
 					await updateApiConfiguration(this.context, message.apiConfiguration)
 					if (this.task && message.apiConfiguration && message.apiConfiguration.apiProvider) {
 						const provider = message.apiConfiguration.apiProvider as string; // 명시적 타입 단언
-						const apiHandlerOptions = { ...message.apiConfiguration, provider }
+						const apiHandlerOptions = { ...message.apiConfiguration, provider: message.apiConfiguration.apiProvider }
 						this.task.api = buildApiHandler(
 						  apiHandlerOptions,
 						  async (partialState: Partial<ExtensionState>) => {
@@ -1045,10 +1093,29 @@ export class Controller {
 			}
 			case "downloadMcp": {
 				if (message.mcpId) {
-					// 1. Toggle to act mode if we are in plan mode
+					// 1. Toggle to act mode if we are in plan mode (modetype === "plan")
+					// MCP 연결 시 계획 모드에서 실행 모드로 자동 전환
 					const { chatSettings } = await this.getStateToPostToWebview()
-					if (chatSettings.mode === "plan") {
-						await this.toggleModeWithChatSettings({ mode: "act" })
+					
+					// 현재 모드의 modetype 확인
+					const currentMode = this.availableModes.find(mode => mode.id === chatSettings.mode)
+					
+					// 현재 모드가 계획(plan) 모드인지 확인
+					if (currentMode?.modetype === "plan") {
+						this.logger.log("MCP 연결 시 계획 모드에서 실행 모드로 전환 시도")
+						
+						// 전환할 실행 모드 찾기
+						// 기본적으로 'dev' 모드를 우선적으로 사용
+						let targetModeId = "dev"
+						
+						// 모드 정보가 있는 경우 처음 찾은 act 모드 사용
+						const actMode = this.availableModes.find(mode => mode.modetype === "act")
+						if (actMode) {
+							targetModeId = actMode.id
+						}
+						
+						// 모드 전환 진행
+						await this.toggleModeWithChatSettings({ mode: targetModeId })
 					}
 
 					// 2. Enable MCP settings if disabled
@@ -1245,6 +1312,11 @@ export class Controller {
 				// plan act setting
 				await updateGlobalState(this.context, "planActSeparateModelsSetting", message.planActSeparateModelsSetting)
 
+				// chatSettings (모드 설정) 처리
+				if (message.chatSettings) {
+					await this.toggleModeWithChatSettings(message.chatSettings)
+				}
+
 				// after settings are updated, post state to webview
 				await this.postStateToWebview()
 
@@ -1364,12 +1436,17 @@ export class Controller {
 	}
 
 	async toggleModeWithChatSettings(chatSettings: ChatSettings, chatContent?: ChatContent) {
-		// 모드 전환 확인 - 모든 모드를 적절히 처리
-		const didSwitchToActMode =
-			chatSettings.mode === "act" ||
-			chatSettings.mode === "do" ||
-			chatSettings.mode === "rule" ||
-			chatSettings.mode === "talk"
+		// 현재 설정된 모드 정보 찾기
+		const currentMode = this.availableModes.find(mode => mode.id === chatSettings.mode);
+		
+		// didSwitchToActMode: 특별한 동작이 필요한 모드 구분을 위한 변수
+		// true: 일반 동작 모드 (dev, rule, talk 등) - 실행 중인 타스크를 취소하지 않음
+		// false: 계획 동작 모드 (arch, plan) - 실행 중인 타스크를 취소함
+		
+		// 모드 정보에서 modetype 속성 확인하여 동적으로 처리
+		const didSwitchToActMode = currentMode ? 
+			(currentMode.modetype === "act") : 
+			true; // 모드를 찾지 못하는 예외 상황에는 타스크를 취소하지 않도록 처리
 
 		// Capture mode switch telemetry | Capture regardless of if we know the taskId
 		telemetryService.captureModeSwitch(this.task?.taskId ?? "0", chatSettings.mode)
@@ -2253,7 +2330,8 @@ Here is the project's README to help you get started:\n\n${mcpDetails.readmeCont
 			vscMachineId: vscode.env.machineId,
 			alphaAvatarUri: alphaAvatarWebviewUri, // Add alphaAvatarUri state
 			availableModes: this.availableModes, // Add availableModes, get from controller's loaded modes
-			retryStatus: retryStatus
+			retryStatus: retryStatus,
+			apiError: null // API 에러 정보 추가
 		}
 	}
 

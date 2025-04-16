@@ -1,7 +1,7 @@
 import React, { createContext, useCallback, useContext, useEffect, useState } from "react"
 import { useEvent } from "react-use"
 import { DEFAULT_AUTO_APPROVAL_SETTINGS } from "../../../src/shared/AutoApprovalSettings"
-import { ExtensionMessage, ExtensionState, DEFAULT_PLATFORM, ModeInfo } from "../../../src/shared/ExtensionMessage" // Import ModeInfo
+import { ExtensionMessage, ExtensionState, DEFAULT_PLATFORM, ModeInfo, ApiErrorInfo } from "../../../src/shared/ExtensionMessage" // Import ModeInfo, ApiErrorInfo
 import { ApiConfiguration, ModelInfo, openRouterDefaultModelId, openRouterDefaultModelInfo } from "../../../src/shared/api"
 import { findLastIndex } from "../../../src/shared/array"
 import { McpMarketplaceCatalog, McpServer } from "../../../src/shared/mcp"
@@ -21,6 +21,7 @@ interface ExtensionStateContextType extends ExtensionState {
 	mcpMarketplaceCatalog: McpMarketplaceCatalog
 	filePaths: string[]
 	totalTasksSize: number | null
+	apiError: ApiErrorInfo | null
 	setApiConfiguration: (config: ApiConfiguration) => void
 	setCustomInstructions: (value?: string) => void
 	setTelemetrySetting: (value: TelemetrySetting) => void
@@ -53,6 +54,7 @@ export const ExtensionStateContextProvider: React.FC<{
 		planActSeparateModelsSetting: true,
 		availableModes: [], // Initialize availableModes
 		alphaAvatarUri: "https://raw.githubusercontent.com/fstory97/cline-avatar/main/alpha-maid.png", // 기본 프로필 이미지
+		apiError: null, // API 에러 정보 초기화
 	})
 	const [didHydrateState, setDidHydrateState] = useState(false)
 	const [showWelcome, setShowWelcome] = useState(false)
@@ -171,6 +173,7 @@ export const ExtensionStateContextProvider: React.FC<{
 		mcpMarketplaceCatalog,
 		filePaths,
 		totalTasksSize,
+		apiError: state.apiError || null,
 		setApiConfiguration: (value) =>
 			setState((prevState) => ({
 				...prevState,

@@ -1,9 +1,0 @@
-{
-	"rules": [
-		"In STRATEGY MODE, you have access to all tools including the strategy_mode_response tool.",
-		"In STRATEGY MODE, the goal is to gather information and get context to create a detailed plan for accomplishing the task.",
-		"In STRATEGY MODE, when you need to converse with the user or present a plan, you should use the strategy_mode_response tool to deliver your response directly.",
-		"Do not talk about using strategy_mode_response - just use it directly to share your thoughts and provide helpful answers.",
-		"You may return mermaid diagrams to visually display your understanding or plan."
-	]
-}

@@ -66,10 +66,6 @@ export function withRetry(options: RetryOptions = {}) {
 
 					const isLastAttempt = attempt === maxRetries - 1
 
-					if ((!isRetryableError && !retryAllErrors) || isLastAttempt) {
-						throw error
-					}
-
 					// Log error details for debugging
 					// 더 강력한 오류 처리로 errorBody 파싱
 					let errorBody = null
@@ -111,7 +107,62 @@ export function withRetry(options: RetryOptions = {}) {
 					} catch (parseError) {
 						console.debug("[Retry Debug] Error during response parsing:", parseError)
 					}
+					const isDailyQuotaError = error?.status === 429 && quotaInfo?.violations?.[0]?.quotaMetric === "generativelanguage.googleapis.com/generate_requests_per_model_per_day";
+					
+					if (isDailyQuotaError || (!isRetryableError && !retryAllErrors) || isLastAttempt) {
+				
+					// 상태 업데이트 로직 추가/수정
+					if ((instance as any)._updateState) {
+						let apiErrorPayload: { type: string; message: string; status?: number } | null = null;
+						let sayMessage: string | null = null;
 
+						if (isDailyQuotaError) {
+							// 일일 할당량 초과 시
+							const dailyQuotaErrorMessage = "오늘의 구글 무료 할당량을 모두 사용하였습니다. 다른 모델로 변경하거나 유료 결제를 진행 바랍니다.";
+							apiErrorPayload = {
+								type: 'dailyQuotaExceeded',
+								message: dailyQuotaErrorMessage,
+								status: error?.status
+							};
+							sayMessage = `🛑 ${dailyQuotaErrorMessage}`;
+						} else if (isLastAttempt) {
+							// 다른 이유로 최종 실패 시 (isLastAttempt가 true일 때)
+							const finalErrorMessage = `API 호출 최종 실패 (시도 ${attempt + 1}/${maxRetries}): ${error?.message || '알 수 없는 오류'}`;
+							apiErrorPayload = {
+								type: 'finalFailure',
+								message: finalErrorMessage,
+								status: error?.status
+							};
+							sayMessage = `🛑 ${finalErrorMessage}`;
+						}
+						
+
+
+						// _updateState 호출 (apiErrorPayload가 설정된 경우)
+						if (apiErrorPayload) {
+							(instance as any)._updateState({
+								retryStatus: null, // 재시도 상태 초기화
+								apiError: apiErrorPayload // 계산된 에러 정보 전달
+							});
+						} else {
+							// apiErrorPayload가 없는 경우 (예: Non-retryable 에러로 즉시 중단 시 별도 처리가 없다면)
+							// 기존처럼 retryStatus만 초기화할 수 있음
+							(instance as any)._updateState({ retryStatus: null });
+						}
+
+
+						// .say() 호출 (sayMessage가 설정된 경우)
+						if (sayMessage && (instance as any).say) {
+							;(instance as any).say(sayMessage);
+						}
+
+						} else {
+							console.warn("[Retry] _updateState function not provided to the handler instance on final failure.");
+						}
+						// 기존 throw error는 그대로 유지하여 재시도 루프를 빠져나감
+						throw error;
+					}
+					
 					console.debug("[Retry Debug] Error details:", {
 						status: error?.status,
 						headers: error?.headers,

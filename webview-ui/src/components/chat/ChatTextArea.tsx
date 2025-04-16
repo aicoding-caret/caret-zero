@@ -215,7 +215,10 @@ const ChatTextArea = forwardRef<HTMLTextAreaElement, ChatTextAreaProps>(
 		},
 		ref,
 	) => {
-		const { filePaths, apiConfiguration, openRouterModels, platform } = useExtensionState() // Removed chatSettings
+		const { filePaths, apiConfiguration, openRouterModels, platform, availableModes, chatSettings } = useExtensionState()
+		
+		// 디버그용 로그 - 상태 확인
+		console.log("ChatTextArea loaded with modes:", availableModes?.map(m => m.id).join(", "))
 		const [isTextAreaFocused, setIsTextAreaFocused] = useState(false)
 		const [gitCommits, setGitCommits] = useState<any[]>([])
 
@@ -338,8 +341,59 @@ const ChatTextArea = forwardRef<HTMLTextAreaElement, ChatTextAreaProps>(
 			[setInputValue, cursorPosition],
 		)
 
-		const handleKeyDown = useCallback(
+		const onKeyDown = useCallback(
 			(event: React.KeyboardEvent<HTMLTextAreaElement>) => {
+				const { key, ctrlKey, altKey, shiftKey, metaKey } = event
+
+				// Ctrl+Enter로 메시지 전송
+				if (ctrlKey && key === "Enter" && !altKey && !shiftKey && !metaKey) {
+					event.preventDefault()
+					onSend()
+					return
+				}
+
+				// Alt + 숫자키 조합 처리 (모드 전환)
+				if (!ctrlKey && altKey && !shiftKey && !metaKey) {
+					// 숫자 키 체크 - 숫자 키보드 (1-9)
+					const keyNum = parseInt(key);
+					
+					if (!isNaN(keyNum) && keyNum >= 1 && keyNum <= 9) {
+						// 이벤트 전파 중단 - 이 부분을 주석 처리하여 이벤트가 상위로 전달되도록 함
+						// event.stopPropagation();
+						
+						// 기본 동작만 방지(브라우저에서 Ctrl+숫자 단축키 처리 막기)
+						event.preventDefault();
+						console.log(`키 입력 감지: Ctrl+${keyNum} (TextArea 내부)`)
+						
+						// 모드 인덱스 계산 (0부터 시작)
+						const modeIndex = keyNum - 1;
+						
+						// 사용 가능한 모드 확인 및 범위 체크
+						if (availableModes && modeIndex < availableModes.length && chatSettings) {
+							const targetMode = availableModes[modeIndex].id;
+							
+							// 현재 모드와 다른 경우에만 변경
+							if (chatSettings.mode !== targetMode) {
+								// VS Code API를 직접 사용하여 메시지 전송
+								vscode.postMessage({
+									type: "updateSettings",
+									chatSettings: { ...chatSettings, mode: targetMode },
+								});
+								console.log(`모드 변경 요청: ${chatSettings.mode} -> ${targetMode}`);
+								
+								// 일정 시간 후 포커스 유지 - 이벤트 버블 끝나고 실행되도록
+								setTimeout(() => {
+									if (textAreaRef.current) {
+										textAreaRef.current.focus();
+									}
+								}, 0);
+								
+								// 키 이벤트 처리 완료
+								return;
+							}
+						}
+					}
+				}
 				if (showContextMenu) {
 					if (event.key === "Escape") {
 						setSelectedType(null)
@@ -743,7 +797,7 @@ const ChatTextArea = forwardRef<HTMLTextAreaElement, ChatTextAreaProps>(
 							handleInputChange(e)
 							updateHighlights()
 						}}
-						onKeyDown={handleKeyDown}
+						onKeyDown={onKeyDown}
 						onKeyUp={handleKeyUp}
 						onFocus={() => setIsTextAreaFocused(true)}
 						onBlur={handleBlur}

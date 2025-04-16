@@ -56,15 +56,9 @@ RetryStatusContainer 컴포넌트가 제대로 렌더링되고 있는지 확인
 2. `src/core/controller/index.ts` 파일에 `RetryStatusMessage` 타입을 import 구문에 추가했습니다.
 3. `getStateToPostToWebview` 함수에 `retryStatus` 상수를 선언하고 `return` 객체에 추가했습니다.
 
-로그 분석 결과:
-- Gemini API에서 할당량 초과 에러(429 Too Many Requests)가 발생하고 있습니다.
-- 재시도 로직은 정상적으로 작동하고 있으며, 58초 후 재시도하도록 설정되어 있습니다.
-- `retryStatus` 메시지가 생성되고 상태가 업데이트되고 있습니다.
-- 콘솔 로그에서 `[Retry Debug] Created retry status message: Object`와 `[Retry] Updating state with retryStatus: Object` 로그가 확인됩니다.
 
-**다음 단계:**
-1. 웹뷰 UI에서 `retryStatus` 상태가 제대로 표시되는지 확인해야 합니다.
-2. `webview-ui/src/context/ExtensionStateContext.tsx` 파일에서 `retryStatus` 상태가 제대로 처리되고 있는지 확인해야 합니다.
-3. `ChatView.tsx`에서 `retryStatus`를 제대로 구독하고 있는지 확인해야 합니다.
-4. `RetryStatusContainer` 컴포넌트가 제대로 렌더링되고 있는지 확인해야 합니다.
-5. 필요한 경우 UI 컴포넌트에 로그를 추가하여 `retryStatus` 값이 전달되는지 확인해야 합니다.
+** 추가 수정 예정 내역:**
+ - 아래의 일일 할당량 모두 사용시 메시지 처리 필요
+ [GoogleGenerativeAI Error]: Error fetching from https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-pro-exp-03-25:streamGenerateContent?alt=sse: [429 Too Many Requests] You exceeded your current quota. Please migrate to Gemini 2.5 Pro Preview (models/gemini-2.5-pro-preview-03-25) for higher quota limits. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. [{"@type":"type.googleapis.com/google.rpc.QuotaFailure","violations":[{"quotaMetric":"generativelanguage.googleapis.com/generate_requests_per_model_per_day","quotaId":"GenerateRequestsPerDayPerProjectPerModel"}]},{"@type":"type.googleapis.com/google.rpc.Help","links":[{"description":"Learn more about Gemini API quotas","url":"https://ai.google.dev/gemini-api/docs/rate-limits"}]}]
+
+- 오늘의 구글 무료 할당량을 모두 사용하였습니다. 다른 모델로 변경하거나 유료 결제를 진행 바랍니다. 라는 메시지 출력하고 종료시켜야함

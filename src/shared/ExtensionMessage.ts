@@ -15,6 +15,8 @@ export interface ModeInfo {
 	id: string
 	label?: string
 	description?: string
+	modetype?: "plan" | "act"
+	rules?: string[]
 }
 
 // webview will hold state
@@ -29,6 +31,18 @@ export interface RetryStatusMessage {
 	delay: number            // 대기 시간 (ms)
 	quotaViolation?: string  // 할당량 위반 정보
 	retryTimestamp?: number  // 재시도 예정 시간(ms 타임스탬프)
+}
+
+/**
+ * API 에러 정보를 위한 인터페이스
+ */
+export interface ApiErrorInfo {
+	status: number           // HTTP 상태 코드
+	message: string          // 에러 메시지
+	code?: string            // 에러 코드
+	modelId?: string         // 관련 모델 ID
+	quotaViolation?: string  // 할당량 위반 정보
+	provider?: string        // API 제공자 (예: 'gemini', 'openai')
 }
 
 export interface ExtensionMessage {
@@ -163,6 +177,7 @@ export interface ExtensionState {
 	alphaAvatarUri?: string // 알파 아바타 URI 추가
 	availableModes: ModeInfo[] // Add availableModes to ExtensionState
 	retryStatus?: RetryStatusMessage; // Add retryStatus to ExtensionState
+	apiError: ApiErrorInfo | null; // API 에러 정보 추가
 }
 
 export interface ClineMessage {

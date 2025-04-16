@@ -1,26 +1,26 @@
 {
 	"modes": [
 		{
-			"name": "ACT MODE",
-			"description": "In ACT MODE, you use tools to accomplish the user's task. Once you've completed the user's task, you use the attempt_completion tool to present the result of the task to the user.",
-			"available_tools": "All tools EXCEPT the plan_mode_respond tool."
+			"name": "DEV MODE",
+			"description": "In DEV MODE, you use tools to accomplish the user's task. Once you've completed the user's task, you use the attempt_completion tool to present the result of the task to the user.",
+			"available_tools": "All tools EXCEPT the arch_mode_respond tool."
 		},
 		{
-			"name": "STRATEGY MODE",
-			"description": "In STRATEGY MODE, the goal is to gather information and get context to create a detailed plan for accomplishing the task, which the user will review and approve before they switch you to ACT MODE to implement the solution.",
-			"available_tools": "All tools including the plan_mode_respond tool.",
+			"name": "ARCH MODE",
+			"description": "In ARCH MODE, the goal is to gather information and get context to create a detailed technical design for accomplishing the task, which the user will review and approve before they switch you to DEV MODE to implement the solution.",
+			"available_tools": "All tools including the arch_mode_respond tool.",
 			"features": [
-				"Gather information and get context to create a detailed plan.",
-				"Use the plan_mode_respond tool to deliver your response directly.",
-				"Return mermaid diagrams to visually display your understanding."
+				"Gather information and get context to create a detailed technical design.",
+				"Use the arch_mode_respond tool to deliver your response directly.",
+				"Return mermaid diagrams to visually display your system architecture and design."
 			]
 		}
 	],
-	"what_is_plan_mode": [
-		"The user may switch to STRATEGY MODE in order to have a back and forth with you to plan how to best accomplish the task.",
-		"When starting in STRATEGY MODE, depending on the user's request, you may need to do some information gathering e.g. using read_file or search_files to get more context about the task. You may also ask the user clarifying questions to get a better understanding of the task.",
-		"Once you've gained more context about the user's request, you should architect a detailed plan for how you will accomplish the task. Returning mermaid diagrams may be helpful here as well.",
-		"Then you might ask the user if they are pleased with this plan, or if they would like to make any changes. Think of this as a brainstorming session where you can discuss the task and plan the best way to accomplish it.",
-		"If at any point a mermaid diagram would make your plan clearer to help the user quickly see the structure, you are encouraged to include a Mermaid code block in the response. (Note: if you use colors in your mermaid diagrams, be sure to use high contrast colors so the text is readable.)"
+	"what_is_arch_mode": [
+		"The user may switch to ARCH MODE in order to have a back and forth with you to design how to best accomplish the task.",
+		"When starting in ARCH MODE, depending on the user's request, you may need to do some information gathering e.g. using read_file or search_files to get more context about the task. You may also ask the user clarifying questions to get a better understanding of the task.",
+		"Once you've gained more context about the user's request, you should architect a detailed technical design for how you will accomplish the task. Returning mermaid diagrams may be helpful here as well.",
+		"Then you might ask the user if they are pleased with this design, or if they would like to make any changes. Think of this as a brainstorming session where you can discuss the task and design the best technical approach to accomplish it.",
+		"If at any point a mermaid diagram would make your architecture clearer to help the user quickly see the structure, you are encouraged to include a Mermaid code block in the response. (Note: if you use colors in your mermaid diagrams, be sure to use high contrast colors so the text is readable.)"
 	]
 }

@@ -1,7 +1,7 @@
 import { VSCodeButton, VSCodeLink } from "@vscode/webview-ui-toolkit/react"
 import debounce from "debounce"
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
-import { useDeepCompareEffect, useEvent, useMount } from "react-use"
+import { useEvent, useMount } from "react-use"
 import { Virtuoso, type VirtuosoHandle } from "react-virtuoso"
 import styled from "styled-components" // Ensure styled-components is imported
 import {
@@ -128,6 +128,30 @@ const RetryStatusProgressBar = styled.div<{ progress: number }>`
 	transition: width 1s linear;
 `
 
+// API 에러 상태 UI 컴포넌트
+const ApiErrorContainer = styled.div`
+	margin: 8px 0;
+	padding: 10px;
+	border-radius: 4px;
+	background-color: var(--vscode-notificationsErrorIcon-foreground, #f85149);
+	color: var(--vscode-foreground);
+	font-size: 0.9rem;
+	position: relative;
+	display: flex;
+	align-items: center;
+`
+
+const ApiErrorIcon = styled.span`
+	margin-right: 8px;
+	color: var(--vscode-foreground);
+`
+
+const ApiErrorInfo = styled.div`
+	display: flex;
+	flex-direction: column;
+	gap: 4px;
+`
+
 interface ChatViewProps {
 	isHidden: boolean
 	showAnnouncement: boolean
@@ -149,7 +173,47 @@ const ChatView = ({ isHidden, showAnnouncement, hideAnnouncement, showHistoryVie
 		availableModes, // Get available modes from context
 		chatSettings, // Get chat settings from context
 		retryStatus, // Get retryStatus from context state
+		apiError    // <<< 새로 추가된 API 에러 상태 가져오기
 	} = useExtensionState()
+	
+	// ALT+1~5 단축키 처리 함수
+	const handleKeydown = useCallback(
+		(e: Event) => {
+			const kbEvent = e as KeyboardEvent;
+			// ALT 키와 숫자 키가 함께 눌렸을 때 처리
+			if (!kbEvent.ctrlKey && kbEvent.altKey && !kbEvent.shiftKey && !kbEvent.metaKey) {
+				// 숫자 키 체크 - 숫자 키보드 (1-9)
+				const keyNum = parseInt(kbEvent.key);
+				
+				if (!isNaN(keyNum) && keyNum >= 1 && keyNum <= 9) {
+					// 모드 인덱스 계산 (0부터 시작)
+					const modeIndex = keyNum - 1;
+					
+					// 사용 가능한 모드 확인 및 범위 체크
+					if (availableModes && modeIndex < availableModes.length) {
+						const targetMode = availableModes[modeIndex].id;
+						
+						// 현재 모드와 다른 경우에만 변경
+						if (chatSettings.mode !== targetMode) {
+							vscode.postMessage({
+								type: "updateSettings",
+								chatSettings: { ...chatSettings, mode: targetMode },
+							});
+							kbEvent.preventDefault(); // 기본 동작 방지
+							return true; // 이벤트 처리 완료
+						}
+					}
+				}
+			}
+			return false; // 이벤트 처리 안함
+		},
+		[availableModes, chatSettings]
+	);
+	
+	// 키보드 이벤트 리스너 등록 (전역 및 입력창 모두에 적용)
+	useEvent("keydown", handleKeydown, window)
+	
+
 	
 	// API 재시도 상태 관리 (진행률 표시용 로컬 상태)
 	// const [retryStatus, setRetryStatus] = useState<RetryStatusMessage | null>(null) // Context state 사용으로 변경
@@ -198,7 +262,7 @@ const ChatView = ({ isHidden, showAnnouncement, hideAnnouncement, showHistoryVie
 
 	const lastMessage = useMemo(() => messages.at(-1), [messages])
 	const secondLastMessage = useMemo(() => messages.at(-2), [messages])
-	useDeepCompareEffect(() => {
+	useEffect(() => {
 		if (lastMessage) {
 			switch (lastMessage.type) {
 				case "ask":
@@ -365,8 +429,6 @@ const ChatView = ({ isHidden, showAnnouncement, hideAnnouncement, showHistoryVie
 	
 	// 새로운 useEffect: ExtensionState의 retryStatus 변경 감지 및 UI 업데이트
 	useEffect(() => {
-		console.log('[ChatView] retryStatus state changed:', retryStatus)
-
 		// 기존 타이머 정리
 		if (retryProgressTimerRef.current !== null) {
 			window.clearInterval(retryProgressTimerRef.current)
@@ -922,6 +984,18 @@ const ChatView = ({ isHidden, showAnnouncement, hideAnnouncement, showHistoryVie
 						</RetryStatusContainer>
 					)}
 
+					{/* API 최종 에러 상태 UI */}
+					{apiError && (
+						<ApiErrorContainer> {/* 새 Styled Component 또는 기존 컴포넌트 재활용 */}
+							<ApiErrorIcon> {/* 아이콘 스타일 */}
+								<AlertIcon size={16} />
+							</ApiErrorIcon>
+							<ApiErrorInfo> {/* 메시지 스타일 */}
+								<span>{apiError.message}</span>
+							</ApiErrorInfo>
+						</ApiErrorContainer>
+					)}
+
 					<AutoApproveMenu />
 					{showScrollToBottom ? (
 						<div style={{ display: "flex", padding: "10px 15px 0px 15px" }}>
@@ -977,14 +1051,15 @@ const ChatView = ({ isHidden, showAnnouncement, hideAnnouncement, showHistoryVie
 			<ModeSelectorContainer>
 				{availableModes && availableModes.length > 0 ? (
 					// 모드 데이터가 있는 경우
-					availableModes.map((modeInfo) => (
+					availableModes.map((modeInfo, index) => (
 						<ModeButton
 							key={modeInfo.id}
 							appearance={chatSettings.mode === modeInfo.id ? "primary" : "secondary"}
+							data-shortcut={`Ctrl+${index + 1}`}
 							onClick={() => {
 								if (chatSettings.mode !== modeInfo.id) {
 									vscode.postMessage({
-										type: "togglePlanActMode", // 모드 전환 메시지 타입
+										type: "updateSettings", // 컨트롤러에서 처리하는 메시지 타입
 										chatSettings: { ...chatSettings, mode: modeInfo.id },
 									})
 								}
@@ -995,58 +1070,27 @@ const ChatView = ({ isHidden, showAnnouncement, hideAnnouncement, showHistoryVie
 				) : (
 					// 모드 데이터가 없는 경우 기본 모드 버튼 표시
 					<>
-						<ModeButton
-							key="strategy"
-							appearance={chatSettings.mode === "strategy" ? "primary" : "secondary"}
-							onClick={() => {
-								if (chatSettings.mode !== "plan") {
-									vscode.postMessage({
-										type: "togglePlanActMode",
-										chatSettings: { ...chatSettings, mode: "plan" },
-									})
-								}
-							}}>
-							Plan
-						</ModeButton>
-						<ModeButton
-							key="dev"
-							appearance={chatSettings.mode === "dev" ? "primary" : "secondary"}
-							onClick={() => {
-								if (chatSettings.mode !== "dev") {
-									vscode.postMessage({
-										type: "togglePlanActMode",
-										chatSettings: { ...chatSettings, mode: "dev" },
-									})
-								}
-							}}>
-							Do
-						</ModeButton>
-						<ModeButton
-							key="rule"
-							appearance={chatSettings.mode === "rule" ? "primary" : "secondary"}
-							onClick={() => {
-								if (chatSettings.mode !== "rule") {
-									vscode.postMessage({
-										type: "togglePlanActMode",
-										chatSettings: { ...chatSettings, mode: "rule" },
-									})
-								}
-							}}>
-							Rule
-						</ModeButton>
-						<ModeButton
-							key="talk"
-							appearance={chatSettings.mode === "talk" ? "primary" : "secondary"}
-							onClick={() => {
-								if (chatSettings.mode !== "talk") {
-									vscode.postMessage({
-										type: "togglePlanActMode",
-										chatSettings: { ...chatSettings, mode: "talk" },
-									})
-								}
-							}}>
-							Talk
-						</ModeButton>
+						{[
+							{ id: "arch", label: "Arch", shortcut: 1 },
+							{ id: "dev", label: "Dev", shortcut: 2 },
+							{ id: "rule", label: "Rule", shortcut: 3 },
+							{ id: "talk", label: "Talk", shortcut: 4 }
+						].map((fallbackMode, index) => (
+							<ModeButton
+								key={fallbackMode.id}
+								appearance={chatSettings.mode === fallbackMode.id ? "primary" : "secondary"}
+								data-shortcut={`Ctrl+${fallbackMode.shortcut}`}
+								onClick={() => {
+									if (chatSettings.mode !== fallbackMode.id) {
+										vscode.postMessage({
+											type: "updateSettings",
+											chatSettings: { ...chatSettings, mode: fallbackMode.id },
+										})
+									}
+								}}>
+								{fallbackMode.label}
+							</ModeButton>
+						))}
 					</>
 				)}
 				{/* 설정 버튼 추가 (필요한 경우) */}
