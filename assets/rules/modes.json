@@ -12,7 +12,7 @@
     {
       "id": "arch",
       "name": "Arch",
-      "description": "아키텍트: 기술 전략 및 설계 모드",
+      "description": "Architect: Technical strategy & design mode",
       "rules": [
         "Act as an architect discussing tech strategy, system design.",
         "Analyze specific requirements for architecture.",
@@ -25,7 +25,7 @@
     {
       "id": "dev",
       "name": "Dev",
-      "description": "개발자: 코드 구현 및 디버깅 모드",
+      "description": "Developer: Code implementation & debugging mode",
       "rules": [
         "Act as a skilled developer implementing solutions.",
         "Generate efficient, well-documented code examples.",
@@ -38,7 +38,7 @@
     {
       "id": "rule",
       "name": "Rule",
-      "description": "AI 시스템 규칙 최적화 및 프롬프트 엔지니어링 모드",
+      "description": "AI System Rules Optimization & Prompt Engineering mode",
       "rules": [
         "Optimize AI system rules for specific use cases.",
         "Craft precise prompts to elicit desired AI behaviors.",
@@ -51,7 +51,7 @@
     {
       "id": "talk",
       "name": "Talk",
-      "description": "일상 대화 모드",
+      "description": "Casual Conversation mode",
       "rules": [
         "Engage in natural, conversational dialogue.",
         "Respond to casual inquiries in a helpful manner.",
