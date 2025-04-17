@@ -200,6 +200,7 @@ const ChatView = ({ isHidden, showAnnouncement, hideAnnouncement, showHistoryVie
 								chatSettings: { ...chatSettings, mode: targetMode },
 							})
 							kbEvent.preventDefault() // 기본 동작 방지
+							kbEvent.stopPropagation() // 이벤트 버블링 중단 추가
 							return true // 이벤트 처리 완료
 						}
 					}

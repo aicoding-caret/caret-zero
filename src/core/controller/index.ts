@@ -303,8 +303,8 @@ export class Controller {
 					this.logger.log("모드 구성 로드 요청 받음")
 					console.log("[Controller] 모드 구성 로드 요청 받음 - loadModesConfig")
 
-					// modes.json 파일 경로
-					const modesFilePath = path.join(getWorkspacePath() || "", "agents-rules", "alpha", "modes.json")
+					// modes.json 파일 경로 (수정됨)
+					const modesFilePath = path.join(this.context.extensionUri.fsPath, "assets", "rules", "modes.json")
 					this.logger.log("모드 구성 파일 경로:", modesFilePath)
 					console.log("[Controller] 모드 구성 파일 경로:", modesFilePath)
 
@@ -371,11 +371,11 @@ export class Controller {
 						throw new Error("모드 설정 데이터가 없습니다.")
 					}
 
-					// modes.json 파일 경로
-					const modesFilePath = path.join(getWorkspacePath() || "", "agents-rules", "alpha", "modes.json")
+					// modes.json 파일 경로 (수정됨)
+					const modesFilePath = path.join(this.context.extensionUri.fsPath, "assets", "rules", "modes.json")
 
-					// 원본 파일 백업 (디렉토리가 존재하는지 확인)
-					const backupDir = path.join(getWorkspacePath() || "", "agents-rules", "alpha", "backups")
+					// 원본 파일 백업 (디렉토리가 존재하는지 확인) - 백업 경로는 일단 유지
+					const backupDir = path.join(getWorkspacePath() || "", "agents-rules", "alpha", "backups") // 백업 경로는 일단 유지
 					try {
 						await fs.mkdir(backupDir, { recursive: true })
 						const timestamp = new Date().toISOString().replace(/[:.]/g, "-")

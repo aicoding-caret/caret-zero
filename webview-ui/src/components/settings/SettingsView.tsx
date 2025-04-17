@@ -20,6 +20,7 @@ import { TabButton } from "../mcp/McpView"
 import { useEvent } from "react-use"
 import styled from "styled-components" // Import styled-components
 import { ExtensionMessage, ModeInfo } from "../../../../src/shared/ExtensionMessage"
+import ModeSettingsView from "./ModeSettingsView"
 const { IS_DEV } = process.env
 
 // Styled components for Mode Settings section (can be adjusted)
@@ -417,56 +418,10 @@ const SettingsView = ({ onDone }: SettingsViewProps) => {
 					</p>
 				</SettingsSection>
 
-				{/* === Mode Configuration Section with Tabs === */}
-				<SettingsSection>
-					<SectionTitle>Mode Configuration</SectionTitle>
-					{/* Use VSCodePanels for tabs */}
-					<VSCodePanels
-						activeid={activeModeSettingTab}
-						onChange={(e: any) => setActiveModeSettingTab(e.target.activeid)}>
-						{/* Generate tabs dynamically */}
-						{["mode-1", "mode-2", "mode-3", "mode-4", "mode-5"].map((modeId, index) => (
-							<VSCodePanelTab key={modeId} id={modeId}>{`Mode ${index + 1}`}</VSCodePanelTab>
-						))}
-
-						{/* Generate panel views dynamically */}
-						{["mode-1", "mode-2", "mode-3", "mode-4", "mode-5"].map((modeId, index) => (
-							// Use VSCodePanelView for each tab's content
-							<VSCodePanelView
-								key={`view-${modeId}`}
-								id={`view-${modeId}`}
-								// Add width: '100%' and ensure proper box-sizing if needed (though likely default)
-								style={{ padding: "10px 0", width: "100%", boxSizing: "border-box" }}>
-								<div style={{ width: "100%", display: "block", marginTop: "15px" }}>
-									{" "}
-									{/* New grouping div */}
-									{/* Mode Name: Stack label and input vertically */}
-									<div style={{ marginBottom: "15px", width: "100%", display: "block" }}>
-										<OptionLabel htmlFor={`${modeId}-name`}>Mode Name:</OptionLabel>
-										<VSCodeTextField
-											id={`${modeId}-name`}
-											placeholder={`Enter name for Mode ${index + 1}`}
-											defaultValue={`Mode ${index + 1}`}
-											style={{ width: "100%" }}
-										/>
-									</div>
-									{/* Rule Configuration */}
-									<SectionTitle style={{ fontSize: "var(--vscode-font-size)" }}>
-										Rule Configuration{" "}
-									</SectionTitle>
-									<VSCodeTextArea
-										id={`${modeId}-rules`}
-										placeholder={`Enter specific rules for this mode (one per line) to override global/project settings...`}
-										rows={6}
-										style={{ width: "100%" }}
-										resize="vertical"
-									/>
-								</div>
-							</VSCodePanelView>
-						))}
-					</VSCodePanels>
-				</SettingsSection>
-				{/* ===================================== */}
+<SettingsSection>
+	<SectionTitle>Mode Configuration</SectionTitle>
+	<ModeSettingsView onDone={() => {}} />
+</SettingsSection>
 
 				{/* Debug Section */}
 				{IS_DEV && (

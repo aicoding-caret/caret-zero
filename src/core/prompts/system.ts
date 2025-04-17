@@ -5,7 +5,29 @@ import { McpHub } from "../../services/mcp/McpHub"
 import { BrowserSettings } from "../../shared/BrowserSettings"
 import fs from "fs/promises"
 import path from "path"
-import * as corePrompt from "./core_system_prompt.json"
+// Removed: import * as corePrompt from "./core_system_prompt.json"
+
+// Define default sections and rules, combining previous modes and removing MODES_EXPLANATION
+const defaultSectionsRef = [
+	// BASE_PROMPT_INTRO and TOOL_DEFINITIONS handled separately below
+	"TOOL_USE_FORMAT.json",
+	"TOOL_USE_EXAMPLES.json",
+	"TOOL_USE_GUIDELINES.json",
+	"MCP_SERVERS_HEADER.json",
+	"MCP_CONNECTED_SERVERS.json",
+	"MCP_CREATION_GUIDE.json",
+	"EDITING_FILES_GUIDE.json",
+	"CAPABILITIES_SUMMARY.json",
+	"RULES_HEADER.json",
+	"SYSTEM_INFORMATION.json",
+	"OBJECTIVE.json",
+]
+
+const defaultRulesRef = [
+	"common_rules.json",
+	"file_editing_rules.json",
+	"cost_consideration_rules.json",
+]
 
 // Specific interface for the structure of EDITING_FILES_GUIDE.json
 interface EditingFilesGuideData {
@@ -187,15 +209,16 @@ function formatEditingGuide(guideData: EditingFilesGuideData | null): string {
 
 export const SYSTEM_PROMPT = async (
 	cwd: string,
-	supportsComputerUse: boolean,
+	supportsComputerUse: boolean, // This parameter might become less relevant or used differently
 	mcpHub: McpHub,
 	browserSettings: BrowserSettings,
 ): Promise<string> => {
 	const sectionsDir = path.join(__dirname, "sections")
 	const rulesDir = path.join(__dirname, "rules")
 
-	const currentMode = supportsComputerUse ? "act_mode" : "plan_mode"
-	const modeConfig = corePrompt.modes[currentMode] || { sections_ref: [], rules_ref: [] }
+	// Removed mode selection logic:
+	// const currentMode = supportsComputerUse ? "act_mode" : "plan_mode"
+	// const modeConfig = corePrompt.modes[currentMode] || { sections_ref: [], rules_ref: [] }
 
 	let systemPrompt = "" // Initialize empty
 
@@ -259,15 +282,13 @@ export const SYSTEM_PROMPT = async (
 		systemPrompt += `\n\n====\n\n# ERROR LOADING TOOL DEFINITIONS\n\n[${error instanceof Error ? error.message : String(error)}]`
 	}
 
-	// Load other sections
+	// Load other sections using the default list
 	try {
-		if (Array.isArray(modeConfig.sections_ref)) {
-			for (const sectionRef of modeConfig.sections_ref) {
+		if (Array.isArray(defaultSectionsRef)) {
+			for (const sectionRef of defaultSectionsRef) {
 				const sectionName = sectionRef.replace(/\.(json|md)$/i, "")
-				// Skip sections already handled
-				if (sectionName === "TOOL_DEFINITIONS" || sectionName === "BASE_PROMPT_INTRO") {
-					continue
-				}
+				// Skip sections already handled (TOOL_DEFINITIONS is handled above, BASE_PROMPT_INTRO is first)
+				// No need to check sectionName === "TOOL_DEFINITIONS" || sectionName === "BASE_PROMPT_INTRO" because they are not in defaultSectionsRef
 
 				const header = `# ${sectionName.replace(/_/g, " ")}`
 				let sectionOutput = ""
@@ -295,17 +316,17 @@ export const SYSTEM_PROMPT = async (
 				}
 			}
 		} else {
-			console.error("modeConfig.sections_ref is not an array or is missing")
+			console.error("defaultSectionsRef is not an array or is missing") // Updated error message
 		}
 	} catch (error) {
 		console.error("Error processing sections loop:", error)
 	}
 
-	// Load rules
+	// Load rules using the default list
 	try {
 		systemPrompt += "\n\n====\n\n# RULES\n"
-		if (Array.isArray(modeConfig.rules_ref)) {
-			for (const ruleRef of modeConfig.rules_ref) {
+		if (Array.isArray(defaultRulesRef)) {
+			for (const ruleRef of defaultRulesRef) {
 				const ruleName = ruleRef.replace(/\.(json|md)$/i, "")
 				try {
 					const rules = await loadRules(rulesDir, ruleName)
@@ -317,7 +338,7 @@ export const SYSTEM_PROMPT = async (
 				}
 			}
 		} else {
-			console.error("modeConfig.rules_ref is not an array or is missing")
+			console.error("defaultRulesRef is not an array or is missing") // Updated error message
 		}
 	} catch (error) {
 		console.error("Error processing rules loop:", error)

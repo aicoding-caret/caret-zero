@@ -66,20 +66,44 @@ const defaultModes = [
 	{ id: "talk", label: "Talk", description: "Casual conversation mode" },
 	{ id: "empty", label: "Empty", description: "Empty mode with no specific behavior" },
 ]
-
 const ModeSettingsView = ({ onDone }: { onDone: () => void }) => {
-	// ExtensionState에서 설정 가져오기
-	const { availableModes } = useExtensionState()
+	// 1. ExtensionState에서 설정 가져오기 (가장 먼저 선언!)
+	const { availableModes } = useExtensionState();
 
-	// 실제 사용할 모드 목록
+	// (1) 모드 설정 변경 감지용 초기값 저장
+	const [initialModeSettings, setInitialModeSettings] = React.useState<string>("");
+
+	// 2. 실제 사용할 모드 목록 (availableModes가 안전하게 선언된 후 사용)
 	const modes =
-		availableModes.length > 0
+		Array.isArray(availableModes) && availableModes.length > 0
 			? availableModes.map((mode: { id: string; label?: string; description?: string }) => ({
 					id: mode.id,
 					label: mode.label || mode.id,
 					description: mode.description || "",
 				}))
-			: defaultModes
+			: defaultModes;
+
+	React.useEffect(() => {
+		// availableModes 동기화 감시 및 modeSettings 동기화
+		console.log("[ModeSettingsView] availableModes 변경 감지:", availableModes);
+		if (Array.isArray(availableModes) && availableModes.length > 0) {
+			const newSettings: { [key: string]: { name: string; description: string; rules: string[] } } = {};
+			availableModes.forEach((mode: any) => {
+				newSettings[mode.id] = {
+					name: mode.label || mode.id,
+					description: mode.description || "",
+					rules: Array.isArray(mode.rules) ? mode.rules : [],
+				};
+			});
+			setModeSettings(newSettings);
+			console.log("[ModeSettingsView] availableModes 기반으로 modeSettings 동기화 완료:", newSettings);
+		}
+	}, [availableModes]);
+
+	React.useEffect(() => {
+		// 최초 로드 시 초기값 저장
+		setInitialModeSettings(JSON.stringify(modeSettings));
+	}, []);
 
 	// Default to the first mode's tab
 	const [activeTab, setActiveTab] = useState(modes[0]?.id || "plan")
@@ -132,25 +156,25 @@ const ModeSettingsView = ({ onDone }: { onDone: () => void }) => {
 	// 초기 모드 설정 로드
 	useEffect(() => {
 		// 로그 추가
-		console.log("화면 로드, 모드 설정 요청 준비...")
+		console.log("[ModeSettingsView] 화면 로드됨. 모드 설정(loadModesConfig) 요청 준비...")
 
 		// modes.json 파일 읽어오기
 		const loadConfigMessage: WebviewMessage = { type: "loadModesConfig" }
-		console.log("모드 설정 로드 메시지 전송:", loadConfigMessage)
+		console.log("[ModeSettingsView] 모드 설정 로드(loadModesConfig) 메시지 전송:", loadConfigMessage)
 		vscode.postMessage(loadConfigMessage)
 
 		// 모드 설정 로드 응답 리스너 추가
 		const handleMessage = (event: MessageEvent) => {
 			const message = event.data
-			console.log("메시지 수신:", message.type, message)
+			console.log("[ModeSettingsView] 메시지 수신:", message.type, message)
 
 			// modesConfigLoaded 메시지 처리
 			if (message.type === "modesConfigLoaded" && message.text) {
-				console.log("모드 설정 로드 응답 받음:", message.type)
-				console.log("모드 데이터 내용:", message.text)
+				console.log("[ModeSettingsView] 모드 설정 로드 응답 받음:", message.type)
+				console.log("[ModeSettingsView] 모드 데이터 내용:", message.text)
 				try {
 					const modesData = JSON.parse(message.text)
-					console.log("모드 설정 로드 성공:", modesData)
+					console.log("[ModeSettingsView] 모드 설정 로드 성공:", modesData)
 
 					// 모드 설정 형식 변환
 					if (modesData && modesData.modes && Array.isArray(modesData.modes)) {
@@ -168,10 +192,12 @@ const ModeSettingsView = ({ onDone }: { onDone: () => void }) => {
 						})
 
 						// 설정 적용
-						setModeSettings(loadedSettings)
+						console.log("[ModeSettingsView] setModeSettings 호출: loadedSettings=", loadedSettings)
+					setModeSettings(loadedSettings)
+console.log("[ModeSettingsView] setModeSettings(loadedSettings) 호출됨:", loadedSettings)
 					}
 				} catch (error) {
-					console.error("모드 설정 로드 오류:", error)
+					console.error("[ModeSettingsView] 모드 설정 로드 오류:", error)
 				}
 			}
 		}
@@ -201,22 +227,23 @@ const ModeSettingsView = ({ onDone }: { onDone: () => void }) => {
 		}
 
 		// 저장 로그 추가
-		console.log("모드 설정 저장 시도 중...", modesConfig)
+		console.log("[ModeSettingsView] 모드 설정 저장 시도 중...", modesConfig)
 
 		// 모드 설정 저장 메시지 전송
 		const saveMessage: WebviewMessage = {
 			type: "saveModeSettings",
 			text: JSON.stringify(modesConfig),
 		}
-		console.log("모드 설정 저장 메시지 전송:", saveMessage)
+		console.log("[ModeSettingsView] 모드 설정 저장 메시지 전송:", saveMessage)
 		vscode.postMessage(saveMessage)
 
 		// 저장 완료 메시지 표시
 		const infoMessage: WebviewMessage = {
 			type: "showInformationMessage",
-			text: "모드 설정이 저장되었습니다. Cline 재시작 후 적용됩니다.",
+			text: "모드 설정이 저장되었습니다. 변경 사항이 즉시 반영됩니다."
 		}
 		vscode.postMessage(infoMessage)
+		console.log("[ModeSettingsView] 저장 후 즉시 반영 메시지 전송됨")
 	}
 
 	// 기본값으로 초기화
@@ -323,7 +350,15 @@ const ModeSettingsView = ({ onDone }: { onDone: () => void }) => {
 		<Container>
 			<Header>
 				<Title>Mode Settings</Title>
-				<VSCodeButton appearance="secondary" onClick={onDone}>
+				<VSCodeButton appearance="secondary" onClick={() => {
+				// (2) 변경 감지: 초기값과 현재값 비교
+				if (initialModeSettings && JSON.stringify(modeSettings) !== initialModeSettings) {
+					alert("모드 설정이 변경되어 새로고침합니다! (변경 사항이 즉시 반영됩니다)");
+					window.location.reload();
+				} else {
+					onDone();
+				}
+			}} >
 					Done
 				</VSCodeButton>
 			</Header>
