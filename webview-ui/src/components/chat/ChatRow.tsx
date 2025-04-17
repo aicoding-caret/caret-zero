@@ -154,8 +154,8 @@ const ChatRow = memo(
 export default ChatRow
 
 export const ChatRowContent = ({ message, isExpanded, onToggleExpand, lastModifiedMessage, isLast }: ChatRowContentProps) => {
-	// alphaAvatarUri 상태 가져오기
-	const { mcpServers, mcpMarketplaceCatalog, alphaAvatarUri } = useExtensionState()
+	// ExtensionState에서 아바타 URI와 MCP 관련 상태 가져오기
+	const { mcpServers, mcpMarketplaceCatalog, alphaAvatarUri, alphaThinkingAvatarUri } = useExtensionState()
 	const [seeNewChangesDisabled, setSeeNewChangesDisabled] = useState(false)
 
 	// splitMessage 함수 정의
@@ -1450,28 +1450,28 @@ export const ChatRowContent = ({ message, isExpanded, onToggleExpand, lastModifi
 		return null // Default case
 	}
 
-	// --- Final Return Structure ---
-	// Conditionally apply avatar and wrapper ONLY for specific AI message types
 	// 메시지 유형에 따라 표시할 아바타 이미지 결정
 	const getAvatarSrc = () => {
-		// 추론 과정 메시지인 경우 추론 중 아바타 사용
+		// 생각 중인 메시지일 경우
 		if (message.type === "say" && message.say === "reasoning") {
-			// 절대 경로로 사용
-			return "https://raw.githubusercontent.com/fstory97/cline-avatar/main/default_ai_agent_thinking.png"
+			// 생각 중 이미지 사용 (없으면 기본 이미지)
+			return alphaThinkingAvatarUri || "assets/default_ai_agent_thinking.png";
 		}
-		// 일반 대화 메시지인 경우 기본 아바타 사용
-		return alphaAvatarUri
+
+		// 기본 아바타 이미지
+		return alphaAvatarUri || "assets/default_ai_agent_profile.png";
 	}
 
-	if (isAiMessage && alphaAvatarUri) {
-		// alphaAvatarUri가 있을 때만 아바타 표시
-		// AI text, reasoning, followup, plan_mode_respond
+	if (isAiMessage) {
 		return (
-			// AI 메시지일 경우 아바타와 함께 표시
-			<div style={{ display: "flex", alignItems: "flex-start" }}>
-				<AvatarImage src={getAvatarSrc()} alt="Alpha Avatar" />
-				<MessageContentWrapper isAiMessage={true}>{renderSpecificContent()}</MessageContentWrapper>
-			</div>
+			<>
+				{/* 대화 내용 메시지 */}
+				<div style={{ display: "flex", alignItems: "flex-start" }}>
+					{/* 아바타 이미지 표시 */}
+					<AvatarImage src={getAvatarSrc()} alt="Alpha Avatar" />
+					<MessageContentWrapper isAiMessage={true}>{renderSpecificContent()}</MessageContentWrapper>
+				</div>
+			</>
 		)
 	} else if (message.type === "say" && message.say === "user_feedback") {
 		// 사용자 피드백 메시지 (아바타 없음, 배경색 다름)

@@ -102,6 +102,7 @@ const SettingsView = ({ onDone }: SettingsViewProps) => {
 		availableModes, // availableModes 상태 추가
 		// 프로필 이미지 관련 값
 		alphaAvatarUri,
+		alphaThinkingAvatarUri,
 		selectAgentProfileImage,
 		resetAgentProfileImage,
 		updateAgentProfileImage,
@@ -113,6 +114,12 @@ const SettingsView = ({ onDone }: SettingsViewProps) => {
 	const [pendingTabChange, setPendingTabChange] = useState<string | null>(null)
 	// Re-introduce activeModeSettingTab state
 	const [activeModeSettingTab, setActiveModeSettingTab] = useState("mode-1")
+
+	// 프로필 이미지 관련 상태 관리
+	// 기본 프로필 이미지
+	const [defaultImage, setDefaultImage] = useState<string | undefined>(alphaAvatarUri)
+	// 생각 중 이미지 관련 상태 추가
+	const [thinkingImage, setThinkingImage] = useState<string | undefined>(alphaThinkingAvatarUri)
 
 	const handleSubmit = (withoutDone: boolean = false) => {
 		const apiValidationResult = validateApiConfiguration(apiConfiguration)
@@ -142,6 +149,7 @@ const SettingsView = ({ onDone }: SettingsViewProps) => {
 			apiConfigurationToSubmit = undefined
 		}
 
+		// 기본 이미지 전송
 		vscode.postMessage({
 			type: "updateSettings",
 			planActSeparateModelsSetting,
@@ -149,7 +157,15 @@ const SettingsView = ({ onDone }: SettingsViewProps) => {
 			telemetrySetting,
 			apiConfiguration: apiConfigurationToSubmit,
 			profileImage: alphaAvatarUri,
+			imageType: "default",
 			// TODO: Add mode configurations to the message payload later
+		})
+		
+		// 생각 중 이미지 전송
+		vscode.postMessage({
+			type: "updateAgentProfileImage",
+			profileImage: alphaThinkingAvatarUri,
+			imageType: "thinking",
 		})
 
 		if (!withoutDone) {
@@ -201,6 +217,38 @@ const SettingsView = ({ onDone }: SettingsViewProps) => {
 		vscode.postMessage({ type: "resetState" })
 	}
 
+	// 기본 이미지 선택 버튼 클릭 함수
+	const handleImageSelect = useCallback(() => {
+		vscode.postMessage({ 
+			type: "selectAgentProfileImage", 
+			imageType: "default" 
+		})
+	}, [])
+
+	// 생각 중 이미지 선택 버튼 클릭 함수
+	const handleThinkingImageSelect = useCallback(() => {
+		vscode.postMessage({ 
+			type: "selectAgentProfileImage", 
+			imageType: "thinking" 
+		})
+	}, [])
+
+	// 이미지 초기화 버튼 클릭 함수
+	const handleImageReset = useCallback(() => {
+	vscode.postMessage({ 
+			type: "resetAgentProfileImage", 
+			imageType: "default" 
+		})
+	}, [])
+
+	// 생각 중 이미지 초기화 버튼 클릭 함수
+	const handleThinkingImageReset = useCallback(() => {
+		vscode.postMessage({ 
+			type: "resetAgentProfileImage", 
+			imageType: "thinking" 
+		})
+	}, [])
+
 	// 모드타입에 따라 탭 변경 처리
 	const handleTabChange = (modeType: "plan" | "act") => {
 		// 현재 활성화된 모드의 타입 확인
@@ -237,14 +285,10 @@ const SettingsView = ({ onDone }: SettingsViewProps) => {
 	return (
 		<div
 			style={{
-				position: "fixed",
-				top: 0,
-				left: 0,
-				right: 0,
-				bottom: 0,
-				padding: "10px 0px 0px 20px",
 				display: "flex",
 				flexDirection: "column",
+				width: "100%",
+				height: "100%",
 				overflow: "hidden",
 			}}>
 			<div
@@ -252,152 +296,125 @@ const SettingsView = ({ onDone }: SettingsViewProps) => {
 					display: "flex",
 					justifyContent: "space-between",
 					alignItems: "center",
-					marginBottom: "13px",
-					paddingRight: 17,
+					paddingLeft: "20px",
+					paddingRight: "20px",
+					borderBottom: "1px solid var(--vscode-settings-sectionBorder)",
 				}}>
-				<h3 style={{ color: "var(--vscode-foreground)", margin: 0 }}>Settings</h3>
-				<VSCodeButton onClick={() => handleSubmit(false)}>Done</VSCodeButton>
+				<h2 style={{ margin: "10px 0" }}>설정</h2>
+				<VSCodeButton onClick={() => handleSubmit()} style={{ margin: 0 }}>
+					설정완료
+				</VSCodeButton>
 			</div>
 			<div
 				style={{
-					flexGrow: 1,
-					overflowY: "scroll",
-					paddingRight: 8,
-					display: "flex",
-					flexDirection: "column",
+					height: "calc(100% - 56px)", // Adjust for header height
+					overflowY: "auto",
+					overflowX: "hidden",
+					padding: "20px",
 				}}>
-				{/* Plan/Act Mode API Options */}
-				{planActSeparateModelsSetting ? (
-					<SettingsSection>
-						{" "}
-						{/* Wrap in SettingsSection for consistent styling */}
-						<div
-							style={{
-								display: "flex",
-								paddingBottom: "8px",
-								marginBottom: "10px",
-								borderBottom: "1px solid var(--vscode-panel-border)",
-							}}>
-							{/* 계획 모드 API 탭 (modetype="plan") */}
-							<TabButton isActive={getCurrentModeType() === "plan"} onClick={() => handleTabChange("plan")}>
-								Plan Mode API
-							</TabButton>
-
-							{/* 실행 모드 API 탭 (modetype="act") */}
-							<TabButton isActive={getCurrentModeType() === "act"} onClick={() => handleTabChange("act")}>
-								Act Mode API
-							</TabButton>
+				{/* AI 에이전트 프로필 이미지 */}
+				<SettingsSection>
+					<SectionTitle>AI 에이전트 프로필 이미지 설정</SectionTitle>
+					<div style={{ display: "flex", justifyContent: "space-between" }}>
+						{/* 기본 이미지 설정 */}
+						<div style={{ flex: 1, marginRight: "15px" }}>
+							<div style={{ marginBottom: "5px", fontWeight: "500" }}>기본 이미지</div>
+							<ProfileImageWrapper>
+								<ProfileImagePreview>
+									{defaultImage ? (
+										<img
+											src={defaultImage}
+											alt="AI 에이전트 프로필"
+											style={{ width: "100%", height: "100%", objectFit: "cover" }}
+										/>
+									) : (
+										<div
+											style={{
+												display: "flex",
+												alignItems: "center",
+												justifyContent: "center",
+												color: "var(--vscode-descriptionForeground)",
+												width: "100%",
+												height: "100%",
+											}}>
+											<i className="codicon codicon-account" style={{ fontSize: "32px" }} />
+										</div>
+									)}
+								</ProfileImagePreview>
+								<ProfileImageActions>
+									<VSCodeButton onClick={handleImageSelect}>이미지 선택</VSCodeButton>
+									<VSCodeButton onClick={handleImageReset}>기본으로 초기화</VSCodeButton>
+								</ProfileImageActions>
+							</ProfileImageWrapper>
 						</div>
-						<ApiOptions
-							key={chatSettings.mode}
-							showModelOptions={true}
-							apiErrorMessage={apiErrorMessage}
-							modelIdErrorMessage={modelIdErrorMessage}
-						/>
-					</SettingsSection>
-				) : (
-					<SettingsSection>
-						{" "}
-						{/* Wrap in SettingsSection */}
-						<ApiOptions
-							key={"single"}
-							showModelOptions={true}
-							apiErrorMessage={apiErrorMessage}
-							modelIdErrorMessage={modelIdErrorMessage}
-						/>
-					</SettingsSection>
-				)}
 
-				{/* Custom Instructions */}
+						{/* 생각 중 이미지 설정 */}
+						<div style={{ flex: 1 }}>
+							<div style={{ marginBottom: "5px", fontWeight: "500" }}>생각 중 이미지</div>
+							<ProfileImageWrapper>
+								<ProfileImagePreview>
+									{thinkingImage ? (
+										<img
+											src={thinkingImage}
+											alt="AI 에이전트 생각 중"
+											style={{ width: "100%", height: "100%", objectFit: "cover" }}
+										/>
+									) : (
+										<div
+											style={{
+												display: "flex",
+												alignItems: "center",
+												justifyContent: "center",
+												color: "var(--vscode-descriptionForeground)",
+												width: "100%",
+												height: "100%",
+											}}>
+											<i className="codicon codicon-loading" style={{ fontSize: "32px" }} />
+										</div>
+									)}
+								</ProfileImagePreview>
+								<ProfileImageActions>
+									<VSCodeButton onClick={handleThinkingImageSelect}>이미지 선택</VSCodeButton>
+									<VSCodeButton onClick={handleThinkingImageReset}>기본으로 초기화</VSCodeButton>
+								</ProfileImageActions>
+							</ProfileImageWrapper>
+						</div>
+					</div>
+					<p style={{ fontSize: "12px", color: "var(--vscode-descriptionForeground)", marginTop: "10px" }}>
+						AI 에이전트의 프로필 이미지를 설정합니다. 기본 이미지는 일반 대화에서, 생각 중 이미지는 AI가 응답을 생성할 때 표시됩니다.
+					</p>
+				</SettingsSection>
+
+				{/* 사용자 기본 규칙 */}
 				<SettingsSection>
+					<SectionTitle>사용자 기본 규칙</SectionTitle>
 					<VSCodeTextArea
-						value={customInstructions ?? ""}
-						style={{ width: "100%" }}
-						resize="vertical"
-						rows={4}
-						placeholder={'e.g. "Run unit tests at the end", "Use TypeScript with async/await", "Speak in Spanish"'}
-						onInput={(e: any) => setCustomInstructions(e.target?.value ?? "")}>
-						<span style={{ fontWeight: "500" }}>Custom Instructions</span>
+						value={customInstructions}
+						onChange={(e: any) => setCustomInstructions(e.target.value)}
+						placeholder="예: '런 유닛 테스트 전체' | 'Use TypeScript with async/await' | 'Speak in Spanish'"
+						rows={5}
+						style={{ width: "100%", resize: "vertical" }}>
 					</VSCodeTextArea>
-					<p
-						style={{
-							fontSize: "12px",
-							marginTop: "5px",
-							color: "var(--vscode-descriptionForeground)",
-						}}>
-						These instructions are added to the end of the system prompt sent with every request.
-					</p>
-				</SettingsSection>
-
-				{/* Separate Models Checkbox */}
-				<SettingsSection>
-					<VSCodeCheckbox
-						style={{ marginBottom: "5px" }}
-						checked={planActSeparateModelsSetting}
-						onChange={(e: any) => {
-							const checked = e.target.checked === true
-							setPlanActSeparateModelsSetting(checked)
-						}}>
-						Use different models for Plan and Act modes
-					</VSCodeCheckbox>
-					<p
-						style={{
-							fontSize: "12px",
-							marginTop: "5px",
-							color: "var(--vscode-descriptionForeground)",
-						}}>
-						Switching between Plan and Act mode will persist the API and model used in the previous mode. This may be
-						helpful e.g. when using a strong reasoning model to architect a plan for a cheaper coding model to act on.
-					</p>
-				</SettingsSection>
-
-				{/* AI 에이전트 프로필 이미지 설정 */}
-				<SettingsSection>
-					<SectionTitle>AI 에이전트 프로필 이미지</SectionTitle>
-					<ProfileImageWrapper>
-						<ProfileImagePreview>
-							<img
-								src={alphaAvatarUri}
-								alt="Alpha Profile"
-								style={{ width: "100%", height: "100%", objectFit: "cover" }}
-							/>
-						</ProfileImagePreview>
-						<ProfileImageActions>
-							<VSCodeButton appearance="secondary" onClick={selectAgentProfileImage}>
-								이미지 파일 선택
-							</VSCodeButton>
-							<VSCodeButton
-								appearance="secondary"
-								onClick={() => {
-									// 이미지 URL 입력 팝업
-									const url = prompt("이미지 URL을 입력하세요", alphaAvatarUri)
-									if (url && url.trim() !== "") {
-										updateAgentProfileImage(url)
-									}
-								}}>
-								이미지 URL 입력
-							</VSCodeButton>
-							<VSCodeButton appearance="secondary" onClick={resetAgentProfileImage}>
-								기본 이미지로 재설정
-							</VSCodeButton>
-						</ProfileImageActions>
-					</ProfileImageWrapper>
 					<p style={{ fontSize: "12px", color: "var(--vscode-descriptionForeground)" }}>
-						AI에이전트의 프로필 이미지를 원하는 이미지로 변경할 수 있어요. 직사각형 이미지는 자동으로 정사각형으로
-						크롭됩니다.
+						이 규칙들은 모든 요청에 보내는 시스템 프롬프트 끝에 추가됩니다.
 					</p>
 				</SettingsSection>
 
-				{/* Telemetry Checkbox */}
+				<SettingsSection>
+					<ModeSettingsView onDone={() => {}} />
+				</SettingsSection>
+
+				{/* 익명 오류 및 사용량 보고 */}
 				<SettingsSection>
 					<VSCodeCheckbox
 						style={{ marginBottom: "5px" }}
-						checked={telemetrySetting === "enabled"}
+						checked={false}
+						disabled={true}
 						onChange={(e: any) => {
-							const checked = e.target.checked === true
-							setTelemetrySetting(checked ? "enabled" : "disabled")
+							// 현재 비활성화함
+							setTelemetrySetting("disabled")
 						}}>
-						Allow anonymous error and usage reporting
+						익명 오류 및 사용량 보고 허용 (현재 비활성화됨)
 					</VSCodeCheckbox>
 					<p
 						style={{
@@ -405,41 +422,25 @@ const SettingsView = ({ onDone }: SettingsViewProps) => {
 							marginTop: "5px",
 							color: "var(--vscode-descriptionForeground)",
 						}}>
-						Help improve Cline by sending anonymous usage data and error reports. No code, prompts, or personal
-						information are ever sent. See our{" "}
-						<VSCodeLink href="https://docs.cline.bot/more-info/telemetry" style={{ fontSize: "inherit" }}>
-							telemetry overview
-						</VSCodeLink>{" "}
-						and{" "}
-						<VSCodeLink href="https://cline.bot/privacy" style={{ fontSize: "inherit" }}>
-							privacy policy
-						</VSCodeLink>{" "}
-						for more details.
+						Caret의 데이터 수집 정책이 재검토 중이며, 현재는 어떠한 데이터도 수집하지 않습니다.
+						여기에 표시되는 문서는 업데이트 중입니다.
 					</p>
 				</SettingsSection>
 
-<SettingsSection>
-	<SectionTitle>Mode Configuration</SectionTitle>
-	<ModeSettingsView onDone={() => {}} />
-</SettingsSection>
-
-				{/* Debug Section */}
-				{IS_DEV && (
-					<SettingsSection>
-						<SectionTitle>Debug</SectionTitle>
-						<VSCodeButton onClick={handleResetState} style={{ marginTop: "5px", width: "auto" }}>
-							Reset State
-						</VSCodeButton>
-						<p
-							style={{
-								fontSize: "12px",
-								marginTop: "5px",
-								color: "var(--vscode-descriptionForeground)",
-							}}>
-							This will reset all global state and secret storage in the extension.
-						</p>
-					</SettingsSection>
-				)}
+				{/* 상태 초기화 */}
+				<SettingsSection>					
+					<VSCodeButton onClick={handleResetState} style={{ marginTop: "5px", width: "auto" }}>
+						상태 초기화
+					</VSCodeButton>
+					<p
+						style={{
+							fontSize: "12px",
+							marginTop: "5px",
+							color: "var(--vscode-descriptionForeground)",
+						}}>
+						확장 프로그램의 모든 상태와 비밀 저장소를 초기화합니다.
+					</p>
+				</SettingsSection>
 
 				{/* Footer */}
 				<div
@@ -458,7 +459,7 @@ const SettingsView = ({ onDone }: SettingsViewProps) => {
 							margin: 0, // Remove default margins
 						}}>
 						<i className="codicon codicon-settings-gear" />
-						Advanced Settings
+						고급 설정
 					</SettingsButton>
 					<div
 						style={{
@@ -474,9 +475,9 @@ const SettingsView = ({ onDone }: SettingsViewProps) => {
 								margin: 0,
 								padding: 0,
 							}}>
-							If you have any questions or feedback, feel free to open an issue at{" "}
-							<VSCodeLink href="https://github.com/cline/cline" style={{ display: "inline" }}>
-								https://github.com/cline/cline
+							질문이나 피드백이 있으시면 언제든지 문의해 주세요{" "}
+							<VSCodeLink href="https://github.com/fstory97/cline" style={{ display: "inline" }}>
+								https://github.com/fstory97/cline
 							</VSCodeLink>
 						</p>
 						<p

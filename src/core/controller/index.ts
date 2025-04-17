@@ -90,8 +90,10 @@ export class Controller {
 		this.mcpHub = new McpHub(this)
 		this.accountService = new ClineAccountService(this)
 
-		// NOTE: Available modes are now loaded in handleWebviewMessage for webviewDidLaunch
-		// to ensure they are loaded before the initial state is sent.
+		// 모드 목록 초기 로드 (웹뷰에서도 다시 로드됨)
+		this.loadAvailableModes().catch((error) => {
+			this.logger.error("Failed to load initial modes:", error)
+		})
 
 		// Clean up legacy checkpoints
 		cleanupLegacyCheckpoints(this.context.globalStorageUri.fsPath, this.outputChannel).catch((error) => {
@@ -167,14 +169,15 @@ export class Controller {
 			// 모드 데이터 처리
 			try {
 				this.availableModes = parsedData.modes.map(
-					(mode: { id: string; name: string; description?: string; rules?: string[]; modetype?: "plan" | "act" }) => {
-						this.logger.log(`[DEBUG] Processing mode: ${mode.id}`)
+					(mode: { id: string; name: string; description?: string; rules?: string[]; modetype?: "plan" | "act"; model?: string }) => {
+						this.logger.log(`[DEBUG] Processing mode: ${mode.id}, model: ${mode.model || 'default'}`)
 						return {
 							id: mode.id,
 							label: mode.name, // 'name'을 'label'로 맵핑
 							description: mode.description,
 							modetype: mode.modetype || "act", // modetype 추가, 기본값은 "act"
 							rules: mode.rules, // rules 정보도 포함
+							model: mode.model, // 모델 정보 추가
 						}
 					},
 				)
@@ -296,6 +299,21 @@ export class Controller {
 	 */
 	async handleWebviewMessage(message: WebviewMessage) {
 		switch (message.type) {
+			case "webviewDidLaunch": {
+				this.logger.log("웹뷰 시작 신호 수신 - 모드 로딩 시작")
+				// 모드 목록 로드
+				await this.loadAvailableModes()
+				
+				// 상태를 웹뷰로 전송
+				const state = await this.getStateToPostToWebview()
+				this.logger.log("웹뷰에 상태 전송. 가능한 모드:", state.availableModes?.map(m => m.id).join(", "))
+				await this.postMessageToWebview({
+					type: "state",
+					state,
+				})
+				break
+			}
+			
 			// 모드 설정 관련 핸들러
 			case "loadModesConfig": {
 				try {
@@ -418,8 +436,8 @@ export class Controller {
 
 			case "resetModesToDefaults": {
 				try {
-					// modes.json 파일 경로
-					const modesFilePath = path.join(getWorkspacePath() || "", "agents-rules", "alpha", "modes.json")
+					// modes.json 파일 경로 (수정됨: 올바른 경로로 변경)
+					const modesFilePath = path.join(this.context.extensionUri.fsPath, "assets", "rules", "modes.json")
 
 					// 확인 다이얼로그 표시
 					const answer = await vscode.window.showWarningMessage(
@@ -450,44 +468,44 @@ export class Controller {
 						}
 					}
 
-					// 기본 모드 설정
+					// 기본 모드 설정 (최신 모드 구조로 업데이트)
 					const defaultModesConfig = {
 						modes: [
 							{
-								id: "plan",
-								name: "Plan",
-								description: "Planning and discussion mode.",
+								id: "arch",
+								name: "Arch",
+								description: "Architect: Tech strategy, design, scope.",
+								model: "anthropic/claude-3-5-sonnet",
 								rules: [
-									"Act as a project manager analyzing requirements and architecture.",
-									"Systematically decompose complex tasks into manageable components.",
-									"Analyze code structure and technical dependencies.",
-									"Create detailed execution roadmaps with clear milestones.",
-									"Evaluate approaches for efficiency and maintainability.",
-									"Document plans with clarity for future reference.",
-									"Use all available tools for comprehensive analysis.",
+									"Act as architect: discuss tech strategy, system design.",
+									"Analyze requirements for architecture.",
+									"Evaluate external tech integration.",
+									"Design/propose system structures.",
+									"Define/adjust scope based on feasibility.",
+									"Document decisions and rationale."
 								],
 							},
 							{
-								id: "do",
-								name: "Do",
-								description: "Task execution mode.",
+								id: "dev",
+								name: "Dev",
+								description: "Pair Coder: Collaborative development.",
+								model: "anthropic/claude-3-5-sonnet",
 								rules: [
-									"Act as a full-stack developer implementing solutions.",
-									"Execute planned actions with precision and efficiency.",
-									"Prioritize maintainable, well-structured implementations.",
-									"Document code changes clearly and consistently.",
-									"Adapt to changing requirements intelligently.",
-									"Test thoroughly and verify implementations work.",
-									"Communicate progress and results effectively.",
+									"Act as collaborative pair programmer.",
+									"Implement code per plan.",
+									"Report progress, document work.",
+									"Adapt plans flexibly.",
+									"Listen to user, adjust priorities."
 								],
 							},
 							{
 								id: "rule",
 								name: "Rule",
-								description: "AI 시스템 규칙 최적화 및 프롬프트 엔지니어링 모드.",
+								description: "Rule/Process Tuner: Prompt engineering expert.",
+								model: "anthropic/claude-3-5-sonnet",
 								rules: [
-									"Act as an AI prompt engineering specialist.",
-									"Analyze system JSON rules and their behavioral impact.",
+									"Act as prompt engineer for optimization.",
+									"Analyze/refine prompts and rules.",
 									"Optimize action sequences for efficiency and logical flow.",
 									"Monitor and minimize token costs in all interactions.",
 									"Strategically structure prompts for maximum value per token.",
@@ -551,6 +569,11 @@ export class Controller {
 			// 프로필 이미지 관련 핸들러
 			case "selectAgentProfileImage": {
 				try {
+					// 이미지 타입 확인 (기본값: default)
+					const imageType = message.imageType || "default"
+					const isThinking = imageType === "thinking"
+					const imageTitle = isThinking ? "AI 에이전트 생각 중 이미지 선택" : "AI 에이전트 프로필 이미지 선택"
+
 					// 파일 다이얼로그 설정
 					const options: vscode.OpenDialogOptions = {
 						canSelectMany: false,
@@ -559,14 +582,14 @@ export class Controller {
 						filters: {
 							Images: ["png", "jpg", "jpeg", "gif", "webp"],
 						},
-						title: "AI 에이전트 프로필 이미지 선택",
+						title: imageTitle,
 					}
 
 					// 파일 선택 다이얼로그 열기
 					vscode.window.showOpenDialog(options).then(async (fileUri) => {
 						if (fileUri && fileUri.length > 0) {
 							const selectedPath = fileUri[0].fsPath
-							this.logger.log("프로필 이미지 선택됨:", selectedPath)
+							this.logger.log(`${imageType} 이미지 선택됨:`, selectedPath)
 
 							// 저장 위치 확인 및 생성
 							const assetsDir = path.join(this.context.extensionUri.fsPath, "assets")
@@ -576,64 +599,84 @@ export class Controller {
 								this.logger.warn("assets 디렉토리 생성 중 오류 (이미 존재할 수 있음):", err)
 							}
 
-							// 활성화된 프로필 이미지 저장 경로
-							const targetPath = path.join(assetsDir, "agent_profile.png")
+							// 이미지 타입에 따른 파일명 결정
+							const imageFileName = isThinking ? "agent_thinking.png" : "agent_profile.png"
+							const targetPath = path.join(assetsDir, imageFileName)
 
 							// 파일 복사
 							try {
 								const imageBuffer = await fs.readFile(selectedPath)
 								await fs.writeFile(targetPath, imageBuffer)
-								this.logger.log("프로필 이미지 저장 완료:", targetPath)
+								this.logger.log(`${imageType} 이미지 저장 완료:`, targetPath)
 
-								// 설정 저장
-								await this.context.globalState.update("alphaAvatarUri", "agent_profile.png")
+								// 설정 키 결정 및 저장
+								const settingKey = isThinking ? "alphaThinkingAvatarUri" : "alphaAvatarUri"
+								await this.context.globalState.update(settingKey, imageFileName)
 
 								// 상태 업데이트
 								await this.postStateToWebview()
 
 								// 성공 메시지
-								vscode.window.showInformationMessage("AI 에이전트 프로필 이미지가 성공적으로 변경되었습니다.")
+								const successMessage = isThinking 
+									? "AI 에이전트 생각 중 이미지가 성공적으로 변경되었습니다."
+									: "AI 에이전트 프로필 이미지가 성공적으로 변경되었습니다."
+								vscode.window.showInformationMessage(successMessage)
 							} catch (err) {
-								this.logger.error("프로필 이미지 저장 중 오류:", err)
-								vscode.window.showErrorMessage(`프로필 이미지 저장 중 오류가 발생했습니다: ${err.message}`)
+								this.logger.error(`${imageType} 이미지 저장 중 오류:`, err)
+								vscode.window.showErrorMessage(`이미지 저장 중 오류가 발생했습니다: ${err.message}`)
 							}
 						}
 					})
 				} catch (error) {
-					this.logger.error("프로필 이미지 선택 중 오류:", error)
-					vscode.window.showErrorMessage(`프로필 이미지 선택 중 오류가 발생했습니다: ${error.message}`)
+					this.logger.error("이미지 선택 중 오류:", error)
+					vscode.window.showErrorMessage(`이미지 선택 중 오류가 발생했습니다: ${error.message}`)
 				}
 				break
 			}
 
 			case "resetAgentProfileImage": {
 				try {
+					// 이미지 타입 확인 (기본값: default)
+					const imageType = message.imageType || "default"
+					const isThinking = imageType === "thinking"
+
 					// 기본 이미지 위치
 					const assetsDir = path.join(this.context.extensionUri.fsPath, "assets")
-					const defaultImagePath = path.join(assetsDir, "default_ai_agent_profile.png")
-					const targetPath = path.join(assetsDir, "agent_profile.png")
+					
+					// 파일명 결정
+					const defaultImageFileName = isThinking ? "default_ai_agent_thinking.png" : "default_ai_agent_profile.png"
+					const targetImageFileName = isThinking ? "agent_thinking.png" : "agent_profile.png"
+					
+					// 경로 결정
+					const defaultImagePath = path.join(assetsDir, defaultImageFileName)
+					const targetPath = path.join(assetsDir, targetImageFileName)
 
 					// 기본 이미지 파일 확인
 					if (await fileExistsAtPath(defaultImagePath)) {
 						// 기본 이미지 복사
 						const imageBuffer = await fs.readFile(defaultImagePath)
 						await fs.writeFile(targetPath, imageBuffer)
-						this.logger.log("기본 프로필 이미지로 초기화 완료")
+						this.logger.log(`${imageType} 이미지 초기화 완료: ${targetPath}`)
 
-						// 설정 초기화
-						await this.context.globalState.update("alphaAvatarUri", "agent_profile.png")
+						// 설정 키 및 값 결정
+						const settingKey = isThinking ? "alphaThinkingAvatarUri" : "alphaAvatarUri" 
+						await this.context.globalState.update(settingKey, targetImageFileName)
 
 						// 상태 업데이트
 						await this.postStateToWebview()
 
 						// 성공 메시지
-						vscode.window.showInformationMessage("AI 에이전트 프로필 이미지가 기본 이미지로 초기화되었습니다.")
+						const successMessage = isThinking
+							? "AI 에이전트 생각 중 이미지가 기본 이미지로 초기화되었습니다."
+							: "AI 에이전트 프로필 이미지가 기본 이미지로 초기화되었습니다."
+						
+						vscode.window.showInformationMessage(successMessage)
 					} else {
 						throw new Error(`기본 이미지 파일을 찾을 수 없습니다: ${defaultImagePath}`)
 					}
 				} catch (error) {
-					this.logger.error("프로필 이미지 초기화 중 오류:", error)
-					vscode.window.showErrorMessage(`프로필 이미지 초기화 중 오류가 발생했습니다: ${error.message}`)
+					this.logger.error(`${message.imageType || "default"} 이미지 초기화 중 오류:`, error)
+					vscode.window.showErrorMessage(`이미지 초기화 중 오류가 발생했습니다: ${error.message}`)
 				}
 				break
 			}
@@ -1431,6 +1474,104 @@ export class Controller {
 	async toggleModeWithChatSettings(chatSettings: ChatSettings, chatContent?: ChatContent) {
 		// 현재 설정된 모드 정보 찾기
 		const currentMode = this.availableModes.find((mode) => mode.id === chatSettings.mode)
+		
+		// 모드별 모델 설정 처리
+		if (currentMode?.model) {
+			this.logger.log(`모드별 맞춤 모델 감지됨: ${currentMode.id} => ${currentMode.model}`)
+			
+			const modelId = currentMode.model
+			// 다양한 API 형식 지원 (예: anthropic/claude-3-5-sonnet, openai/gpt-4, 등)
+			let apiProvider: ApiProvider | undefined = undefined
+			let apiModelId: string | undefined = undefined
+			let openRouterModelId: string | undefined = undefined
+
+			// 모델 ID 파싱
+			if (modelId.includes('/')) {
+				const [provider, model] = modelId.split('/')
+				
+				switch(provider.toLowerCase()) {
+					case 'anthropic':
+						apiProvider = 'anthropic'
+						apiModelId = model
+						break
+					case 'openai':
+						apiProvider = 'openai'
+						await updateGlobalState(this.context, "openAiModelId", model)
+						break
+					case 'gemini':
+						apiProvider = 'gemini'
+						apiModelId = model
+						break
+					case 'ollama':
+						apiProvider = 'ollama'
+						await updateGlobalState(this.context, "ollamaModelId", model)
+						break
+					case 'deepseek':
+						apiProvider = 'deepseek'
+						apiModelId = model
+						break
+					default:
+						// 지원되지 않는 형식의 모델은 OpenRouter를 통해 사용
+						apiProvider = 'openrouter'
+						openRouterModelId = modelId
+				}
+			} else {
+				// 슬래시가 없는 모델 ID는 단일 제공자 모델로 취급
+				// 예: claude-3-5-sonnet, gpt-4 등
+				if (modelId.startsWith('claude-')) {
+					apiProvider = 'anthropic'
+					apiModelId = modelId
+				} else if (modelId.startsWith('gpt-')) {
+					apiProvider = 'openai'
+					await updateGlobalState(this.context, "openAiModelId", modelId)
+				} else {
+					// 기타 모델은 OpenRouter를 통해 처리
+					apiProvider = 'openrouter'
+					openRouterModelId = modelId
+				}
+			}
+
+			// API 제공자 설정 저장
+			if (apiProvider) {
+				await updateGlobalState(this.context, "apiProvider", apiProvider)
+				
+				// 모델 ID 설정 (API 제공자에 따라 다른 필드 사용)
+				if (apiModelId) {
+					await updateGlobalState(this.context, "apiModelId", apiModelId)
+				}
+				if (openRouterModelId) {
+					await updateGlobalState(this.context, "openRouterModelId", openRouterModelId)
+				}
+
+				// API Key 설정 (필요시 모드별 API Key 사용)
+				// SecretKey 타입에 존재하는 키만 사용해야 함
+				if (currentMode.apiKey && typeof currentMode.apiKey === 'string' && currentMode.apiKey.trim() !== '') {
+					switch(apiProvider) {
+						case 'anthropic':
+							await storeSecret(this.context, "apiKey", currentMode.apiKey)
+							break
+						case 'openai':
+							await storeSecret(this.context, "openAiApiKey", currentMode.apiKey)
+							break
+						case 'openrouter':
+							await storeSecret(this.context, "openRouterApiKey", currentMode.apiKey) 
+							break
+						case 'gemini':
+							await storeSecret(this.context, "geminiApiKey", currentMode.apiKey)
+							break
+					}
+				}
+			}
+			
+			// API 구성 다시 가져오기 전에 상태 전송 (메시지를 통해 알림)
+			this.logger.log(`모드에 따른 모델 변경 완료: ${modelId}`)
+			// 상태 갱신하여 웹뷰에 전달
+			const state = await this.getStateToPostToWebview()
+			await this.postMessageToWebview({
+				type: "state",
+				state
+			})
+		}
 
 		// didSwitchToActMode: 특별한 동작이 필요한 모드 구분을 위한 변수
 		// true: 일반 동작 모드 (dev, rule, talk 등) - 실행 중인 타스크를 취소하지 않음
@@ -2285,8 +2426,14 @@ Here is the project's README to help you get started:\n\n${mcpDetails.readmeCont
 
 		// Get webview to construct URI
 		const webview = this.webviewProviderRef.deref()?.view?.webview
-		const alphaAvatarFileUri = vscode.Uri.joinPath(this.context.extensionUri, "assets", "alpha.png")
+
+		// 기본 프로필 이미지 URI 생성
+		const alphaAvatarFileUri = vscode.Uri.joinPath(this.context.extensionUri, "assets", "agent_profile.png")
 		const alphaAvatarWebviewUri = webview ? webview.asWebviewUri(alphaAvatarFileUri).toString() : undefined
+
+		// 생각 중 이미지 URI 생성
+		const alphaThinkingAvatarFileUri = vscode.Uri.joinPath(this.context.extensionUri, "assets", "agent_thinking.png")
+		const alphaThinkingAvatarWebviewUri = webview ? webview.asWebviewUri(alphaThinkingAvatarFileUri).toString() : undefined
 
 		return {
 			version: this.context.extension?.packageJSON?.version ?? "",
@@ -2310,10 +2457,11 @@ Here is the project's README to help you get started:\n\n${mcpDetails.readmeCont
 			telemetrySetting,
 			planActSeparateModelsSetting,
 			vscMachineId: vscode.env.machineId,
-			alphaAvatarUri: alphaAvatarWebviewUri, // Add alphaAvatarUri state
-			availableModes: this.availableModes, // Add availableModes, get from controller's loaded modes
+			alphaAvatarUri: alphaAvatarWebviewUri, // 기본 프로필 이미지
+			alphaThinkingAvatarUri: alphaThinkingAvatarWebviewUri, // 생각 중 이미지 추가
+			availableModes: this.availableModes, // 사용 가능한 모드 정보
 			retryStatus: retryStatus,
-			apiError: null, // API 에러 정보 추가
+			apiError: null, // API 에러 정보
 		}
 	}
 

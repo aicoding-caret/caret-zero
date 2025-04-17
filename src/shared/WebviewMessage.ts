@@ -119,6 +119,8 @@ export interface WebviewMessage {
 	telemetrySetting?: TelemetrySetting
 	customInstructionsSetting?: string
 	profileImage?: string
+	// 프로필 이미지 타입 (기본/생각 중)
+	imageType?: "default" | "thinking"
 	// For task feedback
 	feedbackType?: TaskFeedbackType
 	mentionsRequestId?: string

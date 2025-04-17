@@ -17,6 +17,9 @@ export interface ModeInfo {
 	description?: string
 	modetype?: "plan" | "act"
 	rules?: string[]
+	model?: string  // 모드별 사용할 모델 ID
+	apiProvider?: string // API 제공자 (e.g. 'anthropic', 'openai', 'openrouter')
+	apiKey?: string // 모드별 API 키 (선택사항)
 }
 
 // webview will hold state
@@ -174,10 +177,11 @@ export interface ExtensionState {
 	}
 	version: string
 	vscMachineId: string
-	alphaAvatarUri?: string // 알파 아바타 URI 추가
-	availableModes: ModeInfo[] // Add availableModes to ExtensionState
-	retryStatus?: RetryStatusMessage // Add retryStatus to ExtensionState
-	apiError: ApiErrorInfo | null // API 에러 정보 추가
+	alphaAvatarUri?: string // 알파 기본 아바타 URI
+	alphaThinkingAvatarUri?: string // 알파 생각 중 아바타 URI
+	availableModes: ModeInfo[] // 사용 가능한 모드 목록
+	retryStatus?: RetryStatusMessage // 재시도 상태 정보
+	apiError: ApiErrorInfo | null // API 에러 정보
 }
 
 export interface ClineMessage {

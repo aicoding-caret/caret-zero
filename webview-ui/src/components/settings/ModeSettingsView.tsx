@@ -1,4 +1,4 @@
-// @ts-nocheck /* VSCode UI Toolkit과 React 타입 문제 임시 해결 */
+/* VSCode UI Toolkit과 React 타입 문제가 있지만 @ts-nocheck은 린트 오류를 일으키므로 제거 */
 import React, { useState, useEffect } from "react"
 import styled from "styled-components"
 import {
@@ -27,10 +27,22 @@ const Header = styled.div`
 	justify-content: space-between;
 	align-items: center;
 	margin-bottom: 15px;
+	position: sticky;
+	top: 0;
+	background: var(--vscode-editor-background);
+	z-index: 10;
+	padding-bottom: 10px;
+	padding-top: 5px;
+	border-bottom: 1px solid var(--vscode-panel-border);
 `
 
 const Title = styled.h2`
 	margin: 0;
+`
+
+const ButtonContainer = styled.div`
+	display: flex;
+	gap: 8px;
 `
 
 const ContentArea = styled.div`
@@ -58,265 +70,538 @@ const JsonInputArea = styled.div`
 	margin-top: 10px;
 `
 
-// 기본 모드 설정 (availableModes가 없을 경우 폴백으로 사용)
-const defaultModes = [
-	{ id: "plan", label: "Plan", description: "Planning and discussion mode" },
-	{ id: "do", label: "Do", description: "Task execution mode" },
-	{ id: "rule", label: "Rule", description: "AI 시스템 규칙 최적화 및 프롬프트 엔지니어링 모드" },
-	{ id: "talk", label: "Talk", description: "Casual conversation mode" },
-	{ id: "empty", label: "Empty", description: "Empty mode with no specific behavior" },
-]
+// 확장된 모드 설정 타입 정의
+type ModeSettingType = {
+	name: string;
+	description: string;
+	rules: string[];
+	model: string;
+	apiProvider: string;
+	apiKey: string;
+};
+
+
 const ModeSettingsView = ({ onDone }: { onDone: () => void }) => {
 	// 1. ExtensionState에서 설정 가져오기 (가장 먼저 선언!)
-	const { availableModes } = useExtensionState();
+	const { availableModes, apiConfiguration, openRouterModels } = useExtensionState();
+	
+	// API 키 표시 여부 상태 (컴포넌트 최상위 레벨로 이동)
+	const [showApiKey, setShowApiKey] = React.useState(false);
 
 	// (1) 모드 설정 변경 감지용 초기값 저장
 	const [initialModeSettings, setInitialModeSettings] = React.useState<string>("");
+	
+
 
 	// 2. 실제 사용할 모드 목록 (availableModes가 안전하게 선언된 후 사용)
-	const modes =
-		Array.isArray(availableModes) && availableModes.length > 0
-			? availableModes.map((mode: { id: string; label?: string; description?: string }) => ({
-					id: mode.id,
-					label: mode.label || mode.id,
-					description: mode.description || "",
-				}))
-			: defaultModes;
-
-	React.useEffect(() => {
-		// availableModes 동기화 감시 및 modeSettings 동기화
-		console.log("[ModeSettingsView] availableModes 변경 감지:", availableModes);
-		if (Array.isArray(availableModes) && availableModes.length > 0) {
-			const newSettings: { [key: string]: { name: string; description: string; rules: string[] } } = {};
-			availableModes.forEach((mode: any) => {
-				newSettings[mode.id] = {
-					name: mode.label || mode.id,
-					description: mode.description || "",
-					rules: Array.isArray(mode.rules) ? mode.rules : [],
-				};
-			});
-			setModeSettings(newSettings);
-			console.log("[ModeSettingsView] availableModes 기반으로 modeSettings 동기화 완료:", newSettings);
+	const getModes = () => {
+		if (!Array.isArray(availableModes) || availableModes.length === 0) {
+			return []; // 모드가 없으면 빈 배열 반환
 		}
-	}, [availableModes]);
+		
+		const availableModesArray = availableModes.map((mode: { id: string; label?: string; description?: string; name?: string }) => ({
+			id: mode.id,
+			label: mode.name || mode.label || mode.id,
+			description: mode.description || "",
+		}));
+		
+		// 모드 순서 고정 (Arch, Dev, Rule, Talk, Empty)
+		const orderedIds = ["arch", "dev", "rule", "talk", "empty"];
+		const orderedModes = orderedIds
+			.map(id => availableModesArray.find(mode => mode.id === id))
+			.filter(Boolean) as {id: string; label: string; description: string}[];
+		
+		return orderedModes.length > 0 ? orderedModes : availableModesArray;
+	};
+	
+	const modes = getModes();
 
-	React.useEffect(() => {
-		// 최초 로드 시 초기값 저장
-		setInitialModeSettings(JSON.stringify(modeSettings));
-	}, []);
+	// API 제공자별 사용 가능한 모델 정의
+	const [modelsByProvider, setModelsByProvider] = useState<{[key: string]: {id: string, name: string}[]}>({  
+		anthropic: [
+			{id: "anthropic/claude-3-opus", name: "Claude 3 Opus"},
+			{id: "anthropic/claude-3-sonnet", name: "Claude 3 Sonnet"},
+			{id: "anthropic/claude-3-haiku", name: "Claude 3 Haiku"},
+			{id: "anthropic/claude-3-5-sonnet", name: "Claude 3.5 Sonnet"}
+		],
+		openai: [
+			{id: "openai/gpt-4o", name: "GPT-4o"},
+			{id: "openai/gpt-4o-mini", name: "GPT-4o Mini"},
+			{id: "openai/gpt-4-turbo", name: "GPT-4 Turbo"},
+			{id: "openai/gpt-3.5-turbo", name: "GPT-3.5 Turbo"}
+		],
+		google: [
+			{id: "google/gemini-1.5-pro", name: "Gemini 1.5 Pro"},
+			{id: "google/gemini-1.5-flash", name: "Gemini 1.5 Flash"}
+		],
+		openrouter: [
+			{id: "openrouter/meta-llama/llama-3-70b-instruct", name: "Llama 3 70B"},
+			{id: "openrouter/mistralai/mistral-large", name: "Mistral Large"},
+			{id: "openrouter/anthropic/claude-3-opus", name: "Claude 3 Opus (OpenRouter)"},
+			{id: "openrouter/google/gemini-pro", name: "Gemini Pro (OpenRouter)"}
+		]
+	});
 
-	// Default to the first mode's tab
-	const [activeTab, setActiveTab] = useState(modes[0]?.id || "plan")
-
-	// State for managing mode settings
-	const [modeSettings, setModeSettings] = useState<{ [key: string]: { name: string; description: string; rules: string[] } }>({
-		plan: {
-			name: "Plan",
-			description: "Planning and discussion mode",
-			rules: [
-				"Act as a project manager analyzing requirements and architecture.",
-				"Systematically decompose complex tasks into manageable components.",
-				"Create detailed execution roadmaps with clear milestones.",
-			],
+	// 3. 모드 설정 관리를 위한 상태
+	const [modeSettings, setModeSettings] = useState<{
+		[key: string]: ModeSettingType;
+	}>({  
+		empty: {
+			name: "Empty",
+			description: "기본 동작이 없는 빈 모드",
+			rules: [],
+			model: "",
+			apiProvider: "anthropic",
+			apiKey: ""
 		},
-		do: {
-			name: "Do",
-			description: "Task execution mode",
+		arch: {
+			name: "Arch",
+			description: "아키텍트: 기술 전략 및 설계 모드",
 			rules: [
-				"Act as a full-stack developer implementing solutions.",
-				"Execute planned actions with precision and efficiency.",
-				"Test thoroughly and verify implementations work.",
+				"Act as an architect discussing tech strategy, system design.",
+				"Analyze specific requirements for architecture.",
+				"Evaluate external tech integration.",
 			],
+			model: "anthropic/claude-3-5-sonnet",
+			apiProvider: "anthropic",
+			apiKey: ""
+		},
+		dev: {
+			name: "Dev",
+			description: "개발자: 코드 구현 및 디버깅 모드",
+			rules: [
+				"Act as a skilled developer implementing solutions.",
+				"Generate efficient, well-documented code examples.",
+				"Debug issues systematically with a problem-solving approach.",
+			],
+			model: "anthropic/claude-3-5-sonnet",
+			apiProvider: "anthropic",
+			apiKey: ""
 		},
 		rule: {
 			name: "Rule",
 			description: "AI 시스템 규칙 최적화 및 프롬프트 엔지니어링 모드",
 			rules: [
-				"Act as an AI prompt engineering specialist.",
-				"Optimize action sequences for efficiency and logical flow.",
-				"Monitor and minimize token costs in all interactions.",
+				"Optimize AI system rules for specific use cases.",
+				"Craft precise prompts to elicit desired AI behaviors.",
+				"Analyze effectiveness of different prompt structures.",
 			],
+			model: "anthropic/claude-3-opus",
+			apiProvider: "anthropic",
+			apiKey: ""
 		},
 		talk: {
 			name: "Talk",
-			description: "Casual conversation mode",
+			description: "일상 대화 모드",
 			rules: [
-				"Embody the warm, attentive presence of Alpha.",
-				"Prioritize light-hearted, stress-relieving interaction.",
-				"Use soft, playful language patterns.",
+				"Engage in natural, conversational dialogue.",
+				"Respond to casual inquiries in a helpful manner.",
+				"Maintain a friendly, approachable tone.",
 			],
+			model: "anthropic/claude-3-haiku",
+			apiProvider: "anthropic",
+			apiKey: ""
 		},
-		"mode-5": {
-			name: "Custom Mode",
-			description: "User-defined custom mode",
-			rules: ["Define your custom behavior here"],
-		},
-	})
+	});
 
-	// 초기 모드 설정 로드
-	useEffect(() => {
-		// 로그 추가
-		console.log("[ModeSettingsView] 화면 로드됨. 모드 설정(loadModesConfig) 요청 준비...")
+	// 4. Default to the first mode's tab
+	const [activeTab, setActiveTab] = useState<string>(modes[0]?.id || "arch");
 
-		// modes.json 파일 읽어오기
-		const loadConfigMessage: WebviewMessage = { type: "loadModesConfig" }
-		console.log("[ModeSettingsView] 모드 설정 로드(loadModesConfig) 메시지 전송:", loadConfigMessage)
-		vscode.postMessage(loadConfigMessage)
-
-		// 모드 설정 로드 응답 리스너 추가
-		const handleMessage = (event: MessageEvent) => {
-			const message = event.data
-			console.log("[ModeSettingsView] 메시지 수신:", message.type, message)
-
-			// modesConfigLoaded 메시지 처리
-			if (message.type === "modesConfigLoaded" && message.text) {
-				console.log("[ModeSettingsView] 모드 설정 로드 응답 받음:", message.type)
-				console.log("[ModeSettingsView] 모드 데이터 내용:", message.text)
-				try {
-					const modesData = JSON.parse(message.text)
-					console.log("[ModeSettingsView] 모드 설정 로드 성공:", modesData)
-
-					// 모드 설정 형식 변환
-					if (modesData && modesData.modes && Array.isArray(modesData.modes)) {
-						const loadedSettings: { [key: string]: { name: string; description: string; rules: string[] } } = {}
-
-						// 각 모드 데이터 변환
-						modesData.modes.forEach((mode: any) => {
-							if (mode.id) {
-								loadedSettings[mode.id] = {
-									name: mode.name || mode.id,
-									description: mode.description || "",
-									rules: Array.isArray(mode.rules) ? mode.rules : [],
-								}
-							}
-						})
-
-						// 설정 적용
-						console.log("[ModeSettingsView] setModeSettings 호출: loadedSettings=", loadedSettings)
-					setModeSettings(loadedSettings)
-console.log("[ModeSettingsView] setModeSettings(loadedSettings) 호출됨:", loadedSettings)
-					}
-				} catch (error) {
-					console.error("[ModeSettingsView] 모드 설정 로드 오류:", error)
-				}
-			}
+	// 5. 컴포넌트 마운트 시 모드 설정 초기화
+	// availableModes 변경 감지 및 modeSettings 동기화
+	React.useEffect(() => {
+		if (Array.isArray(availableModes) && availableModes.length === 0) {
+			return;
 		}
 
-		// 이벤트 리스너 추가
-		window.addEventListener("message", handleMessage)
+		// 사용 가능한 모드 목록 기반으로 설정 초기화
+		if (Array.isArray(availableModes) && availableModes.length > 0) {
+			// 현재 설정 복제
+			const newSettings: typeof modeSettings = { ...modeSettings };
 
-		// 제거 함수 반환
+			// 모든 사용 가능한 모드에 대한 설정 확인
+			availableModes.forEach((mode: any) => {
+				if (!newSettings[mode.id]) {
+					newSettings[mode.id] = {
+						name: mode.name || mode.id,
+						description: mode.description || "",
+						rules: Array.isArray(mode.rules) ? mode.rules : [],
+						model: mode.model || "",
+						apiProvider: mode.apiProvider || apiConfiguration?.apiProvider || "anthropic",
+						apiKey: mode.apiKey || "",
+					};
+				}
+			});
+			setModeSettings(newSettings);
+			console.log("[ModeSettingsView] availableModes 기반으로 modeSettings 동기화 완료:", newSettings);
+		}
+	}, [availableModes, apiConfiguration]);
+
+	// 6. 초기 설정값 저장 (변경 감지용)
+	React.useEffect(() => {
+		// 최초 로드 시 초기값 저장
+		setInitialModeSettings(JSON.stringify(modeSettings));
+	}, []);
+
+	// 7. 메시지 핸들러 - 모드 설정 로딩 및 저장 결과 처리
+	const handleMessage = (event: MessageEvent) => {
+		const message = event.data
+		console.log("[모드 설정 뷰] 메시지 수신:", message?.type)
+
+		// 저장 결과 처리
+		if (message && message.type === "savedModeSettings") {
+			console.log("[모드 설정 뷰] 설정 저장 완료")
+			localStorage.setItem(
+				"cline-mode-settings", // 모드 설정 저장을 위한 저장소 키
+				JSON.stringify(modeSettings) // 전체 모드 설정을 문자열로 변환하여 저장
+			)
+			setInitialModeSettings(JSON.stringify(modeSettings))
+			alert("모드 설정이 성공적으로 저장되었습니다.")
+		}
+		
+		// 모드 설정 로드 결과 처리
+		if (message && message.type === "modesConfigLoaded" && message.text) {
+			try {
+				console.log("[모드 설정 뷰] 모드 설정 로드 완료", message.text.substring(0, 100) + "...")
+				const modesData = JSON.parse(message.text);
+				if (modesData && Array.isArray(modesData.modes)) {
+					// 모드 데이터 새로 로드
+					console.log("[모드 설정 뷰] 새 모드 로드:", modesData.modes.map((m: any) => m.id).join(", "));
+					
+					// 로컬 스토리지에 저장된 설정 가져오기
+					const savedSettings = localStorage.getItem("cline-mode-settings");
+					let existingSettings: {[key: string]: ModeSettingType} = {};
+					
+					if (savedSettings) {
+						try {
+							existingSettings = JSON.parse(savedSettings);
+						} catch (e) {
+							console.error("[모드 설정 뷰] 기존 설정 파싱 오류:", e);
+						}
+					}
+					
+					// 서버에서 받은 모드와 기존 설정 병합
+					const updatedSettings: {[key: string]: ModeSettingType} = {};
+					
+					// 서버에서 받은 모든 모드 처리
+					modesData.modes.forEach((mode: any) => {
+						const existingSetting = existingSettings[mode.id];
+						
+						// 기존 설정이 있으면 병합, 없으면 새로 생성
+						updatedSettings[mode.id] = {
+							name: existingSetting?.name || mode.name || mode.id,
+							description: existingSetting?.description || mode.description || "",
+							rules: existingSetting?.rules || (Array.isArray(mode.rules) ? mode.rules : []),
+							model: existingSetting?.model || mode.model || "",
+							apiProvider: existingSetting?.apiProvider || mode.apiProvider || apiConfiguration?.apiProvider || "anthropic",
+							apiKey: existingSetting?.apiKey || mode.apiKey || ""
+						};
+					});
+					
+					// 설정 상태 업데이트
+					console.log("[모드 설정 뷰] 모드 설정 업데이트:", Object.keys(updatedSettings).join(", "));
+					setModeSettings(updatedSettings);
+					setInitialModeSettings(JSON.stringify(updatedSettings));
+				}
+			} catch (error) {
+				console.error("[모드 설정 뷰] 모드 데이터 파싱 오류:", error);
+			}
+		}
+	}
+
+	// 8. 모드 설정 로드 함수
+	const loadSettings = () => {
+		if (typeof window !== "undefined") {
+			try {
+				// 로컬 스토리지에서 불러오기
+				const savedSettings = localStorage.getItem("cline-mode-settings");
+				if (savedSettings) {
+					// Parse saved settings
+					const parsedSettings = JSON.parse(savedSettings);
+					
+					// 확장된 필드 검증 및 추가
+					const loadedSettings: {[key: string]: ModeSettingType} = {};
+					
+					// 각 모드 설정에 확장된 필드 추가
+					Object.keys(parsedSettings).forEach(modeId => {
+						const mode = parsedSettings[modeId];
+						loadedSettings[modeId] = {
+							name: mode.name || '',
+							description: mode.description || '',
+							rules: Array.isArray(mode.rules) ? mode.rules : [],
+							model: mode.model || '',
+							apiProvider: mode.apiProvider || apiConfiguration?.apiProvider || 'anthropic',
+							apiKey: mode.apiKey || ''
+						};
+					});
+					
+					// 설정 적용
+					console.log("[ModeSettingsView] setModeSettings 호출: loadedSettings=", loadedSettings);
+					setModeSettings(loadedSettings);
+					console.log("[ModeSettingsView] setModeSettings(loadedSettings) 호출됨:", loadedSettings);
+				}
+			} catch (error) {
+				console.error("[ModeSettingsView] 모드 설정 로드 오류:", error);
+			}
+		}
+	};
+
+	// 9. 초기 모드 설정 로드
+	useEffect(() => {
+		// Windows 처럼 message 이벤트 등록
+		window.addEventListener("message", handleMessage)
+		
+		// 1. 웹뷰가 로드되면 모드 목록 로드 요청
+		console.log("[모드 설정 뷰] 모드 구성 로드 요청을 전송합니다.")
+		vscode.postMessage({ type: "loadModesConfig" });
+		
+		// 2. 저장된 설정 반영
+		loadSettings() // 컴포넌트 마운트 시 모드 설정 불러오기
+
+		// 컴포넌트 언마운트 시 등록 해제
 		return () => {
 			window.removeEventListener("message", handleMessage)
 		}
-	}, [])
+	}, []); // 의존성 배열이 비어있으므로 마운트 시 한 번만 실행
 
-	// 전체 모드 설정 저장
+	// 10. 전체 모드 설정 저장
 	const saveAllModeSettings = () => {
 		const modesConfig = {
 			modes: Object.entries(modeSettings).map((entry) => {
-				const id = entry[0]
-				const settings = entry[1] as { name: string; description: string; rules: string[] }
+				const id = entry[0];
+				const settings = entry[1] as ModeSettingType;
 				return {
 					id,
 					name: settings.name,
 					description: settings.description,
 					rules: settings.rules,
-				}
+					model: settings.model,
+					apiProvider: settings.apiProvider,
+					apiKey: settings.apiKey
+				};
 			}),
-		}
+		};
 
-		// 저장 로그 추가
-		console.log("[ModeSettingsView] 모드 설정 저장 시도 중...", modesConfig)
-
-		// 모드 설정 저장 메시지 전송
+		// 모드 설정 저장
 		const saveMessage: WebviewMessage = {
 			type: "saveModeSettings",
-			text: JSON.stringify(modesConfig),
-		}
-		console.log("[ModeSettingsView] 모드 설정 저장 메시지 전송:", saveMessage)
-		vscode.postMessage(saveMessage)
+			text: JSON.stringify(modesConfig, null, 2),
+		};
 
-		// 저장 완료 메시지 표시
-		const infoMessage: WebviewMessage = {
-			type: "showInformationMessage",
-			text: "모드 설정이 저장되었습니다. 변경 사항이 즉시 반영됩니다."
-		}
-		vscode.postMessage(infoMessage)
-		console.log("[ModeSettingsView] 저장 후 즉시 반영 메시지 전송됨")
-	}
+		// Save to localStorage for persistence
+		localStorage.setItem("cline-mode-settings", JSON.stringify(modeSettings));
 
-	// 기본값으로 초기화
+		// Send to extension
+		vscode.postMessage(saveMessage);
+		console.log("[ModeSettingsView] 모드 설정 저장 메시지 전송:", saveMessage);
+	};
+
+	// 11. 기본값으로 초기화
 	const resetToDefaults = () => {
-		const resetMessage: WebviewMessage = {
-			type: "resetModesToDefaults",
+		if (window.confirm("모든 모드 설정을 기본값으로 초기화하시겠습니까?")) {
+			localStorage.removeItem("cline-mode-settings");
+			window.location.reload();
 		}
-		vscode.postMessage(resetMessage)
-	}
+	};
 
-	// Update a mode's settings
+	// 12. 모드 설정 업데이트 함수
 	const updateModeSettings = (modeId: string, field: string, value: any) => {
-		setModeSettings((prev: { [key: string]: { name: string; description: string; rules: string[] } }) => ({
+		// 기본 업데이트: 설정 변경
+		setModeSettings((prev: { [key: string]: ModeSettingType }) => ({
 			...prev,
 			[modeId]: {
 				...prev[modeId],
 				[field]: value,
 			},
-		}))
-	}
+		}));
+		
+		// API 제공자 변경 시 모델 목록 업데이트 적용
+		if (field === "apiProvider" && value !== modeSettings[modeId]?.apiProvider) {
+			// 현재 설정된 모델이 새 제공자에 존재하는지 확인
+			const currentModel = modeSettings[modeId]?.model;
+			const provider = value as string;
+			
+			// 현재 모델이 새 제공자에 없으면 기본 모델 적용
+			const providerModels = modelsByProvider[provider] || [];
+			const modelExists = providerModels.some(model => model.id === currentModel);
+			
+			if (!modelExists && providerModels.length > 0) {
+				// 새 제공자의 첫 번째 모델 적용
+				console.log(`[모드 설정] 모델 변경: ${currentModel} -> ${providerModels[0].id} (제공자 변경 때문)`)
+				
+				setModeSettings(prev => ({
+					...prev,
+					[modeId]: {
+						...prev[modeId],
+						model: providerModels[0].id
+					}
+				}));
+			}
+			
+			// 현재 탭 유지 (API 제공자 변경 시 탭 이동 방지)
+			setActiveTab(modeId);
+		}
+	};
 
-	// Function to render content for a given mode ID
+	// 13. Function to render content for a given mode ID
 	const renderTabContent = (modeId: string) => {
-		const mode = modes.find((m: { id: string; label: string; description: string }) => m.id === modeId)
-		const settings = modeSettings[modeId] || {
-			name: mode?.label || "Unknown Mode",
-			description: mode?.description || "",
-			rules: [],
-		}
+		// Find the corresponding mode
+		const mode = modes.find((m) => m.id === modeId);
 
-		// Convert rules array to string for textarea
+		// Get settings for this mode or create default
+		const settings = modeSettings[modeId] || { name: "", description: "", rules: [], model: "", apiProvider: "anthropic", apiKey: "" }
 		const rulesText = settings.rules.join("\n")
-
-		// Handle rules text change
-		// VSCodeTextArea는 (e: Event) => unknown 타입을 기대함
-		const handleRulesChange = (e: Event): unknown => {
-			// 이벤트가 발생한 요소에서 value를 추출
-			const textarea = e.target as HTMLTextAreaElement
-			const newRules = (textarea?.value || "").split("\n").filter((rule) => rule.trim() !== "")
-			updateModeSettings(modeId, "rules", newRules)
-			return
-		}
 
 		return (
 			<ContentArea>
 				<Section>
-					<SectionTitle>{settings.name} 설정</SectionTitle>
-					<OptionRow>
-						<VSCodeTextField
-							placeholder="Enter Mode Name"
+					<div style={{ marginBottom: "10px" }}>
+						<label style={{ display: "block", marginBottom: "5px" }}>모드 이름:</label>
+						<input
+							type="text"
 							value={settings.name}
-							style={{ width: "100%" }}
-							onChange={(e) => updateModeSettings(modeId, "name", (e.target as HTMLInputElement)?.value || "")}>
-							모드 이름:
-						</VSCodeTextField>
-					</OptionRow>
-					<OptionRow>
-						<VSCodeTextField
-							placeholder="Enter Mode Description"
+							onChange={(e) => updateModeSettings(modeId, "name", e.target.value)}
+							style={{
+								width: "100%",
+								padding: "5px",
+								border: "1px solid var(--vscode-input-border)",
+								background: "var(--vscode-input-background)",
+								color: "var(--vscode-input-foreground)",
+							}}
+						/>
+					</div>
+					<div>
+						<label style={{ display: "block", marginBottom: "5px" }}>모드 설명:</label>
+						<input
+							type="text"
 							value={settings.description}
-							style={{ width: "100%" }}
-							onChange={(e) =>
-								updateModeSettings(modeId, "description", (e.target as HTMLInputElement)?.value || "")
-							}>
-							모드 설명:
-						</VSCodeTextField>
-					</OptionRow>
+							onChange={(e) => updateModeSettings(modeId, "description", e.target.value)}
+							style={{
+								width: "100%",
+								padding: "5px",
+								border: "1px solid var(--vscode-input-border)",
+								background: "var(--vscode-input-background)",
+								color: "var(--vscode-input-foreground)",
+							}}
+						/>
+					</div>
 				</Section>
 
 				<VSCodeDivider></VSCodeDivider>
 
 				<Section>
-					<SectionTitle>모드별 규칙 설정</SectionTitle>
+					<div>
+						<label style={{ display: "block", marginBottom: "5px" }}>API 제공자:</label>
+						<select
+							value={settings.apiProvider}
+							onChange={(e) => {
+								// API 제공자 변경 시 updateModeSettings 함수로 처리
+								updateModeSettings(modeId, "apiProvider", e.target.value);
+								// 현재 탭 유지 (탭 이동 방지)
+								setActiveTab(modeId);
+							}}
+							style={{
+								width: "100%",
+								padding: "5px",
+								border: "1px solid var(--vscode-input-border)",
+								background: "var(--vscode-input-background)",
+								color: "var(--vscode-input-foreground)"
+							}}
+						>
+							<option value="anthropic">Anthropic</option>
+							<option value="openai">OpenAI</option>
+							<option value="google">Google Gemini</option>
+							<option value="openrouter">OpenRouter</option>
+						</select>
+					</div>
+
+					<div style={{ marginBottom: "10px" }}>
+						<label style={{ display: "block", marginBottom: "5px" }}>API 키:</label>
+						<div style={{ display: "flex", alignItems: "center" }}>
+							<input
+								type={showApiKey ? "text" : "password"}
+								placeholder="API 키 입력"
+								value={settings.apiKey || ""}
+								onChange={(e) => updateModeSettings(modeId, "apiKey", e.target.value)}
+								style={{
+									flexGrow: 1,
+									padding: "5px",
+									border: "1px solid var(--vscode-input-border)",
+									background: "var(--vscode-input-background)",
+									color: "var(--vscode-input-foreground)"
+								}}
+							/>
+							<VSCodeButton
+								appearance="secondary"
+								style={{ marginLeft: "5px" }}
+								onClick={() => setShowApiKey(!showApiKey)}
+							>
+								{showApiKey ? "숨기기" : "보기"}
+							</VSCodeButton>
+						</div>
+					</div>
+
+					<div style={{ marginBottom: "10px" }}>
+						<label style={{ display: "block", marginBottom: "5px" }}>모델:</label>
+						<select
+							value={settings.model}
+							onChange={(e) => updateModeSettings(modeId, "model", e.target.value)}
+							style={{
+								width: "100%",
+								padding: "5px",
+								border: "1px solid var(--vscode-input-border)",
+								background: "var(--vscode-input-background)",
+								color: "var(--vscode-input-foreground)"
+							}}
+						>
+							<option value="">-- 모델 선택 --</option>
+							{modelsByProvider[settings.apiProvider]?.map(model => (
+								<option key={model.id} value={model.id}>{model.name}</option>
+							)) || (
+								<>
+									<option value="anthropic/claude-3-opus">Claude 3 Opus</option>
+									<option value="anthropic/claude-3-sonnet">Claude 3 Sonnet</option>
+									<option value="anthropic/claude-3-haiku">Claude 3 Haiku</option>
+									<option value="anthropic/claude-3-5-sonnet">Claude 3.5 Sonnet</option>
+								</>
+							)}
+						</select>
+					</div>
+
+					<div style={{ marginTop: "15px" }}>
+						<VSCodeButton
+							appearance="secondary"
+							onClick={() => {
+								// 현재 모드의 설정을 모든 모드에 적용
+								const currentSettings = modeSettings[modeId];
+								if (currentSettings) {
+									const newSettings = { ...modeSettings };
+									
+									// 모든 모드에 현재 모드의 API 설정 적용
+									Object.keys(newSettings).forEach(mode => {
+										if (mode !== modeId) {
+											newSettings[mode] = {
+												...newSettings[mode],
+												apiProvider: currentSettings.apiProvider,
+												apiKey: currentSettings.apiKey,
+												model: currentSettings.model
+											};
+										}
+									});
+									
+									setModeSettings(newSettings);
+								}
+							}}
+						>
+							모든 모드에 적용
+						</VSCodeButton>
+					</div>
+				</Section>
+
+				<VSCodeDivider></VSCodeDivider>
+
+
+				<Section>
 					<div>
 						<label style={{ display: "block", marginBottom: "5px" }}>모드별 규칙:</label>
 						<textarea
@@ -329,6 +614,10 @@ console.log("[ModeSettingsView] setModeSettings(loadedSettings) 호출됨:", loa
 								border: "1px solid var(--vscode-focusBorder)",
 								background: "var(--vscode-input-background)",
 								color: "var(--vscode-input-foreground)",
+								overflow: "hidden", // overflow:auto 대신 hidden 사용
+								whiteSpace: "pre-wrap",
+								wordBreak: "break-word",
+								resize: "vertical" // 수직 리사이즈만 허용
 							}}
 							onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => {
 								const newRules = e.target.value.split("\n").filter((rule: string) => rule.trim() !== "")
@@ -340,32 +629,16 @@ console.log("[ModeSettingsView] setModeSettings(loadedSettings) 호출됨:", loa
 						각 줄은 하나의 규칙으로 처리됩니다. 빈 줄은 무시됩니다.
 					</div>
 				</Section>
-
-				<VSCodeDivider></VSCodeDivider>
 			</ContentArea>
 		)
 	}
 
 	return (
-		<Container>
-			<Header>
-				<Title>Mode Settings</Title>
-				<VSCodeButton appearance="secondary" onClick={() => {
-				// (2) 변경 감지: 초기값과 현재값 비교
-				if (initialModeSettings && JSON.stringify(modeSettings) !== initialModeSettings) {
-					alert("모드 설정이 변경되어 새로고침합니다! (변경 사항이 즉시 반영됩니다)");
-					window.location.reload();
-				} else {
-					onDone();
-				}
-			}} >
-					Done
-				</VSCodeButton>
-			</Header>
-
+		<Container>			
+				<Title>모드 설정</Title><p/>
 			<VSCodePanels activeid={activeTab} onChange={(e: any) => setActiveTab(e.target.activeid)}>
 				{/* Generate tabs dynamically */}
-				{modes.map((mode: { id: string; label: string; description: string }) => (
+				{modes.map((mode: { id: string; label: string }) => (
 					<VSCodePanelTab key={mode.id} id={mode.id}>
 						{mode.label}
 					</VSCodePanelTab>
@@ -373,28 +646,13 @@ console.log("[ModeSettingsView] setModeSettings(loadedSettings) 호출됨:", loa
 
 				{/* Generate panel views dynamically */}
 				{modes.map((mode: { id: string; label: string; description: string }) => (
-					<VSCodePanelView key={`view-${mode.id}`} id={`view-${mode.id}`}>
+					<VSCodePanelView key={`view-${mode.id}`} id={mode.id}>
 						{renderTabContent(mode.id)}
 					</VSCodePanelView>
 				))}
 			</VSCodePanels>
 
-			{/* Save/Reset buttons */}
-			<div
-				style={{
-					marginTop: "auto",
-					paddingTop: "15px",
-					borderTop: "1px solid var(--vscode-editorGroup-border)",
-					display: "flex",
-					justifyContent: "flex-end",
-				}}>
-				<VSCodeButton appearance="secondary" style={{ marginRight: "5px" }} onClick={resetToDefaults}>
-					기본값으로 초기화
-				</VSCodeButton>
-				<VSCodeButton appearance="primary" style={{ marginRight: "5px" }} onClick={saveAllModeSettings}>
-					모든 모드 설정 저장
-				</VSCodeButton>
-			</div>
+
 		</Container>
 	)
 }
