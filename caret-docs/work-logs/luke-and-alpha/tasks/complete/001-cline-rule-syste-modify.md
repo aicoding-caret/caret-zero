@@ -33,24 +33,21 @@ Cline의 규칙 시스템을 개선하여 더 효율적이고 관리하기 쉬�
             - "Collaborate with the user to manage and refine the `.caretrules` file (Markdown format with `json-reference` blocks)." (파일명 `.caretrules`로 수정 반영)
             - "Assist the user in creating, updating, and deleting structured reference blocks (`json-reference`) within `.caretrules`." (파일명 `.caretrules`로 수정 반영)
             - "Ensure consistency between `.caretrules` references and the actual content in `caret-docs` and `docs` folders." (파일명 `.caretrules`로 수정 반영)
-    -   [x] 다른 모드(`plan`, `do`, `talk`) 추가 개선 필요 여부 검토 (필요시 논의)
+    -   [x] 다른 모드(`plan`, `do`, `talk`) 추가 개선 필요 여부 검토 (필요시 논의) -> arch, dev, rule. talk 기본 4개 모드 제공으로 변경경
 4.  **프로젝트 규칙 파일명 변경**
     -   [x] 프로젝트 규칙 파일명을 `.clinerules`에서 `.caretrules`로 변경하기로 결정.
     -   [x] 파일명 변경 완료.
-    -   [x] 코드베이스 전체에서 `.clinerules` 참조를 찾아 `.caretrules`로 수정 완료 (RULE 모드에서 진행, 단 스크립트/소스/upstream/로그/특허 파일 제외).
-5.  **문서 파일 위치 정리**
-    -   [x] `docs` 폴더와 `cline-upstream/docs` 폴더 비교하여 Caret 전용 문서(`project-vision.*`, `roadmap.*`, `development/`, `patent-materials/`, `releases/`, `reports/`, `sLLM/`, `strategy-archive/`, `testing/`, `work-logs/`, `workingLog/` 등)를 `caret-docs` 폴더로 이동 완료.
-    -   [x] `caret-docs`로 이동된 문서 내 `docs/` 경로를 참조하는 링크를 `caret-docs/`로 수정 완료 (`work-logs/luke-and-alpha/tasks/complete/006-cline-project-roadmap-planning.md` 파일 1건 수정).
-6.  **`.caretrules` 개선 및 생성**
-    -   [x] 기존 `.clinerules.bak` 파일 내용을 참고하여, 프로젝트 구조 및 개발 프로세스 가이드 중심으로 새로운 `.caretrules` (JSON 형식) 구조 설계 및 내용 작성 완료.
-    -   [x] `.caretrules` (JSON) 파일 생성 완료.
-    -   [x] `.caretrules.md` (마크다운) 파일 생성 완료 (JSON 내용 기반).
-    -   [x] `.caretrules`의 구조와 동작 방식을 `caret-docs/rules-reference/caretrules-guide.md` 파일로 문서화 완료.
-7.  **다른 규칙 파일 생성**
-    -   [x] `.caretrules` 및 `.caretrules.md` 파일을 복사하여 `.windsurfrules`, `.windsurfrules.md` 파일 생성 완료.
-    -   [x] `.caretrules` 파일을 복사하여 `.cursorrules` 파일 생성 완료 (마크다운 버전 제외).
+    -   [x] 코드베이스 전체에서 `.clinerules` 참조를 찾아 `.caretrules`로 수정하는 작업 필요 (ACT 모드에서).
+5.  **기존 `.clinerules` 검토 내용 통합** (아래 내용은 새로운 구조 논의 후 재배치 또는 통합 필요)
+    -   [x] 기존 `.clinerules` 검토 내용 반영 (`Caret 시스템 프롬프트 구성 사상`, `Caret 시스템 프롬프트 종류` 등) - 새로운 `.caretrules` 구조에 맞게 통합/재배치 필요.
+    -   [x] 기존 문서 참조 관련 메모(`project-guide.md` 관련) 처리 방안 결정 (새로운 `caret-docs` 구조에 통합 또는 다른 방식으로 처리)
+6.  **실행 계획 확정 및 구현**
+    -   [x] 위 논의 기반 구체적인 `.caretrules` 생성/수정 계획 확정.
+    -   [x] .clinerules 파일 .caretrules로 변경
+    -   [x] 모드 개선 계획 확정 (`agents-rules/alpha/modes.json` 수정).
+    -   [x] 실제 파일 수정, 생성, 이동, 이름 변경, 코드 참조 업데이트 작접 진행
+    -   [x] 하드코딩된 모드 모두 변경
 
 ## 메모
-- 규칙 시스템은 JSON으로 단일화하되, 마크다운 버전도 함께 생성하여 가독성 확보. (`.caretrules`, `.windsurfrules`, `.cursorrules` 모두 해당)
-- 버전 관리는 Git 기반으로 구현하여 변경 이력 추적 용이하게 함.
-- `.clinerules.bak` 파일은 새로운 규칙 파일 생성 시 참고용으로 유지.
+- 규칙 시스템은 JSON으로 단일화하되, 필요시 마크다운으로 변환 가능하도록 구현
+- 버전 관리는 Git 기반으로 구현하여 변경 이력 추적 용이하게 함

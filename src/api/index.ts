@@ -41,7 +41,7 @@ export interface ApiHandlerOptions {
 
 export function buildApiHandler(
 	options: ApiHandlerOptions,
-	updateStateCallback: (state: Partial<ExtensionState>) => void
+	updateStateCallback: (state: Partial<ExtensionState>) => void,
 ): ApiHandler {
 	const { provider, ...optionsWithoutProvider } = options
 	switch (provider) {

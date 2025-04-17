@@ -203,34 +203,34 @@ const SettingsView = ({ onDone }: SettingsViewProps) => {
 	// 모드타입에 따라 탭 변경 처리
 	const handleTabChange = (modeType: "plan" | "act") => {
 		// 현재 활성화된 모드의 타입 확인
-		const currentModeType = getCurrentModeType();
-		
+		const currentModeType = getCurrentModeType()
+
 		// 이미 같은 타입의 모드면 변경 불필요
 		if (modeType === currentModeType) {
-			return;
+			return
 		}
-		
+
 		// 해당 타입의 첫 번째 모드 찾기
-		const targetMode = availableModes?.find((mode: ModeInfo) => mode.modetype === modeType);
-		
+		const targetMode = availableModes?.find((mode: ModeInfo) => mode.modetype === modeType)
+
 		// 대상 모드가 없으면 처리 중단
 		if (!targetMode) {
-			console.warn(`${modeType} 타입의 모드를 찾을 수 없습니다.`);
-			return;
+			console.warn(`${modeType} 타입의 모드를 찾을 수 없습니다.`)
+			return
 		}
-		
+
 		// 모드 전환 요청
-		setPendingTabChange(targetMode.id);
-		handleSubmit(true);
+		setPendingTabChange(targetMode.id)
+		handleSubmit(true)
 	}
-	
+
 	// 현재 활성화된 모드의 타입 반환
 	const getCurrentModeType = (): "plan" | "act" => {
 		// 현재 모드 정보 찾기
-		const currentMode = availableModes?.find((mode: ModeInfo) => mode.id === chatSettings.mode);
-		
+		const currentMode = availableModes?.find((mode: ModeInfo) => mode.id === chatSettings.mode)
+
 		// 현재 모드가 plan 타입이면 plan, 그렇지 않으면 act 반환
-		return currentMode?.modetype === "plan" ? "plan" : "act";
+		return currentMode?.modetype === "plan" ? "plan" : "act"
 	}
 
 	return (
@@ -278,18 +278,12 @@ const SettingsView = ({ onDone }: SettingsViewProps) => {
 								borderBottom: "1px solid var(--vscode-panel-border)",
 							}}>
 							{/* 계획 모드 API 탭 (modetype="plan") */}
-							<TabButton 
-								isActive={getCurrentModeType() === "plan"}
-								onClick={() => handleTabChange("plan")}
-							>
+							<TabButton isActive={getCurrentModeType() === "plan"} onClick={() => handleTabChange("plan")}>
 								Plan Mode API
 							</TabButton>
-							
+
 							{/* 실행 모드 API 탭 (modetype="act") */}
-							<TabButton 
-								isActive={getCurrentModeType() === "act"} 
-								onClick={() => handleTabChange("act")}
-							>
+							<TabButton isActive={getCurrentModeType() === "act"} onClick={() => handleTabChange("act")}>
 								Act Mode API
 							</TabButton>
 						</div>

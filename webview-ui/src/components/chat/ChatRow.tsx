@@ -368,17 +368,19 @@ export const ChatRowContent = ({ message, isExpanded, onToggleExpand, lastModifi
 						}
 
 						// 4. 재시도 중인 경우 - 재시도 정보 표시 추가
-						let apiReqInfo;
+						let apiReqInfo
 						try {
 							if (message.text) {
-								apiReqInfo = JSON.parse(message.text);
+								apiReqInfo = JSON.parse(message.text)
 								if (apiReqInfo.retryAttempt && apiReqInfo.retryAttempt > 0) {
 									return (
 										<span style={{ color: normalColor, fontWeight: "bold" }}>
-											API 재시도 중... ({apiReqInfo.retryAttempt}/{apiReqInfo.maxRetries || 5}) 
-											{apiReqInfo.errorType && <span style={{ color: errorColor }}> - {apiReqInfo.errorType}</span>}
+											API 재시도 중... ({apiReqInfo.retryAttempt}/{apiReqInfo.maxRetries || 5})
+											{apiReqInfo.errorType && (
+												<span style={{ color: errorColor }}> - {apiReqInfo.errorType}</span>
+											)}
 										</span>
-									);
+									)
 								}
 							}
 						} catch (e) {

@@ -24,25 +24,25 @@ export interface ModeInfo {
  * API 재시도 상태를 위한 인터페이스
  */
 export interface RetryStatusMessage {
-	status: number            // HTTP 상태 코드 (429, 503 등)
-	errorType: string        // 에러 유형 (한글 메시지)
-	attempt: number          // 현재 시도 횟수
-	maxRetries: number       // 최대 재시도 횟수
-	delay: number            // 대기 시간 (ms)
-	quotaViolation?: string  // 할당량 위반 정보
-	retryTimestamp?: number  // 재시도 예정 시간(ms 타임스탬프)
+	status: number // HTTP 상태 코드 (429, 503 등)
+	errorType: string // 에러 유형 (한글 메시지)
+	attempt: number // 현재 시도 횟수
+	maxRetries: number // 최대 재시도 횟수
+	delay: number // 대기 시간 (ms)
+	quotaViolation?: string // 할당량 위반 정보
+	retryTimestamp?: number // 재시도 예정 시간(ms 타임스탬프)
 }
 
 /**
  * API 에러 정보를 위한 인터페이스
  */
 export interface ApiErrorInfo {
-	status: number           // HTTP 상태 코드
-	message: string          // 에러 메시지
-	code?: string            // 에러 코드
-	modelId?: string         // 관련 모델 ID
-	quotaViolation?: string  // 할당량 위반 정보
-	provider?: string        // API 제공자 (예: 'gemini', 'openai')
+	status: number // HTTP 상태 코드
+	message: string // 에러 메시지
+	code?: string // 에러 코드
+	modelId?: string // 관련 모델 ID
+	quotaViolation?: string // 할당량 위반 정보
+	provider?: string // API 제공자 (예: 'gemini', 'openai')
 }
 
 export interface ExtensionMessage {
@@ -176,8 +176,8 @@ export interface ExtensionState {
 	vscMachineId: string
 	alphaAvatarUri?: string // 알파 아바타 URI 추가
 	availableModes: ModeInfo[] // Add availableModes to ExtensionState
-	retryStatus?: RetryStatusMessage; // Add retryStatus to ExtensionState
-	apiError: ApiErrorInfo | null; // API 에러 정보 추가
+	retryStatus?: RetryStatusMessage // Add retryStatus to ExtensionState
+	apiError: ApiErrorInfo | null // API 에러 정보 추가
 }
 
 export interface ClineMessage {
@@ -315,12 +315,12 @@ export interface ClineApiReqInfo {
 	cancelReason?: ClineApiReqCancelReason
 	streamingFailedMessage?: string
 	// 재시도 관련 필드 추가
-	retryAttempt?: number   // 현재 재시도 횟수
-	maxRetries?: number     // 최대 재시도 횟수
-	errorType?: string      // 오류 유형 (한글 메시지)
+	retryAttempt?: number // 현재 재시도 횟수
+	maxRetries?: number // 최대 재시도 횟수
+	errorType?: string // 오류 유형 (한글 메시지)
 	quotaViolation?: string // 할당량 위반 정보
-	index?: number          // API 요청 인덱스
-	model?: string          // 사용된 모델
+	index?: number // API 요청 인덱스
+	model?: string // 사용된 모델
 }
 
 export type ClineApiReqCancelReason = "streaming_failed" | "user_cancelled"

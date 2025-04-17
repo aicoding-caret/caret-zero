@@ -28,7 +28,7 @@ import ChatRow from "./ChatRow"
 import ChatTextArea from "./ChatTextArea"
 import TaskHeader from "./TaskHeader"
 import TelemetryBanner from "../common/TelemetryBanner"
-import { AlertIcon } from '@primer/octicons-react'; // WarningIcon 임포트 추가 -> AlertIcon으로 수정
+import { AlertIcon } from "@primer/octicons-react" // WarningIcon 임포트 추가 -> AlertIcon으로 수정
 
 // Define styled components for the new mode buttons (Adjust styles for bottom-right placement)
 // Ensure these are defined only ONCE at the top level of the module
@@ -123,7 +123,7 @@ const RetryStatusProgress = styled.div`
 
 const RetryStatusProgressBar = styled.div<{ progress: number }>`
 	height: 100%;
-	width: ${props => props.progress}%;
+	width: ${(props) => props.progress}%;
 	background-color: var(--vscode-notifications-foreground);
 	transition: width 1s linear;
 `
@@ -173,48 +173,46 @@ const ChatView = ({ isHidden, showAnnouncement, hideAnnouncement, showHistoryVie
 		availableModes, // Get available modes from context
 		chatSettings, // Get chat settings from context
 		retryStatus, // Get retryStatus from context state
-		apiError    // <<< 새로 추가된 API 에러 상태 가져오기
+		apiError, // <<< 새로 추가된 API 에러 상태 가져오기
 	} = useExtensionState()
-	
+
 	// ALT+1~5 단축키 처리 함수
 	const handleKeydown = useCallback(
 		(e: Event) => {
-			const kbEvent = e as KeyboardEvent;
+			const kbEvent = e as KeyboardEvent
 			// ALT 키와 숫자 키가 함께 눌렸을 때 처리
 			if (!kbEvent.ctrlKey && kbEvent.altKey && !kbEvent.shiftKey && !kbEvent.metaKey) {
 				// 숫자 키 체크 - 숫자 키보드 (1-9)
-				const keyNum = parseInt(kbEvent.key);
-				
+				const keyNum = parseInt(kbEvent.key)
+
 				if (!isNaN(keyNum) && keyNum >= 1 && keyNum <= 9) {
 					// 모드 인덱스 계산 (0부터 시작)
-					const modeIndex = keyNum - 1;
-					
+					const modeIndex = keyNum - 1
+
 					// 사용 가능한 모드 확인 및 범위 체크
 					if (availableModes && modeIndex < availableModes.length) {
-						const targetMode = availableModes[modeIndex].id;
-						
+						const targetMode = availableModes[modeIndex].id
+
 						// 현재 모드와 다른 경우에만 변경
 						if (chatSettings.mode !== targetMode) {
 							vscode.postMessage({
 								type: "updateSettings",
 								chatSettings: { ...chatSettings, mode: targetMode },
-							});
-							kbEvent.preventDefault(); // 기본 동작 방지
-							return true; // 이벤트 처리 완료
+							})
+							kbEvent.preventDefault() // 기본 동작 방지
+							return true // 이벤트 처리 완료
 						}
 					}
 				}
 			}
-			return false; // 이벤트 처리 안함
+			return false // 이벤트 처리 안함
 		},
-		[availableModes, chatSettings]
-	);
-	
+		[availableModes, chatSettings],
+	)
+
 	// 키보드 이벤트 리스너 등록 (전역 및 입력창 모두에 적용)
 	useEvent("keydown", handleKeydown, window)
-	
 
-	
 	// API 재시도 상태 관리 (진행률 표시용 로컬 상태)
 	// const [retryStatus, setRetryStatus] = useState<RetryStatusMessage | null>(null) // Context state 사용으로 변경
 	const [retryProgress, setRetryProgress] = useState<number>(0)
@@ -426,7 +424,7 @@ const ChatView = ({ isHidden, showAnnouncement, hideAnnouncement, showHistoryVie
 	useEffect(() => {
 		setExpandedRows({})
 	}, [task?.ts])
-	
+
 	// 새로운 useEffect: ExtensionState의 retryStatus 변경 감지 및 UI 업데이트
 	useEffect(() => {
 		// 기존 타이머 정리
@@ -454,7 +452,7 @@ const ChatView = ({ isHidden, showAnnouncement, hideAnnouncement, showHistoryVie
 				const step = 100 / (remainingTime / 100) // 100ms 당 증가 퍼센트
 
 				retryProgressTimerRef.current = window.setInterval(() => {
-					setRetryProgress(prev => {
+					setRetryProgress((prev) => {
 						const nextProgress = prev + step
 
 						// 100% 도달 또는 시간 초과 시 타이머 종료
@@ -548,7 +546,9 @@ const ChatView = ({ isHidden, showAnnouncement, hideAnnouncement, showHistoryVie
 	const handlePrimaryButtonClick = useCallback(
 		(text?: string, images?: string[]) => {
 			const trimmedInput = text?.trim()
-			switch (clineAsk) {  // API 오류에서도 재시도 지원
+			switch (
+				clineAsk // API 오류에서도 재시도 지원
+			) {
 				case "api_req_failed":
 				case "command":
 				case "command_output":
@@ -557,7 +557,7 @@ const ChatView = ({ isHidden, showAnnouncement, hideAnnouncement, showHistoryVie
 				case "use_mcp_server":
 				case "resume_task":
 				case "mistake_limit_reached":
-				case "auto_approval_max_req_reached":				
+				case "auto_approval_max_req_reached":
 					vscode.postMessage({
 						type: "askResponse",
 						askResponse: "yesButtonClicked",
@@ -973,7 +973,8 @@ const ChatView = ({ isHidden, showAnnouncement, hideAnnouncement, showHistoryVie
 							</RetryStatusIcon>
 							<RetryStatusInfo>
 								<span>
-									{retryStatus.attempt}/{retryStatus.maxRetries}회, {Math.round(retryStatus.delay / 1000)}초 후 재시도
+									{retryStatus.attempt}/{retryStatus.maxRetries}회, {Math.round(retryStatus.delay / 1000)}초 후
+									재시도
 								</span>
 								{retryStatus.retryTimestamp && retryStatus.delay && (
 									<RetryStatusProgress>
@@ -986,11 +987,17 @@ const ChatView = ({ isHidden, showAnnouncement, hideAnnouncement, showHistoryVie
 
 					{/* API 최종 에러 상태 UI */}
 					{apiError && (
-						<ApiErrorContainer> {/* 새 Styled Component 또는 기존 컴포넌트 재활용 */}
-							<ApiErrorIcon> {/* 아이콘 스타일 */}
+						<ApiErrorContainer>
+							{" "}
+							{/* 새 Styled Component 또는 기존 컴포넌트 재활용 */}
+							<ApiErrorIcon>
+								{" "}
+								{/* 아이콘 스타일 */}
 								<AlertIcon size={16} />
 							</ApiErrorIcon>
-							<ApiErrorInfo> {/* 메시지 스타일 */}
+							<ApiErrorInfo>
+								{" "}
+								{/* 메시지 스타일 */}
 								<span>{apiError.message}</span>
 							</ApiErrorInfo>
 						</ApiErrorContainer>
@@ -1074,7 +1081,7 @@ const ChatView = ({ isHidden, showAnnouncement, hideAnnouncement, showHistoryVie
 							{ id: "arch", label: "Arch", shortcut: 1 },
 							{ id: "dev", label: "Dev", shortcut: 2 },
 							{ id: "rule", label: "Rule", shortcut: 3 },
-							{ id: "talk", label: "Talk", shortcut: 4 }
+							{ id: "talk", label: "Talk", shortcut: 4 },
 						].map((fallbackMode, index) => (
 							<ModeButton
 								key={fallbackMode.id}

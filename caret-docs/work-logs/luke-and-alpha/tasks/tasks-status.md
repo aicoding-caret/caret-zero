@@ -2,11 +2,9 @@
 
 ## 진행 중인 태스크 (Pending)
 
-- [ ] **Task #001:** Cline 규칙 시스템 수정 ([001-cline-rule-syste-modify.md](./001-cline-rule-syste-modify.md))
-- [ ] **Task #002:** 알파 설정 및 계획 ([002-cline-alpha-setup-and-planning.md](./002-cline-alpha-setup-and-planning.md))
-- [ ] **Task #008:** Cline 멀티 모드 코어 개발 ([008-cline-multi-mode-core.md](./008-cline-multi-mode-core.md))
-- [ ] **Task #009:** 프롬프트 로딩 규칙 참조 구현 ([009-prompt-loading-rule-referencing.md](./009-prompt-loading-rule-referencing.md))
-- [ ] **Task #010:** 프롬프트 규칙 관리 UI 개발 ([010-prompt-rule-management-ui.md](./010-prompt-rule-management-ui.md))
+- [ ] **Task #008:** 멀티 모드 시스템 구현 및 동적 프롬프트/규칙 관리 ([008-cline-multi-mode-core.md](./008-cline-multi-mode-core.md))
+- [x] **Task #009:** 프롬프트 로딩 규칙 참조 구현 ([009-prompt-loading-rule-referencing.md](./009-prompt-loading-rule-referencing.md)) (통합됨 -> #008)
+- [x] **Task #010:** 프롬프트 규칙 관리 UI 개발 ([010-prompt-rule-management-ui.md](./010-prompt-rule-management-ui.md)) (통합됨 -> #008)
 - [ ] **Task #011:** Cline UI 현지화 ([011-cline-ui-localization.md](./011-cline-ui-localization.md))
 - [ ] **Task #012:** 다국어 규칙 지원 ([012-multilingual-rule-support.md](./012-multilingual-rule-support.md))
 - [ ] **Task #013:** AI 기반 규칙 관리 ([013-ai-assisted-rule-management.md](./013-ai-assisted-rule-management.md))
@@ -16,7 +14,8 @@
 - [ ] **Task #024:** AI 에이전트 프로필 커스터마이징 ([024-ai-agent-profile-customization.md](./024-ai-agent-profile-customization.md))
 
 ## 완료된 태스크 (Complete)
-
+- [x] **Task #001:** Cline 규칙 시스템 수정 ([001-cline-rule-syste-modify.md](./001-cline-rule-syste-modify.md))
+- [x] **Task #002:** 알파 설정 및 계획 ([002-cline-alpha-setup-and-planning.md](./002-cline-alpha-setup-and-planning.md))
 - [x] **Task #003:** sLLM 성능 테스트 ([complete/003-sllm-performance-test.md](./complete/003-sllm-performance-test.md))
 - [x] **Task #004:** vLLM 설정 및 테스트 ([complete/004-vllm-setup-and-test.md](./complete/004-vllm-setup-and-test.md))
 - [x] **Task #005:** vLLM Qwen2.5 4bit Cline 테스트 ([complete/005-vllm-qwen2.5-4bit-cline-test.md](./complete/005-vllm-qwen2.5-4bit-cline-test.md))

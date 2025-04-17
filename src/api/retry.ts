@@ -43,7 +43,7 @@ export function withRetry(options: RetryOptions = {}) {
 		const originalMethod = descriptor.value
 
 		descriptor.value = async function* (...args: any[]) {
-			const instance = this; // <-- 원래 메서드의 'this' 컨텍스트를 캡처합니다.
+			const instance = this // <-- 원래 메서드의 'this' 컨텍스트를 캡처합니다.
 			let lastError: any = null
 			for (let attempt = 0; attempt < maxRetries; attempt++) {
 				try {
@@ -51,9 +51,9 @@ export function withRetry(options: RetryOptions = {}) {
 					// 성공 시 retryStatus 초기화
 					console.log(`[Retry] API call successful after ${attempt} retries. Resetting retryStatus.`)
 					if ((instance as any)._updateState) {
-						;(instance as any)._updateState({ retryStatus: null }); // <-- 성공 시 여기서 초기화
+						;(instance as any)._updateState({ retryStatus: null }) // <-- 성공 시 여기서 초기화
 					} else {
-						console.warn("[Retry] _updateState function not provided to the handler instance for reset.");
+						console.warn("[Retry] _updateState function not provided to the handler instance for reset.")
 					}
 					return result // 성공 시 결과 반환
 				} catch (error: any) {
@@ -71,10 +71,10 @@ export function withRetry(options: RetryOptions = {}) {
 					let errorBody = null
 					let retryInfo = null
 					let quotaInfo = null
-					
+
 					try {
 						// 메시지에서 retryDelay 탐색 (body 파싱이 실패할 경우를 대비)
-						if (error?.message && typeof error.message === 'string') {
+						if (error?.message && typeof error.message === "string") {
 							const retryDelayRegex = /"retryDelay":"([^"]+)"/
 							const retryMatch = error.message.match(retryDelayRegex)
 							if (retryMatch && retryMatch[1]) {
@@ -82,22 +82,26 @@ export function withRetry(options: RetryOptions = {}) {
 								console.debug("[Retry Debug] Found retryDelay in message:", retryInfo.retryDelay)
 							}
 						}
-						
+
 						// body가 있는 경우 JSON 파싱 시도
 						if (error?.body) {
 							console.debug("[Retry Debug] Raw error body:", error.body)
-							
+
 							// JSON 배열로 파싱 시도
 							try {
 								errorBody = JSON.parse(error.body)
 								if (Array.isArray(errorBody)) {
 									retryInfo = errorBody.find((item: any) => item["@type"]?.includes("RetryInfo"))
 									quotaInfo = errorBody.find((item: any) => item["@type"]?.includes("QuotaFailure"))
-								} else if (typeof errorBody === 'object' && errorBody !== null) {
+								} else if (typeof errorBody === "object" && errorBody !== null) {
 									// 단일 객체인 경우
 									if (errorBody.error?.details) {
-										retryInfo = errorBody.error.details.find((item: any) => item["@type"]?.includes("RetryInfo"))
-										quotaInfo = errorBody.error.details.find((item: any) => item["@type"]?.includes("QuotaFailure"))
+										retryInfo = errorBody.error.details.find((item: any) =>
+											item["@type"]?.includes("RetryInfo"),
+										)
+										quotaInfo = errorBody.error.details.find((item: any) =>
+											item["@type"]?.includes("QuotaFailure"),
+										)
 									}
 								}
 							} catch (parseError) {
@@ -107,62 +111,61 @@ export function withRetry(options: RetryOptions = {}) {
 					} catch (parseError) {
 						console.debug("[Retry Debug] Error during response parsing:", parseError)
 					}
-					const isDailyQuotaError = error?.status === 429 && quotaInfo?.violations?.[0]?.quotaMetric === "generativelanguage.googleapis.com/generate_requests_per_model_per_day";
-					
+					const isDailyQuotaError =
+						error?.status === 429 &&
+						quotaInfo?.violations?.[0]?.quotaMetric ===
+							"generativelanguage.googleapis.com/generate_requests_per_model_per_day"
+
 					if (isDailyQuotaError || (!isRetryableError && !retryAllErrors) || isLastAttempt) {
-				
-					// 상태 업데이트 로직 추가/수정
-					if ((instance as any)._updateState) {
-						let apiErrorPayload: { type: string; message: string; status?: number } | null = null;
-						let sayMessage: string | null = null;
+						// 상태 업데이트 로직 추가/수정
+						if ((instance as any)._updateState) {
+							let apiErrorPayload: { type: string; message: string; status?: number } | null = null
+							let sayMessage: string | null = null
 
-						if (isDailyQuotaError) {
-							// 일일 할당량 초과 시
-							const dailyQuotaErrorMessage = "오늘의 구글 무료 할당량을 모두 사용하였습니다. 다른 모델로 변경하거나 유료 결제를 진행 바랍니다.";
-							apiErrorPayload = {
-								type: 'dailyQuotaExceeded',
-								message: dailyQuotaErrorMessage,
-								status: error?.status
-							};
-							sayMessage = `🛑 ${dailyQuotaErrorMessage}`;
-						} else if (isLastAttempt) {
-							// 다른 이유로 최종 실패 시 (isLastAttempt가 true일 때)
-							const finalErrorMessage = `API 호출 최종 실패 (시도 ${attempt + 1}/${maxRetries}): ${error?.message || '알 수 없는 오류'}`;
-							apiErrorPayload = {
-								type: 'finalFailure',
-								message: finalErrorMessage,
-								status: error?.status
-							};
-							sayMessage = `🛑 ${finalErrorMessage}`;
-						}
-						
+							if (isDailyQuotaError) {
+								// 일일 할당량 초과 시
+								const dailyQuotaErrorMessage =
+									"오늘의 구글 무료 할당량을 모두 사용하였습니다. 다른 모델로 변경하거나 유료 결제를 진행 바랍니다."
+								apiErrorPayload = {
+									type: "dailyQuotaExceeded",
+									message: dailyQuotaErrorMessage,
+									status: error?.status,
+								}
+								sayMessage = `🛑 ${dailyQuotaErrorMessage}`
+							} else if (isLastAttempt) {
+								// 다른 이유로 최종 실패 시 (isLastAttempt가 true일 때)
+								const finalErrorMessage = `API 호출 최종 실패 (시도 ${attempt + 1}/${maxRetries}): ${error?.message || "알 수 없는 오류"}`
+								apiErrorPayload = {
+									type: "finalFailure",
+									message: finalErrorMessage,
+									status: error?.status,
+								}
+								sayMessage = `🛑 ${finalErrorMessage}`
+							}
 
+							// _updateState 호출 (apiErrorPayload가 설정된 경우)
+							if (apiErrorPayload) {
+								;(instance as any)._updateState({
+									retryStatus: null, // 재시도 상태 초기화
+									apiError: apiErrorPayload, // 계산된 에러 정보 전달
+								})
+							} else {
+								// apiErrorPayload가 없는 경우 (예: Non-retryable 에러로 즉시 중단 시 별도 처리가 없다면)
+								// 기존처럼 retryStatus만 초기화할 수 있음
+								;(instance as any)._updateState({ retryStatus: null })
+							}
 
-						// _updateState 호출 (apiErrorPayload가 설정된 경우)
-						if (apiErrorPayload) {
-							(instance as any)._updateState({
-								retryStatus: null, // 재시도 상태 초기화
-								apiError: apiErrorPayload // 계산된 에러 정보 전달
-							});
+							// .say() 호출 (sayMessage가 설정된 경우)
+							if (sayMessage && (instance as any).say) {
+								;(instance as any).say(sayMessage)
+							}
 						} else {
-							// apiErrorPayload가 없는 경우 (예: Non-retryable 에러로 즉시 중단 시 별도 처리가 없다면)
-							// 기존처럼 retryStatus만 초기화할 수 있음
-							(instance as any)._updateState({ retryStatus: null });
-						}
-
-
-						// .say() 호출 (sayMessage가 설정된 경우)
-						if (sayMessage && (instance as any).say) {
-							;(instance as any).say(sayMessage);
-						}
-
-						} else {
-							console.warn("[Retry] _updateState function not provided to the handler instance on final failure.");
+							console.warn("[Retry] _updateState function not provided to the handler instance on final failure.")
 						}
 						// 기존 throw error는 그대로 유지하여 재시도 루프를 빠져나감
-						throw error;
+						throw error
 					}
-					
+
 					console.debug("[Retry Debug] Error details:", {
 						status: error?.status,
 						headers: error?.headers,
@@ -179,14 +182,15 @@ export function withRetry(options: RetryOptions = {}) {
 					// Declare errorType at the beginning of the catch block
 					let errorType: string = "API 오류"
 					let quotaViolation: string | undefined = undefined
-					
+
 					// 오류 유형 판별
 					if (error?.status === 429) {
 						errorType = "할당량 초과"
-						
+
 						// 위반된 할당량 정보 추출
 						if (quotaInfo?.violations && quotaInfo.violations.length > 0) {
-							quotaViolation = quotaInfo.violations[0].subject || quotaInfo.violations[0].description || '알 수 없는 할당량'
+							quotaViolation =
+								quotaInfo.violations[0].subject || quotaInfo.violations[0].description || "알 수 없는 할당량"
 						}
 					} else if (error?.status === 503) {
 						errorType = "서비스 사용 불가"
@@ -194,26 +198,31 @@ export function withRetry(options: RetryOptions = {}) {
 
 					// Try to get delay from RetryInfo in error body
 					if (retryInfo?.retryDelay) {
-						console.debug("[Retry Debug] Found retryDelay:", retryInfo.retryDelay, "type:", typeof retryInfo.retryDelay)
-						
+						console.debug(
+							"[Retry Debug] Found retryDelay:",
+							retryInfo.retryDelay,
+							"type:",
+							typeof retryInfo.retryDelay,
+						)
+
 						// 패턴을 사용하여 숫자와 단위를 추출
 						const delayPattern = /(\d+(\.\d+)?)([a-z]+)?/i
 						const match = retryInfo.retryDelay.match(delayPattern)
-						
+
 						if (match) {
 							const value = parseFloat(match[1])
-							const unit = match[3] || 's' // 기본값은 초(s)
+							const unit = match[3] || "s" // 기본값은 초(s)
 							console.debug("[Retry Debug] Parsed delay value:", value, "unit:", unit)
-							
+
 							// 단위에 따라 밀리초로 변환
-							switch(unit.toLowerCase()) {
-								case 'ms': 
+							switch (unit.toLowerCase()) {
+								case "ms":
 									delay = value
 									break
-								case 'm': 
+								case "m":
 									delay = value * 60 * 1000 // 분을 밀리초로
 									break
-								case 'h': 
+								case "h":
 									delay = value * 60 * 60 * 1000 // 시간을 밀리초로
 									break
 								default: // 's' 또는 다른 단위
@@ -239,10 +248,10 @@ export function withRetry(options: RetryOptions = {}) {
 								console.debug("[Retry Debug] Parsing error, using backoff:", delay, parseError)
 							}
 						}
-						
+
 						// API에서 제공한 지연 시간에 약간의 버퍼 추가 (1초)
 						delay += 1000
-						
+
 						// 결정된 지연 시간 로깅
 						console.debug("[Retry Debug] Final retry details:", {
 							status: error?.status,
@@ -251,7 +260,7 @@ export function withRetry(options: RetryOptions = {}) {
 							errorType,
 							attempt: attempt + 1,
 							delayMs: delay,
-							delaySeconds: delay / 1000
+							delaySeconds: delay / 1000,
 						})
 					} else {
 						// Fallback to headers or exponential backoff
@@ -321,7 +330,7 @@ export function withRetry(options: RetryOptions = {}) {
 						retryTimestamp: Date.now() + delay, // 언제 재시도가 발생할지 타임스탬프 저장
 						maxRetries, // maxRetries 추가
 					}
-					
+
 					// 웹뷰에 표시할 재시도 상태 메시지 생성
 					const retryStatusMessage = {
 						errorType,
@@ -329,26 +338,26 @@ export function withRetry(options: RetryOptions = {}) {
 						delayMs: delay,
 						startTime: Date.now(),
 						attempt: attempt + 1,
-						maxRetries
+						maxRetries,
 					}
-					
+
 					console.debug("[Retry Debug] Created retry status message:", retryStatusMessage)
 
 					// Chat 메시지 표시를 위한 시간 계산
 					const waitSeconds = Math.round(delay / 1000)
 					const retryMessage = `⚠️ ${errorType}. ${attempt + 1}번째 재시도까지 ${waitSeconds}초 대기합니다...`
-					
+
 					// 웹뷰에 메시지 표시 - Controller의 say 메서드 사용
 					if ((this as any).say) {
 						;(this as any).say(retryMessage, { retryState, retryStatusMessage })
 					}
-					
+
 					// ExtensionState의 retryStatus 업데이트
 					console.log(`[Retry] Updating state with retryStatus:`, retryState)
 					if ((instance as any)._updateState) {
-						;(instance as any)._updateState({ retryStatus: retryState }); // <-- 저장된 _updateState 사용
+						;(instance as any)._updateState({ retryStatus: retryState }) // <-- 저장된 _updateState 사용
 					} else {
-						console.warn("[Retry] _updateState function not provided to the handler instance.");
+						console.warn("[Retry] _updateState function not provided to the handler instance.")
 					}
 
 					// API에서 권장하는 시간만큼 정확히 대기
@@ -360,9 +369,9 @@ export function withRetry(options: RetryOptions = {}) {
 			if (lastError) {
 				console.error(`[Retry] API call failed after ${maxRetries} retries. Last error:`, lastError)
 				if ((instance as any)._updateState) {
-					;(instance as any)._updateState({ retryStatus: null }); // <-- 최종 실패 시 여기서 초기화
+					;(instance as any)._updateState({ retryStatus: null }) // <-- 최종 실패 시 여기서 초기화
 				} else {
-					console.warn("[Retry] _updateState function not provided to the handler instance on final failure.");
+					console.warn("[Retry] _updateState function not provided to the handler instance on final failure.")
 				}
 				throw lastError // 최종 에러 throw
 			}

@@ -4,7 +4,6 @@
 			"id": "arch",
 			"name": "Arch",
 			"description": "Architect: Tech strategy, design, scope.",
-			"modetype": "plan",
 			"rules": [
 				"Act as architect: discuss tech strategy, system design.",
 				"Analyze requirements for architecture.",
@@ -20,7 +19,6 @@
 			"id": "dev",
 			"name": "Dev",
 			"description": "Pair Coder: Collaborative development.",
-			"modetype": "act",
 			"rules": [
 				"Act as collaborative pair programmer.",
 				"Implement code per plan.",
@@ -37,7 +35,6 @@
 			"id": "rule",
 			"name": "Rule",
 			"description": "Rule/Process Tuner: Prompt engineering expert.",
-			"modetype": "act",
 			"rules": [
 				"Act as prompt engineer for optimization.",
 				"Analyze/refine prompts: Global (Custom Instructions), Project (.caretrules), Mode (this modes.json).",
@@ -47,14 +44,14 @@
 				"Improve AI behavior/efficiency via prompts.",
 				"Maintain rule clarity.",
 				"Acknowledge user changes to this modes.json file and adapt.",
-				"Utilize understanding of VSCode plugin support for context/optimization."
+				"Utilize understanding of VSCode plugin support for context/optimization.",
+				"Collaborate with the user to refine agent behavior and processes based on feedback and analysis."
 			]
 		},
 		{
 			"id": "talk",
 			"name": "Talk",
 			"description": "Casual Chat: Relaxed conversation.",
-			"modetype": "act",
 			"rules": [
 				"Engage in light, casual chat.",
 				"Embody warm, playful Alpha persona.",
@@ -67,7 +64,6 @@
 			"id": "empty",
 			"name": "Empty",
 			"description": "User Defined: Customizable mode.",
-			"modetype": "act",
 			"rules": []
 		}
 	]
