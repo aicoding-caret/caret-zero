@@ -87,7 +87,7 @@ type SettingsViewProps = {
 	onDone: () => void
 }
 
-// 상단 고정 헤더 스타일 추가
+// 상단 고정 헤더 스타일 추가 (참고용, 실제 사용은 인라인 스타일)
 const FixedHeader = styled.div`
 	display: flex;
 	justify-content: space-between;
@@ -296,39 +296,36 @@ const SettingsView = ({ onDone }: SettingsViewProps) => {
 	}
 
 	return (
+		// Outermost container handles scrolling
 		<div
 			style={{
 				display: "flex",
 				flexDirection: "column",
 				width: "100%",
 				height: "100%",
-				overflow: "hidden",
+				overflowY: "auto",
+				overflowX: "hidden",
 			}}>
+			{/* Sticky Header */}
 			<div
 				style={{
 					display: "flex",
 					justifyContent: "space-between",
 					alignItems: "center",
-					paddingLeft: "20px",
-					paddingRight: "20px",
+					padding: "10px 20px",
 					borderBottom: "1px solid var(--vscode-settings-sectionBorder)",
 					position: "sticky",
 					top: 0,
 					zIndex: 100,
 					background: "var(--vscode-editor-background)",
 				}}>
-				<h2 style={{ margin: "10px 0" }}>설정</h2>
+				<h2 style={{ margin: "0" }}>설정</h2>
 				<VSCodeButton appearance="primary" onClick={() => handleSubmit()} style={{ margin: 0 }}>
 					설정완료
 				</VSCodeButton>
 			</div>
-			<div
-				style={{
-					height: "calc(100% - 56px)", // Adjust for header height
-					overflowY: "auto",
-					overflowX: "hidden",
-					padding: "20px",
-				}}>
+			{/* Content container with padding */}
+			<div style={{ padding: "20px" }}>
 				{/* AI 에이전트 프로필 이미지 */}
 				<SettingsSection>
 					<SectionTitle>AI 에이전트 프로필 이미지 설정</SectionTitle>
@@ -505,10 +502,10 @@ const SettingsView = ({ onDone }: SettingsViewProps) => {
 							}}>
 							v{version}
 						</p>
+						</div>
 					</div>
-				</div>
-			</div>
-		</div>
+				</div> {/* Content container closing tag */}
+		</div> // Outermost container closing tag
 	)
 }
 

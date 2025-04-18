@@ -4,11 +4,11 @@
     "type": "split",
     "children": [
       {
-        "id": "b0a1bb261f5868ea",
+        "id": "3971f48752234a29",
         "type": "tabs",
         "children": [
           {
-            "id": "0c5d2ada156d6615",
+            "id": "6c03671020d9d67b",
             "type": "leaf",
             "state": {
               "type": "empty",
@@ -49,7 +49,7 @@
             "state": {
               "type": "search",
               "state": {
-                "query": "개발 계정",
+                "query": "github",
                 "matchingCase": false,
                 "explainSearch": false,
                 "collapseAll": false,
@@ -70,8 +70,7 @@
               "title": "Bookmarks"
             }
           }
-        ],
-        "currentTab": 1
+        ]
       }
     ],
     "direction": "horizontal",
@@ -165,8 +164,9 @@
       "command-palette:Open command palette": false
     }
   },
-  "active": "3da10d29974cacac",
+  "active": "56e93257784cc49e",
   "lastOpenFiles": [
+    "prompting/custom instructions library/cline-memory-bank.md",
     "work-logs/tasks/026-gemini-api-error-handling.md",
     "work-logs/tasks",
     "roadmap.md",
