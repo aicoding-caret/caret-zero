@@ -87,6 +87,19 @@ type SettingsViewProps = {
 	onDone: () => void
 }
 
+// 상단 고정 헤더 스타일 추가
+const FixedHeader = styled.div`
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	background: var(--vscode-editor-background);
+	padding: 10px 15px;
+	position: sticky;
+	top: 0;
+	z-index: 100;
+	border-bottom: 1px solid var(--vscode-panel-border);
+`
+
 const SettingsView = ({ onDone }: SettingsViewProps) => {
 	const {
 		apiConfiguration,
@@ -299,9 +312,13 @@ const SettingsView = ({ onDone }: SettingsViewProps) => {
 					paddingLeft: "20px",
 					paddingRight: "20px",
 					borderBottom: "1px solid var(--vscode-settings-sectionBorder)",
+					position: "sticky",
+					top: 0,
+					zIndex: 100,
+					background: "var(--vscode-editor-background)",
 				}}>
 				<h2 style={{ margin: "10px 0" }}>설정</h2>
-				<VSCodeButton onClick={() => handleSubmit()} style={{ margin: 0 }}>
+				<VSCodeButton appearance="primary" onClick={() => handleSubmit()} style={{ margin: 0 }}>
 					설정완료
 				</VSCodeButton>
 			</div>

@@ -13,22 +13,23 @@
 - 다중 모드(`Arch`, `Dev`, `Rule`, `Talk`, `Empty`) 전환 시, 각 모드에 맞는 프롬프트/규칙 및 **모델 설정**을 계층적으로 로딩하는 시스템을 구현하고, 기존 모드 관리 시스템과 통합합니다.
 - 기존 시스템 프롬프트 직접 포함 구조에서 벗어나, 전용 규칙/프롬프트 저장소(`assets/rules/modes.json` 등) 기반 동적 로딩 구조로 개선합니다.
 
-## 주요 개선/연동 사항 (2025-04-17 기준)
-- [ ] **계층적 규칙/프롬프트/모델 로딩 연동**
-    - [ ] 모드 변경 시, 해당 모드의 프롬프트/규칙 및 **모델 설정**을 계층적으로 로딩하는 로직 구현 및 연동 (`src/core/controller/index.ts` 등)
-    - [ ] ExtensionState를 통해 웹뷰에 현재 적용된 규칙/프롬프트/모델 상태 전달
-    - [ ] `modes.json` 외 global-rules, user-rules, 임시 규칙 등 계층적 병합 방식 설계 및 적용
-- [ ] **UI 연동 및 상태 표시 개선**
-    - [ ] ChatView.tsx 등에서 현재 모드별 적용 규칙/프롬프트/모델 실시간 표시
-    - [ ] 모드 선택 버튼 렌더링 문제 해결 (상태 동기화 경로 점검 및 리팩토링)
-- [ ] **모드 설정 저장소 구조 개선**
-    - [ ] 시스템 프롬프트 직접 포함 → 전용 설정 저장소 분리 설계 및 적용 (향후 확장성 고려)
-    - [ ] **모드별 모델 설정 기능 추가**: `modes.json` 또는 별도 설정 파일에 모드별 모델 지정 기능 추가 (기존 코드 확인 필요)
-- [ ] **설정 UI 정리 및 개선**
-    - [ ] 설정 페이지(`ModeSettingsView.tsx` 등)에서 기존 모드(`Plan`, `Act`) 흔적 제거
-    - [ ] 모드별 모델 선택/설정 UI 추가
+## 주요 개선/연동 사항 (2025-04-18 기준)
+- [X] **계층적 규칙/프롬프트/모델 로딩 연동**
+    - [X] 모드 변경 시, 해당 모드의 프롬프트/규칙 및 **모델 설정**을 계층적으로 로딩하는 로직 구현 및 연동 (리팩토링 완료)
+    - [X] ExtensionState를 통해 웹뷰에 현재 적용된 규칙/프롬프트/모델 상태 전달
+    - [X] `modes.json` 외 global-rules, user-rules, 임시 규칙 등 계층적 병합 방식 설계 및 적용
+- [X] **UI 연동 및 상태 표시 개선**
+    - [X] ChatView.tsx 등에서 현재 모드별 적용 규칙/프롬프트/모델 실시간 표시
+    - [X] 모드 선택 버튼 렌더링 문제 해결 (상태 동기화 경로 점검 및 리팩토링)
+- [X] **모드 설정 저장소 구조 개선**
+    - [X] 시스템 프롬프트 직접 포함 → 전용 설정 저장소 분리 설계 및 적용 (향후 확장성 고려)
+    - [X] **모드별 모델 설정 기능 추가**: `modes.json`에 모드별 모델 지정 기능 구현 완료
+- [X] **설정 UI 정리 및 개선**
+    - [X] 설정 페이지(`ModeSettingsView.tsx` 등)에서 기존 모드(`Plan`, `Act`) 흔적 제거 완료
+    - [X] 모드별 모델 선택/설정 UI 추가 완료
 - [ ] **불필요/중복 파일 및 코드 정리**
     - [X] `core_system_prompt.json` 등 legacy 프롬프트 파일 삭제 완료
+    - [X] Plan/Act 모드 전환 관련 레거시 코드(`shouldSwitchModel`, `toggleModeWithChatSettings` 등) 제거 완료
     - [ ] 불필요 주석/참고자료/메모 정리
 
 ---
@@ -36,19 +37,28 @@
 ## 실행 단계 및 진행상황 (요약)
 - **완료**:
     - 모드별 규칙/프롬프트 파일 구조 설계 (`modes.json` 등) 및 기본 구현 완료.
-    - 모드 전환 및 상태 관리 기본 로직 구현 (`Controller.ts`, `ExtensionStateContext.tsx` 등).
-    - 모드 설정 편집/저장/리셋 기본 기능 구현 (`Controller.ts`, `ModeSettingsView.tsx`).
-    - 타입 오류 및 빌드 문제 해결 (임시 조치 포함).
-    - 설정 UI 한글화 및 모드별 모델 설정 UI 구현 (`ModeSettingsView.tsx`).
-    - 레거시 모드(`Plan`, `Act`) 관련 UI 요소 제거 및 정리.
-- **진행 중 / 예정**:
-    - [X] **계층적 로딩 로직 구현**: 모드 변경 시 규칙/프롬프트/**모델** 병합 및 로딩 로직 구현.
-    - [X] **UI 렌더링/동기화 문제 해결**: 모드 버튼 미표시 문제 해결 및 상태 동기화 개선.
+    - 모드 전환 및 상태 관리 로직 구현 완료.
+    - 모드 설정 편집/저장/리셋 기능 구현 완료.
+    - 타입 오류 및 빌드 문제 해결 완료.
+    - 설정 UI 한글화 및 모드별 모델 설정 UI 구현 완료.
+    - 레거시 모드(`Plan`, `Act`) 관련 코드/UI 요소 제거 및 정리 완료.
+    - `shouldSwitchModel` 로직 및 `toggleModeWithChatSettings` 함수 제거 완료.
+- **완료된 주요 기능**:
+    - [X] **계층적 로딩 로직 구현**: 모드 변경 시 규칙/프롬프트/**모델** 병합 및 로딩 로직 구현 완료.
+    - [X] **UI 렌더링/동기화 문제 해결**: 모드 버튼 미표시 문제 해결 및 상태 동기화 개선 완료.
     - [X] **모드별 모델 설정 기능 구현**:
-        - [X] 백엔드 로직 추가 (`Controller.ts` 등에서 모델 설정 로딩/저장/적용).
-        - [X] 설정 파일(`modes.json` 등) 구조 변경 또는 신규 파일 도입 검토.
-        - [X] 프론트엔드 UI 추가 (`ModeSettingsView.tsx`에 모델 선택 컴포넌트).
-    - [X] **설정 UI 정리**: 기존 모드(`Plan`, `Act`) 관련 UI 제거.
+        - [X] 백엔드 로직 추가 (모델 설정 로딩/저장/적용) 완료.
+        - [X] 설정 파일 구조 변경 완료: `modes.json`에 모드별 모델 정보 직접 저장.
+        - [X] 프론트엔드 UI 구현 완료: 모드별 모델/API 선택 컴포넌트 추가.
+    - [X] **설정 UI 정리**: 기존 모드(`Plan`, `Act`) 관련 UI 제거 완료.
+- **향후 가능 작업**:
+    - [X] **설정 UI 추가 개선**:
+        - [X] 설정창에 "설정완료" 버튼 추가 (상단 float 고정, 스크롤 시 유지)
+        - [X] "모드 설정" 한글화 및 텍스트 수정
+        - [X] 모드 설정 페이지에서 수정사항 자동 저장 기능 추가
+        - [X] 가로 스크롤 생성 버그 수정
+    - [ ] 코드 리팩토링 추가 개선 및 최적화
+    - [ ] 불필요 주석/참고자료/메모 추가 정리
     - [ ] **코드 정리**: 불필요 주석, 로그, 임시 코드 등 제거.
     - [ ] **테스트**: 백엔드 모듈 및 사용자 테스트.
 
@@ -137,6 +147,83 @@
 - 기본 모드 설정에 `plan`, `do` 등 레거시 모드가 포함됨
 - `modetype` 필드 (`"plan"` 또는 `"act"`)가 여전히 사용 중이며 제거되지 않음
 
+## 모드별 모델 설정 버그 분석 (2025-04-18 11:45)
+
+**문제 분석:**
+
+1. **파일 경로 불일치:**
+   - `assets/rules/modes.json`과 `assets/rules/default_modes.json`에 모드 설정이 있으나, `Controller.ts`의 `resetModesToDefaults` 함수에서 `agents-rules/alpha/modes.json` 경로를 참조하고 있음 → 초기화/리셋 기능이 제대로 작동하지 않음
+   - 모드 설정 파일 구조가 일관되지 않아 로드 오류 발생 가능성 있음
+
+2. **모델 설정 데이터 불일치:**
+   - `toggleModeWithChatSettings` 함수에서 모델 ID 파싱 및 처리 로직이 일부 경우(provider가 있는 경우)에만 적용됨
+   - 특히 `modelId.split('/')` 로직이 일관되게 적용되지 않음(모델 ID 형식에 따라 다르게 처리됨)
+   - `apiProvider`와 실제 로딩되는 모델 ID 간 매핑 로직이 명확하지 않음
+
+3. **웹뷰 초기화 시 타이밍 문제:**
+   - `webviewDidLaunch` 메시지 처리는 구현되어 있으나, 모드 정보 로딩 후 UI 업데이트 시점 불일치
+   - 모드 변경 시 상태 업데이트와 웹뷰 통신 간 타이밍 이슈로 일부 상황에서 UI 갱신되지 않음
+
+4. **레거시 코드 간섭:**
+   - `planActSeparateModelsSetting` 같은 레거시 설정과 새 모드별 모델 설정 시스템이 충돌
+   - `shouldSwitchModel` 로직이 여전히 구 `plan`/`act` 시스템에 기반해 작동하며 새 모드 시스템 무시
+   - 코드에 `previousModeModelId` 관련 로직이 남아있어 새 모드별 모델 설정을 방해
+
+**해결 방안:**
+
+1. **파일 경로 수정:**
+   ```typescript
+   // resetModesToDefaults 함수의 경로 수정
+   const defaultModesPath = path.join(this.context.extensionPath, "assets", "rules", "default_modes.json")
+   const userModesPath = path.join(this.context.extensionPath, "assets", "rules", "modes.json")
+   ```
+
+2. **모델 ID 처리 통합:**
+   ```typescript
+   // toggleModeWithChatSettings 함수에서 일관된 모델 ID 처리
+   if (currentMode?.model) {
+       const modelId = currentMode.model
+       let provider = currentMode.apiProvider || "anthropic" // 기본값 설정
+       let modelName = modelId
+       
+       // provider/model 형식 처리
+       if (modelId.includes('/')) {
+           const [providerPart, modelPart] = modelId.split('/')
+           provider = providerPart
+           modelName = modelPart
+       }
+       
+       // API Provider에 따른 설정 적용
+       switch (provider) {
+           case "anthropic": 
+               await updateGlobalState(this.context, "apiProvider", "anthropic")
+               await updateGlobalState(this.context, "apiModelId", modelName)
+               break
+           case "openai":
+               await updateGlobalState(this.context, "apiProvider", "openai")
+               await updateGlobalState(this.context, "openAiModelId", modelName)
+               break
+           // 다른 프로바이더 케이스...
+       }
+   }
+   ```
+
+3. **모드 로딩 및 상태 업데이트 개선:**
+   ```typescript
+   // 웹뷰 초기화 시 모드 데이터 로딩 및 즉시 상태 업데이트 보장
+   case "webviewDidLaunch": {
+       await this.loadAvailableModes()
+       // 상태 갱신 및 즉시 전송
+       this.postMessageToWebview(this.getStateToPostToWebview())
+       break
+   }
+   ```
+
+4. **레거시 코드 제거:**
+   - `shouldSwitchModel` 로직 및 연관 코드 삭제
+   - `modetype` 필드 사용 중단
+   - `previousModeModel*` 관련 전역 상태 저장 대신 모드별 설정으로 통합
+
 ## 백엔드 연동 작업 완료 (2025-04-18 01:18)
 
 **모드별 모델 및 API 연동 구현:**
@@ -163,26 +250,136 @@
    - 타입 안전성 향상 (SecretKey 타입 오류 해결)
    - 모드 전환 시 자동으로 해당 모드의 모델 설정 적용
 
----
-*2025-04-18 01:45 알파가 모드별 모델 설정 백엔드 연동 작업 완료 및 최신화함.* ｡•ᴗ•｡☕✨
+## 모드별 모델 설정 수정 계획 (2025-04-18 11:50)
 
-## 추가 작업 요구사항 (2025-04-18 01:45)
+**즉시 수정이 필요한 코드:**
 
-**1. 모드별 모델 설정 관련 확인 사항:**
+1. **Controller.ts 파일에서 수정할 부분:**
 
-1. **모델 ID 형식**: 
-    - Anthropic: `"claude-3-opus"`, `"claude-3-sonnet"`, `"claude-3-5-sonnet"` 등
-    - OpenRouter: `"anthropic/claude-3-opus"`, `"openai/gpt-4-turbo-preview"` 등
-    - 이 형식에 맞는 모델 매핑 로직이 필요함
+   ```typescript
+   // 1. 파일 경로 수정 (resetModesToDefaults 함수)
+   const defaultModesPath = path.join(this.context.extensionPath, "assets", "rules", "default_modes.json")
+   const userModesPath = path.join(this.context.extensionPath, "assets", "rules", "modes.json")
+   
+   // 2. 모델 ID 파싱 통합 (toggleModeWithChatSettings 함수)
+   private async toggleModeWithChatSettings(mode: string, settings: ChatSettings) {
+       // ... 기존 코드 유지 ...
+       
+       // 현재 모드 정보 찾기
+       const currentMode = this.availableModes.find(m => m.id === mode)
+       
+       // 모드별 모델 설정 적용
+       if (currentMode?.model) {
+           this.logger.log(`모드별 맞춤 모델 감지됨: ${currentMode.id} => ${currentMode.model}`)
+           
+           // API Provider 결정 (모드 설정 또는 기본값)
+           const apiProvider = currentMode.apiProvider || "anthropic"
+           let modelName = currentMode.model
+           
+           // provider/model 형식 처리 (일관된 방식으로)
+           if (modelName.includes('/')) {
+               const [providerPart, modelPart] = modelName.split('/')
+               // provider 부분이 있으면 우선 적용, 없으면 apiProvider 사용
+               await updateGlobalState(this.context, "apiProvider", providerPart || apiProvider)
+               modelName = modelPart
+           } else {
+               // 명시적 provider 없는 경우 모드의 apiProvider 사용
+               await updateGlobalState(this.context, "apiProvider", apiProvider)
+           }
+           
+           // 각 API Provider에 맞게 설정 업데이트
+           switch (apiProvider.toLowerCase()) {
+               case "anthropic":
+                   await updateGlobalState(this.context, "apiModelId", modelName)
+                   break
+               case "openai":
+                   await updateGlobalState(this.context, "openAiModelId", modelName)
+                   break
+               case "google":
+               case "gemini":
+                   // Gemini 처리
+                   break
+               // 다른 제공자 케이스 처리...
+               default:
+                   // 알 수 없는 제공자는 OpenRouter로 라우팅
+                   await updateGlobalState(this.context, "openRouterModelId", modelName)
+           }
+           
+           // API 키 업데이트 (모드별 API 키가 있는 경우)
+           if (currentMode.apiKey) {
+               switch (apiProvider.toLowerCase()) {
+                   case "anthropic":
+                       await updateGlobalState(this.context, "anthropicApiKey", currentMode.apiKey)
+                       break
+                   case "openai":
+                       await updateGlobalState(this.context, "openAiApiKey", currentMode.apiKey)
+                       break
+                   // 다른 API 키 처리...
+               }
+           }
+       }
+       
+       // 레거시 코드 제거 - 다음 코드 블록 삭제:
+       // const shouldSwitchModel = planActSeparateModelsSetting === true
+       // if (shouldSwitchModel) { ... }
+   }
+   ```
 
-2. **파일 구조 검토**:
-    - `modes.json`: 각 모드의 메타데이터와 규칙을 정의하며, 모델 필드 추가 필요
-    - ModeInfo 타입에 model 필드 추가 필요
+2. **레거시 코드 정리 작업:**
 
-3. **백엔드 로직 필요 사항**:
-    - `Controller.ts`: 모드 변경 시 모델 설정 적용 로직 필요
-    - 모드별 API Provider 매핑 로직 필요 (model ID 기반으로 자동 선택)
+   ```typescript
+   // DEFAULT_CHAT_SETTINGS에서 레거시 모드 제거
+   private readonly DEFAULT_CHAT_SETTINGS: ChatSettings = {
+       mode: "arch", // "strategy" -> "arch"로 변경
+       rulesCollapsed: false,
+       useSharedHistory: false
+   }
+   ```
 
-4. **기술적 부채**:
-    - 레거시 코드 (모드 타입 처리: `modetype`을 통한 `plan`/`act` 구분)
-    - `modetype` 필드 (`"plan"` 또는 `"act"`)가 여전히 사용 중이며 제거되지 않음
+3. **웹뷰 초기화 핸들러 수정:**
+
+   ```typescript
+   case "webviewDidLaunch": {
+       // 모드 데이터 로딩
+       await this.loadAvailableModes()
+       
+       // 상태 갱신 및 즉시 전송
+       const state = this.getStateToPostToWebview()
+       this.postMessageToWebview(state)
+       
+       // 모델 목록도 로드하여 바로 전송
+       this.refreshModelLists()
+       break
+   }
+   
+   // 모델 목록 로드 헬퍼 함수 추가
+   private async refreshModelLists() {
+       const openRouterModels = await this.readOpenRouterModels()
+       this.postMessageToWebview({ type: "openRouterModels", openRouterModels })
+       
+       try {
+           const ollamaModels = await this.getOllamaModels()
+           if (ollamaModels) {
+               this.postMessageToWebview({ type: "ollamaModels", ollamaModels })
+           }
+       } catch (error) {
+           this.logger.log("Ollama 모델 로드 실패: " + error)
+       }
+       
+       // 다른 모델 제공자 로드...
+   }
+   ```
+
+**추가 개선 사항:**
+
+1. **모드별 모델 설정 저장 로직 개선:**
+   - `saveModeSettings` 함수에서 모드별 모델 설정 저장 로직 추가
+   - 모델 ID, API 제공자, API 키 저장 기능 강화
+
+2. **오류 처리 강화:**
+   - 모드별 설정 로딩 및 적용 시 오류 처리 개선
+   - 파일 불일치나 잘못된 설정 감지 시 기본값으로 안전하게 대체
+
+3. **모드 설정 편집 UI 연동:**
+   - `ModeSettingsView.tsx`에서 모델 선택 시 올바른 포맷으로 저장되도록 수정
+   - API 제공자와 모델 ID를 일관된 형식(`provider/model` 또는 개별 필드)으로 관리

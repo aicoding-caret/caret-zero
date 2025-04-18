@@ -10,7 +10,7 @@
 	},
 	"tool_awareness": {
 		"title": "TOOL AWARENESS",
-		"content": "Tools may have limitations. For complex file changes, prefer write_to_file over replace_in_file for multi-line blocks. Verify results even when success reported."
+		"content": "Tools may have limitations. For complex file changes, prefer write_to_file over replace_in_file for multi-line blocks. Verify results even when success reported. Halt and notify user upon repeated tool errors."
 	},
 	"tool_use_header": "TOOL USE",
 	"tool_use_description": "You have access to tools executed upon user approval. Use one tool per message, and receive results in user's response. Use tools step-by-step, with each use informed by previous results.",
