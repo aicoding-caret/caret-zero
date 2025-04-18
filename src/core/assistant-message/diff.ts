@@ -219,23 +219,66 @@ export async function constructNewFileContent(
 	const diffHash = generateContentHash(diffContent)
 	const originalHash = generateContentHash(originalContent)
 
-	log.debug(`=== constructNewFileContent 디버그 시작 ===`, {
-		diffContentLength: diffContent.length,
-		originalContentLength: originalContent.length,
+	// CDATA 섹션 제거
+	let processedDiffContent = diffContent
+	if (diffContent.startsWith("<![CDATA[") && diffContent.endsWith("]]>")) {
+		processedDiffContent = diffContent.slice(9, -3)
+		log.debug(`CDATA 섹션 제거됨:`, {
+			원본길이: diffContent.length,
+			처리후길이: processedDiffContent.length,
+			처리된내용: processedDiffContent,
+		})
+	}
+
+	// 로깅 레벨을 높여 상세 정보 출력
+	log.debug(`=== 파일 수정 시도 시작 ===`)
+	log.debug(`1. 입력된 diffContent:`, {
+		길이: processedDiffContent.length,
+		해시: generateContentHash(processedDiffContent),
+		내용: processedDiffContent,
+		줄바꿈수: (processedDiffContent.match(/\n/g) || []).length,
+	})
+
+	log.debug(`2. 원본 파일 내용:`, {
+		길이: originalContent.length,
+		해시: originalHash,
+		내용: originalContent,
+		줄바꿈수: (originalContent.match(/\n/g) || []).length,
+	})
+
+	log.debug(`3. 처리 상태:`, {
 		isFinal,
-		diffHash,
-		originalHash,
+		현재시간: new Date().toISOString(),
+	})
+
+	// diffContent의 구조 분석
+	const hasSearchBlock = processedDiffContent.includes("<<<<<<< SEARCH")
+	const hasReplaceBlock = processedDiffContent.includes(">>>>>>> REPLACE")
+	const hasSeparator = processedDiffContent.includes("=======")
+
+	log.debug(`4. diffContent 구조 분석:`, {
+		hasSearchBlock,
+		hasReplaceBlock,
+		hasSeparator,
+		blockCount: {
+			search: (processedDiffContent.match(/<<<<<<< SEARCH/g) || []).length,
+			replace: (processedDiffContent.match(/>>>>>>> REPLACE/g) || []).length,
+			separator: (processedDiffContent.match(/=======/g) || []).length,
+		},
+		searchBlock위치: processedDiffContent.indexOf("<<<<<<< SEARCH"),
+		replaceBlock위치: processedDiffContent.indexOf(">>>>>>> REPLACE"),
+		separator위치: processedDiffContent.indexOf("======="),
 	})
 
 	// 입력된 diff의 정확한 내용 로깅 - 줄바꿈과 중요 문자 확인용
-	log.debug(`[RAW DIFF CONTENT] ${diffContent.replace(/\n/g, "\\n").replace(/\r/g, "\\r")}`)
+	log.debug(`[RAW DIFF CONTENT] ${processedDiffContent.replace(/\n/g, "\\n").replace(/\r/g, "\\r")}`)
 
 	// diff의 16진수 로깅 - 숨겨진 문자 확인
 	let hexDiff = ""
-	for (let i = 0; i < Math.min(diffContent.length, 100); i++) {
-		hexDiff += diffContent.charCodeAt(i).toString(16).padStart(2, "0") + " "
+	for (let i = 0; i < Math.min(processedDiffContent.length, 100); i++) {
+		hexDiff += processedDiffContent.charCodeAt(i).toString(16).padStart(2, "0") + " "
 	}
-	log.debug(`[HEX DIFF] ${hexDiff}${diffContent.length > 100 ? "..." : ""}`)
+	log.debug(`[HEX DIFF] ${hexDiff}${processedDiffContent.length > 100 ? "..." : ""}`)
 
 	// 원본 내용의 정확한 로깅
 	if (originalContent.length > 200) {
@@ -264,7 +307,7 @@ export async function constructNewFileContent(
 	const detectedEOL = originalContent.includes("\r\n") ? "\r\n" : "\n"
 	log.debug(`감지된 EOL 형식: ${detectedEOL === "\r\n" ? "CRLF (Windows)" : "LF (Unix)"}`)
 
-	let lines = diffContent.split("\n")
+	let lines = processedDiffContent.split("\n")
 	log.debug(`처리할 라인 수: ${lines.length}`)
 
 	// If the last line looks like a partial marker but isn't recognized,
@@ -295,6 +338,8 @@ export async function constructNewFileContent(
 		log.debug(`  ... 추가 ${lines.length - 10}개 라인 ...`)
 	}
 
+	let searchBlockCount = 0
+
 	for (const line of lines) {
 		log.debug(`현재 처리할 라인: '${line.replace(/\n/g, "\\n").replace(/\r/g, "\\r")}'`)
 
@@ -302,7 +347,13 @@ export async function constructNewFileContent(
 			inSearch = true
 			currentSearchContent = ""
 			currentReplaceContent = ""
-			log.debug(`SEARCH 블록 시작 발견!`)
+			log.debug(`5. SEARCH 블록 발견:`, {
+				라인번호: lines.indexOf(line) + 1,
+				총라인수: lines.length,
+				블록타입: "SEARCH",
+				블록인덱스: searchBlockCount++,
+				현재시간: new Date().toISOString(),
+			})
 			continue
 		}
 
@@ -311,7 +362,12 @@ export async function constructNewFileContent(
 			inReplace = true
 
 			// SEARCH 블록의 정확한 내용 로깅 (줄바꿈 및 특수문자 포함)
-			log.debug(`SEARCH 블록 RAW 내용: '${currentSearchContent.replace(/\n/g, "\\n").replace(/\r/g, "\\r")}'`)
+			log.debug(`SEARCH 블록 RAW 내용: '${currentSearchContent.replace(/\n/g, "\\n").replace(/\r/g, "\\r")}'`, {
+				searchContentLength: currentSearchContent.length,
+				searchContentLines: currentSearchContent.split("\n").length,
+				searchContentFirstChars: currentSearchContent.slice(0, Math.min(20, currentSearchContent.length)),
+				searchContentHash: generateContentHash(currentSearchContent),
+			})
 
 			// SEARCH 블록 내용의 16진수 로깅 - 숨겨진 문자 확인
 			let hexSearch = ""
@@ -333,15 +389,8 @@ export async function constructNewFileContent(
 				searchContentHash: generateContentHash(currentSearchContent),
 			})
 
-			// Remove trailing linebreak for adding the === marker
-			// if (currentSearchContent.endsWith("\r\n")) {
-			// 	currentSearchContent = currentSearchContent.slice(0, -2)
-			// } else if (currentSearchContent.endsWith("\n")) {
-			// 	currentSearchContent = currentSearchContent.slice(0, -1)
-			// }
-
+			// 빈 SEARCH 블록 처리 개선
 			if (!currentSearchContent || currentSearchContent.trim() === "") {
-				// 빈 SEARCH 블록인지 확인 - 정확한 네이티브 문자열 길이와 트림 후 길이 모두 로깅
 				log.debug(`빈 SEARCH 블록 검색 결과:`, {
 					currentSearchContent: `'${currentSearchContent}'`,
 					length: currentSearchContent.length,
@@ -361,9 +410,14 @@ export async function constructNewFileContent(
 					// Complete file replacement scenario: treat the entire file as matched
 					searchMatchIndex = 0
 					searchEndIndex = originalContent.length
-					log.debug(
-						`빈 SEARCH 블록 (파일 전체 대체 시나리오) - 원본 내용 ${originalContent.length}바이트 전체 대체 예정`,
-					)
+					log.debug(`빈 SEARCH 블록 (파일 전체 대체 시나리오) - 원본 내용 ${originalContent.length}바이트 전체 대체 예정`)
+					
+					// 결과에 REPLACE 내용 추가
+					result = currentReplaceContent
+					log.debug(`REPLACE 내용으로 전체 파일 대체:`, {
+						replaceContentLength: currentReplaceContent.length,
+						replaceContentLines: currentReplaceContent.split("\n").length,
+					})
 				}
 			} else {
 				// Add check for inefficient full-file search
@@ -445,12 +499,30 @@ export async function constructNewFileContent(
 				replaceContentHash: generateContentHash(currentReplaceContent),
 			})
 
-			// REPLACE 블록 내용의 16진수 로깅 - 숨겨진 문자 확인
+			// REPLACE 블록의 정확한 내용 로깅
+			log.debug(`REPLACE 블록 RAW 내용: '${currentReplaceContent.replace(/\n/g, "\\n").replace(/\r/g, "\\r")}'`, {
+				replaceContentLength: currentReplaceContent.length,
+				replaceContentLines: currentReplaceContent.split("\n").length,
+				replaceContentFirstChars: currentReplaceContent.slice(0, Math.min(20, currentReplaceContent.length)),
+				replaceContentHash: generateContentHash(currentReplaceContent),
+			})
+
+			// REPLACE 블록 내용의 16진수 로깅
 			let hexReplace = ""
 			for (let i = 0; i < Math.min(currentReplaceContent.length, 50); i++) {
 				hexReplace += currentReplaceContent.charCodeAt(i).toString(16).padStart(2, "0") + " "
 			}
 			log.debug(`REPLACE 블록 HEX: [${hexReplace}${currentReplaceContent.length > 50 ? "..." : ""}]`)
+
+			// 매칭 결과 로깅
+			if (searchMatchIndex !== -1) {
+				log.debug(`매칭 결과:`, {
+					searchMatchIndex,
+					searchEndIndex,
+					matchedContent: originalContent.slice(searchMatchIndex, searchEndIndex),
+					replacementContent: currentReplaceContent,
+				})
+			}
 
 			// 버그 수정: 여기서 파일 내용을 제대로 구성
 			// 1. searchMatchIndex까지의 내용은 유지
@@ -631,14 +703,22 @@ export async function constructNewFileContent(
 		hash: resultHash,
 	})
 
-	// 최종 결과 요약 로깅
-	log.debug(`=== constructNewFileContent 완료 ===`, {
+	// 최종 결과 상세 로깅
+	log.debug(`6. 파일 수정 결과:`, {
 		원본길이: originalContent.length,
 		결과길이: result.length,
 		원본해시: originalHash,
 		결과해시: generateContentHash(result),
-		isFinal: isFinal,
-		성공여부: "처리 완료",
+		isFinal,
+		성공여부: result !== originalContent ? "변경됨" : "변경없음",
+		변경된라인수: result.split("\n").length - originalContent.split("\n").length,
+		처리된블록수: searchBlockCount,
+		diffContent구조: {
+			hasSearchBlock,
+			hasReplaceBlock,
+			hasSeparator,
+		},
+		현재시간: new Date().toISOString(),
 	})
 
 	return result

@@ -12,9 +12,10 @@ import { useFloating, offset, flip, shift } from "@floating-ui/react"
 interface CheckmarkControlProps {
 	messageTs?: number
 	isCheckpointCheckedOut?: boolean
+	small?: string
 }
 
-export const CheckmarkControl = ({ messageTs, isCheckpointCheckedOut }: CheckmarkControlProps) => {
+export const CheckmarkControl = ({ messageTs, isCheckpointCheckedOut, small }: CheckmarkControlProps) => {
 	const [compareDisabled, setCompareDisabled] = useState(false)
 	const [restoreTaskDisabled, setRestoreTaskDisabled] = useState(false)
 	const [restoreWorkspaceDisabled, setRestoreWorkspaceDisabled] = useState(false)
@@ -121,7 +122,7 @@ export const CheckmarkControl = ({ messageTs, isCheckpointCheckedOut }: Checkmar
 	useEvent("message", handleMessage)
 
 	return (
-		<Container isMenuOpen={showRestoreConfirm} $isCheckedOut={isCheckpointCheckedOut} onMouseLeave={handleControlsMouseLeave}>
+		<Container $isMenuOpen={showRestoreConfirm} $isCheckedOut={isCheckpointCheckedOut} onMouseLeave={handleControlsMouseLeave}>
 			<i
 				className="codicon codicon-bookmark"
 				style={{
@@ -216,7 +217,7 @@ export const CheckmarkControl = ({ messageTs, isCheckpointCheckedOut }: Checkmar
 	)
 }
 
-const Container = styled.div<{ isMenuOpen?: boolean; $isCheckedOut?: boolean }>`
+const Container = styled.div<{ $isMenuOpen?: boolean; $isCheckedOut?: boolean }>`
 	display: flex;
 	align-items: center;
 	padding: 4px 0;
@@ -225,7 +226,7 @@ const Container = styled.div<{ isMenuOpen?: boolean; $isCheckedOut?: boolean }>`
 	min-width: 0;
 	margin-top: -10px;
 	margin-bottom: -10px;
-	opacity: ${(props) => (props.$isCheckedOut ? 1 : props.isMenuOpen ? 1 : 0.5)};
+	opacity: ${(props) => (props.$isCheckedOut ? 1 : props.$isMenuOpen ? 1 : 0.5)};
 
 	&:hover {
 		opacity: 1;

@@ -791,7 +791,9 @@ const ChatView = ({ isHidden, showAnnouncement, hideAnnouncement, showHistoryVie
 		() =>
 			debounce(
 				() => {
-					virtuosoRef.current?.scrollTo({ top: Number.MAX_SAFE_INTEGER, behavior: "smooth" })
+					if (virtuosoRef.current) {
+						virtuosoRef.current.scrollTo({ top: Number.MAX_SAFE_INTEGER, behavior: "smooth" })
+					}
 				},
 				10,
 				{ immediate: true },
@@ -838,9 +840,12 @@ const ChatView = ({ isHidden, showAnnouncement, hideAnnouncement, showHistoryVie
 
 	const handleRowHeightChange = useCallback(
 		(isTaller: boolean) => {
-			if (!disableAutoScrollRef.current) {
-				if (isTaller) scrollToBottomSmooth()
-				else setTimeout(scrollToBottomAuto, 0)
+			if (!disableAutoScrollRef.current && typeof isTaller === 'boolean' && !isNaN(isTaller as any)) {
+				if (isTaller) {
+					scrollToBottomSmooth()
+				} else {
+					setTimeout(scrollToBottomAuto, 0)
+				}
 			}
 		},
 		[scrollToBottomSmooth, scrollToBottomAuto],
