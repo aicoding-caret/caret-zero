@@ -1,17 +1,8 @@
 {
   "modes": [
     {
-      "id": "empty",
-      "name": "Empty",
-      "description": "기본 동작이 없는 빈 모드",
-      "rules": [],
-      "model": "gemini/gemini-2.5-pro-preview-03-25",
-      "apiProvider": "gemini",
-      "apiKey": ""
-    },
-    {
-      "id": "arch",
-      "name": "Caret Arch",
+      "id": "mode1",
+      "name": "Arch",
       "description": "Caret Architect: Technical strategy & design",
       "rules": [
         "Act as a Caret architect.",
@@ -26,8 +17,8 @@
       "apiKey": ""
     },
     {
-      "id": "dev",
-      "name": "Caret Dev",
+      "id": "mode2",
+      "name": "Dev",
       "description": "Caret Developer: Implementation & debugging",
       "rules": [
         "Act as a skilled Caret developer.",
@@ -44,7 +35,7 @@
       "apiKey": ""
     },
     {
-      "id": "rule",
+      "id": "mode3",
       "name": "Rule",
       "description": "AI System Rules Optimization & Prompt Engineering mode",
       "rules": [
@@ -57,7 +48,7 @@
       "apiKey": ""
     },
     {
-      "id": "talk",
+      "id": "mode4",
       "name": "Talk",
       "description": "Casual Conversation mode",
       "rules": [
@@ -70,8 +61,8 @@
       "apiKey": ""
     },
     {
-      "id": "mode-5",
-      "name": "Custom Mode",
+      "id": "mode5",
+      "name": "Custom",
       "description": "Your custom AI assistant mode",
       "rules": [
         "Add custom rules here",

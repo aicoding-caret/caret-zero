@@ -1,4 +1,4 @@
-/* VSCode UI Toolkit과 React 타입 문제를 해결하기 위해 필요한 특정 부분에만 @ts-ignore 주석을 사용합니다 */
+// @ts-nocheck /* VSCode UI Toolkit과 React 타입 문제 임시 해결 */
 import React, { useState, useEffect } from "react"
 import styled from "styled-components"
 import {
@@ -20,7 +20,6 @@ const Container = styled.div`
 	height: 100%;
 	display: flex;
 	flex-direction: column;
-	overflow-x: hidden; /* 가로 스크롤 방지 */
 `
 
 const Header = styled.div`
@@ -28,11 +27,6 @@ const Header = styled.div`
 	justify-content: space-between;
 	align-items: center;
 	margin-bottom: 15px;
-	position: sticky;
-	top: 0;
-	background: var(--vscode-editor-background);
-	z-index: 100;
-	padding: 5px 0;
 `
 
 const Title = styled.h2`
@@ -43,9 +37,6 @@ const ContentArea = styled.div`
 	flex-grow: 1;
 	overflow-y: auto; /* Allow content scrolling */
 	padding-right: 5px; /* Add padding for scrollbar */
-	overflow-x: hidden; /* 가로 스크롤 방지 */
-	width: 100%;
-	max-width: 100%;
 `
 
 const Section = styled.div`
@@ -61,9 +52,6 @@ const OptionRow = styled.div`
 	display: flex;
 	align-items: center;
 	margin-bottom: 8px;
-	width: 100%;
-	max-width: 100%;
-	overflow-x: hidden;
 `
 
 const JsonInputArea = styled.div`
@@ -307,7 +295,7 @@ console.log("[ModeSettingsView] setModeSettings(loadedSettings) 호출됨:", loa
 						<VSCodeTextField
 							placeholder="Enter Mode Name"
 							value={settings.name}
-							style={{ width: "100%", maxWidth: "100%" }}
+							style={{ width: "100%" }}
 							onChange={(e) => updateModeSettings(modeId, "name", (e.target as HTMLInputElement)?.value || "")}>
 							모드 이름:
 						</VSCodeTextField>
@@ -316,7 +304,7 @@ console.log("[ModeSettingsView] setModeSettings(loadedSettings) 호출됨:", loa
 						<VSCodeTextField
 							placeholder="Enter Mode Description"
 							value={settings.description}
-							style={{ width: "100%", maxWidth: "100%" }}
+							style={{ width: "100%" }}
 							onChange={(e) =>
 								updateModeSettings(modeId, "description", (e.target as HTMLInputElement)?.value || "")
 							}>
@@ -337,12 +325,10 @@ console.log("[ModeSettingsView] setModeSettings(loadedSettings) 호출됨:", loa
 							rows={8}
 							style={{
 								width: "100%",
-								maxWidth: "100%",
 								padding: "5px",
 								border: "1px solid var(--vscode-focusBorder)",
 								background: "var(--vscode-input-background)",
 								color: "var(--vscode-input-foreground)",
-								boxSizing: "border-box",
 							}}
 							onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => {
 								const newRules = e.target.value.split("\n").filter((rule: string) => rule.trim() !== "")
@@ -350,7 +336,7 @@ console.log("[ModeSettingsView] setModeSettings(loadedSettings) 호출됨:", loa
 							}}
 						/>
 					</div>
-					<div style={{ fontSize: "12px", opacity: 0.7, marginTop: "5px", maxWidth: "100%" }}>
+					<div style={{ fontSize: "12px", opacity: 0.7, marginTop: "5px" }}>
 						각 줄은 하나의 규칙으로 처리됩니다. 빈 줄은 무시됩니다.
 					</div>
 				</Section>
@@ -363,16 +349,17 @@ console.log("[ModeSettingsView] setModeSettings(loadedSettings) 호출됨:", loa
 	return (
 		<Container>
 			<Header>
-				<Title>모드 설정</Title>
-				<VSCodeButton appearance="primary" onClick={() => {
+				<Title>Mode Settings</Title>
+				<VSCodeButton appearance="secondary" onClick={() => {
 				// (2) 변경 감지: 초기값과 현재값 비교
 				if (initialModeSettings && JSON.stringify(modeSettings) !== initialModeSettings) {
-					saveAllModeSettings();
-					alert("모드 설정이 저장되었습니다!");
+					alert("모드 설정이 변경되어 새로고침합니다! (변경 사항이 즉시 반영됩니다)");
+					window.location.reload();
+				} else {
+					onDone();
 				}
-				onDone();
 			}} >
-					설정완료
+					Done
 				</VSCodeButton>
 			</Header>
 
@@ -394,15 +381,13 @@ console.log("[ModeSettingsView] setModeSettings(loadedSettings) 호출됨:", loa
 
 			{/* Save/Reset buttons */}
 			<div
-			style={{
-				marginTop: "auto",
-				paddingTop: "15px",
-				borderTop: "1px solid var(--vscode-editorGroup-border)",
-				display: "flex",
-				justifyContent: "flex-end",
-				width: "100%",
-				overflow: "hidden",
-			}}>
+				style={{
+					marginTop: "auto",
+					paddingTop: "15px",
+					borderTop: "1px solid var(--vscode-editorGroup-border)",
+					display: "flex",
+					justifyContent: "flex-end",
+				}}>
 				<VSCodeButton appearance="secondary" style={{ marginRight: "5px" }} onClick={resetToDefaults}>
 					기본값으로 초기화
 				</VSCodeButton>

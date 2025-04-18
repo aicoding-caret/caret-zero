@@ -285,7 +285,6 @@ export class Controller {
 			}
 
 			await view.webview.postMessage(message)
-			console.log("[Controller] 웹뷰로 메시지 전송 성공:", message.type)
 		} catch (error) {
 			console.error("[Controller] 웹뷰로 메시지 전송 실패:", error)
 		}
