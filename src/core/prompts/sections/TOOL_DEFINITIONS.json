@@ -1,7 +1,7 @@
 {
 	"tools": {
 		"execute_command": {
-			"description": "Request to execute a CLI command on the system",
+			"description": "Execute CLI command.",
 			"params": {
 				"command": {
 					"type": "string",
@@ -16,7 +16,7 @@
 			}
 		},
 		"read_file": {
-			"description": "Request to read the contents of a file at the specified path",
+			"description": "Read file content.",
 			"params": {
 				"path": {
 					"type": "string",
@@ -51,7 +51,7 @@
 				"diff": {
 					"type": "string",
 					"required": true,
-					"desc": "SEARCH/REPLACE blocks following this exact format: '<<<<<<< SEARCH\n[exact content to find]\n=======\n[new content to replace with]\n>>>>>>> REPLACE'"
+					"desc": "SEARCH/REPLACE blocks following this exact format: '^SEARCH^\\n[exact content to find]\\n^======^\\n[new content to replace with]\\n^REPLACE^'"
 				}
 			}
 		},
@@ -111,17 +111,17 @@
 				"url": {
 					"type": "string",
 					"required": false,
-					"desc": "URL to launch the browser at (optional). Ensure the URL is valid and includes the appropriate protocol (e.g. http://localhost:3000/page, file:///path/to/file.html, etc.)"
+					"desc": "URL to launch browser (optional). Ensure valid protocol (e.g., http://, file://)."
 				},
 				"coordinate": {
 					"type": "string",
 					"required": false,
-					"desc": "The X and Y coordinates for the `click` action. Coordinates should be within the **${browserSettings.viewport.width}x${browserSettings.viewport.height}** resolution. Always click in the center of an element (icon, button, link, etc.) based on coordinates derived from a screenshot."
+					"desc": "X,Y coords for `click` within **${browserSettings.viewport.width}x${browserSettings.viewport.height}**. Click center based on screenshot."
 				},
 				"text": {
 					"type": "string",
 					"required": false,
-					"desc": "Use this for providing the text for the `type` action."
+					"desc": "Text for `type` action."
 				}
 			}
 		},

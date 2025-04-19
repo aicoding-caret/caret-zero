@@ -4,18 +4,21 @@
 		{
 			"tool": "replace_in_file",
 			"guidelines": [
-				"SEARCH/REPLACE blocks MUST follow this exact format: '<<<<<<< SEARCH [exact content to find] ======= [new content to replace with] >>>>>>> REPLACE'",
-				"SEARCH block content MUST exactly match the current file content.",
-				"ALWAYS use the latest file content provided by the system (final_file_content or file_content on error) for the next SEARCH block.",
+				"SEARCH/REPLACE blocks MUST follow the exact format specified in TOOL_DEFINITIONS.",
+				"SEARCH block MUST exactly match current file content.",
+				"Base next SEARCH block on latest system-provided file content (final_file_content/error file_content).",
 				"Apply changes in small, logical units.",
-				"Use only one SEARCH/REPLACE block per replace_in_file request for clarity and safety."
+				"One SEARCH/REPLACE block per replace_in_file call for clarity/safety.",
+				"NEVER include CDATA tags within the diff parameter content.",
+				"Diff String Completeness Check: Before generating a `replace_in_file` request, **MUST verify** that the generated `<diff>` string contains all markers (`^SEARCH^`, `^======^`, `^REPLACE^`) and that the entire XML block is properly closed (`</diff>`, `</replace_in_file>`)."
 			]
 		},
 		{
 			"tool": "write_to_file",
 			"guidelines": [
-				"ALWAYS back up the original file before overwriting with write_to_file, especially for critical files (confirm with user if unsure).",
-				"Confirm with the user before overwriting significant files if unsure."
+				"Backup original before write_to_file, esp. critical files (confirm if unsure).",
+				"Confirm with the user before overwriting significant files if unsure.",
+				"NEVER include CDATA tags within the content parameter."
 			]
 		}
 	]
