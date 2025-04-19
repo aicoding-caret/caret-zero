@@ -3,7 +3,7 @@ import deepEqual from "fast-deep-equal"
 import React, { memo, useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { useEvent, useSize } from "react-use"
 import styled, { css } from "styled-components"
-// import alphaAvatar from "../../assets/alpha.png" // 더 이상 직접 import하지 않음
+// import alphaAvatar from "../../assets/alpha.png" // 더 이상 직접 import하지 않음 
 import {
 	ClineApiReqInfo,
 	ClineAskQuestion,

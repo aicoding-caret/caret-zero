@@ -6,58 +6,82 @@
  *
  * Returns [matchIndexStart, matchIndexEnd] if found, or false if not found.
  */
+function normalizeContent(content: string): string {
+	// 줄바꿈 정규화 (CRLF -> LF)
+	content = content.replace(/\r\n/g, '\n');
+	
+	// 연속된 공백 정규화 (탭, 스페이스 등)
+	content = content.replace(/[ \t]+/g, ' ');
+	
+	// 줄 끝의 공백 제거
+	content = content.replace(/[ \t]+$/gm, '');
+	
+	// 빈 줄 정규화
+	content = content.replace(/\n{3,}/g, '\n\n');
+	
+	// 한글 문자 정규화 (NFKC 정규화)
+	content = content.normalize('NFKC');
+	
+	return content;
+}
+
 function lineTrimmedFallbackMatch(originalContent: string, searchContent: string, startIndex: number): [number, number] | false {
+	// 내용 정규화
+	originalContent = normalizeContent(originalContent);
+	searchContent = normalizeContent(searchContent);
+
 	// Split both contents into lines
-	const originalLines = originalContent.split("\n")
-	const searchLines = searchContent.split("\n")
+	const originalLines = originalContent.split("\n");
+	const searchLines = searchContent.split("\n");
 
 	// Trim trailing empty line if exists (from the trailing \n in searchContent)
 	if (searchLines[searchLines.length - 1] === "") {
-		searchLines.pop()
+		searchLines.pop();
 	}
 
 	// Find the line number where startIndex falls
-	let startLineNum = 0
-	let currentIndex = 0
+	let startLineNum = 0;
+	let currentIndex = 0;
 	while (currentIndex < startIndex && startLineNum < originalLines.length) {
-		currentIndex += originalLines[startLineNum].length + 1 // +1 for \n
-		startLineNum++
+		currentIndex += originalLines[startLineNum].length + 1; // +1 for \n
+		startLineNum++;
 	}
 
 	// For each possible starting position in original content
 	for (let i = startLineNum; i <= originalLines.length - searchLines.length; i++) {
-		let matches = true
+		let matches = true;
 
 		// Try to match all search lines from this position
 		for (let j = 0; j < searchLines.length; j++) {
-			const originalTrimmed = originalLines[i + j].trim()
-			const searchTrimmed = searchLines[j].trim()
+			const originalTrimmed = originalLines[i + j].trim();
+			const searchTrimmed = searchLines[j].trim();
 
-			if (originalTrimmed !== searchTrimmed) {
-				matches = false
-				break
+			// 한글 문자 비교 시 유니코드 정규화 적용
+			if (originalTrimmed.normalize('NFKC') !== searchTrimmed.normalize('NFKC')) {
+				matches = false;
+				break;
 			}
 		}
 
 		// If we found a match, calculate the exact character positions
 		if (matches) {
 			// Find start character index
-			let matchStartIndex = 0
+			let matchStartIndex = 0;
 			for (let k = 0; k < i; k++) {
-				matchStartIndex += originalLines[k].length + 1 // +1 for \n
+				matchStartIndex += originalLines[k].length + 1; // +1 for \n
 			}
 
 			// Find end character index
-			let matchEndIndex = matchStartIndex
+			let matchEndIndex = matchStartIndex;
 			for (let k = 0; k < searchLines.length; k++) {
-				matchEndIndex += originalLines[i + k].length + 1 // +1 for \n
+				matchEndIndex += originalLines[i + k].length + 1; // +1 for \n
 			}
 
-			return [matchStartIndex, matchEndIndex]
+			return [matchStartIndex, matchEndIndex];
 		}
 	}
 
-	return false
+	return false;
 }
 
 /**
@@ -88,58 +112,69 @@ function lineTrimmedFallbackMatch(originalContent: string, searchContent: string
  * @returns A tuple of [startIndex, endIndex] if a match is found, false otherwise
  */
 function blockAnchorFallbackMatch(originalContent: string, searchContent: string, startIndex: number): [number, number] | false {
-	const originalLines = originalContent.split("\n")
-	const searchLines = searchContent.split("\n")
+	// 내용 정규화
+	originalContent = normalizeContent(originalContent);
+	searchContent = normalizeContent(searchContent);
 
-	// Only use this approach for blocks of 3+ lines
-	if (searchLines.length < 3) {
-		return false
-	}
+	// Split both contents into lines
+	const originalLines = originalContent.split("\n");
+	const searchLines = searchContent.split("\n");
 
 	// Trim trailing empty line if exists
 	if (searchLines[searchLines.length - 1] === "") {
-		searchLines.pop()
+		searchLines.pop();
 	}
 
-	const firstLineSearch = searchLines[0].trim()
-	const lastLineSearch = searchLines[searchLines.length - 1].trim()
-	const searchBlockSize = searchLines.length
+	// Only use this method for blocks of 3 or more lines
+	if (searchLines.length < 3) {
+		return false;
+	}
+
+	// Get the first and last lines as anchors
+	const firstLine = searchLines[0].trim();
+	const lastLine = searchLines[searchLines.length - 1].trim();
 
 	// Find the line number where startIndex falls
-	let startLineNum = 0
-	let currentIndex = 0
+	let startLineNum = 0;
+	let currentIndex = 0;
 	while (currentIndex < startIndex && startLineNum < originalLines.length) {
-		currentIndex += originalLines[startLineNum].length + 1
-		startLineNum++
+		currentIndex += originalLines[startLineNum].length + 1; // +1 for \n
+		startLineNum++;
 	}
 
-	// Look for matching start and end anchors
-	for (let i = startLineNum; i <= originalLines.length - searchBlockSize; i++) {
-		// Check if first line matches
-		if (originalLines[i].trim() !== firstLineSearch) {
-			continue
-		}
+	// For each possible starting position in original content
+	for (let i = startLineNum; i <= originalLines.length - searchLines.length; i++) {
+		// Check if first and last lines match with NFKC normalization
+		if (originalLines[i].trim().normalize('NFKC') === firstLine.normalize('NFKC') && 
+			originalLines[i + searchLines.length - 1].trim().normalize('NFKC') === lastLine.normalize('NFKC')) {
+			
+			// Verify all lines in between match
+			let matches = true;
+			for (let j = 1; j < searchLines.length - 1; j++) {
+				if (originalLines[i + j].trim().normalize('NFKC') !== searchLines[j].trim().normalize('NFKC')) {
+					matches = false;
+					break;
+				}
+			}
 
-		// Check if last line matches at the expected position
-		if (originalLines[i + searchBlockSize - 1].trim() !== lastLineSearch) {
-			continue
-		}
+			if (matches) {
+				// Calculate the exact character positions
+				let matchStartIndex = 0;
+				for (let k = 0; k < i; k++) {
+					matchStartIndex += originalLines[k].length + 1; // +1 for \n
+				}
 
-		// Calculate exact character positions
-		let matchStartIndex = 0
-		for (let k = 0; k < i; k++) {
-			matchStartIndex += originalLines[k].length + 1
-		}
+				let matchEndIndex = matchStartIndex;
+				for (let k = 0; k < searchLines.length; k++) {
+					matchEndIndex += originalLines[i + k].length + 1; // +1 for \n
+				}
 
-		let matchEndIndex = matchStartIndex
-		for (let k = 0; k < searchBlockSize; k++) {
-			matchEndIndex += originalLines[i + k].length + 1
+				return [matchStartIndex, matchEndIndex];
+			}
 		}
-
-		return [matchStartIndex, matchEndIndex]
 	}
 
-	return false
+	return false;
 }
 
 /**
@@ -208,6 +243,109 @@ function generateContentHash(content: string): string {
 	return crypto.createHash("sha256").update(content).digest("hex").substring(0, 8)
 }
 
+function normalizeDiffContent(content: string): string {
+	// 입력 내용 로깅
+	console.debug(`[normalizeDiffContent 입력]`, {
+		원본내용: content,
+		길이: content.length,
+		줄바꿈수: (content.match(/\n/g) || []).length,
+		CDATA존재: content.includes('<![CDATA['),
+		CDATA시작위치: content.indexOf('<![CDATA['),
+		CDATA끝위치: content.indexOf(']]>'),
+	});
+
+	// CDATA 섹션 처리
+	if (content.includes('<![CDATA[')) {
+		const startIndex = content.indexOf('<![CDATA[');
+		const endIndex = content.indexOf(']]>', startIndex);
+		
+		if (startIndex !== -1 && endIndex !== -1) {
+			const cdataContent = content.substring(startIndex + '<![CDATA['.length, endIndex);
+			
+			console.debug(`[CDATA 처리 상세]`, {
+				시작위치: startIndex,
+				끝위치: endIndex,
+				CDATA내용: cdataContent,
+				CDATA길이: cdataContent.length,
+				CDATA줄바꿈수: (cdataContent.match(/\n/g) || []).length,
+			});
+			
+			content = cdataContent;
+		} else {
+			// CDATA 끝이 없는 경우, SEARCH & REPLACE 블록만 추출
+			const searchStart = content.indexOf('<<<<<<< SEARCH');
+			const separator = content.indexOf('=======');
+			const replaceEnd = content.indexOf('>>>>>>> REPLACE');
+			
+			if (searchStart !== -1 && separator !== -1) {
+				const searchContent = content.substring(searchStart, separator).trim();
+				let replaceContent = content.substring(separator + '======='.length).trim();
+				
+				// REPLACE 블록이 불완전한 경우 처리
+				if (replaceEnd === -1) {
+					// 마지막 줄이 불완전한 경우 제거
+					const lastNewline = replaceContent.lastIndexOf('\n');
+					if (lastNewline !== -1) {
+						replaceContent = replaceContent.substring(0, lastNewline).trim();
+					}
+					
+					// REPLACE 마커 추가
+					content = `${searchContent}\n=======\n${replaceContent}\n>>>>>>> REPLACE`;
+					
+					console.debug(`[불완전한 REPLACE 블록 처리]`, {
+						SEARCH시작: searchStart,
+						구분자위치: separator,
+						REPLACE끝: replaceEnd,
+						처리된내용: content,
+					});
+				} else {
+					content = `${searchContent}\n=======\n${replaceContent}`;
+					
+					console.debug(`[불완전한 CDATA 처리]`, {
+						SEARCH시작: searchStart,
+						구분자위치: separator,
+						REPLACE끝: replaceEnd,
+						처리된내용: content,
+					});
+				}
+			} else {
+				console.debug(`[CDATA 처리 실패]`, {
+					시작위치: startIndex,
+					끝위치: endIndex,
+					SEARCH시작: searchStart,
+					구분자위치: separator,
+					REPLACE끝: replaceEnd,
+				});
+			}
+		}
+	}
+
+	// HTML 엔티티 디코딩
+	content = content.replace(/&lt;/g, '<')
+					.replace(/&gt;/g, '>')
+					.replace(/&amp;/g, '&');
+
+	// 줄바꿈 정규화
+	content = content.replace(/\r\n/g, '\n');
+
+	// SEARCH & REPLACE 블록 형식 정규화
+	content = content.replace(/<<<<<<<\s*SEARCH/g, '<<<<<<< SEARCH')
+					.replace(/=======/g, '=======')
+					.replace(/>>>>>>>\s*REPLACE/g, '>>>>>>> REPLACE');
+
+	// 결과 로깅
+	console.debug(`[normalizeDiffContent 결과]`, {
+		정규화된내용: content,
+		길이: content.length,
+		줄바꿈수: (content.match(/\n/g) || []).length,
+		SEARCH존재: content.includes('<<<<<<< SEARCH'),
+		구분자존재: content.includes('======='),
+		REPLACE존재: content.includes('>>>>>>> REPLACE'),
+	});
+
+	return content;
+}
+
 export async function constructNewFileContent(
 	diffContent: string,
 	originalContent: string,
@@ -216,510 +354,245 @@ export async function constructNewFileContent(
 ): Promise<string> {
 	// ILogger가 없는 경우 콘솔에만 출력
 	const log = logger || console
-	const diffHash = generateContentHash(diffContent)
-	const originalHash = generateContentHash(originalContent)
+	
+	// diff 내용 정규화
+	diffContent = normalizeDiffContent(diffContent);
+	log.debug(`[정규화된 diff 내용]`, {
+		내용: diffContent,
+		줄바꿈수: (diffContent.match(/\n/g) || []).length,
+		해시: generateContentHash(diffContent),
+		SEARCH존재: diffContent.includes('<<<<<<< SEARCH'),
+		구분자존재: diffContent.includes('======='),
+		REPLACE존재: diffContent.includes('>>>>>>> REPLACE'),
+	});
+	
+	// 내용 정규화
+	diffContent = normalizeContent(diffContent);
+	originalContent = normalizeContent(originalContent);
 
-	// CDATA 섹션 제거
-	let processedDiffContent = diffContent
-	if (diffContent.startsWith("<![CDATA[") && diffContent.endsWith("]]>")) {
-		processedDiffContent = diffContent.slice(9, -3)
-		log.debug(`CDATA 섹션 제거됨:`, {
-			원본길이: diffContent.length,
-			처리후길이: processedDiffContent.length,
-			처리된내용: processedDiffContent,
-		})
-	}
+	// EOL 형식 감지 및 유지
+	const detectedEOL = originalContent.includes("\r\n") ? "\r\n" : "\n";
+	log.debug(`감지된 EOL 형식: ${detectedEOL === "\r\n" ? "CRLF (Windows)" : "LF (Unix)"}`);
 
-	// 로깅 레벨을 높여 상세 정보 출력
-	log.debug(`=== 파일 수정 시도 시작 ===`)
-	log.debug(`1. 입력된 diffContent:`, {
-		길이: processedDiffContent.length,
-		해시: generateContentHash(processedDiffContent),
-		내용: processedDiffContent,
-		줄바꿈수: (processedDiffContent.match(/\n/g) || []).length,
-	})
-
-	log.debug(`2. 원본 파일 내용:`, {
+	// 원본 파일 내용 로깅
+	log.debug(`[원본 파일 내용]`, {
 		길이: originalContent.length,
-		해시: originalHash,
+		해시: generateContentHash(originalContent),
 		내용: originalContent,
 		줄바꿈수: (originalContent.match(/\n/g) || []).length,
-	})
+	});
 
-	log.debug(`3. 처리 상태:`, {
-		isFinal,
-		현재시간: new Date().toISOString(),
-	})
+	let result = "";
+	let lastProcessedIndex = 0;
+	let currentSearchContent = "";
+	let currentReplaceContent = "";
+	let inSearch = false;
+	let inReplace = false;
+	let searchMatchIndex = -1;
+	let searchEndIndex = -1;
+	let remainderProcessed = false;
 
-	// diffContent의 구조 분석
-	const hasSearchBlock = processedDiffContent.includes("<<<<<<< SEARCH")
-	const hasReplaceBlock = processedDiffContent.includes(">>>>>>> REPLACE")
-	const hasSeparator = processedDiffContent.includes("=======")
+	const lines = diffContent.split("\n");
+	log.debug(`처리할 라인 수: ${lines.length}`);
+	log.debug(`[입력된 diff 내용]`, {
+		내용: diffContent,
+		줄바꿈수: (diffContent.match(/\n/g) || []).length,
+	});
 
-	log.debug(`4. diffContent 구조 분석:`, {
-		hasSearchBlock,
-		hasReplaceBlock,
-		hasSeparator,
-		blockCount: {
-			search: (processedDiffContent.match(/<<<<<<< SEARCH/g) || []).length,
-			replace: (processedDiffContent.match(/>>>>>>> REPLACE/g) || []).length,
-			separator: (processedDiffContent.match(/=======/g) || []).length,
-		},
-		searchBlock위치: processedDiffContent.indexOf("<<<<<<< SEARCH"),
-		replaceBlock위치: processedDiffContent.indexOf(">>>>>>> REPLACE"),
-		separator위치: processedDiffContent.indexOf("======="),
-	})
-
-	// 입력된 diff의 정확한 내용 로깅 - 줄바꿈과 중요 문자 확인용
-	log.debug(`[RAW DIFF CONTENT] ${processedDiffContent.replace(/\n/g, "\\n").replace(/\r/g, "\\r")}`)
-
-	// diff의 16진수 로깅 - 숨겨진 문자 확인
-	let hexDiff = ""
-	for (let i = 0; i < Math.min(processedDiffContent.length, 100); i++) {
-		hexDiff += processedDiffContent.charCodeAt(i).toString(16).padStart(2, "0") + " "
-	}
-	log.debug(`[HEX DIFF] ${hexDiff}${processedDiffContent.length > 100 ? "..." : ""}`)
-
-	// 원본 내용의 정확한 로깅
-	if (originalContent.length > 200) {
-		log.debug(
-			`원본 내용 미리보기: \n시작(100자): ${originalContent.slice(0, 100).replace(/\n/g, "\\n").replace(/\r/g, "\\r")}... \n끝(100자): ...${originalContent.slice(-100).replace(/\n/g, "\\n").replace(/\r/g, "\\r")}`,
-		)
-	} else {
-		log.debug(`원본 내용 전체: \n${originalContent.replace(/\n/g, "\\n").replace(/\r/g, "\\r")}`)
-	}
-
-	let result = ""
-	let lastProcessedIndex = 0
-
-	let currentSearchContent = ""
-	let currentReplaceContent = ""
-	let inSearch = false
-	let inReplace = false
-
-	let searchMatchIndex = -1
-	let searchEndIndex = -1
-
-	// 남은 내용 처리 플래그 - 중복 추가 방지
-	let remainderProcessed = false
-
-	// EOL 처리를 위한 변수 - 파일 시스템에 따라 자동 감지
-	const detectedEOL = originalContent.includes("\r\n") ? "\r\n" : "\n"
-	log.debug(`감지된 EOL 형식: ${detectedEOL === "\r\n" ? "CRLF (Windows)" : "LF (Unix)"}`)
-
-	let lines = processedDiffContent.split("\n")
-	log.debug(`처리할 라인 수: ${lines.length}`)
-
-	// If the last line looks like a partial marker but isn't recognized,
-	// remove it because it might be incomplete.
-	const lastLine = lines[lines.length - 1]
-	if (
-		lines.length > 0 &&
+	// 마지막 라인이 부분적인 마커인 경우 제거
+	const lastLine = lines[lines.length - 1];
+	if (lines.length > 0 &&
 		(lastLine.startsWith("<") || lastLine.startsWith("=") || lastLine.startsWith(">")) &&
 		lastLine !== "<<<<<<< SEARCH" &&
 		lastLine !== "=======" &&
-		lastLine !== ">>>>>>> REPLACE"
-	) {
-		lines.pop()
+		lastLine !== ">>>>>>> REPLACE") {
+		lines.pop();
+		log.debug(`[부분 마커 제거]`, {
+			제거된라인: lastLine,
+		});
 	}
 
-	// 처리할 라인 각각의 16진수 로깅
-	log.debug(`[LINES HEX DUMP]`)
-	for (let i = 0; i < Math.min(lines.length, 10); i++) {
-		let hexLine = ""
-		for (let j = 0; j < Math.min(lines[i].length, 20); j++) {
-			hexLine += lines[i].charCodeAt(j).toString(16).padStart(2, "0") + " "
-		}
-		log.debug(
-			`  라인 ${i}: '${lines[i].replace(/\n/g, "\\n").replace(/\r/g, "\\r")}' => [${hexLine}${lines[i].length > 20 ? "..." : ""}]`,
-		)
-	}
-	if (lines.length > 10) {
-		log.debug(`  ... 추가 ${lines.length - 10}개 라인 ...`)
-	}
+	// SEARCH/REPLACE 블록 형식 검증
+	const hasSearchBlock = lines.includes("<<<<<<< SEARCH");
+	const hasSeparator = lines.includes("=======");
+	const hasReplaceBlock = lines.includes(">>>>>>> REPLACE");
 
-	let searchBlockCount = 0
+	log.debug(`[SEARCH/REPLACE 블록 형식 검증]`, {
+		SEARCH블록존재: hasSearchBlock,
+		구분자존재: hasSeparator,
+		REPLACE블록존재: hasReplaceBlock,
+		전체라인수: lines.length,
+		라인내용: lines,
+	});
+
+	if (!hasSearchBlock || !hasSeparator || !hasReplaceBlock) {
+		log.debug(`[경고] SEARCH/REPLACE 블록 형식이 올바르지 않습니다`, {
+			hasSearchBlock,
+			hasSeparator,
+			hasReplaceBlock,
+			입력된내용: diffContent,
+		});
+		throw new Error("SEARCH/REPLACE 블록 형식이 올바르지 않습니다. <<<<<<< SEARCH, =======, >>>>>>> REPLACE 마커가 필요합니다.");
+	}
 
 	for (const line of lines) {
-		log.debug(`현재 처리할 라인: '${line.replace(/\n/g, "\\n").replace(/\r/g, "\\r")}'`)
-
 		if (line === "<<<<<<< SEARCH") {
-			inSearch = true
-			currentSearchContent = ""
-			currentReplaceContent = ""
-			log.debug(`5. SEARCH 블록 발견:`, {
-				라인번호: lines.indexOf(line) + 1,
+			inSearch = true;
+			currentSearchContent = "";
+			currentReplaceContent = "";
+			log.debug(`[SEARCH 블록 시작]`, {
+				현재라인: lines.indexOf(line) + 1,
 				총라인수: lines.length,
-				블록타입: "SEARCH",
-				블록인덱스: searchBlockCount++,
-				현재시간: new Date().toISOString(),
-			})
-			continue
+			});
+			continue;
 		}
 
 		if (line === "=======") {
-			inSearch = false
-			inReplace = true
+			inSearch = false;
+			inReplace = true;
 
-			// SEARCH 블록의 정확한 내용 로깅 (줄바꿈 및 특수문자 포함)
-			log.debug(`SEARCH 블록 RAW 내용: '${currentSearchContent.replace(/\n/g, "\\n").replace(/\r/g, "\\r")}'`, {
-				searchContentLength: currentSearchContent.length,
-				searchContentLines: currentSearchContent.split("\n").length,
-				searchContentFirstChars: currentSearchContent.slice(0, Math.min(20, currentSearchContent.length)),
-				searchContentHash: generateContentHash(currentSearchContent),
-			})
+			// SEARCH 블록 내용 정규화
+			currentSearchContent = normalizeContent(currentSearchContent);
 
-			// SEARCH 블록 내용의 16진수 로깅 - 숨겨진 문자 확인
-			let hexSearch = ""
-			for (let i = 0; i < Math.min(currentSearchContent.length, 50); i++) {
-				hexSearch += currentSearchContent.charCodeAt(i).toString(16).padStart(2, "0") + " "
-			}
-			log.debug(`SEARCH 블록 HEX: [${hexSearch}${currentSearchContent.length > 50 ? "..." : ""}]`)
+			// SEARCH 블록 내용 로깅
+			log.debug(`[SEARCH 블록 내용]`, {
+				길이: currentSearchContent.length,
+				해시: generateContentHash(currentSearchContent),
+				내용: currentSearchContent,
+				줄바꿈수: (currentSearchContent.match(/\n/g) || []).length,
+			});
 
-			log.debug(`SEARCH 블록 완료, REPLACE 블록 시작`, {
-				searchContentLength: currentSearchContent.length,
-				searchContentLines: currentSearchContent.split("\n").length,
-				searchContentFirstChars:
-					currentSearchContent.length > 0
-						? currentSearchContent
-								.slice(0, Math.min(20, currentSearchContent.length))
-								.replace(/\n/g, "\\n")
-								.replace(/\r/g, "\\r")
-						: "(empty)",
-				searchContentHash: generateContentHash(currentSearchContent),
-			})
-
-			// 빈 SEARCH 블록 처리 개선
+			// 빈 SEARCH 블록 처리
 			if (!currentSearchContent || currentSearchContent.trim() === "") {
-				log.debug(`빈 SEARCH 블록 검색 결과:`, {
-					currentSearchContent: `'${currentSearchContent}'`,
-					length: currentSearchContent.length,
-					trimmedLength: currentSearchContent.trim().length,
-					hasOnlyWhitespace: currentSearchContent.length > 0 && currentSearchContent.trim() === "",
-					charCodes: Array.from(currentSearchContent).map((c) => c.charCodeAt(0)),
-					is_null_or_empty: !currentSearchContent || currentSearchContent === "",
-				})
+				log.debug(`[경고] 빈 SEARCH 블록이 감지되었습니다. 파일 전체 대체를 원하는 경우 명시적으로 빈 SEARCH 블록을 사용하세요.`);
+				throw new Error("빈 SEARCH 블록이 감지되었습니다. 변경하려는 내용을 SEARCH 블록에 명시하세요.");
+			}
 
-				// Empty search block
-				if (originalContent.length === 0) {
-					// New file scenario: nothing to match, just start inserting
-					searchMatchIndex = 0
-					searchEndIndex = 0
-					log.debug(`빈 SEARCH 블록 (새 파일 생성 시나리오)`)
-				} else {
-					// Complete file replacement scenario: treat the entire file as matched
-					searchMatchIndex = 0
-					searchEndIndex = originalContent.length
-					log.debug(`빈 SEARCH 블록 (파일 전체 대체 시나리오) - 원본 내용 ${originalContent.length}바이트 전체 대체 예정`)
-					
-					// 결과에 REPLACE 내용 추가
-					result = currentReplaceContent
-					log.debug(`REPLACE 내용으로 전체 파일 대체:`, {
-						replaceContentLength: currentReplaceContent.length,
-						replaceContentLines: currentReplaceContent.split("\n").length,
-					})
-				}
+			// 정확한 매칭 시도 (NFKC 정규화 적용)
+			const normalizedOriginal = originalContent.normalize('NFKC');
+			const normalizedSearch = currentSearchContent.normalize('NFKC');
+			const exactIndex = normalizedOriginal.indexOf(normalizedSearch, lastProcessedIndex);
+			
+			if (exactIndex !== -1) {
+				searchMatchIndex = exactIndex;
+				searchEndIndex = exactIndex + currentSearchContent.length;
+				log.debug(`[정확한 매칭 성공]`, {
+					시작위치: searchMatchIndex,
+					끝위치: searchEndIndex,
+					매칭된내용: originalContent.slice(searchMatchIndex, searchEndIndex),
+				});
 			} else {
-				// Add check for inefficient full-file search
-				// if (currentSearchContent.trim() === originalContent.trim()) {
-				// 	throw new Error(
-				// 		"The SEARCH block contains the entire file content. Please either:\n" +
-				// 			"1. Use an empty SEARCH block to replace the entire file, or\n" +
-				// 			"2. Make focused changes to specific parts of the file that need modification.",
-				// 	)
-				// }
-
-				// Exact search match scenario
-				const exactIndex = originalContent.indexOf(currentSearchContent, lastProcessedIndex)
-				if (exactIndex !== -1) {
-					searchMatchIndex = exactIndex
-					searchEndIndex = exactIndex + currentSearchContent.length
-					log.debug(`정확한 매칭 성공:`, {
-						matchType: "exact",
-						searchMatchIndex,
-						searchEndIndex,
-						matched: true,
-					})
+				// 대체 매칭 시도
+				const lineMatch = lineTrimmedFallbackMatch(originalContent, currentSearchContent, lastProcessedIndex);
+				if (lineMatch) {
+					[searchMatchIndex, searchEndIndex] = lineMatch;
+					log.debug(`[라인 트림 매칭 성공]`, {
+						시작위치: searchMatchIndex,
+						끝위치: searchEndIndex,
+						매칭된내용: originalContent.slice(searchMatchIndex, searchEndIndex),
+					});
 				} else {
-					log.debug(`정확한 매칭 실패, 대체 매칭 시도...`)
-					// Attempt fallback line-trimmed matching
-					const lineMatch = lineTrimmedFallbackMatch(originalContent, currentSearchContent, lastProcessedIndex)
-					if (lineMatch) {
-						;[searchMatchIndex, searchEndIndex] = lineMatch
-						log.debug(`라인 트림 매칭 성공:`, {
-							matchType: "lineTrimmed",
-							searchMatchIndex,
-							searchEndIndex,
-							matched: true,
-						})
+					const blockMatch = blockAnchorFallbackMatch(originalContent, currentSearchContent, lastProcessedIndex);
+					if (blockMatch) {
+						[searchMatchIndex, searchEndIndex] = blockMatch;
+						log.debug(`[블록 앤커 매칭 성공]`, {
+							시작위치: searchMatchIndex,
+							끝위치: searchEndIndex,
+							매칭된내용: originalContent.slice(searchMatchIndex, searchEndIndex),
+						});
 					} else {
-						log.debug(`라인 트림 매칭 실패, 블록 앤커 매칭 시도...`)
-						// Try block anchor fallback for larger blocks
-						const blockMatch = blockAnchorFallbackMatch(originalContent, currentSearchContent, lastProcessedIndex)
-						if (blockMatch) {
-							;[searchMatchIndex, searchEndIndex] = blockMatch
-							log.debug(`블록 앤커 매칭 성공:`, {
-								matchType: "blockAnchor",
-								searchMatchIndex,
-								searchEndIndex,
-								matched: true,
-							})
+						// 이전 변경사항을 고려한 매칭 시도
+						const previousChanges = result.slice(lastProcessedIndex);
+						const normalizedPrevious = previousChanges.normalize('NFKC');
+						const previousMatchIndex = normalizedPrevious.indexOf(normalizedSearch);
+						
+						if (previousMatchIndex !== -1) {
+							searchMatchIndex = lastProcessedIndex + previousMatchIndex;
+							searchEndIndex = searchMatchIndex + currentSearchContent.length;
+							log.debug(`[이전 변경사항 매칭 성공]`, {
+								시작위치: searchMatchIndex,
+								끝위치: searchEndIndex,
+								매칭된내용: previousChanges.slice(previousMatchIndex, previousMatchIndex + currentSearchContent.length),
+							});
 						} else {
-							log.debug(`모든 매칭 시도 실패, 오류 발생`)
-							throw new Error(
-								`The SEARCH block:\n${currentSearchContent.trimEnd()}\n...does not match anything in the file.`,
-							)
+							log.debug(`[매칭 실패]`, {
+								검색내용: currentSearchContent,
+								원본내용: originalContent,
+								이전변경사항: previousChanges,
+							});
+							throw new Error(`SEARCH 블록을 찾을 수 없습니다:\n${currentSearchContent}`);
 						}
 					}
 				}
 			}
 
-			// Output everything up to the match location
-			result += originalContent.slice(lastProcessedIndex, searchMatchIndex)
-			log.debug(`매칭 위치까지의 내용을 결과에 추가`, {
-				lastProcessedIndex,
-				searchMatchIndex,
-				addedContentLength: searchMatchIndex - lastProcessedIndex,
-			})
-			continue
+			// 매칭 위치까지의 내용을 결과에 추가
+			result += originalContent.slice(lastProcessedIndex, searchMatchIndex);
+			continue;
 		}
 
 		if (line === ">>>>>>> REPLACE") {
-			// Finished one replace block
-			log.debug(`REPLACE 블록 완료`, {
-				replaceContentLength: currentReplaceContent.length,
-				replaceContentLines: currentReplaceContent.split("\n").length,
-				replaceContentFirstChars:
-					currentReplaceContent.length > 0
-						? currentReplaceContent
-								.slice(0, Math.min(20, currentReplaceContent.length))
-								.replace(/\n/g, "\\n")
-								.replace(/\r/g, "\\r")
-						: "(empty)",
-				replaceContentHash: generateContentHash(currentReplaceContent),
-			})
+			// REPLACE 블록 내용 정규화
+			currentReplaceContent = normalizeContent(currentReplaceContent);
 
-			// REPLACE 블록의 정확한 내용 로깅
-			log.debug(`REPLACE 블록 RAW 내용: '${currentReplaceContent.replace(/\n/g, "\\n").replace(/\r/g, "\\r")}'`, {
-				replaceContentLength: currentReplaceContent.length,
-				replaceContentLines: currentReplaceContent.split("\n").length,
-				replaceContentFirstChars: currentReplaceContent.slice(0, Math.min(20, currentReplaceContent.length)),
-				replaceContentHash: generateContentHash(currentReplaceContent),
-			})
+			// REPLACE 블록 내용 로깅
+			log.debug(`[REPLACE 블록 내용]`, {
+				길이: currentReplaceContent.length,
+				해시: generateContentHash(currentReplaceContent),
+				내용: currentReplaceContent,
+				줄바꿈수: (currentReplaceContent.match(/\n/g) || []).length,
+			});
 
-			// REPLACE 블록 내용의 16진수 로깅
-			let hexReplace = ""
-			for (let i = 0; i < Math.min(currentReplaceContent.length, 50); i++) {
-				hexReplace += currentReplaceContent.charCodeAt(i).toString(16).padStart(2, "0") + " "
-			}
-			log.debug(`REPLACE 블록 HEX: [${hexReplace}${currentReplaceContent.length > 50 ? "..." : ""}]`)
-
-			// 매칭 결과 로깅
+			// 매칭된 내용을 REPLACE 내용으로 대체
 			if (searchMatchIndex !== -1) {
-				log.debug(`매칭 결과:`, {
-					searchMatchIndex,
-					searchEndIndex,
-					matchedContent: originalContent.slice(searchMatchIndex, searchEndIndex),
-					replacementContent: currentReplaceContent,
-				})
+				result += currentReplaceContent;
+				lastProcessedIndex = searchEndIndex;
+				log.debug(`[내용 대체 완료]`, {
+					대체시작위치: searchMatchIndex,
+					대체끝위치: searchEndIndex,
+					대체된내용: currentReplaceContent,
+				});
 			}
 
-			// 버그 수정: 여기서 파일 내용을 제대로 구성
-			// 1. searchMatchIndex까지의 내용은 유지
-			// 2. 현재 result는 그대로 보존 (이미 searchMatchIndex까지의 내용을 포함)
-			// 3. currentReplaceContent를 추가 (마지막 줄바꿈 제거)
-			// 4. originalContent의 나머지 부분을 추가 (이전에는 isFinal일 때만 처리)
-			if (searchMatchIndex !== -1) {
-				// 마지막 줄바꿈 관리 개선
-				let processedReplaceContent = currentReplaceContent
-
-				// 원본 텍스트 줄바꿈 상태 확인
-				const originalMatchedText = originalContent.slice(searchMatchIndex, searchEndIndex)
-				const originalEndsWithLineBreak = originalMatchedText.endsWith(detectedEOL) || originalMatchedText.endsWith("\n")
-
-				log.debug(`원본 텍스트 줄바꿈 검사:`, {
-					originalMatchedLength: originalMatchedText.length,
-					originalEndsWithLineBreak,
-					originalLastChars: originalMatchedText
-						.slice(-Math.min(10, originalMatchedText.length))
-						.replace(/\n/g, "\\n")
-						.replace(/\r/g, "\\r"),
-					replaceLastChars: processedReplaceContent
-						.slice(-Math.min(10, processedReplaceContent.length))
-						.replace(/\n/g, "\\n")
-						.replace(/\r/g, "\\r"),
-				})
-
-				// REPLACE 내용 마지막 줄바꿈 처리
-				if (processedReplaceContent.endsWith(detectedEOL)) {
-					// 원본에 줄바꿈이 없고 REPLACE 내용에만 있는 경우만 제거
-					if (!originalEndsWithLineBreak) {
-						processedReplaceContent = processedReplaceContent.slice(0, -detectedEOL.length)
-						log.debug(`REPLACE 블록 마지막 줄바꿈 제거 (${detectedEOL === "\r\n" ? "CRLF" : "LF"})`)
-					} else {
-						log.debug(`REPLACE 블록 마지막 줄바꿈 유지 (원본과 일치)`)
-					}
-				} else if (processedReplaceContent.endsWith("\n")) {
-					// 원본에 줄바꿈이 없고 REPLACE 내용에만 있는 경우만 제거
-					if (!originalEndsWithLineBreak) {
-						processedReplaceContent = processedReplaceContent.slice(0, -1)
-						log.debug(`REPLACE 블록 마지막 줄바꿈 제거 (LF)`)
-					} else {
-						log.debug(`REPLACE 블록 마지막 줄바꿈 유지 (원본과 일치)`)
-					}
-				}
-
-				// 이전 버전의 result 임시 저장 (검증용)
-				const prevResult = result
-
-				// 지금까지 누적된 REPLACE 내용 추가
-				result += processedReplaceContent
-
-				// *** 핵심 개선: 중간 청크에서도 나머지 원본 내용 추가 ***
-				// 이 단계에서 나머지 모든 내용을 추가하여 각 블록 처리가 완전한 파일 상태를 유지하도록 함
-				const remainingContent = originalContent.slice(searchEndIndex)
-				if (remainingContent.length > 0) {
-					log.debug(`블록 간 나머지 원본 내용 추가:`, {
-						길이: remainingContent.length,
-						미리보기:
-							remainingContent.length > 100
-								? `${remainingContent.slice(0, 50)}...${remainingContent.slice(-50)}`
-								: remainingContent,
-					})
-					result += remainingContent
-					remainderProcessed = true // 남은 내용 처리 완료 표시
-				}
-
-				// 변경 결과 로깅
-				log.debug(`[개선된 처리] REPLACE 블록 처리 완료:`, {
-					이전결과길이: prevResult.length,
-					새결과길이: result.length,
-					processedReplaceContentLength: processedReplaceContent.length,
-				})
-			}
-
-			// Advance lastProcessedIndex to after the matched section
-			lastProcessedIndex = searchEndIndex
-			log.debug(`lastProcessedIndex 이동: ${lastProcessedIndex}`)
-
-			// Reset for next block
-			inSearch = false
-			inReplace = false
-			currentSearchContent = ""
-			currentReplaceContent = ""
-			searchMatchIndex = -1
-			searchEndIndex = -1
-			continue
+			// 다음 블록을 위해 상태 초기화
+			inSearch = false;
+			inReplace = false;
+			currentSearchContent = "";
+			currentReplaceContent = "";
+			searchMatchIndex = -1;
+			searchEndIndex = -1;
+			continue;
 		}
 
-		// Accumulate content for search or replace
-		// (currentReplaceContent is not being used for anything right now since we directly append to result.)
-		// (We artificially add a linebreak since we split on \n at the beginning. In order to not include a trailing linebreak in the final search/result blocks we need to remove it before using them. This allows for partial line matches to be correctly identified.)
-		// NOTE: search/replace blocks must be arranged in the order they appear in the file due to how we build the content using lastProcessedIndex. We also cannot strip the trailing newline since for non-partial lines it would remove the linebreak from the original content. (If we remove end linebreak from search, then we'd also have to remove it from replace but we can't know if it's a partial line or not since the model may be using the line break to indicate the end of the block rather than as part of the search content.) We require the model to output full lines in order for our fallbacks to work as well.
+		// SEARCH 또는 REPLACE 블록에 라인 추가
 		if (inSearch) {
-			// SEARCH 블록에 라인 추가 전/후 로깅
-			const beforeLength = currentSearchContent.length
-			currentSearchContent += line + "\n"
-			log.debug(`SEARCH 블록에 라인 추가: '${line.replace(/\n/g, "\\n").replace(/\r/g, "\\r")}'`, {
-				이전길이: beforeLength,
-				현재길이: currentSearchContent.length,
-				누적라인수: currentSearchContent.split("\n").length,
-			})
+			currentSearchContent += line + "\n";
 		} else if (inReplace) {
-			// REPLACE 블록에 라인 추가 전/후 로깅
-			const beforeLength = currentReplaceContent.length
-			currentReplaceContent += line + "\n"
-			log.debug(`REPLACE 블록에 라인 추가: '${line.replace(/\n/g, "\\n").replace(/\r/g, "\\r")}'`, {
-				이전길이: beforeLength,
-				현재길이: currentReplaceContent.length,
-				누적라인수: currentReplaceContent.split("\n").length,
-			})
-
-			// 수정된 로직: REPLACE 내용을 임시 변수에 저장
-			// 이후 블록 전체가 처리된 후 한 번에 파일 내용을 구성
-			if (searchMatchIndex !== -1) {
-				log.debug(`[개선된 처리] REPLACE 라인 누적: "${line}"`, {
-					라인번호: currentReplaceContent.split("\n").length,
-					현재누적길이: currentReplaceContent.length,
-					searchMatchIndex: searchMatchIndex,
-					searchEndIndex: searchEndIndex,
-				})
-				// 여기서는 currentReplaceContent에만 누적하고 result에는 아직 추가하지 않음
-				// 블록 완료 후 ">>>>>>> REPLACE" 처리 시 일괄 대체
-			}
+			currentReplaceContent += line + "\n";
 		}
 	}
 
-	// 최종 정리 단계에서 남은 내용 추가 (모든 블록 처리 완료 후 최종 확인)
-	// 이미 각 블록 처리 후 result에 원본 내용을 추가했지만, 안전장치로 유지
+	// 마지막 처리
 	if (isFinal && lastProcessedIndex < originalContent.length && !remainderProcessed) {
-		log.debug(`[파일 종료 처리] 마지막 확인: 남은 원본 내용 있음`, {
-			lastProcessedIndex,
-			remainingContentLength: originalContent.length - lastProcessedIndex,
-			현재Result길이: result.length,
-			현재ResultHash: generateContentHash(result),
-			remainderProcessed: remainderProcessed,
-			추가할내용미리보기:
-				originalContent.length - lastProcessedIndex > 100
-					? `${originalContent.slice(lastProcessedIndex, lastProcessedIndex + 50)}...${originalContent.slice(originalContent.length - 50)}`
-					: originalContent.slice(lastProcessedIndex),
-		})
-
-		// 블록 처리 중 마지막 내용이 추가되지 않은 경우에 대한 안전장치
-		result += originalContent.slice(lastProcessedIndex)
-		log.debug(`[파일 종료 처리] 마지막 내용 추가 완료:`, {
-			lastProcessedIndex,
-			originalContentLength: originalContent.length,
-			remainderLength: originalContent.length - lastProcessedIndex,
-		})
-	} else if (isFinal && remainderProcessed) {
-		// 이미 남은 내용이 처리된 경우 로그 추가
-		log.debug(`[파일 종료 처리] 남은 내용이 이미 처리되어 중복 추가 하지 않음`, {
-			lastProcessedIndex,
-			현재Result길이: result.length,
-			현재ResultHash: generateContentHash(result),
-		})
+		result += originalContent.slice(lastProcessedIndex);
+		remainderProcessed = true;
+		log.debug(`[마지막 처리]`, {
+			남은내용길이: originalContent.length - lastProcessedIndex,
+			추가된내용: originalContent.slice(lastProcessedIndex),
+		});
 	}
 
-	const resultHash = generateContentHash(result)
-	log.debug(`constructNewFileContent 완료`, {
-		originalContentLength: originalContent.length,
-		resultContentLength: result.length,
-		change:
-			result.length - originalContent.length > 0
-				? `+${result.length - originalContent.length}`
-				: result.length - originalContent.length,
-		originalHash: generateContentHash(originalContent),
-		resultHash,
-	})
+	// 결과의 줄바꿈 문자를 원본 파일의 형식으로 변환
+	result = result.replace(/\n/g, detectedEOL);
 
-	// 파일 내용 비교
-	log.debug(`파일 내용 비교 (diff result)`, {
-		beforeLines: originalContent.split("\n").length,
-		afterLines: result.split("\n").length,
-		beforeSize: originalContent.length,
-		afterSize: result.length,
-		changeSize: result.length - originalContent.length,
-		hash: resultHash,
-	})
-
-	// 최종 결과 상세 로깅
-	log.debug(`6. 파일 수정 결과:`, {
+	// 최종 결과 로깅
+	log.debug(`[최종 결과]`, {
 		원본길이: originalContent.length,
 		결과길이: result.length,
-		원본해시: originalHash,
+		원본해시: generateContentHash(originalContent),
 		결과해시: generateContentHash(result),
-		isFinal,
-		성공여부: result !== originalContent ? "변경됨" : "변경없음",
-		변경된라인수: result.split("\n").length - originalContent.split("\n").length,
-		처리된블록수: searchBlockCount,
-		diffContent구조: {
-			hasSearchBlock,
-			hasReplaceBlock,
-			hasSeparator,
-		},
-		현재시간: new Date().toISOString(),
-	})
+		변경사항: result !== originalContent ? "변경됨" : "변경없음",
+	});
 
-	return result
+	return result;
 }
