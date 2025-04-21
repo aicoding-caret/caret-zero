@@ -1797,21 +1797,6 @@ export class Task {
 
 								this.consecutiveMistakeCount = 0
 
-								// --- START: diff 유효성 검사 로직 추가 ---
-								const currentDiff = block.params.diff;
-								if (!currentDiff || typeof currentDiff !== 'string' || !currentDiff.includes("^SEARCH^") || !currentDiff.includes("^======^") || !currentDiff.includes("^REPLACE^")) {
-									// 오류 처리: 사용자에게 알리고, 도구 결과로 오류를 반환하며, diff 뷰 정리
-									await this.say("error", "Internal error processing file edit: Incomplete diff data received.");
-									pushToolResult(formatResponse.toolError("Internal error: Incomplete or invalid diff data received for replace_in_file."));
-									// diffViewProvider가 열려있을 수 있으므로 정리 시도
-									if (this.diffViewProvider.isEditing) {
-										await this.diffViewProvider.revertChanges();
-										await this.diffViewProvider.reset();
-									}
-									break; // 현재 도구 처리 중단
-								}
-								// --- END: diff 유효성 검사 로직 추가 ---
-
 								// if isEditingFile false, that means we have the full contents of the file already.
 								// it's important to note how this function works, you can't make the assumption that the block.partial conditional will always be called since it may immediately get complete, non-partial data. So this part of the logic will always be called.
 								// in other words, you must always repeat the block.partial logic here

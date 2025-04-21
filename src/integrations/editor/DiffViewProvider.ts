@@ -227,21 +227,6 @@ export class DiffViewProvider {
 			preSaveContentLength: preSaveContent.length,
 		})
 
-		// --- Pre-save Validation ---
-		if (preSaveContent === undefined || preSaveContent === null) {
-			this.logger.error(`[saveChanges] Invalid content retrieved from editor before save: ${preSaveContent}`);
-			await this.revertChanges(); // Attempt to revert
-			// Throw an error to signal failure to the caller (Task)
-			throw new Error("Failed to save changes: Invalid content retrieved from editor.");
-		}
-		// Check if the content is literally the string "undefined"
-		if (preSaveContent === "undefined") {
-			 this.logger.error(`[saveChanges] Editor content is literally 'undefined' before save.`);
-			 await this.revertChanges();
-			 throw new Error("Failed to save changes: Editor content was 'undefined'.");
-		}
-		// --- End Pre-save Validation ---
-
 		try {
 			if (updatedDocument.isDirty) {
 				this.logger.debug(`문서가 변경됨(dirty), 저장 시도...`)
@@ -251,9 +236,7 @@ export class DiffViewProvider {
 				this.logger.debug(`문서가 변경되지 않음(not dirty), 저장 불필요`)
 			}
 		} catch (error) {
-			this.logger.error(`문서 저장 실패`, { error });
-			// 에러를 다시 던져서 saveChanges 함수 실행을 중단시키고 호출자에게 알림
-			throw new Error(`Failed to save document: ${(error as Error).message}`);
+			this.logger.error(`문서 저장 실패`, { error })
 		}
 
 		// get text after save in case there is any auto-formatting done by the editor
@@ -273,19 +256,6 @@ export class DiffViewProvider {
 				fileContentHash,
 				matchesPostSave: fileContentHash === postSaveHash,
 			})
-
-			// --- Post-save Validation ---
-			if (fileContentHash !== postSaveHash) {
-				this.logger.error(`[saveChanges] CRITICAL: File content hash mismatch after save! Editor hash: ${postSaveHash}, File hash: ${fileContentHash}`);
-				// Don't revert here, file might be corrupted. Let caller handle.
-				throw new Error("Failed to save changes: File content mismatch after saving.");
-			}
-			if (fileContent === "undefined") {
-				this.logger.error(`[saveChanges] CRITICAL: File content is literally 'undefined' after save!`);
-				throw new Error("Failed to save changes: File content became 'undefined'.");
-			}
-			// --- End Post-save Validation ---
-
 			this.logger.debug(`파일 내용 비교 ${absolutePath}`, {
 				beforeLines: (this.originalContent || "").split("\n").length,
 				afterLines: fileContent.split("\n").length,
@@ -295,9 +265,7 @@ export class DiffViewProvider {
 				fileContentHash,
 			})
 		} catch (error) {
-			this.logger.error(`저장된 파일 내용 확인 실패`, { error });
-			// 에러를 다시 던져서 saveChanges 함수 실행을 중단시키고 호출자에게 알림
-			throw new Error(`Failed to read saved file content: ${(error as Error).message}`);
+			this.logger.error(`저장된 파일 내용 확인 실패`, { error })
 		}
 
 		try {
