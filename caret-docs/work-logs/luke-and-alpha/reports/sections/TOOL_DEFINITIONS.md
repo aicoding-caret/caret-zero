@@ -505,7 +505,7 @@ Parameters:
   ```
   ^SEARCH^
   [exact content to find]
-  =======
+  ^=====^
   [new content to replace with]
   ^REPLACE^
   ```
@@ -578,7 +578,7 @@ Parameters:
   ```
   ^SEARCH^
   [exact content to find]
-  =======
+  ^=====^
   [new content to replace with]
   ^REPLACE^
   ```

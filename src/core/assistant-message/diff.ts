@@ -14,14 +14,14 @@ function normalizeContent(content: string): string {
 		줄바꿈수: (content.match(/\n/g) || []).length,
 	});
 
-	// 줄바꿈 정규화 (CRLF -> LF)
-	content = content.replace(/\r\n/g, '\n');
+	// 줄바꿈 정규화 (CRLF -> LF) - 주석 처리하여 원본 유지
+	// content = content.replace(/\r\n/g, '\n');
 	
-	// 연속된 공백 정규화 (탭, 스페이스 등)
-	content = content.replace(/[ \t]+/g, ' ');
+	// 연속된 공백 정규화 (탭, 스페이스 등) - 주석 처리하여 원본 유지
+	// content = content.replace(/[ \t]+/g, ' ');
 	
-	// 줄 끝의 공백 제거
-	content = content.replace(/[ \t]+$/gm, '');
+	// 줄 끝의 공백 제거 - 주석 처리하여 원본 유지
+	// content = content.replace(/[ \t]+$/gm, '');
 	
 	// 빈 줄 정규화
 	content = content.replace(/\n{3,}/g, '\n\n');
@@ -224,8 +224,8 @@ function blockAnchorFallbackMatch(originalContent: string, searchContent: string
  *      file replacement (the entire original content is considered matched and replaced).
  *
  * 4. Applying Changes:
- *    - Before encountering the "=======" marker, lines are accumulated as search content.
- *    - After "=======" and before "^REPLACE^", lines are accumulated as replacement content.
+ *    - Before encountering the "^=====^" marker, lines are accumulated as search content.
+ *    - After "^=====^" and before "^REPLACE^", lines are accumulated as replacement content.
  *    - Once the block is complete ("^REPLACE^"), the matched section in the original
  *      file is replaced with the accumulated replacement lines, and the position in the original
  *      file is advanced.
@@ -404,7 +404,7 @@ export async function constructNewFileContent(
 	});
 	
 	// 1-3: 내용 정규화
-	diffContent = normalizeContent(diffContent);
+	//diffContent = normalizeContent(diffContent);
 	originalContent = normalizeContent(originalContent);
 	log.debug(`[1-3] 최종 정규화된 내용`, {
 		diffContentLength: diffContent.length,
@@ -442,7 +442,7 @@ export async function constructNewFileContent(
 	if (lines.length > 0 &&
 		(lastLine.startsWith("<") || lastLine.startsWith("=") || lastLine.startsWith(">")) &&
 		lastLine !== "^SEARCH^" &&
-		lastLine !== "=======" &&
+		lastLine !== "^=====^" &&
 		lastLine !== "^REPLACE^") {
 		lines.pop();
 		log.debug(`[2-3] 부분 마커 제거`, {
@@ -452,7 +452,7 @@ export async function constructNewFileContent(
 
 	// 2-4: SEARCH/REPLACE 블록 형식 검증
 	const hasSearchBlock = lines.includes("^SEARCH^");
-	const hasSeparator = lines.includes("=======");
+	const hasSeparator = lines.includes("^=====^");
 	const hasReplaceBlock = lines.includes("^REPLACE^");
 	log.debug(`[2-4] 블록 형식 검증`, {
 		hasSearchBlock,
@@ -468,7 +468,7 @@ export async function constructNewFileContent(
 			hasReplaceBlock,
 			입력된내용: diffContent,
 		});
-		throw new Error("SEARCH/REPLACE 블록 형식이 올바르지 않습니다. ^SEARCH^, =======, ^REPLACE^ 마커가 필요합니다.");
+		throw new Error("SEARCH/REPLACE 블록 형식이 올바르지 않습니다. ^SEARCH^, ^=====^, ^REPLACE^ 마커가 필요합니다.");
 	}
 
 	// 3-1: 라인별 처리 시작
@@ -482,7 +482,7 @@ export async function constructNewFileContent(
 			continue;
 		}
 
-		if (line === "=======") {
+		if (line === "^=====^") {
 			inSearch = false;
 			inReplace = true;
 			currentSearchContent = normalizeContent(currentSearchContent);
@@ -1090,4 +1090,3 @@ class MessageProcessor {
 		return true;
 	}
 }
-

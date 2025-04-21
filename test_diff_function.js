@@ -162,7 +162,7 @@ async function constructNewFileContent(diffContent, originalContent, isFinal, lo
 
 	if (!hasSearchBlock || !hasSeparator || !hasReplaceBlock) {
         log.debug(`[경고] SEARCH/REPLACE 블록 형식이 올바르지 않습니다`, { hasSearchBlock, hasSeparator, hasReplaceBlock, 입력된내용: diffContent });
-		throw new Error("SEARCH/REPLACE 블록 형식이 올바르지 않습니다. ^SEARCH^, =======, ^REPLACE^ 마커가 필요합니다.");
+		throw new Error("SEARCH/REPLACE 블록 형식이 올바르지 않습니다. ^SEARCH^, ^=====^, ^REPLACE^ 마커가 필요합니다.");
 	}
 
 	for (const line of lines) {
