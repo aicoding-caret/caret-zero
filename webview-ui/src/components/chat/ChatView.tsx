@@ -29,6 +29,7 @@ import ChatTextArea from "./ChatTextArea"
 import TaskHeader from "./TaskHeader"
 import TelemetryBanner from "../common/TelemetryBanner"
 import { AlertIcon } from "@primer/octicons-react" // WarningIcon 임포트 추가 -> AlertIcon으로 수정
+import { Console } from "console"
 
 // Define styled components for the new mode buttons (Adjust styles for bottom-right placement)
 // Ensure these are defined only ONCE at the top level of the module
@@ -788,16 +789,21 @@ const ChatView = ({ isHidden, showAnnouncement, hideAnnouncement, showHistoryVie
 
 	// scrolling
 	const scrollToBottomSmooth = useMemo(
-		() =>
-			debounce(
-				() => {
-					virtuosoRef.current?.scrollTo({ top: Number.MAX_SAFE_INTEGER, behavior: "smooth" })
-				},
-				10,
-				{ immediate: true },
-			),
+		() => {
+			let timeoutId: NodeJS.Timeout | null = null;
+			return () => {
+				if (timeoutId) {
+					clearTimeout(timeoutId);
+				}
+				timeoutId = setTimeout(() => {
+					if (virtuosoRef.current) {
+						virtuosoRef.current.scrollTo({ top: Number.MAX_SAFE_INTEGER, behavior: "smooth" });
+					}
+				}, 10);
+			};
+		},
 		[],
-	)
+	);
 	const scrollToBottomAuto = useCallback(() => {
 		virtuosoRef.current?.scrollTo({ top: Number.MAX_SAFE_INTEGER, behavior: "auto" })
 	}, [])
@@ -838,9 +844,23 @@ const ChatView = ({ isHidden, showAnnouncement, hideAnnouncement, showHistoryVie
 
 	const handleRowHeightChange = useCallback(
 		(isTaller: boolean) => {
-			if (!disableAutoScrollRef.current) {
-				if (isTaller) scrollToBottomSmooth()
-				else setTimeout(scrollToBottomAuto, 0)
+			console.log("handleRowHeightChange - isTaller:", isTaller)
+			console.log("handleRowHeightChange - disableAutoScrollRef.current:", disableAutoScrollRef.current)
+			console.log("handleRowHeightChange - typeof isTaller:", typeof isTaller)
+			console.log("handleRowHeightChange - isNaN(isTaller):", isNaN(isTaller as any))
+			
+			if (!disableAutoScrollRef.current && typeof isTaller === 'boolean' && !isNaN(isTaller as any)) {
+				if (isTaller && virtuosoRef.current) {
+					console.log("handleRowHeightChange - calling scrollToBottomSmooth")
+					try {
+						scrollToBottomSmooth();
+					} catch (error) {
+						console.error("Error in scrollToBottomSmooth:", error)
+					}
+				} else if (virtuosoRef.current) {
+					console.log("handleRowHeightChange - calling scrollToBottomAuto")
+					setTimeout(scrollToBottomAuto, 0)
+				}
 			}
 		},
 		[scrollToBottomSmooth, scrollToBottomAuto],

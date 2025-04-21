@@ -156,14 +156,14 @@ const ModelButtonWrapper = styled.div`
 	max-width: 100%; // Don't overflow parent
 `
 
-const ModelDisplayButton = styled.a<{ isActive?: boolean; disabled?: boolean }>`
+const ModelDisplayButton = styled.a<{ $isActive?: boolean; disabled?: boolean }>`
 	padding: 0px 0px;
 	height: 20px;
 	width: 100%;
 	min-width: 0;
 	cursor: ${(props) => (props.disabled ? "not-allowed" : "pointer")};
-	text-decoration: ${(props) => (props.isActive ? "underline" : "none")};
-	color: ${(props) => (props.isActive ? "var(--vscode-foreground)" : "var(--vscode-descriptionForeground)")};
+	text-decoration: ${(props) => (props.$isActive ? "underline" : "none")};
+	color: ${(props) => (props.$isActive ? "var(--vscode-foreground)" : "var(--vscode-descriptionForeground)")};
 	display: flex;
 	align-items: center;
 	font-size: 10px;
@@ -217,7 +217,8 @@ const ChatTextArea = forwardRef<HTMLTextAreaElement, ChatTextAreaProps>(
 	) => {
 		const { filePaths, apiConfiguration, openRouterModels, platform, availableModes, chatSettings } = useExtensionState()
 
-		// 디버그용 로그 - 상태 확인		
+		// 디버그용 로그 - 상태 확인
+		//console.log("ChatTextArea loaded with modes:", availableModes?.map((m) => m.id).join(", "))
 		const [isTextAreaFocused, setIsTextAreaFocused] = useState(false)
 		const [gitCommits, setGitCommits] = useState<any[]>([])
 
@@ -904,7 +905,7 @@ const ChatTextArea = forwardRef<HTMLTextAreaElement, ChatTextAreaProps>(
 							<ModelButtonWrapper ref={buttonRef}>
 								<ModelDisplayButton
 									role="button"
-									isActive={showModelSelector}
+									$isActive={showModelSelector}
 									disabled={false}
 									onClick={handleModelButtonClick}
 									tabIndex={0}>

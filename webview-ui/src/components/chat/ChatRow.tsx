@@ -3,7 +3,7 @@ import deepEqual from "fast-deep-equal"
 import React, { memo, useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { useEvent, useSize } from "react-use"
 import styled, { css } from "styled-components"
-// import alphaAvatar from "../../assets/alpha.png" // 더 이상 직접 import하지 않음
+// import alphaAvatar from "../../assets/alpha.png" // 더 이상 직접 import하지 않음 
 import {
 	ClineApiReqInfo,
 	ClineAskQuestion,
@@ -51,12 +51,12 @@ const AvatarImage = styled.img`
 `
 
 // 메시지 내용 감싸는 컨테이너
-const MessageContentWrapper = styled.div<{ isAiMessage?: boolean }>`
+const MessageContentWrapper = styled.div<{ $isAiMessage?: boolean }>`
 	flex-grow: 1; // 남은 공간 채우기
 	padding: 8px 12px;
 	border-radius: 6px;
-	background-color: ${({ isAiMessage }) =>
-		isAiMessage ? "var(--vscode-textBlockQuote-background)" : "transparent"}; // AI 메시지 배경색 구분
+	background-color: ${({ $isAiMessage }) =>
+		$isAiMessage ? "var(--vscode-textBlockQuote-background)" : "transparent"}; // AI 메시지 배경색 구분
 	min-width: 0; // flex item 내용 넘침 방지
 `
 
@@ -129,20 +129,26 @@ const ChatRow = memo(
 				<ChatRowContent {...props} />
 				{shouldShowCheckpoints && <CheckpointOverlay messageTs={message.ts} />}
 			</ChatRowContainer>,
-		)
+		) || [{}, { height: 0 }]
+
+		// height 값의 안전한 처리를 위해 코드를 수정 
+		const safeHeight = typeof height === 'number' && !isNaN(height) ? height : 0
 
 		useEffect(() => {
 			// used for partials command output etc.
 			// NOTE: it's important we don't distinguish between partial or complete here since our scroll effects in chatview need to handle height change during partial -> complete
 			const isInitialRender = prevHeightRef.current === 0 // prevents scrolling when new element is added since we already scroll for that
 			// height starts off at Infinity
-			if (isLast && height !== 0 && height !== Infinity && height !== prevHeightRef.current) {
+			console.log("safeHeight", safeHeight)
+			console.log("isLast", isLast)
+			console.log("prevHeightRef.current", prevHeightRef.current)
+			if (isLast && safeHeight > 0 && safeHeight !== Infinity && safeHeight !== prevHeightRef.current) {
 				if (!isInitialRender) {
-					onHeightChange(height > prevHeightRef.current)
+					onHeightChange(safeHeight > prevHeightRef.current)
 				}
-				prevHeightRef.current = height
+				prevHeightRef.current = safeHeight
 			}
-		}, [height, isLast, onHeightChange, message])
+		}, [safeHeight, isLast, onHeightChange, message])
 
 		// we cannot return null as virtuoso does not support it so we use a separate visibleMessages array to filter out messages that should not be rendered
 		return chatrow
@@ -1185,9 +1191,10 @@ export const ChatRowContent = ({ message, isExpanded, onToggleExpand, lastModifi
 					case "checkpoint_created": // No Avatar/Wrapper
 						return (
 							<>
-								<CheckmarkControl
-									messageTs={message.ts}
+								<CheckmarkControl 
+									messageTs={message.ts} 
 									isCheckpointCheckedOut={message.isCheckpointCheckedOut}
+									small="true"
 								/>
 							</>
 						)
@@ -1469,7 +1476,7 @@ export const ChatRowContent = ({ message, isExpanded, onToggleExpand, lastModifi
 				<div style={{ display: "flex", alignItems: "flex-start" }}>
 					{/* 아바타 이미지 표시 */}
 					<AvatarImage src={getAvatarSrc()} alt="Alpha Avatar" />
-					<MessageContentWrapper isAiMessage={true}>{renderSpecificContent()}</MessageContentWrapper>
+					<MessageContentWrapper $isAiMessage={true}>{renderSpecificContent()}</MessageContentWrapper>
 				</div>
 			</>
 		)

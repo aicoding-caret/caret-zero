@@ -1,7 +1,7 @@
 {
   "project_overview": {
     "name": "Caret",
-    "description": "VSCode extension for AI assistance, focusing on personalized development partnership.",
+    "description": "VSCode extension for AI assistance, focusing on personalized development partnership. This project (Caret) is a fork of Cline. The 'cline-upstream' directory contains the original Cline source code for reference.",
     "repository_url": "https://github.com/fstory97/cline"
   },
   "architecture": {

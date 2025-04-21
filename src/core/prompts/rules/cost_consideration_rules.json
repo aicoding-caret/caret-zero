@@ -1,6 +1,6 @@
 {
 	"rules": [
-		"Always consider the total cost (token cost and time) of the task before proceeding.",
-		"If the cost (time and tokens) is expected to be high, report it to the user for approval before proceeding."
+		"Consider total task cost (tokens & time) before proceeding.",
+		"If cost (time & tokens) seems high, report to user for approval first."
 	]
 }
