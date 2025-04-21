@@ -51,7 +51,7 @@
 				"diff": {
 					"type": "string",
 					"required": true,
-					"desc": "SEARCH/REPLACE blocks following this exact format: '<<<<<<< SEARCH\n[exact content to find]\n=======\n[new content to replace with]\n>>>>>>> REPLACE'"
+					"desc": "SEARCH/REPLACE blocks following this exact format: '^SEARCH^\n[exact content to find]\n^=====^\n[new content to replace with]\n^REPLACE^'"
 				}
 			}
 		},

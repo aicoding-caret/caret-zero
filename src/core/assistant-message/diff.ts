@@ -199,11 +199,11 @@ function blockAnchorFallbackMatch(originalContent: string, searchContent: string
  *
  * The diff format is a custom structure that uses three markers to define changes:
  *
- *   <<<<<<< SEARCH
+ *   ^SEARCH^
  *   [Exact content to find in the original file]
  *   =======
  *   [Content to replace with]
- *   >>>>>>> REPLACE
+ *   ^REPLACE^
  *
  * Behavior and Assumptions:
  * 1. The file is processed chunk-by-chunk. Each chunk of `diffContent` may contain
@@ -225,8 +225,8 @@ function blockAnchorFallbackMatch(originalContent: string, searchContent: string
  *
  * 4. Applying Changes:
  *    - Before encountering the "=======" marker, lines are accumulated as search content.
- *    - After "=======" and before ">>>>>>> REPLACE", lines are accumulated as replacement content.
- *    - Once the block is complete (">>>>>>> REPLACE"), the matched section in the original
+ *    - After "=======" and before "^REPLACE^", lines are accumulated as replacement content.
+ *    - Once the block is complete ("^REPLACE^"), the matched section in the original
  *      file is replaced with the accumulated replacement lines, and the position in the original
  *      file is advanced.
  *
@@ -287,13 +287,13 @@ function normalizeDiffContent(content: string): string {
 			content = cdataContent;
 		} else {
 			// CDATA 끝이 없는 경우, SEARCH & REPLACE 블록만 추출
-			const searchStart = content.indexOf('<<<<<<< SEARCH');
-			const separator = content.indexOf('=======');
-			const replaceEnd = content.indexOf('>>>>>>> REPLACE');
+			const searchStart = content.indexOf('^SEARCH^');
+			const separator = content.indexOf('^=====^');
+			const replaceEnd = content.indexOf('^REPLACE^');
 			
 			if (searchStart !== -1 && separator !== -1) {
 				const searchContent = content.substring(searchStart, separator).trim();
-				let replaceContent = content.substring(separator + '======='.length).trim();
+				let replaceContent = content.substring(separator + '^=====^'.length).trim();
 				
 				// REPLACE 블록이 불완전한 경우 처리
 				if (replaceEnd === -1) {
@@ -304,7 +304,7 @@ function normalizeDiffContent(content: string): string {
 					}
 					
 					// REPLACE 마커 추가
-					content = `${searchContent}\n=======\n${replaceContent}\n>>>>>>> REPLACE`;
+					content = `${searchContent}\n=======\n${replaceContent}\n^REPLACE^`;
 					
 					console.debug(`[불완전한 REPLACE 블록 처리]`, {
 						SEARCH시작: searchStart,
@@ -342,19 +342,14 @@ function normalizeDiffContent(content: string): string {
 	// 줄바꿈 정규화
 	content = content.replace(/\r\n/g, '\n');
 
-	// SEARCH & REPLACE 블록 형식 정규화
-	content = content.replace(/<<<<<<<\s*SEARCH/g, '<<<<<<< SEARCH')
-					.replace(/=======/g, '=======')
-					.replace(/>>>>>>>\s*REPLACE/g, '>>>>>>> REPLACE');
-
 	// 결과 로깅
 	console.debug(`[normalizeDiffContent 결과]`, {
 		정규화된내용: content,
 		길이: content.length,
 		줄바꿈수: (content.match(/\n/g) || []).length,
-		SEARCH존재: content.includes('<<<<<<< SEARCH'),
-		구분자존재: content.includes('======='),
-		REPLACE존재: content.includes('>>>>>>> REPLACE'),
+		SEARCH존재: content.includes('^SEARCH^'),
+		구분자존재: content.includes('^=====^'),
+		REPLACE존재: content.includes('^REPLACE^'),
 	});
 
 	return content;
@@ -367,16 +362,16 @@ function isMessageComplete(message: string): boolean {
 	}
 	
 	// SEARCH/REPLACE 블록 확인
-	const hasCompleteSearchBlock = message.includes('<<<<<<< SEARCH') && 
-								  message.includes('=======') && 
-								  message.includes('>>>>>>> REPLACE');
+	const hasCompleteSearchBlock = message.includes('^SEARCH^') && 
+								  message.includes('^=====^') && 
+								  message.includes('^REPLACE^');
 	
 	if (!hasCompleteSearchBlock) {
 		return false;
 	}
 	
 	// REPLACE 블록 내용 확인
-	const replaceContent = message.split('=======')[1]?.split('>>>>>>> REPLACE')[0] || '';
+	const replaceContent = message.split('^=====^')[1]?.split('^REPLACE^')[0] || '';
 	const hasCompleteReplaceBlock = replaceContent.trim().endsWith(');');
 	
 	return hasCompleteReplaceBlock;
@@ -446,9 +441,9 @@ export async function constructNewFileContent(
 	const lastLine = lines[lines.length - 1];
 	if (lines.length > 0 &&
 		(lastLine.startsWith("<") || lastLine.startsWith("=") || lastLine.startsWith(">")) &&
-		lastLine !== "<<<<<<< SEARCH" &&
+		lastLine !== "^SEARCH^" &&
 		lastLine !== "=======" &&
-		lastLine !== ">>>>>>> REPLACE") {
+		lastLine !== "^REPLACE^") {
 		lines.pop();
 		log.debug(`[2-3] 부분 마커 제거`, {
 			removedLine: lastLine
@@ -456,9 +451,9 @@ export async function constructNewFileContent(
 	}
 
 	// 2-4: SEARCH/REPLACE 블록 형식 검증
-	const hasSearchBlock = lines.includes("<<<<<<< SEARCH");
+	const hasSearchBlock = lines.includes("^SEARCH^");
 	const hasSeparator = lines.includes("=======");
-	const hasReplaceBlock = lines.includes(">>>>>>> REPLACE");
+	const hasReplaceBlock = lines.includes("^REPLACE^");
 	log.debug(`[2-4] 블록 형식 검증`, {
 		hasSearchBlock,
 		hasSeparator,
@@ -473,12 +468,12 @@ export async function constructNewFileContent(
 			hasReplaceBlock,
 			입력된내용: diffContent,
 		});
-		throw new Error("SEARCH/REPLACE 블록 형식이 올바르지 않습니다. <<<<<<< SEARCH, =======, >>>>>>> REPLACE 마커가 필요합니다.");
+		throw new Error("SEARCH/REPLACE 블록 형식이 올바르지 않습니다. ^SEARCH^, =======, ^REPLACE^ 마커가 필요합니다.");
 	}
 
 	// 3-1: 라인별 처리 시작
 	for (const line of lines) {
-		if (line === "<<<<<<< SEARCH") {
+		if (line === "^SEARCH^") {
 			inSearch = true;
 			currentSearchContent = "";
 			log.debug(`[3-1] SEARCH 블록 시작`, {
@@ -616,7 +611,7 @@ export async function constructNewFileContent(
 			continue;
 		}
 
-		if (line === ">>>>>>> REPLACE") {
+		if (line === "^REPLACE^") {
 			currentReplaceContent = normalizeContent(currentReplaceContent);
 			
 			// 3-3: REPLACE 블록 처리
@@ -712,9 +707,9 @@ const defaultMessageRule: MessageRule = {
 	isComplete: (message: string) => {
 		return message.includes('<![CDATA[') && 
 			   message.includes(']]>') && 
-			   message.includes('<<<<<<< SEARCH') && 
-			   message.includes('=======') && 
-			   message.includes('>>>>>>> REPLACE');
+			   message.includes('^SEARCH^') && 
+			   message.includes('^=====^') && 
+			   message.includes('^REPLACE^');
 	},
 	
 	normalize: (message: string) => {
@@ -731,9 +726,9 @@ const defaultMessageRule: MessageRule = {
 	
 	validate: (message: string) => {
 		// SEARCH/REPLACE 블록 검증
-		const searchStart = message.indexOf('<<<<<<< SEARCH');
-		const separator = message.indexOf('=======');
-		const replaceEnd = message.indexOf('>>>>>>> REPLACE');
+		const searchStart = message.indexOf('^SEARCH^');
+		const separator = message.indexOf('^=====^');
+		const replaceEnd = message.indexOf('^REPLACE^');
 		
 		return searchStart !== -1 && 
 			   separator !== -1 && 
@@ -756,9 +751,9 @@ class MessagePipeline {
 		console.debug(`[MessagePipeline] 메시지 처리 시작`, {
 			원본메시지길이: message.length,
 			CDATA존재: message.includes('<![CDATA['),
-			SEARCH존재: message.includes('<<<<<<< SEARCH'),
-			구분자존재: message.includes('======='),
-			REPLACE존재: message.includes('>>>>>>> REPLACE')
+			SEARCH존재: message.includes('^SEARCH^'),
+			구분자존재: message.includes('^=====^'),
+			REPLACE존재: message.includes('^REPLACE^')
 		});
 		
 		// 메시지 정규화
@@ -835,7 +830,7 @@ class MessageProcessor {
 			if (message.length < this.MIN_MESSAGE_LENGTH && 
 				!message.includes('partialMessage') && 
 				!message.includes('<![CDATA[') && 
-				!message.includes('<<<<<<< SEARCH')) {
+				!message.includes('^SEARCH^')) {
 				console.debug('[MessageProcessor] 메시지가 너무 짧습니다. 버퍼에 추가');
 				this.addToBuffer(message);
 				return;
@@ -873,10 +868,10 @@ class MessageProcessor {
 			}
 
 			// SEARCH/REPLACE 블록 처리 개선
-			if (message.includes('<<<<<<< SEARCH')) {
-				const searchStart = message.indexOf('<<<<<<< SEARCH');
-				const separator = message.indexOf('=======');
-				const replaceEnd = message.indexOf('>>>>>>> REPLACE');
+			if (message.includes('^SEARCH^')) {
+				const searchStart = message.indexOf('^SEARCH^');
+				const separator = message.indexOf('^=====^');
+				const replaceEnd = message.indexOf('^REPLACE^');
 				
 				if (separator === -1 || replaceEnd === -1) {
 					console.debug('[MessageProcessor] 불완전한 SEARCH/REPLACE 블록 감지, 버퍼링 시작');
@@ -930,12 +925,12 @@ class MessageProcessor {
 		}
 
 		// SEARCH/REPLACE 블록 연속성 검사
-		if (previous.includes('<<<<<<< SEARCH')) {
-			if (!previous.includes('=======') && !current.startsWith('<<<<<<< SEARCH')) {
+		if (previous.includes('^SEARCH^')) {
+			if (!previous.includes('^=====^') && !current.startsWith('^SEARCH^')) {
 				return true;
 			}
-			if (previous.includes('=======') && !previous.includes('>>>>>>> REPLACE') && 
-				!current.startsWith('=======')) {
+			if (previous.includes('^=====^') && !previous.includes('^REPLACE^') && 
+				!current.startsWith('^=====^')) {
 				return true;
 			}
 		}
@@ -950,10 +945,10 @@ class MessageProcessor {
 		}
 
 		// SEARCH/REPLACE 블록 검사
-		if (message.includes('<<<<<<< SEARCH')) {
-			const searchStart = message.indexOf('<<<<<<< SEARCH');
-			const separator = message.indexOf('=======');
-			const replaceEnd = message.indexOf('>>>>>>> REPLACE');
+		if (message.includes('^SEARCH^')) {
+			const searchStart = message.indexOf('^SEARCH^');
+			const separator = message.indexOf('^=====^');
+			const replaceEnd = message.indexOf('^REPLACE^');
 			
 			if (separator === -1 || replaceEnd === -1 || 
 				separator <= searchStart || replaceEnd <= separator) {
@@ -1033,9 +1028,9 @@ class MessageProcessor {
 		}
 		
 		const cdataContent = message.substring(cdataStart + 9, cdataEnd);
-		return cdataContent.includes('<<<<<<< SEARCH') && 
-			   cdataContent.includes('=======') && 
-			   cdataContent.includes('>>>>>>> REPLACE');
+		return cdataContent.includes('^SEARCH^') && 
+			   cdataContent.includes('^=====^') && 
+			   cdataContent.includes('^REPLACE^');
 	}
 
 	private handleCompleteMessage(message: string): void {

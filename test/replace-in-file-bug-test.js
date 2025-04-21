@@ -74,11 +74,11 @@ async function testReplaceInFile(searchContent, replaceContent = "", description
 		console.log(`원본 파일 크기: ${originalContent.length} 바이트`)
 
 		// diff 내용 생성
-		const diffContent = `<<<<<<< SEARCH
+		const diffContent = `^SEARCH^
 ${searchContent}
 =======
 ${replaceContent}
->>>>>>> REPLACE`
+^REPLACE^`
 
 		console.log(`SEARCH 블록 크기: ${searchContent.length} 바이트`)
 		console.log(`REPLACE 블록 크기: ${replaceContent.length} 바이트`)

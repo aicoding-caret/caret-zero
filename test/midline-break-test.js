@@ -72,11 +72,11 @@ async function testMidlineBreak() {
 		const replaceLine = "두 번째 줄은\r\n조금 더 길어요." // Windows 줄바꿈으로 분리
 
 		const diffContent = `
-<<<<<<< SEARCH
+^SEARCH^
 ${searchLine}
 =======
 ${replaceLine}
->>>>>>> REPLACE
+^REPLACE^
 `
 
 		// 임시 diff 파일 생성

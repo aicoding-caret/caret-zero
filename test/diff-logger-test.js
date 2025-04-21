@@ -27,7 +27,7 @@ async function runTest() {
 	console.log(originalContent)
 
 	// SEARCH/REPLACE 블록 생성
-	const diffContent = ["<<<<<<< SEARCH", "세 번째 줄입니다.", "=======", "수정된 세 번째 줄입니다.", ">>>>>>> REPLACE"].join(
+	const diffContent = ["^SEARCH^", "세 번째 줄입니다.", "^=====^", "수정된 세 번째 줄입니다.", "^REPLACE^"].join(
 		"\n",
 	)
 

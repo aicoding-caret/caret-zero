@@ -29,7 +29,7 @@
 				"Reduces the chance of errors that can occur when overwriting large files."
 			],
 			"critical_guidelines": [
-				"SEARCH/REPLACE blocks MUST follow this exact format: '<<<<<<< SEARCH\n[exact content to find]\n=======\n[new content to replace with]\n>>>>>>> REPLACE'",
+				"SEARCH/REPLACE blocks MUST follow this exact format: '^SEARCH^\n[exact content to find]\n^=====^\n[new content to replace with]\n^REPLACE^'",
 				"SEARCH block content MUST exactly match the current file content, with matching whitespace and line breaks.",
 				"ALWAYS use the latest file content provided by the system (final_file_content or file_content on error) for the next SEARCH block.",
 				"Apply changes in small, logical units, especially for complex multiline blocks.",
