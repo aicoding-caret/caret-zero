@@ -8,7 +8,7 @@
 
 ### 1.1 Project Background
 
-The Caret project originated based on the open-source AI coding assistant, Caret. While Caret provided a strong foundation, it had limitations in supporting modern AI-driven development workflows, especially the "Vibe Coding" paradigm, lacking real-time collaboration, advanced context management, robust file handling, and core development infrastructure. Caret aims to overcome these limitations and build a next-generation development environment where developers and AI collaborate closely.
+The Caret project originated based on the open-source AI coding assistant, [Cline](https://github.com/cline/cline). While Cline provided a strong foundation, it had limitations in supporting modern AI-driven development workflows, especially the "Vibe Coding" paradigm, lacking real-time collaboration, advanced context management, robust file handling, and core development infrastructure. Caret aims to overcome these limitations and build a next-generation development environment where developers and AI collaborate closely.
 
 ### 1.2 Caret Vision: AI-Powered Vibe Coding Partner
 
