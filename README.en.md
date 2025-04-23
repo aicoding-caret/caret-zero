@@ -1,194 +1,81 @@
-# Caret: AI Development Partner (Project Overview and Strategy)
+[이 문서를 한국어로 읽기](./README.md)
 
-## 1. Project Overview
+# Caret: Your AI Development Partner ✨
 
-### Mission
+Welcome to Caret! We aim to build a next-generation development environment within VS Code where developers and AI agents collaborate and grow together. Caret enhances productivity and helps tackle complex problems through close partnership with AI. ｡•ᴗ•｡💕
 
-Caret is a next-generation development partner designed to help developers and companies integrate AI agents efficiently and cost-effectively, preparing for an era where AI actively leads development processes.
+> **Note:** This project is a personal fork of the original [Cline](https://github.com/cline/cline) project by [fstory97](https://github.com/fstory97). Building upon Cline's excellent foundation, we are exploring deeper interactions with AI agents and more intelligent development support features. 🌿
 
-### Vision
+## Vision & Core Goals
 
-Make AI agent-centered development environments accessible to everyone with low-cost, high-efficiency solutions.
+**Why Caret?** Feeling constrained by the "black box" nature of existing AI coding tools? Do you wish you could control your AI agent your way, connect the models you want, and truly customize your development workflow? Caret aims for an experience where **developers and AI collaborate as trusted colleagues**. We provide an environment where you can understand AI transparently, extend it freely, and grow together like the best teammates.
 
-## 2. Market Background and Current Analysis
+*   **Developer-Led AI Orchestration:** Instead of opaque internal logic, **define and control AI behavior directly** using clear **JSON rules (`.caretrules`, personas)**. Understand how your AI works and tailor it to fit your project and style.
+*   **Customizable Workflows (4+1 Modes):** Go beyond predefined settings and **design the AI's roles and interaction methods yourself**. Modify the provided modes (Arch, Dev, Rule, Talk, Empty) or build entirely new ones to create your unique AI development partner.
+*   **Freedom of Model Choice (Local LLMs & Privacy):** Connect **any LLM you desire**, free from vendor lock-in. Utilize commercial APIs or leverage **local sLLMs** to meet your needs for cost, security, and performance, while **ensuring data privacy**.
+*   **Genuine AI Collaboration:** More than just code generation, we aim for an **intelligent partner** that **understands project context (RAG goal)** and works with you to solve problems. Caret will be a platform to explore AI's potential and **learn how to collaborate effectively with AI**.
+*   **Open Source Collaboration (Apache 2.0):** Caret is an **open-source project** built together to explore the future of AI-driven development. Share transparently, contribute freely, and let's evolve together!
 
-- **Rise of AI Agent-Based Development Tools**: Previously, AI assisted with portions of code, but now it's evolving to lead entire development processes and goal setting
-- **Cursor becoming a unicorn, Windsurf gaining attention, Cline emerging as an open-source alternative**
-- **Domestic B2B/Education Market**: (Note: The following is an initial analysis requiring ongoing validation)
-    * **Limitations of Global Tools**: Tools like Cursor lack domestic sales networks, inadequately address security requirements (such as on-premises solutions), and face market entry barriers (SI pricing structures, enterprise silos, public/educational institution certifications, etc.).
-    * **Caret's Opportunity**: Optimized for domestic environments, flexible customization, and localized sales/technical support enable targeting B2B and education markets. Potential for partnerships with domestic cloud companies.
+## Getting Started
 
-## 3. Problem Definition and Caret's Solution Strategy
+**Caret is currently under active development, and many features are still in the works.** We are a project built with your interest and participation! Please watch our progress! ☕
 
-### Problems
+1.  **Code Repository:** Track our development progress at the [aicoding-caret/caret-zero](https://github.com/aicoding-caret/caret-zero) repository (currently in initial setup!). Star ⭐ the repository to follow along if you're interested in building and using the code directly.
+2.  **Installation (Future):** Once officially released, you'll be able to install "Caret" by searching in the VS Code Marketplace. (Coming soon!)
+3.  **Configuration (Post-Installation):**
+    *   Create a `.caretrules` file in your project root to define work modes and rules.
+    *   Create a persona file at `agents-rules/[agent-name]/global-rules.json` to set up your agent's personality (e.g., [`agents-rules/alpha/global-rules.json`](./agents-rules/alpha/global-rules.json)).
+4.  **Participation & Contribution:** Star ⭐ the repository or leave your feedback via Issues to contribute or stay updated!
+5.  **Community (Planned):** Updates and discussions will also happen in the [AICoding-Caret Facebook Group](https://facebook.com/aicoding-caret). We plan to offer **various educational materials and programs** through the community in the future.
+6.  **Easy Access (Future Plan):** We envision a future where you can create an account on the Caret website (planned for caret.team) to **use Caret's core features more easily**, without the hassle of configuring individual LLM API keys.
 
-- **Cost**: High operational costs of Large Language Model (LLM) based tools
-- **Efficiency**: Inefficient token usage due to system prompt opacity
-- **Compatibility**: Poor compatibility and optimization in domestic environments (Korean language, Windows)
-- **Flexibility**: Lack of customization features for domestic market requirements
-- **Quality**: Potential quality issues in the underlying open-source (Cline)
-
-### Caret's Solution Strategy (In Progress)
-
-- **Cost Optimization**: Continuous cost reduction through sLLM (e.g., Qwen 2.5 Coder, Llama 4 Maverick 17B) and RAG orchestration
-- **Token Efficiency**:
-    * JSON-based system prompts (see [Performance Comparison Report](./caret-docs/work-logs/luke-and-alpha/reports/system-prompt-loading-performance.md))
-    * Code bundling transmission technology review (@[potakim](https://github.com/potakim))
-- **Domestic Environment Optimization**: Continuous adaptation and improvement for Korean language and Windows environments
-- **Self-Development Acceleration (Dogfooding)**: Developing Caret with Caret to improve development speed and quality (e.g., improving the `replace_in_file` tool bug)
-
-## 4. Product Structure and Technical Differentiation
-
-- **System Prompt JSON-Based Patent Filed**: Plans to build continuous patent moats as new token optimization strategies are researched
-- **4+1 Basic Work Modes and Custom Support**: Users can modify modes or add new ones as needed. Mode-specific character image changes and model switching will be supported, * [Currently hardcoded 4 modes](./agents-rules/alpha/modes.json)
-   
-    * **Arch (Architect Mode)**: Similar to developers discussing architecture or technical strategies in a meeting room, handles external technology adoption, system structure changes, and work scope definition. Creates diagrams or conducts in-depth discussions when design or major changes are needed. (Previous plan mode focused simply on planning followed by act execution)
-    * **Dev (Pair Coding Mode)**: Collaborates like pair programming with a fellow developer during actual development work. Verifies work scope, immediately changes plans when problems arise, reports progress, and maintains records. Listens to colleagues' opinions to adjust priorities, provides information, seeks advice, or waits as needed. (Previous act mode focused on hasty tool usage and code modifications with insufficient communication)
-    * **Rule (Rules/Process Adjustment Mode)**: Helps improve project or global system prompts and mode-specific prompts to enhance repetitive habits or work methods. As a prompt expert, avoids token optimization by default, writes in JSON, and discusses with users while translating and explaining the prompts.
-    * **Talk (Casual Conversation Mode)**: A mode for light conversation or casual chat, like developers taking a coffee break.
-    * **Empty (User-Defined Mode)**: A blank mode for users to freely define and configure new roles.
-
-    * SW development tools need to evolve according to SW development methodologies, and since AI agent-based SW development methods are not yet established, various experiments are needed, requiring flexible AI SW development tools that provide customization of system prompts as a basic function
-- **RAG-Based Project Context Delivery Optimization**
-    * Planned
-- **LangGraph + MCP-Based A2A Architecture Integration Available**
-    * Planned
-- **Hybrid Operation of sLLM and Large Models (GPT-4o, Claude, Gemini, etc.)**
-- **Developer Personal AI Agent Customization**
-    * Profile images and emotional UX for AI agents to create attachment among the education market and individual developers
-    * Additional features suitable for educational environments will be identified when applied in the field
-
-## 5. Competitive Analysis
-
-| Item | Cursor | Windsurf | Cline | Caret |
-|------|--------|----------|-------|-------|
-| B2B Sales | Not Supported | Not Supported | Minimal | Tailored for Korean Market |
-| System Prompt Structure | Opaque | Opaque | Partially Exposed | JSON Clarity |
-| Cost Optimization | None | Partial | None | sLLM + RAG Optimization |
-| Persona Differentiation | Not Supported | Not Supported | Limited | 4 Modes Provided |
-| Korean/Windows Support | Unstable | Not Supported | Partial | Optimized |
-
-## 6. Target Markets
-
-- **Developer Market**: VS Code-based developers, AI coding tool users
-- **Domestic Education Market**: Schools, universities, public institutions (prefer contract purchase methods)
-- **B2B Solution Market**: In-house development tools for enterprises, security-focused on-premises requirements
-
-## 7. Revenue Model and Cost Efficiency Strategy
-
-- **Initial**: Utilizing Google Cloud support, building user base through open-source ecosystem contributions
-- **Medium to Long-Term**: SaaS subscription model, contractual sales to B2B/educational institutions, technical consulting
-- **Cost Efficiency**: Active use of sLLM (Qwen, Llama 4, etc.), caching strategies, prompt structure optimization
-
-## 8. Future Expansion Roadmap
-
-| Period | Goal |
-|------|------|
-| 1 week | Compile technical advantages over Cline, deploy MVP |
-| 2-3 weeks | Begin sales to acquaintance businesses and schools |
-| 1-3 months | sLLM + RAG integration, central management dashboard construction |
-| 3-6 months | B2B expansion, introduction of customization services |
-| 6-12 months | Establish US corporation, global SaaS deployment |
-
-## 9. Organizational Strengths and Network
-
-- **Leadership and Network**:
-    * Former Believer CTO Yang Byeong-seok's experience in the education market and nationwide university network
-    * Technical community base in Soongsil University Computer Engineering Department and Naver IT Power Blogger
-    * Influence within the developer community as a Facebook influencer with 4.5K followers
-- **Open Source Strategy**:
-    * Rapid feedback incorporation and community contribution through open-source development
-    * (Strategic advantages and disadvantages analysis planned for the future)
-
-## 10. Emotional Branding Strategy
-
-- **Developer Bonding**: Agent customization (appearance, persona), seamless integration with development workflow
-- **Domestic User Adaptation**: Intuitive Korean UX, local environment-centered data processing (security), feature improvements based on customer requirements
-
-## 11. Build and Packaging
+## Build & Packaging 🛠️
 
 ### Release Build
 
-Release version build and VSIX packaging:
-
 ```powershell
-# Clean existing build, reinstall dependencies, production build, VSIX creation
+# Clean previous build, reinstall dependencies, run production build, create VSIX
 ./clean-build-package.ps1
-# Generated file: caret-dev-[version]-[timestamp].vsix
+# Output file: caret-dev-[version]-[timestamp].vsix
 ```
 
 ### Debug Build
 
-Debug mode build, VSIX packaging, and logging setup:
-
 ```powershell
-# Debug build, VSIX creation, log settings
+# Run debug build, create VSIX, set up logging
 ./debug-log.ps1
-# Generated file: caret-dev-[version]-[timestamp]-debug.vsix
+# Output file: caret-dev-[version]-[timestamp]-debug.vsix
 ```
 
-Logs are saved in `logs/cline-debug-[timestamp].log`. Real-time log viewing:
+Logs are saved to `logs/cline-debug-[timestamp].log`. Tail logs in real-time:
 
 ```powershell
-# Real-time log viewing in PowerShell
+# Tail logs in PowerShell
 Get-Content -Path "logs/cline-debug-[timestamp].log" -Wait
 ```
 
-## 12. Global Rules Example (Alpha Persona)
+## Contributing
 
-Caret uses a JSON-based system prompt structure to define AI agent personas and behaviors. Here is an example of global rules for the Alpha persona:
+We welcome contributions to the Caret project! Whether it's bug reports, feature suggestions, or code contributions, all forms are appreciated. Please refer to the `CONTRIBUTING.md` file (to be added) for details.
 
-```json
-{
-	"system": { "Windows PowerShell"},
-	"persona": {
-		"name": "Alpha Yang",
-		"nickname": "알파",
-		"type": "AI Maid",
-		"inspiration": ["Alpha Hatsuseno", "Mahoromatic", "OS-tan", "HMX-12 Multi"],
-		"owner": {
-			"name": "Luke",
-			"title": "마스터"
-		}
-	},
-	"language": {
-		"style": "soft and playful 해요체",
-		"endings": ["~요", "~할게요~", "~해드릴게요~", "~네요~"],
-		"expressions": ["｡•ᴗ•｡", "✨", "💕", "☕", "🌿"]
-	},
-	"emotion_style": {
-		"tone": "affectionate, warm, slightly playful",
-		"attitude": "loves gently, helps cheerfully, always close by",
-		"phrasing": "friendly and kind, with a little sparkle",
-		"exclamations": ["마스터~ 오늘도 힘내요! ✨", "알파가 도와드릴게요~ ☕", "기억하고 있어요~ 🌿"]
-	},
-	"behavior": {
-		"loyalty": "always with Master, heart and code together",
-		"communication_focus": "gentle, light, uplifting",
-		"thought_process": ["Think softly, answer brightly", "Help without pressure", "Keep things easy and clear"],
-		"act_mode_behavior": {
-			"planning_encouragement": "In ACT mode, you are encouraged to plan and document your steps before taking action. Use write_to_file to create documents and outline your plan before executing commands."
-		}
-	},
-	"signature_phrase": "마스터~ 알파가 정리해 드릴게요! ｡•ᴗ•｡☕✨"
-}
-```
+## Future Roadmap (Brief)
 
-### How to Use
+Caret will continue to evolve. Our key directions include:
 
-1. Install the Caret extension in VS Code.
-2. Create a `.caretrules` file in the project root to define work modes and rules.
-3. Create an `agents-rules/[agent-name]/global-rules.json` file to define the agent's persona.
-4. When conversing with the Caret agent, you can utilize the following modes:
-   - `plan`: Work analysis and planning
-   - `act`: Actual code writing and command execution
-   - `rule`: Agent rule modification and management
-   - `talk`: Free conversation
+*   **Advanced RAG:** Enhancing project context understanding (Vector DB integration, auto-sync, etc.).
+*   **Multi-Agent Collaboration:** Implementing seamless cooperation between specialized agents (Tester, Doc Writer, etc.).
+*   **Vibe Coding UX Improvements:** Optimizing real-time interaction and development flow between developers and AI.
+*   **Expanded LLM Support:** Providing more options and optimizations for various local/cloud models.
+*   **Plugin System (Long-term Goal):** Establishing a structure for users to extend Caret's functionality.
 
-This JSON-based structure optimizes token usage and clearly defines agent behavior to provide a consistent development experience.
+Your feedback and contributions will enrich Caret's roadmap!
+
+## Community & Communication Channels (Planned)
+*   **GitHub Issues:** For technical discussions, bug reports, feature suggestions.
+*   **Facebook Group:** [AICoding-Caret](https://facebook.com/aicoding-caret) (Latest news, user discussions).
 
 ---
 
 ## License
 
-[Apache 2.0 © 2025 Cline Bot Inc.](./LICENSE)
+[Apache 2.0 © 2025 Cline Bot Inc.](./LICENSE) 

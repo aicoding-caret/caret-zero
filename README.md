@@ -1,4 +1,4 @@
-[Read this document in English](./README_en.md)
+[Read this document in English](./README.en.md)
 
 # Caret: Your AI Development Partner ✨
 
