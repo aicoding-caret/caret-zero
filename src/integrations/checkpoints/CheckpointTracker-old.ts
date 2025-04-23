@@ -3,32 +3,32 @@ import os from "os"
 import * as path from "path"
 import simpleGit, { SimpleGit } from "simple-git"
 import * as vscode from "vscode"
-import { Controller as ClineProvider } from "../../core/controller"
+import { Controller as CaretProvider } from "../../core/controller"
 import { fileExistsAtPath } from "../../utils/fs"
 import { globby } from "globby"
 
 class CheckpointTracker {
-	private providerRef: WeakRef<ClineProvider>
+	private providerRef: WeakRef<CaretProvider>
 	private taskId: string
 	private disposables: vscode.Disposable[] = []
 	private cwd: string
 	private lastRetrievedShadowGitConfigWorkTree?: string
 	lastCheckpointHash?: string
 
-	private constructor(provider: ClineProvider, taskId: string, cwd: string) {
+	private constructor(provider: CaretProvider, taskId: string, cwd: string) {
 		this.providerRef = new WeakRef(provider)
 		this.taskId = taskId
 		this.cwd = cwd
 	}
 
-	public static async create(taskId: string, provider?: ClineProvider): Promise<CheckpointTracker | undefined> {
+	public static async create(taskId: string, provider?: CaretProvider): Promise<CheckpointTracker | undefined> {
 		try {
 			if (!provider) {
 				throw new Error("Provider is required to create a checkpoint tracker")
 			}
 
 			// Check if checkpoints are disabled in VS Code settings
-			const enableCheckpoints = vscode.workspace.getConfiguration("cline").get<boolean>("enableCheckpoints") ?? true
+			const enableCheckpoints = vscode.workspace.getConfiguration("caret").get<boolean>("enableCheckpoints") ?? true
 			if (!enableCheckpoints) {
 				return undefined // Don't create tracker when disabled
 			}
@@ -53,7 +53,7 @@ class CheckpointTracker {
 	private static async getWorkingDirectory(): Promise<string> {
 		const cwd = vscode.workspace.workspaceFolders?.map((folder) => folder.uri.fsPath).at(0)
 		if (!cwd) {
-			throw new Error("No workspace detected. Please open Cline in a workspace to use checkpoints.")
+			throw new Error("No workspace detected. Please open Caret in a workspace to use checkpoints.")
 		}
 		const homedir = os.homedir()
 		const desktopPath = path.join(homedir, "Desktop")
@@ -85,7 +85,7 @@ class CheckpointTracker {
 		return gitPath
 	}
 
-	public static async doesShadowGitExist(taskId: string, provider?: ClineProvider): Promise<boolean> {
+	public static async doesShadowGitExist(taskId: string, provider?: CaretProvider): Promise<boolean> {
 		const globalStoragePath = provider?.context.globalStorageUri.fsPath
 		if (!globalStoragePath) {
 			return false
@@ -227,7 +227,7 @@ class CheckpointTracker {
 			)
 
 			// Set up git identity (git throws an error if user.name or user.email is not set)
-			await git.addConfig("user.name", "Cline Checkpoint")
+			await git.addConfig("user.name", "Caret Checkpoint")
 			await git.addConfig("user.email", "noreply@example.com")
 
 			await this.addAllFiles(git)

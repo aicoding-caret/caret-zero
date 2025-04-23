@@ -5,11 +5,11 @@ import { useEvent, useMount } from "react-use"
 import { Virtuoso, type VirtuosoHandle } from "react-virtuoso"
 import styled from "styled-components" // Ensure styled-components is imported
 import {
-	ClineApiReqInfo,
-	ClineAsk,
-	ClineMessage,
-	ClineSayBrowserAction,
-	ClineSayTool,
+	CaretApiReqInfo,
+	CaretAsk,
+	CaretMessage,
+	CaretSayBrowserAction,
+	CaretSayTool,
 	ExtensionMessage,
 	RetryStatusMessage, // 추가: 재시도 상태 메시지 타입
 } from "../../../../src/shared/ExtensionMessage"
@@ -167,7 +167,7 @@ const ChatView = ({ isHidden, showAnnouncement, hideAnnouncement, showHistoryVie
 	// Destructure onShowSettings
 	const {
 		version,
-		clineMessages: messages,
+		caretMessages: messages,
 		taskHistory,
 		apiConfiguration,
 		telemetrySetting,
@@ -226,10 +226,10 @@ const ChatView = ({ isHidden, showAnnouncement, hideAnnouncement, showHistoryVie
 	const apiMetrics = useMemo(() => getApiMetrics(modifiedMessages), [modifiedMessages])
 
 	const lastApiReqTotalTokens = useMemo(() => {
-		const getTotalTokensFromApiReqMessage = (msg: ClineMessage) => {
+		const getTotalTokensFromApiReqMessage = (msg: CaretMessage) => {
 			if (!msg.text) return 0
 			try {
-				const { tokensIn, tokensOut, cacheWrites, cacheReads }: ClineApiReqInfo = JSON.parse(msg.text)
+				const { tokensIn, tokensOut, cacheWrites, cacheReads }: CaretApiReqInfo = JSON.parse(msg.text)
 				return (tokensIn || 0) + (tokensOut || 0) + (cacheWrites || 0) + (cacheReads || 0)
 			} catch (e) {
 				console.error("Failed to parse API Req Info:", msg.text, e)
@@ -248,7 +248,7 @@ const ChatView = ({ isHidden, showAnnouncement, hideAnnouncement, showHistoryVie
 	const textAreaRef = useRef<HTMLTextAreaElement>(null)
 	const [textAreaDisabled, setTextAreaDisabled] = useState(false)
 	const [selectedImages, setSelectedImages] = useState<string[]>([])
-	const [clineAsk, setClineAsk] = useState<ClineAsk | undefined>(undefined)
+	const [caretAsk, setCaretAsk] = useState<CaretAsk | undefined>(undefined)
 	const [enableButtons, setEnableButtons] = useState<boolean>(false)
 	const [primaryButtonText, setPrimaryButtonText] = useState<string | undefined>("Approve")
 	const [secondaryButtonText, setSecondaryButtonText] = useState<string | undefined>("Reject")
@@ -270,41 +270,41 @@ const ChatView = ({ isHidden, showAnnouncement, hideAnnouncement, showHistoryVie
 					switch (lastMessage.ask) {
 						case "api_req_failed":
 							setTextAreaDisabled(true)
-							setClineAsk("api_req_failed")
+							setCaretAsk("api_req_failed")
 							setEnableButtons(true)
 							setPrimaryButtonText("Retry")
 							setSecondaryButtonText("Start New Task")
 							break
 						case "mistake_limit_reached":
 							setTextAreaDisabled(false)
-							setClineAsk("mistake_limit_reached")
+							setCaretAsk("mistake_limit_reached")
 							setEnableButtons(true)
 							setPrimaryButtonText("Proceed Anyways")
 							setSecondaryButtonText("Start New Task")
 							break
 						case "auto_approval_max_req_reached":
 							setTextAreaDisabled(true)
-							setClineAsk("auto_approval_max_req_reached")
+							setCaretAsk("auto_approval_max_req_reached")
 							setEnableButtons(true)
 							setPrimaryButtonText("Proceed")
 							setSecondaryButtonText("Start New Task")
 							break
 						case "followup":
 							setTextAreaDisabled(isPartial)
-							setClineAsk("followup")
+							setCaretAsk("followup")
 							setEnableButtons(false)
 							break
 						case "plan_mode_respond":
 							setTextAreaDisabled(isPartial)
-							setClineAsk("plan_mode_respond")
+							setCaretAsk("plan_mode_respond")
 							setEnableButtons(false)
 							break
 						case "tool":
 							setTextAreaDisabled(isPartial)
-							setClineAsk("tool")
+							setCaretAsk("tool")
 							setEnableButtons(!isPartial)
 							try {
-								const tool = JSON.parse(lastMessage.text || "{}") as ClineSayTool
+								const tool = JSON.parse(lastMessage.text || "{}") as CaretSayTool
 								switch (tool.tool) {
 									case "editedExistingFile":
 									case "newFileCreated":
@@ -324,42 +324,42 @@ const ChatView = ({ isHidden, showAnnouncement, hideAnnouncement, showHistoryVie
 							break
 						case "browser_action_launch":
 							setTextAreaDisabled(isPartial)
-							setClineAsk("browser_action_launch")
+							setCaretAsk("browser_action_launch")
 							setEnableButtons(!isPartial)
 							setPrimaryButtonText("Approve")
 							setSecondaryButtonText("Reject")
 							break
 						case "command":
 							setTextAreaDisabled(isPartial)
-							setClineAsk("command")
+							setCaretAsk("command")
 							setEnableButtons(!isPartial)
 							setPrimaryButtonText("Run Command")
 							setSecondaryButtonText("Reject")
 							break
 						case "command_output":
 							setTextAreaDisabled(false)
-							setClineAsk("command_output")
+							setCaretAsk("command_output")
 							setEnableButtons(true)
 							setPrimaryButtonText("Proceed While Running")
 							setSecondaryButtonText(undefined)
 							break
 						case "use_mcp_server":
 							setTextAreaDisabled(isPartial)
-							setClineAsk("use_mcp_server")
+							setCaretAsk("use_mcp_server")
 							setEnableButtons(!isPartial)
 							setPrimaryButtonText("Approve")
 							setSecondaryButtonText("Reject")
 							break
 						case "completion_result":
 							setTextAreaDisabled(isPartial)
-							setClineAsk("completion_result")
+							setCaretAsk("completion_result")
 							setEnableButtons(!isPartial)
 							setPrimaryButtonText("Start New Task")
 							setSecondaryButtonText(undefined)
 							break
 						case "resume_task":
 							setTextAreaDisabled(false)
-							setClineAsk("resume_task")
+							setCaretAsk("resume_task")
 							setEnableButtons(true)
 							setPrimaryButtonText("Resume Task")
 							setSecondaryButtonText(undefined)
@@ -367,7 +367,7 @@ const ChatView = ({ isHidden, showAnnouncement, hideAnnouncement, showHistoryVie
 							break
 						case "resume_completed_task":
 							setTextAreaDisabled(false)
-							setClineAsk("resume_completed_task")
+							setCaretAsk("resume_completed_task")
 							setEnableButtons(true)
 							setPrimaryButtonText("Start New Task")
 							setSecondaryButtonText(undefined)
@@ -382,7 +382,7 @@ const ChatView = ({ isHidden, showAnnouncement, hideAnnouncement, showHistoryVie
 								setInputValue("")
 								setTextAreaDisabled(true)
 								setSelectedImages([])
-								setClineAsk(undefined)
+								setCaretAsk(undefined)
 								setEnableButtons(false)
 							}
 							break
@@ -406,7 +406,7 @@ const ChatView = ({ isHidden, showAnnouncement, hideAnnouncement, showHistoryVie
 			}
 		} else {
 			setTextAreaDisabled(false)
-			setClineAsk(undefined)
+			setCaretAsk(undefined)
 			setEnableButtons(false)
 			setPrimaryButtonText("Approve")
 			setSecondaryButtonText("Reject")
@@ -416,7 +416,7 @@ const ChatView = ({ isHidden, showAnnouncement, hideAnnouncement, showHistoryVie
 	useEffect(() => {
 		if (messages.length === 0) {
 			setTextAreaDisabled(false)
-			setClineAsk(undefined)
+			setCaretAsk(undefined)
 			setEnableButtons(false)
 			setPrimaryButtonText("Approve")
 			setSecondaryButtonText("Reject")
@@ -489,7 +489,7 @@ const ChatView = ({ isHidden, showAnnouncement, hideAnnouncement, showHistoryVie
 
 	const isStreaming = useMemo(() => {
 		const isLastAsk = !!modifiedMessages.at(-1)?.ask
-		const isToolCurrentlyAsking = isLastAsk && clineAsk !== undefined && enableButtons && primaryButtonText !== undefined
+		const isToolCurrentlyAsking = isLastAsk && caretAsk !== undefined && enableButtons && primaryButtonText !== undefined
 		if (isToolCurrentlyAsking) return false
 
 		const isLastMessagePartial = modifiedMessages.at(-1)?.partial === true
@@ -505,7 +505,7 @@ const ChatView = ({ isHidden, showAnnouncement, hideAnnouncement, showHistoryVie
 			}
 		}
 		return false
-	}, [modifiedMessages, clineAsk, enableButtons, primaryButtonText])
+	}, [modifiedMessages, caretAsk, enableButtons, primaryButtonText])
 
 	const handleSendMessage = useCallback(
 		(text: string, images: string[]) => {
@@ -513,8 +513,8 @@ const ChatView = ({ isHidden, showAnnouncement, hideAnnouncement, showHistoryVie
 			if (text || images.length > 0) {
 				if (messages.length === 0) {
 					vscode.postMessage({ type: "newTask", text, images })
-				} else if (clineAsk) {
-					switch (clineAsk) {
+				} else if (caretAsk) {
+					switch (caretAsk) {
 						case "followup":
 						case "plan_mode_respond":
 						case "tool":
@@ -533,12 +533,12 @@ const ChatView = ({ isHidden, showAnnouncement, hideAnnouncement, showHistoryVie
 				setInputValue("")
 				setTextAreaDisabled(true)
 				setSelectedImages([])
-				setClineAsk(undefined)
+				setCaretAsk(undefined)
 				setEnableButtons(false)
 				disableAutoScrollRef.current = false
 			}
 		},
-		[messages.length, clineAsk],
+		[messages.length, caretAsk],
 	)
 
 	const startNewTask = useCallback(() => {
@@ -549,7 +549,7 @@ const ChatView = ({ isHidden, showAnnouncement, hideAnnouncement, showHistoryVie
 		(text?: string, images?: string[]) => {
 			const trimmedInput = text?.trim()
 			switch (
-				clineAsk // API 오류에서도 재시도 지원
+				caretAsk // API 오류에서도 재시도 지원
 			) {
 				case "api_req_failed":
 				case "command":
@@ -575,11 +575,11 @@ const ChatView = ({ isHidden, showAnnouncement, hideAnnouncement, showHistoryVie
 					break
 			}
 			setTextAreaDisabled(true)
-			setClineAsk(undefined)
+			setCaretAsk(undefined)
 			setEnableButtons(false)
 			disableAutoScrollRef.current = false
 		},
-		[clineAsk, startNewTask],
+		[caretAsk, startNewTask],
 	)
 
 	const handleSecondaryButtonClick = useCallback(
@@ -591,7 +591,7 @@ const ChatView = ({ isHidden, showAnnouncement, hideAnnouncement, showHistoryVie
 				return
 			}
 
-			switch (clineAsk) {
+			switch (caretAsk) {
 				case "api_req_failed":
 				case "mistake_limit_reached":
 				case "auto_approval_max_req_reached":
@@ -612,11 +612,11 @@ const ChatView = ({ isHidden, showAnnouncement, hideAnnouncement, showHistoryVie
 					break
 			}
 			setTextAreaDisabled(true)
-			setClineAsk(undefined)
+			setCaretAsk(undefined)
 			setEnableButtons(false)
 			disableAutoScrollRef.current = false
 		},
-		[clineAsk, startNewTask, isStreaming],
+		[caretAsk, startNewTask, isStreaming],
 	)
 
 	const handleTaskCloseButtonClick = useCallback(() => {
@@ -724,7 +724,7 @@ const ChatView = ({ isHidden, showAnnouncement, hideAnnouncement, showHistoryVie
 		})
 	}, [modifiedMessages])
 
-	const isBrowserSessionMessage = (message: ClineMessage): boolean => {
+	const isBrowserSessionMessage = (message: CaretMessage): boolean => {
 		if (message.type === "ask") return ["browser_action_launch"].includes(message.ask!)
 		if (message.type === "say")
 			return ["browser_action_launch", "api_req_started", "text", "browser_action", "browser_action_result"].includes(
@@ -734,8 +734,8 @@ const ChatView = ({ isHidden, showAnnouncement, hideAnnouncement, showHistoryVie
 	}
 
 	const groupedMessages = useMemo(() => {
-		const result: (ClineMessage | ClineMessage[])[] = []
-		let currentGroup: ClineMessage[] = []
+		const result: (CaretMessage | CaretMessage[])[] = []
+		let currentGroup: CaretMessage[] = []
 		let isInBrowserSession = false
 		const endBrowserSession = () => {
 			if (currentGroup.length > 0) {
@@ -769,7 +769,7 @@ const ChatView = ({ isHidden, showAnnouncement, hideAnnouncement, showHistoryVie
 					currentGroup.push(message)
 					if (message.say === "browser_action") {
 						try {
-							const browserAction = JSON.parse(message.text || "{}") as ClineSayBrowserAction
+							const browserAction = JSON.parse(message.text || "{}") as CaretSayBrowserAction
 							if (browserAction.action === "close") endBrowserSession()
 						} catch (e) {
 							console.error("Failed to parse browser action:", message.text, e)
@@ -878,7 +878,7 @@ const ChatView = ({ isHidden, showAnnouncement, hideAnnouncement, showHistoryVie
 	const placeholderText = useMemo(() => (task ? "Type a message..." : "Type your task here..."), [task])
 
 	const itemContent = useCallback(
-		(index: number, messageOrGroup: ClineMessage | ClineMessage[]) => {
+		(index: number, messageOrGroup: CaretMessage | CaretMessage[]) => {
 			if (Array.isArray(messageOrGroup)) {
 				return (
 					<BrowserSessionRow

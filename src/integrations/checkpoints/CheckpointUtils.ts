@@ -47,7 +47,7 @@ export async function getShadowGitPath(globalStoragePath: string, taskId: string
 export async function getWorkingDirectory(): Promise<string> {
 	const cwd = vscode.workspace.workspaceFolders?.map((folder) => folder.uri.fsPath).at(0)
 	if (!cwd) {
-		throw new Error("No workspace detected. Please open Cline in a workspace to use checkpoints.")
+		throw new Error("No workspace detected. Please open Caret in a workspace to use checkpoints.")
 	}
 
 	// Check if directory exists and we have read permissions

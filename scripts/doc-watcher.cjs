@@ -110,7 +110,7 @@ const envVars = loadEnvFile()
 const rulesFile = envVars.RULES_FILE || "./agents-rules/alpha/project-rules.json"
 const targetCursorRules = envVars.CURSOR_RULES_FILE || ".cursorrules"
 const targetWindsurfRules = envVars.WINDSURF_RULES_FILE || ".windsurfrules"
-const targetClinefRules = envVars.CLINE_RULES_FILE || ".caretrules"
+const targetCaretfRules = envVars.CLINE_RULES_FILE || ".caretrules"
 
 log(`Using rules file: ${rulesFile}`, "debug")
 log(`Target Cursor rules: ${targetCursorRules}`, "debug")
@@ -125,10 +125,10 @@ function updateRules() {
 
 			fs.writeFileSync(targetWindsurfRules, content)
 			fs.writeFileSync(targetCursorRules, content)
-			fs.writeFileSync(targetClinefRules, content)
+			fs.writeFileSync(targetCaretfRules, content)
 
 			log(`Rules updated: ${formatTokenInfo(tokens)}`)
-			log(`Updated rules in ${targetWindsurfRules}, ${targetCursorRules}, and ${targetClinefRules}`)
+			log(`Updated rules in ${targetWindsurfRules}, ${targetCursorRules}, and ${targetCaretfRules}`)
 		} else {
 			log(`Rules file not found: ${rulesFile}`, "error")
 		}

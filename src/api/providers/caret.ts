@@ -7,7 +7,7 @@ import { ApiStream, ApiStreamUsageChunk } from "../transform/stream"
 import axios from "axios"
 import { OpenRouterErrorResponse } from "./types"
 
-export class ClineHandler implements ApiHandler {
+export class CaretHandler implements ApiHandler {
 	private options: ApiHandlerOptions
 	private client: OpenAI
 	lastGenerationId?: string
@@ -15,11 +15,11 @@ export class ClineHandler implements ApiHandler {
 	constructor(options: ApiHandlerOptions) {
 		this.options = options
 		this.client = new OpenAI({
-			baseURL: "https://api.cline.bot/v1",
-			apiKey: this.options.clineApiKey || "",
+			baseURL: "https://api.caret.bot/v1",
+			apiKey: this.options.caretApiKey || "",
 			defaultHeaders: {
-				"HTTP-Referer": "https://cline.bot", // Optional, for including your app on cline.bot rankings.
-				"X-Title": "Cline", // Optional. Shows in rankings on cline.bot.
+				"HTTP-Referer": "https://caret.bot", // Optional, for including your app on caret.bot rankings.
+				"X-Title": "Caret", // Optional. Shows in rankings on caret.bot.
 				"X-Task-ID": this.options.taskId || "", // Include the task ID in the request headers
 			},
 		})
@@ -44,10 +44,10 @@ export class ClineHandler implements ApiHandler {
 			// openrouter returns an error object instead of the openai sdk throwing an error
 			if ("error" in chunk) {
 				const error = chunk.error as OpenRouterErrorResponse["error"]
-				console.error(`Cline API Error: ${error?.code} - ${error?.message}`)
+				console.error(`Caret API Error: ${error?.code} - ${error?.message}`)
 				// Include metadata in the error message if available
 				const metadataStr = error.metadata ? `\nMetadata: ${JSON.stringify(error.metadata, null, 2)}` : ""
-				throw new Error(`Cline API Error ${error.code}: ${error.message}${metadataStr}`)
+				throw new Error(`Caret API Error ${error.code}: ${error.message}${metadataStr}`)
 			}
 
 			if (!this.lastGenerationId && chunk.id) {
@@ -95,9 +95,9 @@ export class ClineHandler implements ApiHandler {
 	async getApiStreamUsage(): Promise<ApiStreamUsageChunk | undefined> {
 		if (this.lastGenerationId) {
 			try {
-				const response = await axios.get(`https://api.cline.bot/v1/generation?id=${this.lastGenerationId}`, {
+				const response = await axios.get(`https://api.caret.bot/v1/generation?id=${this.lastGenerationId}`, {
 					headers: {
-						Authorization: `Bearer ${this.options.clineApiKey}`,
+						Authorization: `Bearer ${this.options.caretApiKey}`,
 					},
 					timeout: 15_000, // this request hangs sometimes
 				})
@@ -111,7 +111,7 @@ export class ClineHandler implements ApiHandler {
 				}
 			} catch (error) {
 				// ignore if fails
-				console.error("Error fetching cline generation details:", error)
+				console.error("Error fetching caret generation details:", error)
 			}
 		}
 		return undefined

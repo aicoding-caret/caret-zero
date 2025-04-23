@@ -22,7 +22,7 @@ demo.gif
 .prettierignore
 
 # Development/Repo specific folders
-cline-upstream/**
+caret-upstream/**
 models_backup/**
 sllm/**
 experiment/**

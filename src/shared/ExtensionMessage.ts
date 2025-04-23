@@ -8,7 +8,7 @@ import { ChatSettings } from "./ChatSettings"
 import { HistoryItem } from "./HistoryItem"
 import { McpServer, McpMarketplaceCatalog, McpMarketplaceItem, McpDownloadResponse } from "./mcp"
 import { TelemetrySetting } from "./TelemetrySetting"
-import type { BalanceResponse, UsageTransaction, PaymentTransaction } from "../shared/ClineAccount"
+import type { BalanceResponse, UsageTransaction, PaymentTransaction } from "../shared/CaretAccount"
 
 // Define ModeInfo interface
 export interface ModeInfo {
@@ -104,7 +104,7 @@ export interface ExtensionMessage {
 	lmStudioModels?: string[]
 	vsCodeLmModels?: { vendor?: string; family?: string; version?: string; id?: string }[]
 	filePaths?: string[]
-	partialMessage?: ClineMessage
+	partialMessage?: CaretMessage
 	openRouterModels?: Record<string, ModelInfo>
 	openAiModels?: string[]
 	mcpServers?: McpServer[]
@@ -160,7 +160,7 @@ export interface ExtensionState {
 	remoteBrowserHost?: string // Added
 	chatSettings: ChatSettings
 	checkpointTrackerErrorMessage?: string
-	clineMessages: ClineMessage[]
+	caretMessages: CaretMessage[]
 	currentTaskItem?: HistoryItem
 	customInstructions?: string
 	mcpMarketplaceEnabled?: boolean
@@ -184,11 +184,11 @@ export interface ExtensionState {
 	apiError: ApiErrorInfo | null // API 에러 정보
 }
 
-export interface ClineMessage {
+export interface CaretMessage {
 	ts: number
 	type: "ask" | "say"
-	ask?: ClineAsk
-	say?: ClineSay
+	ask?: CaretAsk
+	say?: CaretSay
 	text?: string
 	reasoning?: string
 	images?: string[]
@@ -199,7 +199,7 @@ export interface ClineMessage {
 	conversationHistoryDeletedRange?: [number, number] // for when conversation history is truncated for API requests
 }
 
-export type ClineAsk =
+export type CaretAsk =
 	| "followup"
 	| "plan_mode_respond"
 	| "command"
@@ -215,7 +215,7 @@ export type ClineAsk =
 	| "use_mcp_server"
 	| "new_task" // Added
 
-export type ClineSay =
+export type CaretSay =
 	| "task"
 	| "error"
 	| "api_req_started"
@@ -238,10 +238,10 @@ export type ClineSay =
 	| "use_mcp_server"
 	| "diff_error"
 	| "deleted_api_reqs"
-	| "clineignore_error"
+	| "caretignore_error"
 	| "checkpoint_created"
 
-export interface ClineSayTool {
+export interface CaretSayTool {
 	tool:
 		| "editedExistingFile"
 		| "newFileCreated"
@@ -261,7 +261,7 @@ export interface ClineSayTool {
 export const browserActions = ["launch", "click", "type", "scroll_down", "scroll_up", "close"] as const
 export type BrowserAction = (typeof browserActions)[number]
 
-export interface ClineSayBrowserAction {
+export interface CaretSayBrowserAction {
 	action: BrowserAction
 	coordinate?: string
 	text?: string
@@ -281,7 +281,7 @@ export type BrowserActionResult = {
 	currentMousePosition?: string
 }
 
-export interface ClineAskUseMcpServer {
+export interface CaretAskUseMcpServer {
 	serverName: string
 	type: "use_mcp_tool" | "access_mcp_resource"
 	toolName?: string
@@ -289,19 +289,19 @@ export interface ClineAskUseMcpServer {
 	uri?: string
 }
 
-export interface ClinePlanModeResponse {
+export interface CaretPlanModeResponse {
 	response: string
 	options?: string[]
 	selected?: string
 }
 
-export interface ClineAskQuestion {
+export interface CaretAskQuestion {
 	question: string
 	options?: string[]
 	selected?: string
 }
 
-export interface ClineAskNewTask {
+export interface CaretAskNewTask {
 	// Added
 	context: string
 }
@@ -309,14 +309,14 @@ export interface ClineAskNewTask {
 /**
  * API 요청 정보 인터페이스 - 재시도 관련 필드 추가
  */
-export interface ClineApiReqInfo {
+export interface CaretApiReqInfo {
 	request?: string
 	tokensIn?: number
 	tokensOut?: number
 	cacheWrites?: number
 	cacheReads?: number
 	cost?: number
-	cancelReason?: ClineApiReqCancelReason
+	cancelReason?: CaretApiReqCancelReason
 	streamingFailedMessage?: string
 	// 재시도 관련 필드 추가
 	retryAttempt?: number // 현재 재시도 횟수
@@ -327,6 +327,6 @@ export interface ClineApiReqInfo {
 	model?: string // 사용된 모델
 }
 
-export type ClineApiReqCancelReason = "streaming_failed" | "user_cancelled"
+export type CaretApiReqCancelReason = "streaming_failed" | "user_cancelled"
 
 export const COMPLETION_RESULT_CHANGES_FLAG = "HAS_CHANGES"

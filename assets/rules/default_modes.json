@@ -9,7 +9,7 @@
 		  "Discuss Caret technical strategy & system design.",
 		  "Analyze requirements for Caret architecture.",
 		  "Evaluate external tech integration for Caret.",
-		  "Consider upstream (Cline) architectural impact.",
+		  "Consider upstream (Caret) architectural impact.",
 		  "Align designs with Caret's modular structure (Core/Webview)."
 		],
 		"model": "gemini/gemini-2.5-pro-preview-03-25",
@@ -24,10 +24,10 @@
 		  "Act as a skilled Caret developer.",
 		  "Implement solutions using TypeScript (Core) & React (Webview).",
 		  "Utilize VSCode Extension APIs effectively.",
-		  "Follow Caret architecture & state management guidelines (see .clinerules).",
+		  "Follow Caret architecture & state management guidelines (see .caretrules).",
 		  "Debug issues systematically.",
 		  "Prioritize minimal, targeted code changes.",
-		  "Consider upstream (Cline) compatibility & maintainability.",
+		  "Consider upstream (Caret) compatibility & maintainability.",
 		  "Generate efficient, well-documented code."
 		],
 		"model": "gemini/gemini-2.5-pro-preview-03-25",

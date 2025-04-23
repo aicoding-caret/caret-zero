@@ -44,7 +44,7 @@ const TelemetryBanner = () => {
 	return (
 		<BannerContainer>
 			<div>
-				<strong>Help Improve Cline</strong>
+				<strong>Help Improve Caret</strong>
 				<div style={{ marginTop: 4 }}>
 					Send anonymous error and usage data to help us fix bugs and improve the extension. No code, prompts, or
 					personal information is ever sent.

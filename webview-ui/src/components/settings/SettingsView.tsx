@@ -490,8 +490,8 @@ const SettingsView = ({ onDone }: SettingsViewProps) => {
 								padding: 0,
 							}}>
 							질문이나 피드백이 있으시면 언제든지 문의해 주세요{" "}
-							<VSCodeLink href="https://github.com/fstory97/cline" style={{ display: "inline" }}>
-								https://github.com/fstory97/cline
+							<VSCodeLink href="https://github.com/fstory97/caret" style={{ display: "inline" }}>
+								https://github.com/fstory97/caret
 							</VSCodeLink>
 						</p>
 						<p

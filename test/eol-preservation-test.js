@@ -176,9 +176,9 @@ async function testEOLPreservation() {
 	return allPassed
 }
 
-// 실제 Cline replace_in_file 도구 테스트 (VS Code 확장 프로그램 방식 모방)
+// 실제 Caret replace_in_file 도구 테스트 (VS Code 확장 프로그램 방식 모방)
 async function testRealToolEmulation() {
-	console.log("\n===== Cline replace_in_file 도구 에뮬레이션 테스트 =====")
+	console.log("\n===== Caret replace_in_file 도구 에뮬레이션 테스트 =====")
 
 	try {
 		const testFilePath = path.join(TEST_DIR, "emulation-test.txt")

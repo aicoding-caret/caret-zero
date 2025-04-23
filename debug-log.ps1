@@ -13,7 +13,7 @@ if (-not (Test-Path $logsDir)) {
 
 # 타임스탬프 생성
 $timestamp = Get-Date -Format 'yyyyMMdd-HHmmss'
-$logFile = "$logsDir\cline-debug-$timestamp.log"
+$logFile = "$logsDir\caret-debug-$timestamp.log"
 
 # 1. 디버그 모드로 빌드
 Write-Host "🔧 Building in debug mode..." -ForegroundColor Magenta

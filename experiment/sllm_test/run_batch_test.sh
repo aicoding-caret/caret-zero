@@ -13,9 +13,9 @@ api_url="http://localhost:8000" # API base URL (vLLM OpenAI compatible default)
 # api_url="http://localhost:11434"
 
 # !!! 중요: 데이터 볼륨 마운트 경로를 실제 경로로 수정하세요 !!!
-# (WSL 경로 형식 사용, 예: /mnt/d/dev/cline/models)
+# (WSL 경로 형식 사용, 예: /mnt/d/dev/caret/models)
 # vLLM은 /root/.cache/huggingface 를 사용합니다.
-volume_path="/mnt/d/dev/cline/models" 
+volume_path="/mnt/d/dev/caret/models" 
 host_port=8000 # 호스트에서 사용할 포트 (vLLM 기본값)
 container_port=8000 # 컨테이너 내부 포트 (vLLM 기본값)
 vllm_image="vllm/vllm-openai:v0.5.1" # Update to a newer stable version (v0.5.1)

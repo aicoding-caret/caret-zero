@@ -12,9 +12,9 @@ export class DiffLogger extends EnhancedLogger {
 	 * @param context VSCode 확장 컨텍스트
 	 */
 	constructor(context: vscode.ExtensionContext) {
-		super("Cline Diff", context, {
+		super("Caret Diff", context, {
 			logToFile: true,
-			logFileName: "cline-diff.log",
+			logFileName: "caret-diff.log",
 		})
 	}
 

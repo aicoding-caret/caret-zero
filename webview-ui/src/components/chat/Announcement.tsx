@@ -29,7 +29,7 @@ const linkContainerStyle: CSSProperties = { margin: "0" }
 const linkStyle: CSSProperties = { display: "inline" }
 
 /*
-You must update the latestAnnouncementId in ClineProvider for new announcements to show to users. This new id will be compared with whats in state for the 'last announcement shown', and if it's different then the announcement will render. As soon as an announcement is shown, the id will be updated in state. This ensures that announcements are not shown more than once, even if the user doesn't close it themselves.
+You must update the latestAnnouncementId in CaretProvider for new announcements to show to users. This new id will be compared with whats in state for the 'last announcement shown', and if it's different then the announcement will render. As soon as an announcement is shown, the id will be updated in state. This ensures that announcements are not shown more than once, even if the user doesn't close it themselves.
 */
 const Announcement = ({ version, hideAnnouncement }: AnnouncementProps) => {
 	const minorVersion = version.split(".").slice(0, 2).join(".") // 2.0.0 -> 2.0
@@ -43,15 +43,15 @@ const Announcement = ({ version, hideAnnouncement }: AnnouncementProps) => {
 			</h3>
 			<ul style={ulStyle}>
 				<li>
-					<b>Add to Cline:</b> Right-click selected text in any file or terminal to quickly add context to your current
-					task! Plus, when you see a lightbulb icon, select 'Fix with Cline' to have Cline fix errors in your code.
+					<b>Add to Caret:</b> Right-click selected text in any file or terminal to quickly add context to your current
+					task! Plus, when you see a lightbulb icon, select 'Fix with Caret' to have Caret fix errors in your code.
 				</li>
 				<li>
 					<b>Billing Dashboard:</b> Track your remaining credits and transaction history right in the extension with a{" "}
-					<span className="codicon codicon-account" style={accountIconStyle}></span> Cline account!
+					<span className="codicon codicon-account" style={accountIconStyle}></span> Caret account!
 				</li>
 				<li>
-					<b>Faster Inference:</b> Cline/OpenRouter users can sort underlying providers used by throughput, price, and
+					<b>Faster Inference:</b> Caret/OpenRouter users can sort underlying providers used by throughput, price, and
 					latency. Sorting by throughput will output faster generations (at a higher cost).
 				</li>
 				<li>
@@ -93,31 +93,31 @@ const Announcement = ({ version, hideAnnouncement }: AnnouncementProps) => {
 					)}
 				</li>
 				<li>
-					<b>Edit Cline's changes before accepting!</b> When he creates or edits a file, you can modify his
+					<b>Edit Caret's changes before accepting!</b> When he creates or edits a file, you can modify his
 					changes directly in the right side of the diff view (+ hover over the 'Revert Block' arrow button in
 					the center to undo "<code>{"// rest of code here"}</code>" shenanigans)
 				</li>
 				<li>
-					New <code>search_files</code> tool that lets Cline perform regex searches in your project, letting
+					New <code>search_files</code> tool that lets Caret perform regex searches in your project, letting
 					him refactor code, address TODOs and FIXMEs, remove dead code, and more!
 				</li>
 				<li>
-					When Cline runs commands, you can now type directly in the terminal (+ support for Python
+					When Caret runs commands, you can now type directly in the terminal (+ support for Python
 					environments)
 				</li>
 			</ul>*/}
 			<div style={hrStyle} />
 			<p style={linkContainerStyle}>
 				Join us on{" "}
-				<VSCodeLink style={linkStyle} href="https://x.com/cline">
+				<VSCodeLink style={linkStyle} href="https://x.com/caret">
 					X,
 				</VSCodeLink>{" "}
-				<VSCodeLink style={linkStyle} href="https://discord.gg/cline">
+				<VSCodeLink style={linkStyle} href="https://discord.gg/caret">
 					discord,
 				</VSCodeLink>{" "}
 				or{" "}
-				<VSCodeLink style={linkStyle} href="https://www.reddit.com/r/cline/">
-					r/cline
+				<VSCodeLink style={linkStyle} href="https://www.reddit.com/r/caret/">
+					r/caret
 				</VSCodeLink>
 				for more updates!
 			</p>

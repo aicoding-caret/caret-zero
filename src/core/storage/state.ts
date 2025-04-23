@@ -56,7 +56,7 @@ export async function getAllExtensionState(context: vscode.ExtensionContext) {
 		apiModelId,
 		apiKey,
 		openRouterApiKey,
-		clineApiKey,
+		caretApiKey,
 		awsAccessKey,
 		awsSecretKey,
 		awsSessionToken,
@@ -120,7 +120,7 @@ export async function getAllExtensionState(context: vscode.ExtensionContext) {
 		getGlobalState(context, "apiModelId") as Promise<string | undefined>,
 		getSecret(context, "apiKey") as Promise<string | undefined>,
 		getSecret(context, "openRouterApiKey") as Promise<string | undefined>,
-		getSecret(context, "clineApiKey") as Promise<string | undefined>,
+		getSecret(context, "caretApiKey") as Promise<string | undefined>,
 		getSecret(context, "awsAccessKey") as Promise<string | undefined>,
 		getSecret(context, "awsSecretKey") as Promise<string | undefined>,
 		getSecret(context, "awsSessionToken") as Promise<string | undefined>,
@@ -195,9 +195,9 @@ export async function getAllExtensionState(context: vscode.ExtensionContext) {
 		}
 	}
 
-	const o3MiniReasoningEffort = vscode.workspace.getConfiguration("cline.modelSettings.o3Mini").get("reasoningEffort", "medium")
+	const o3MiniReasoningEffort = vscode.workspace.getConfiguration("caret.modelSettings.o3Mini").get("reasoningEffort", "medium")
 
-	const mcpMarketplaceEnabled = vscode.workspace.getConfiguration("cline").get<boolean>("mcpMarketplace.enabled", true)
+	const mcpMarketplaceEnabled = vscode.workspace.getConfiguration("caret").get<boolean>("mcpMarketplace.enabled", true)
 
 	// Plan/Act separate models setting is a boolean indicating whether the user wants to use different models for plan and act. Existing users expect this to be enabled, while we want new users to opt in to this being disabled by default.
 	// On win11 state sometimes initializes as empty string instead of undefined
@@ -223,7 +223,7 @@ export async function getAllExtensionState(context: vscode.ExtensionContext) {
 			apiModelId,
 			apiKey,
 			openRouterApiKey,
-			clineApiKey,
+			caretApiKey,
 			awsAccessKey,
 			awsSecretKey,
 			awsSessionToken,
@@ -337,7 +337,7 @@ export async function updateApiConfiguration(context: vscode.ExtensionContext, a
 		asksageApiUrl,
 		xaiApiKey,
 		thinkingBudgetTokens,
-		clineApiKey,
+		caretApiKey,
 		sambanovaApiKey,
 	} = apiConfiguration
 	await updateGlobalState(context, "apiProvider", apiProvider)
@@ -387,7 +387,7 @@ export async function updateApiConfiguration(context: vscode.ExtensionContext, a
 	await storeSecret(context, "asksageApiKey", asksageApiKey)
 	await updateGlobalState(context, "asksageApiUrl", asksageApiUrl)
 	await updateGlobalState(context, "thinkingBudgetTokens", thinkingBudgetTokens)
-	await storeSecret(context, "clineApiKey", clineApiKey)
+	await storeSecret(context, "caretApiKey", caretApiKey)
 	await storeSecret(context, "sambanovaApiKey", sambanovaApiKey)
 }
 
@@ -409,7 +409,7 @@ export async function resetExtensionState(context: vscode.ExtensionContext) {
 		"togetherApiKey",
 		"qwenApiKey",
 		"mistralApiKey",
-		"clineApiKey",
+		"caretApiKey",
 		"liteLlmApiKey",
 		"asksageApiKey",
 		"xaiApiKey",

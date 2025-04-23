@@ -12,7 +12,7 @@ const mockContext: Partial<vscode.ExtensionContext> = {
 }
 
 // Initialize a logger instance for testing
-const testLogger = new Logger("Cline Test", mockContext as vscode.ExtensionContext)
+const testLogger = new Logger("Caret Test", mockContext as vscode.ExtensionContext)
 setLoggerInstance(testLogger) // Set the global logger instance for decorators
 
 class TestClass {
@@ -101,10 +101,10 @@ export function runLoggingTests() {
 			console.log("--- Logging Tests Finished ---")
 			// Note: In a real test suite, you'd use a test runner like Mocha/Jest
 			// and assert the output channel content or mock the logger.
-			// For manual testing, check the "Cline Test" output channel in VSCode.
+			// For manual testing, check the "Caret Test" output channel in VSCode.
 		})
 }
 
 // To run manually during development:
 // 1. Import and call runLoggingTests() from your extension's activate function (conditionally, e.g., based on a command)
-// 2. Check the "Cline Test" output channel in VSCode.
+// 2. Check the "Caret Test" output channel in VSCode.

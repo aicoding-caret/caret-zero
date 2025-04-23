@@ -16,7 +16,7 @@ import { openFile, openImage } from "../../integrations/misc/open-file"
 import { selectImages } from "../../integrations/misc/process-images"
 import { getTheme } from "../../integrations/theme/getTheme"
 import WorkspaceTracker from "../../integrations/workspace/WorkspaceTracker"
-import { ClineAccountService } from "../../services/account/ClineAccountService"
+import { CaretAccountService } from "../../services/account/CaretAccountService"
 import { McpHub } from "../../services/mcp/McpHub"
 import { telemetryService } from "../../services/telemetry/TelemetryService"
 import { ApiProvider, ModelInfo } from "../../shared/api"
@@ -27,7 +27,7 @@ import { ExtensionMessage, ExtensionState, Invoke, Platform, ModeInfo, RetryStat
 import { HistoryItem } from "../../shared/HistoryItem"
 import { McpDownloadResponse, McpMarketplaceCatalog, McpServer } from "../../shared/mcp"
 import { TelemetrySetting } from "../../shared/TelemetrySetting"
-import { ClineCheckpointRestore, WebviewMessage } from "../../shared/WebviewMessage"
+import { CaretCheckpointRestore, WebviewMessage } from "../../shared/WebviewMessage"
 import { fileExistsAtPath } from "../../utils/fs"
 import { searchCommits } from "../../utils/git"
 import { getWorkspacePath } from "../../utils/path"
@@ -61,7 +61,7 @@ export class Controller {
 	private task?: Task
 	workspaceTracker?: WorkspaceTracker
 	mcpHub?: McpHub
-	accountService?: ClineAccountService
+	accountService?: CaretAccountService
 	private latestAnnouncementId = "april-7-2025" // update to some unique identifier when we add a new announcement
 	private webviewProviderRef: WeakRef<WebviewProvider>
 	logger: ILogger // Add logger property
@@ -72,7 +72,7 @@ export class Controller {
 		readonly outputChannel: vscode.OutputChannel, // Make outputChannel readonly
 		webviewProvider: WebviewProvider,
 	) {
-		this.outputChannel.appendLine("ClineProvider instantiated")
+		this.outputChannel.appendLine("CaretProvider instantiated")
 		this.webviewProviderRef = new WeakRef(webviewProvider)
 		// Simple console logger implementation for ILogger
 		this.logger = {
@@ -88,7 +88,7 @@ export class Controller {
 
 		this.workspaceTracker = new WorkspaceTracker(this)
 		this.mcpHub = new McpHub(this)
-		this.accountService = new ClineAccountService(this)
+		this.accountService = new CaretAccountService(this)
 
 		// 모드 목록 초기 로드 (웹뷰에서도 다시 로드됨)
 		this.loadAvailableModes().catch((error) => {
@@ -199,7 +199,7 @@ export class Controller {
 	- https://github.com/microsoft/vscode-extension-samples/blob/main/webview-sample/src/extension.ts
 	*/
 	async dispose() {
-		this.outputChannel.appendLine("Disposing ClineProvider...")
+		this.outputChannel.appendLine("Disposing CaretProvider...")
 		await this.clearTask()
 		this.outputChannel.appendLine("Cleared task")
 		while (this.disposables.length) {
@@ -221,11 +221,11 @@ export class Controller {
 	// Auth methods
 	async handleSignOut() {
 		try {
-			await storeSecret(this.context, "clineApiKey", undefined)
+			await storeSecret(this.context, "caretApiKey", undefined)
 			await updateGlobalState(this.context, "userInfo", undefined)
 			await updateGlobalState(this.context, "apiProvider", "openrouter")
 			await this.postStateToWebview()
-			vscode.window.showInformationMessage("Successfully logged out of Cline")
+			vscode.window.showInformationMessage("Successfully logged out of Caret")
 		} catch (error) {
 			vscode.window.showErrorMessage("Logout failed")
 		}
@@ -235,7 +235,7 @@ export class Controller {
 		await updateGlobalState(this.context, "userInfo", info)
 	}
 
-	async initClineWithTask(task?: string, images?: string[]) {
+	async initCaretWithTask(task?: string, images?: string[]) {
 		await this.clearTask() // ensures that an existing task doesn't exist before starting a new one, although this shouldn't be possible since user must clear task before starting a new one
 		const { apiConfiguration, customInstructions, autoApprovalSettings, browserSettings, chatSettings } =
 			await getAllExtensionState(this.context)
@@ -251,7 +251,7 @@ export class Controller {
 		)
 	}
 
-	async initClineWithHistoryItem(historyItem: HistoryItem) {
+	async initCaretWithHistoryItem(historyItem: HistoryItem) {
 		await this.clearTask()
 		const { apiConfiguration, customInstructions, autoApprovalSettings, browserSettings, chatSettings } =
 			await getAllExtensionState(this.context)
@@ -419,7 +419,7 @@ export class Controller {
 					this.logger.log("모드 설정 파일 저장 성공:", modesFilePath)
 
 					// 사용자에게 성공 메시지 표시
-					vscode.window.showInformationMessage("모드 설정이 저장되었습니다. Cline을 재시작하면 변경사항이 적용됩니다.")
+					vscode.window.showInformationMessage("모드 설정이 저장되었습니다. Caret을 재시작하면 변경사항이 적용됩니다.")
 
 					// 모드 목록 다시 로드
 					await this.loadAvailableModes()
@@ -794,8 +794,8 @@ export class Controller {
 				// You can send any JSON serializable data.
 				// Could also do this in extension .ts
 				//this.postMessageToWebview({ type: "text", text: `Extension: ${Date.now()}` })
-				// initializing new instance of Cline will make sure that any agentically running promises in old instance don't affect our new task. this essentially creates a fresh slate for the new task
-				await this.initClineWithTask(message.text, message.images)
+				// initializing new instance of Caret will make sure that any agentically running promises in old instance don't affect our new task. this essentially creates a fresh slate for the new task
+				await this.initCaretWithTask(message.text, message.images)
 				break
 			case "apiConfiguration":
 				if (message.apiConfiguration) {
@@ -837,7 +837,7 @@ export class Controller {
 				break
 			case "getBrowserConnectionInfo":
 				try {
-					// Get the current browser session from Cline if it exists
+					// Get the current browser session from Caret if it exists
 					if (this.task?.browserSession) {
 						const connectionInfo = this.task.browserSession.getConnectionInfo()
 						await this.postMessageToWebview({
@@ -1060,16 +1060,16 @@ export class Controller {
 			}
 			case "checkpointRestore": {
 				await this.cancelTask() // we cannot alter message history say if the task is active, as it could be in the middle of editing a file or running a command, which expect the ask to be responded to rather than being superceded by a new message eg add deleted_api_reqs
-				// cancel task waits for any open editor to be reverted and starts a new cline instance
+				// cancel task waits for any open editor to be reverted and starts a new caret instance
 				if (message.number) {
 					// wait for messages to be loaded
 					await pWaitFor(() => this.task?.isInitialized === true, {
 						timeout: 3_000,
 					}).catch(() => {
-						console.error("Failed to init new cline instance")
+						console.error("Failed to init new caret instance")
 					})
 					// NOTE: cancelTask awaits abortTask, which awaits diffViewProvider.revertChanges, which reverts any edited files, allowing us to reset to a checkpoint rather than running into a state where the revertChanges function is called alongside or after the checkpoint reset
-					await this.task?.restoreCheckpoint(message.number, message.text! as ClineCheckpointRestore)
+					await this.task?.restoreCheckpoint(message.number, message.text! as CaretCheckpointRestore)
 				}
 				break
 			}
@@ -1097,7 +1097,7 @@ export class Controller {
 				const uriScheme = vscode.env.uriScheme
 
 				const authUrl = vscode.Uri.parse(
-					`https://app.cline.bot/auth?state=${encodeURIComponent(nonce)}&callback_url=${encodeURIComponent(`${uriScheme || "vscode"}://saoudrizwan.claude-dev/auth`)}`,
+					`https://app.caret.bot/auth?state=${encodeURIComponent(nonce)}&callback_url=${encodeURIComponent(`${uriScheme || "vscode"}://saoudrizwan.claude-dev/auth`)}`,
 				)
 				vscode.env.openExternal(authUrl)
 				break
@@ -1158,7 +1158,7 @@ export class Controller {
 
 					// 2. Enable MCP settings if disabled
 					// Enable MCP mode if disabled
-					const mcpConfig = vscode.workspace.getConfiguration("cline.mcp")
+					const mcpConfig = vscode.workspace.getConfiguration("caret.mcp")
 					if (mcpConfig.get<string>("mode") !== "full") {
 						await mcpConfig.update("mode", "full", true)
 					}
@@ -1179,7 +1179,7 @@ export class Controller {
 				break
 			// case "openMcpMarketplaceServerDetails": {
 			// 	if (message.text) {
-			// 		const response = await fetch(`https://api.cline.bot/v1/mcp/marketplace/item?mcpId=${message.mcpId}`)
+			// 		const response = await fetch(`https://api.caret.bot/v1/mcp/marketplace/item?mcpId=${message.mcpId}`)
 			// 		const details: McpDownloadResponse = await response.json()
 
 			// 		if (details.readmeContent) {
@@ -1611,7 +1611,7 @@ export class Controller {
 					await updateGlobalState(this.context, "previousModeModelId", apiConfiguration.apiModelId)
 					break
 				case "openrouter":
-				case "cline":
+				case "caret":
 					await updateGlobalState(this.context, "previousModeModelId", apiConfiguration.openRouterModelId)
 					await updateGlobalState(this.context, "previousModeModelInfo", apiConfiguration.openRouterModelInfo)
 					break
@@ -1657,7 +1657,7 @@ export class Controller {
 						await updateGlobalState(this.context, "apiModelId", newModelId)
 						break
 					case "openrouter":
-					case "cline":
+					case "caret":
 						await updateGlobalState(this.context, "openRouterModelId", newModelId)
 						await updateGlobalState(this.context, "openRouterModelInfo", newModelInfo)
 						break
@@ -1736,11 +1736,11 @@ export class Controller {
 				console.error("Failed to abort task")
 			})
 			if (this.task) {
-				// 'abandoned' will prevent this cline instance from affecting future cline instance gui. this may happen if its hanging on a streaming request
+				// 'abandoned' will prevent this caret instance from affecting future caret instance gui. this may happen if its hanging on a streaming request
 				this.task.abandoned = true
 			}
-			await this.initClineWithHistoryItem(historyItem) // clears task again, so we need to abortTask manually above
-			// await this.postStateToWebview() // new Cline instance will post state when it's ready. having this here sent an empty messages array to webview leading to virtuoso having to reload the entire list
+			await this.initCaretWithHistoryItem(historyItem) // clears task again, so we need to abortTask manually above
+			// await this.postStateToWebview() // new Caret instance will post state when it's ready. having this here sent an empty messages array to webview leading to virtuoso having to reload the entire list
 		}
 	}
 
@@ -1792,11 +1792,11 @@ export class Controller {
 
 	async ensureMcpServersDirectoryExists(): Promise<string> {
 		const userDocumentsPath = await this.getDocumentsPath()
-		const mcpServersDir = path.join(userDocumentsPath, "Cline", "MCP")
+		const mcpServersDir = path.join(userDocumentsPath, "Caret", "MCP")
 		try {
 			await fs.mkdir(mcpServersDir, { recursive: true })
 		} catch (error) {
-			return "~/Documents/Cline/MCP" // in case creating a directory in documents fails for whatever reason (e.g. permissions) - this is fine since this path is only ever used in the system prompt
+			return "~/Documents/Caret/MCP" // in case creating a directory in documents fails for whatever reason (e.g. permissions) - this is fine since this path is only ever used in the system prompt
 		}
 		return mcpServersDir
 	}
@@ -1885,7 +1885,7 @@ export class Controller {
 	async handleAuthCallback(customToken: string, apiKey: string) {
 		try {
 			// Store API key for API calls
-			await storeSecret(this.context, "clineApiKey", apiKey)
+			await storeSecret(this.context, "caretApiKey", apiKey)
 
 			// Send custom token to webview for Firebase auth
 			await this.postMessageToWebview({
@@ -1893,15 +1893,15 @@ export class Controller {
 				customToken,
 			})
 
-			const clineProvider: ApiProvider = "cline"
-			await updateGlobalState(this.context, "apiProvider", clineProvider)
+			const caretProvider: ApiProvider = "caret"
+			await updateGlobalState(this.context, "apiProvider", caretProvider)
 
 			// Update API configuration with the new provider and API key
 			const { apiConfiguration } = await getAllExtensionState(this.context)
 			const updatedConfig = {
 				...apiConfiguration,
-				apiProvider: clineProvider,
-				clineApiKey: apiKey,
+				apiProvider: caretProvider,
+				caretApiKey: apiKey,
 			}
 
 			if (this.task) {
@@ -1915,10 +1915,10 @@ export class Controller {
 			}
 
 			await this.postStateToWebview()
-			// vscode.window.showInformationMessage("Successfully logged in to Cline")
+			// vscode.window.showInformationMessage("Successfully logged in to Caret")
 		} catch (error) {
 			console.error("Failed to handle auth callback:", error)
-			vscode.window.showErrorMessage("Failed to log in to Cline")
+			vscode.window.showErrorMessage("Failed to log in to Caret")
 			// Even on login failure, we preserve any existing tokens
 			// Only clear tokens on explicit logout
 		}
@@ -1928,7 +1928,7 @@ export class Controller {
 
 	private async fetchMcpMarketplaceFromApi(silent: boolean = false): Promise<McpMarketplaceCatalog | undefined> {
 		try {
-			const response = await axios.get("https://api.cline.bot/v1/mcp/marketplace", {
+			const response = await axios.get("https://api.caret.bot/v1/mcp/marketplace", {
 				headers: {
 					"Content-Type": "application/json",
 				},
@@ -2022,7 +2022,7 @@ export class Controller {
 
 			// Fetch server details from marketplace
 			const response = await axios.post<McpDownloadResponse>(
-				"https://api.cline.bot/v1/mcp/download",
+				"https://api.caret.bot/v1/mcp/download",
 				{ mcpId },
 				{
 					headers: { "Content-Type": "application/json" },
@@ -2052,7 +2052,7 @@ export class Controller {
 
 			// Create task with context from README and added guidelines for MCP server installation
 			const task = `Set up the MCP server from ${mcpDetails.githubUrl} while adhering to these MCP server installation rules:
-- Use "${mcpDetails.mcpId}" as the server name in cline_mcp_settings.json.
+- Use "${mcpDetails.mcpId}" as the server name in caret_mcp_settings.json.
 - Create the directory for the new MCP server before starting installation.
 - Use commands aligned with the user's shell and operating system best practices.
 - The following README may contain instructions that conflict with the user's OS, in which case proceed thoughtfully.
@@ -2060,7 +2060,7 @@ export class Controller {
 Here is the project's README to help you get started:\n\n${mcpDetails.readmeContent}\n${mcpDetails.llmsInstallationContent}`
 
 			// Initialize task and show chat view
-			await this.initClineWithTask(task)
+			await this.initCaretWithTask(task)
 			await this.postMessageToWebview({
 				type: "action",
 				action: "chatButtonClicked",
@@ -2168,7 +2168,7 @@ Here is the project's README to help you get started:\n\n${mcpDetails.readmeCont
 		return "@/" + relativePath
 	}
 
-	// 'Add to Cline' context menu in editor and code action
+	// 'Add to Caret' context menu in editor and code action
 	async addSelectedCodeToChat(code: string, filePath: string, languageId: string, diagnostics?: vscode.Diagnostic[]) {
 		// Ensure the sidebar view is visible
 		await vscode.commands.executeCommand("claude-dev.SidebarProvider.focus")
@@ -2191,7 +2191,7 @@ Here is the project's README to help you get started:\n\n${mcpDetails.readmeCont
 		console.log("addSelectedCodeToChat", code, filePath, languageId)
 	}
 
-	// 'Add to Cline' context menu in Terminal
+	// 'Add to Caret' context menu in Terminal
 	async addSelectedTerminalOutputToChat(output: string, terminalName: string) {
 		// Ensure the sidebar view is visible
 		await vscode.commands.executeCommand("claude-dev.SidebarProvider.focus")
@@ -2212,19 +2212,19 @@ Here is the project's README to help you get started:\n\n${mcpDetails.readmeCont
 		console.log("addSelectedTerminalOutputToChat", output, terminalName)
 	}
 
-	// 'Fix with Cline' in code actions
-	async fixWithCline(code: string, filePath: string, languageId: string, diagnostics: vscode.Diagnostic[]) {
+	// 'Fix with Caret' in code actions
+	async fixWithCaret(code: string, filePath: string, languageId: string, diagnostics: vscode.Diagnostic[]) {
 		// Ensure the sidebar view is visible
 		await vscode.commands.executeCommand("claude-dev.SidebarProvider.focus")
 		await setTimeoutPromise(100)
 
 		const fileMention = this.getFileMentionFromPath(filePath)
 		const problemsString = this.convertDiagnosticsToProblemsString(diagnostics)
-		await this.initClineWithTask(
+		await this.initCaretWithTask(
 			`Fix the following code in ${fileMention}\n\`\`\`\n${code}\n\`\`\`\n\nProblems:\n${problemsString}`,
 		)
 
-		console.log("fixWithCline", code, filePath, languageId, diagnostics, problemsString)
+		console.log("fixWithCaret", code, filePath, languageId, diagnostics, problemsString)
 	}
 
 	convertDiagnosticsToProblemsString(diagnostics: vscode.Diagnostic[]) {
@@ -2292,7 +2292,7 @@ Here is the project's README to help you get started:\n\n${mcpDetails.readmeCont
 		if (id !== this.task?.taskId) {
 			// non-current task
 			const { historyItem } = await this.getTaskWithId(id)
-			await this.initClineWithHistoryItem(historyItem) // clears existing task
+			await this.initCaretWithHistoryItem(historyItem) // clears existing task
 		}
 		await this.postMessageToWebview({
 			type: "action",
@@ -2441,7 +2441,7 @@ Here is the project's README to help you get started:\n\n${mcpDetails.readmeCont
 			uriScheme: vscode.env.uriScheme,
 			currentTaskItem: this.task?.taskId ? (taskHistory || []).find((item) => item.id === this.task?.taskId) : undefined,
 			checkpointTrackerErrorMessage: this.task?.checkpointTrackerErrorMessage,
-			clineMessages: this.task?.clineMessages || [],
+			caretMessages: this.task?.caretMessages || [],
 			taskHistory: (taskHistory || [])
 				.filter((item) => item.ts && item.task)
 				.sort((a, b) => b.ts - a.ts)
@@ -2472,12 +2472,12 @@ Here is the project's README to help you get started:\n\n${mcpDetails.readmeCont
 	// Caching mechanism to keep track of webview messages + API conversation history per provider instance
 
 	/*
-	Now that we use retainContextWhenHidden, we don't have to store a cache of cline messages in the user's state, but we could to reduce memory footprint in long conversations.
+	Now that we use retainContextWhenHidden, we don't have to store a cache of caret messages in the user's state, but we could to reduce memory footprint in long conversations.
 
-	- We have to be careful of what state is shared between ClineProvider instances since there could be multiple instances of the extension running at once. For example when we cached cline messages using the same key, two instances of the extension could end up using the same key and overwriting each other's messages.
+	- We have to be careful of what state is shared between CaretProvider instances since there could be multiple instances of the extension running at once. For example when we cached caret messages using the same key, two instances of the extension could end up using the same key and overwriting each other's messages.
 	- Some state does need to be shared between the instances, i.e. the API key--however there doesn't seem to be a good way to notify the other instances that the API key has changed.
 
-	We need to use a unique identifier for each ClineProvider instance's message cache since we could be running several instances of the extension outside of just the sidebar i.e. in editor panels.
+	We need to use a unique identifier for each CaretProvider instance's message cache since we could be running several instances of the extension outside of just the sidebar i.e. in editor panels.
 
 	// conversation history to send in API requests
 

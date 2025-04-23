@@ -1,10 +1,10 @@
 import * as vscode from "vscode"
 import { Controller } from "../core/controller"
-import { ClineAPI } from "./cline"
+import { CaretAPI } from "./caret"
 import { getGlobalState } from "../core/storage/state"
 
-export function createClineAPI(outputChannel: vscode.OutputChannel, sidebarController: Controller): ClineAPI {
-	const api: ClineAPI = {
+export function createCaretAPI(outputChannel: vscode.OutputChannel, sidebarController: Controller): CaretAPI {
+	const api: CaretAPI = {
 		setCustomInstructions: async (value: string) => {
 			await sidebarController.updateCustomInstructions(value)
 			outputChannel.appendLine("Custom instructions set")

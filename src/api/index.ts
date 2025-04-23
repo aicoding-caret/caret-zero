@@ -17,7 +17,7 @@ import { QwenHandler } from "./providers/qwen"
 import { MistralHandler } from "./providers/mistral"
 import { DoubaoHandler } from "./providers/doubao"
 import { VsCodeLmHandler } from "./providers/vscode-lm"
-import { ClineHandler } from "./providers/cline"
+import { CaretHandler } from "./providers/caret"
 import { LiteLlmHandler } from "./providers/litellm"
 import { AskSageHandler } from "./providers/asksage"
 import { XAIHandler } from "./providers/xai"
@@ -77,8 +77,8 @@ export function buildApiHandler(
 			return new MistralHandler(optionsWithoutProvider)
 		case "vscode-lm":
 			return new VsCodeLmHandler(optionsWithoutProvider)
-		case "cline":
-			return new ClineHandler(optionsWithoutProvider)
+		case "caret":
+			return new CaretHandler(optionsWithoutProvider)
 		case "litellm":
 			return new LiteLlmHandler(optionsWithoutProvider)
 		case "asksage":

@@ -42,7 +42,7 @@ export const ExtensionStateContextProvider: React.FC<{
 }> = ({ children }) => {
 	const [state, setState] = useState<ExtensionState>({
 		version: "",
-		clineMessages: [],
+		caretMessages: [],
 		taskHistory: [],
 		shouldShowAnnouncement: false,
 		autoApprovalSettings: DEFAULT_AUTO_APPROVAL_SETTINGS,
@@ -53,7 +53,7 @@ export const ExtensionStateContextProvider: React.FC<{
 		vscMachineId: "",
 		planActSeparateModelsSetting: true,
 		availableModes: [], // Initialize availableModes
-		alphaAvatarUri: "https://raw.githubusercontent.com/fstory97/cline-avatar/main/alpha-maid.png", // 기본 프로필 이미지
+		alphaAvatarUri: "https://raw.githubusercontent.com/fstory97/caret-avatar/main/alpha-maid.png", // 기본 프로필 이미지
 		apiError: null, // API 에러 정보 초기화
 	})
 	const [didHydrateState, setDidHydrateState] = useState(false)
@@ -92,7 +92,7 @@ export const ExtensionStateContextProvider: React.FC<{
 							config.qwenApiKey,
 							config.mistralApiKey,
 							config.vsCodeLmModelSelector,
-							config.clineApiKey,
+							config.caretApiKey,
 							config.asksageApiKey,
 							config.xaiApiKey,
 							config.sambanovaApiKey,
@@ -116,11 +116,11 @@ export const ExtensionStateContextProvider: React.FC<{
 				const partialMessage = message.partialMessage!
 				setState((prevState) => {
 					// worth noting it will never be possible for a more up-to-date message to be sent here or in normal messages post since the presentAssistantContent function uses lock
-					const lastIndex = findLastIndex(prevState.clineMessages, (msg) => msg.ts === partialMessage.ts)
+					const lastIndex = findLastIndex(prevState.caretMessages, (msg) => msg.ts === partialMessage.ts)
 					if (lastIndex !== -1) {
-						const newClineMessages = [...prevState.clineMessages]
-						newClineMessages[lastIndex] = partialMessage
-						return { ...prevState, clineMessages: newClineMessages }
+						const newCaretMessages = [...prevState.caretMessages]
+						newCaretMessages[lastIndex] = partialMessage
+						return { ...prevState, caretMessages: newCaretMessages }
 					}
 					return prevState
 				})
@@ -201,7 +201,7 @@ export const ExtensionStateContextProvider: React.FC<{
 			})),
 		availableModes: state.availableModes, // Add availableModes to context value
 		// 프로필 이미지 관련 처리기
-		alphaAvatarUri: state.alphaAvatarUri || "https://raw.githubusercontent.com/fstory97/cline-avatar/main/alpha-maid.png",
+		alphaAvatarUri: state.alphaAvatarUri || "https://raw.githubusercontent.com/fstory97/caret-avatar/main/alpha-maid.png",
 		selectAgentProfileImage: () => {
 			vscode.postMessage({ type: "selectAgentProfileImage" })
 		},

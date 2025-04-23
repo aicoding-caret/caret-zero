@@ -6,7 +6,7 @@ import { GIT_DISABLED_SUFFIX } from "./CheckpointGitOperations"
 /**
  * CheckpointExclusions Module
  *
- * A specialized module within Cline's Checkpoints system that manages file exclusion rules
+ * A specialized module within Caret's Checkpoints system that manages file exclusion rules
  * for the checkpoint tracking process. It provides:
  *
  * File Filtering:

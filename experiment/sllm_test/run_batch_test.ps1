@@ -27,7 +27,7 @@ $Environments = @(
 $Repetitions = 3 
 
 # vLLM 관련 설정 (vLLM 환경 사용 시)
-$volume_path = "D:\dev\cline\models" # 모델 캐시 저장 경로 (호스트 경로) - 실제 경로로 수정!
+$volume_path = "D:\dev\caret\models" # 모델 캐시 저장 경로 (호스트 경로) - 실제 경로로 수정!
 $host_port = 8000 # 호스트에서 사용할 포트 (vLLM 기본값)
 $container_port = 8000 # 컨테이너 내부 포트 (vLLM 기본값)
 $vllm_image = "vllm/vllm-openai:v0.5.1" 

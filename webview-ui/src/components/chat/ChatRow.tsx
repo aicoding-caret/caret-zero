@@ -5,12 +5,12 @@ import { useEvent, useSize } from "react-use"
 import styled, { css } from "styled-components"
 // import alphaAvatar from "../../assets/alpha.png" // 더 이상 직접 import하지 않음 
 import {
-	ClineApiReqInfo,
-	ClineAskQuestion,
-	ClineAskUseMcpServer,
-	ClineMessage,
-	ClinePlanModeResponse,
-	ClineSayTool,
+	CaretApiReqInfo,
+	CaretAskQuestion,
+	CaretAskUseMcpServer,
+	CaretMessage,
+	CaretPlanModeResponse,
+	CaretSayTool,
 	COMPLETION_RESULT_CHANGES_FLAG,
 	ExtensionMessage,
 } from "../../../../src/shared/ExtensionMessage"
@@ -61,10 +61,10 @@ const MessageContentWrapper = styled.div<{ $isAiMessage?: boolean }>`
 `
 
 interface ChatRowProps {
-	message: ClineMessage
+	message: CaretMessage
 	isExpanded: boolean
 	onToggleExpand: () => void
-	lastModifiedMessage?: ClineMessage
+	lastModifiedMessage?: CaretMessage
 	isLast: boolean
 	onHeightChange: (isTaller: boolean) => void
 }
@@ -204,7 +204,7 @@ export const ChatRowContent = ({ message, isExpanded, onToggleExpand, lastModifi
 
 	const [cost, apiReqCancelReason, apiReqStreamingFailedMessage] = useMemo(() => {
 		if (message.text != null && message.say === "api_req_started") {
-			const info: ClineApiReqInfo = JSON.parse(message.text)
+			const info: CaretApiReqInfo = JSON.parse(message.text)
 			return [info.cost, info.cancelReason, info.streamingFailedMessage]
 		}
 		return [undefined, undefined, undefined]
@@ -262,7 +262,7 @@ export const ChatRowContent = ({ message, isExpanded, onToggleExpand, lastModifi
 							color: errorColor,
 							marginBottom: "-1.5px",
 						}}></span>,
-					<span style={{ color: errorColor, fontWeight: "bold" }}>Cline is having trouble...</span>,
+					<span style={{ color: errorColor, fontWeight: "bold" }}>Caret is having trouble...</span>,
 				]
 			case "auto_approval_max_req_reached":
 				return [
@@ -286,10 +286,10 @@ export const ChatRowContent = ({ message, isExpanded, onToggleExpand, lastModifi
 								marginBottom: "-1.5px",
 							}}></span>
 					),
-					<span style={{ color: normalColor, fontWeight: "bold" }}>Cline wants to execute this command:</span>,
+					<span style={{ color: normalColor, fontWeight: "bold" }}>Caret wants to execute this command:</span>,
 				]
 			case "use_mcp_server":
-				const mcpServerUse = JSON.parse(message.text || "{}") as ClineAskUseMcpServer
+				const mcpServerUse = JSON.parse(message.text || "{}") as CaretAskUseMcpServer
 				return [
 					isMcpServerResponding ? (
 						<ProgressIndicator />
@@ -302,7 +302,7 @@ export const ChatRowContent = ({ message, isExpanded, onToggleExpand, lastModifi
 							}}></span>
 					),
 					<span style={{ color: normalColor, fontWeight: "bold", wordBreak: "break-word" }}>
-						Cline wants to {mcpServerUse.type === "use_mcp_tool" ? "use a tool" : "access a resource"} on the{" "}
+						Caret wants to {mcpServerUse.type === "use_mcp_tool" ? "use a tool" : "access a resource"} on the{" "}
 						<code style={{ wordBreak: "break-all" }}>
 							{getMcpServerDisplayName(mcpServerUse.serverName, mcpMarketplaceCatalog)}
 						</code>{" "}
@@ -405,7 +405,7 @@ export const ChatRowContent = ({ message, isExpanded, onToggleExpand, lastModifi
 							color: normalColor,
 							marginBottom: "-1.5px",
 						}}></span>,
-					<span style={{ color: normalColor, fontWeight: "bold" }}>Cline has a question:</span>,
+					<span style={{ color: normalColor, fontWeight: "bold" }}>Caret has a question:</span>,
 				]
 			default:
 				return [null, null]
@@ -429,7 +429,7 @@ export const ChatRowContent = ({ message, isExpanded, onToggleExpand, lastModifi
 
 	const tool = useMemo(() => {
 		if (message.ask === "tool" || message.say === "tool") {
-			return JSON.parse(message.text || "{}") as ClineSayTool
+			return JSON.parse(message.text || "{}") as CaretSayTool
 		}
 		return null
 	}, [message.ask, message.say, message.text])
@@ -452,7 +452,7 @@ export const ChatRowContent = ({ message, isExpanded, onToggleExpand, lastModifi
 					<div>
 						<div style={headerStyle}>
 							{toolIcon("edit")}
-							<span style={{ fontWeight: "bold" }}>Cline wants to edit this file:</span>
+							<span style={{ fontWeight: "bold" }}>Caret wants to edit this file:</span>
 						</div>
 						<CodeAccordian
 							// isLoading={message.partial}
@@ -468,7 +468,7 @@ export const ChatRowContent = ({ message, isExpanded, onToggleExpand, lastModifi
 					<div>
 						<div style={headerStyle}>
 							{toolIcon("new-file")}
-							<span style={{ fontWeight: "bold" }}>Cline wants to create a new file:</span>
+							<span style={{ fontWeight: "bold" }}>Caret wants to create a new file:</span>
 						</div>
 						<CodeAccordian
 							isLoading={message.partial}
@@ -485,8 +485,8 @@ export const ChatRowContent = ({ message, isExpanded, onToggleExpand, lastModifi
 						<div style={headerStyle}>
 							{toolIcon("file-code")}
 							<span style={{ fontWeight: "bold" }}>
-								{/* {message.type === "ask" ? "" : "Cline read this file:"} */}
-								Cline wants to read this file:
+								{/* {message.type === "ask" ? "" : "Caret read this file:"} */}
+								Caret wants to read this file:
 							</span>
 						</div>
 						<div
@@ -544,8 +544,8 @@ export const ChatRowContent = ({ message, isExpanded, onToggleExpand, lastModifi
 							{toolIcon("folder-opened")}
 							<span style={{ fontWeight: "bold" }}>
 								{message.type === "ask"
-									? "Cline wants to view the top level files in this directory:"
-									: "Cline viewed the top level files in this directory:"}
+									? "Caret wants to view the top level files in this directory:"
+									: "Caret viewed the top level files in this directory:"}
 							</span>
 						</div>
 						<CodeAccordian
@@ -564,8 +564,8 @@ export const ChatRowContent = ({ message, isExpanded, onToggleExpand, lastModifi
 							{toolIcon("folder-opened")}
 							<span style={{ fontWeight: "bold" }}>
 								{message.type === "ask"
-									? "Cline wants to recursively view all files in this directory:"
-									: "Cline recursively viewed all files in this directory:"}
+									? "Caret wants to recursively view all files in this directory:"
+									: "Caret recursively viewed all files in this directory:"}
 							</span>
 						</div>
 						<CodeAccordian
@@ -584,8 +584,8 @@ export const ChatRowContent = ({ message, isExpanded, onToggleExpand, lastModifi
 							{toolIcon("file-code")}
 							<span style={{ fontWeight: "bold" }}>
 								{message.type === "ask"
-									? "Cline wants to view source code definition names used in this directory:"
-									: "Cline viewed source code definition names used in this directory:"}
+									? "Caret wants to view source code definition names used in this directory:"
+									: "Caret viewed source code definition names used in this directory:"}
 							</span>
 						</div>
 						<CodeAccordian
@@ -602,7 +602,7 @@ export const ChatRowContent = ({ message, isExpanded, onToggleExpand, lastModifi
 						<div style={headerStyle}>
 							{toolIcon("search")}
 							<span style={{ fontWeight: "bold" }}>
-								Cline wants to search this directory for <code>{tool.regex}</code>:
+								Caret wants to search this directory for <code>{tool.regex}</code>:
 							</span>
 						</div>
 						<CodeAccordian
@@ -681,7 +681,7 @@ export const ChatRowContent = ({ message, isExpanded, onToggleExpand, lastModifi
 
 	// --- MCP Server Rendering ---
 	if (message.ask === "use_mcp_server" || message.say === "use_mcp_server") {
-		const useMcpServer = JSON.parse(message.text || "{}") as ClineAskUseMcpServer
+		const useMcpServer = JSON.parse(message.text || "{}") as CaretAskUseMcpServer
 		const server = mcpServers.find((server) => server.name === useMcpServer.serverName)
 		// MCP 메시지에는 아바타 미표시
 		return (
@@ -759,7 +759,7 @@ export const ChatRowContent = ({ message, isExpanded, onToggleExpand, lastModifi
 	// --- General Message Rendering Function ---
 	const renderSpecificContent = () => {
 		// Contains the large switch statement for message.type and message.say/ask
-		// IMPORTANT: Cases like user_feedback, error, diff_error, clineignore_error, checkpoint_created, completion_result, shell_integration_warning, api_req_started SHOULD NOT have avatar/wrapper applied internally.
+		// IMPORTANT: Cases like user_feedback, error, diff_error, caretignore_error, checkpoint_created, completion_result, shell_integration_warning, api_req_started SHOULD NOT have avatar/wrapper applied internally.
 		// Only text, reasoning, followup, plan_mode_respond should potentially be styled differently by the wrapper.
 		switch (message.type) {
 			case "say":
@@ -837,7 +837,7 @@ export const ChatRowContent = ({ message, isExpanded, onToggleExpand, lastModifi
 															<br />
 															It seems like you're having Windows PowerShell issues, please see this{" "}
 															<a
-																href="https://github.com/cline/cline/wiki/TroubleShooting-%E2%80%90-%22PowerShell-is-not-recognized-as-an-internal-or-external-command%22"
+																href="https://github.com/caret/caret/wiki/TroubleShooting-%E2%80%90-%22PowerShell-is-not-recognized-as-an-internal-or-external-command%22"
 																style={{
 																	color: "inherit",
 																	textDecoration: "underline",
@@ -901,7 +901,7 @@ export const ChatRowContent = ({ message, isExpanded, onToggleExpand, lastModifi
 															color: "var(--vscode-descriptionForeground)",
 														}}>
 														<img
-															src="https://raw.githubusercontent.com/fstory97/cline-avatar/main/default_ai_agent_thinking.png"
+															src="https://raw.githubusercontent.com/fstory97/caret-avatar/main/default_ai_agent_thinking.png"
 															alt="Thinking"
 															style={{
 																width: "16px",
@@ -924,7 +924,7 @@ export const ChatRowContent = ({ message, isExpanded, onToggleExpand, lastModifi
 												// 접힌 상태 - 미리보기 추가
 												<div style={{ display: "flex", alignItems: "center" }}>
 													<img
-														src="https://raw.githubusercontent.com/fstory97/cline-avatar/main/default_ai_agent_thinking.png"
+														src="https://raw.githubusercontent.com/fstory97/caret-avatar/main/default_ai_agent_thinking.png"
 														alt="Thinking"
 														style={{
 															width: "16px",
@@ -1002,7 +1002,7 @@ export const ChatRowContent = ({ message, isExpanded, onToggleExpand, lastModifi
 														color: "var(--vscode-descriptionForeground)",
 													}}>
 													<img
-														src="https://raw.githubusercontent.com/fstory97/cline-avatar/main/default_ai_agent_thinking.png"
+														src="https://raw.githubusercontent.com/fstory97/caret-avatar/main/default_ai_agent_thinking.png"
 														alt="Thinking"
 														style={{
 															width: "16px",
@@ -1025,7 +1025,7 @@ export const ChatRowContent = ({ message, isExpanded, onToggleExpand, lastModifi
 											// 접힌 상태
 											<div style={{ display: "flex", alignItems: "center" }}>
 												<img
-													src="https://raw.githubusercontent.com/fstory97/cline-avatar/main/default_ai_agent_thinking.png"
+													src="https://raw.githubusercontent.com/fstory97/caret-avatar/main/default_ai_agent_thinking.png"
 													alt="Thinking"
 													style={{
 														width: "16px",
@@ -1081,7 +1081,7 @@ export const ChatRowContent = ({ message, isExpanded, onToggleExpand, lastModifi
 							</div>
 						)
 					case "user_feedback_diff": // No Avatar/Wrapper
-						const userDiffTool = JSON.parse(message.text || "{}") as ClineSayTool
+						const userDiffTool = JSON.parse(message.text || "{}") as CaretSayTool
 						return (
 							<div
 								style={{
@@ -1147,7 +1147,7 @@ export const ChatRowContent = ({ message, isExpanded, onToggleExpand, lastModifi
 								</div>
 							</>
 						)
-					case "clineignore_error": // No Avatar/Wrapper
+					case "caretignore_error": // No Avatar/Wrapper
 						return (
 							<>
 								<div
@@ -1181,8 +1181,8 @@ export const ChatRowContent = ({ message, isExpanded, onToggleExpand, lastModifi
 										</span>
 									</div>
 									<div>
-										Cline tried to access <code>{message.text}</code> which is blocked by the{" "}
-										<code>.clineignore</code>
+										Caret tried to access <code>{message.text}</code> which is blocked by the{" "}
+										<code>.caretignore</code>
 										file.
 									</div>
 								</div>
@@ -1274,12 +1274,12 @@ export const ChatRowContent = ({ message, isExpanded, onToggleExpand, lastModifi
 										</span>
 									</div>
 									<div>
-										Cline won't be able to view the command's output. Please update VSCode (
+										Caret won't be able to view the command's output. Please update VSCode (
 										<code>CMD/CTRL + Shift + P</code> → "Update") and make sure you're using a supported
 										shell: zsh, bash, fish, or PowerShell (<code>CMD/CTRL + Shift + P</code> → "Terminal:
 										Select Default Profile").{" "}
 										<a
-											href="https://github.com/cline/cline/wiki/Troubleshooting-%E2%80%90-Shell-Integration-Unavailable"
+											href="https://github.com/caret/caret/wiki/Troubleshooting-%E2%80%90-Shell-Integration-Unavailable"
 											style={{
 												color: "inherit",
 												textDecoration: "underline",
@@ -1398,7 +1398,7 @@ export const ChatRowContent = ({ message, isExpanded, onToggleExpand, lastModifi
 						let options: string[] | undefined
 						let selected: string | undefined
 						try {
-							const parsedMessage = JSON.parse(message.text || "{}") as ClineAskQuestion
+							const parsedMessage = JSON.parse(message.text || "{}") as CaretAskQuestion
 							question = parsedMessage.question
 							options = parsedMessage.options
 							selected = parsedMessage.selected
@@ -1431,7 +1431,7 @@ export const ChatRowContent = ({ message, isExpanded, onToggleExpand, lastModifi
 						let options: string[] | undefined
 						let selected: string | undefined
 						try {
-							const parsedMessage = JSON.parse(message.text || "{}") as ClinePlanModeResponse
+							const parsedMessage = JSON.parse(message.text || "{}") as CaretPlanModeResponse
 							response = parsedMessage.response
 							options = parsedMessage.options
 							selected = parsedMessage.selected

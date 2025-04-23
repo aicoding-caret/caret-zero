@@ -93,7 +93,7 @@ export interface WebviewMessage {
 	text?: string
 	uris?: string[] // Used for getRelativePaths
 	disabled?: boolean
-	askResponse?: ClineAskResponse
+	askResponse?: CaretAskResponse
 	apiConfiguration?: ApiConfiguration
 	images?: string[]
 	bool?: boolean
@@ -127,8 +127,8 @@ export interface WebviewMessage {
 	query?: string
 }
 
-export type ClineAskResponse = "yesButtonClicked" | "noButtonClicked" | "messageResponse"
+export type CaretAskResponse = "yesButtonClicked" | "noButtonClicked" | "messageResponse"
 
-export type ClineCheckpointRestore = "task" | "workspace" | "taskAndWorkspace"
+export type CaretCheckpointRestore = "task" | "workspace" | "taskAndWorkspace"
 
 export type TaskFeedbackType = "thumbs_up" | "thumbs_down"

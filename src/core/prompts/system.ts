@@ -350,8 +350,8 @@ export const SYSTEM_PROMPT = async (
 // This function remains separate and unchanged
 export function addUserInstructions(
 	settingsCustomInstructions?: string,
-	clineRulesFileInstructions?: string,
-	clineIgnoreInstructions?: string,
+	caretRulesFileInstructions?: string,
+	caretIgnoreInstructions?: string,
 	preferredLanguageInstructions?: string,
 ): string {
 	let customInstructions = ""
@@ -363,13 +363,13 @@ export function addUserInstructions(
 		// Added braces
 		customInstructions += settingsCustomInstructions + "\n\n"
 	}
-	if (clineRulesFileInstructions) {
+	if (caretRulesFileInstructions) {
 		// Added braces
-		customInstructions += clineRulesFileInstructions + "\n\n"
+		customInstructions += caretRulesFileInstructions + "\n\n"
 	}
-	if (clineIgnoreInstructions) {
+	if (caretIgnoreInstructions) {
 		// Added braces
-		customInstructions += clineIgnoreInstructions
+		customInstructions += caretIgnoreInstructions
 	}
 
 	if (customInstructions.trim()) {

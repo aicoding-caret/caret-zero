@@ -53,8 +53,8 @@ export function validateApiConfiguration(apiConfiguration?: ApiConfiguration): s
 					return "You must provide a valid API key or choose a different provider."
 				}
 				break
-			case "cline":
-				if (!apiConfiguration.clineApiKey) {
+			case "caret":
+				if (!apiConfiguration.caretApiKey) {
 					return "You must provide a valid API key or choose a different provider."
 				}
 				break
@@ -110,7 +110,7 @@ export function validateModelId(
 	if (apiConfiguration) {
 		switch (apiConfiguration.apiProvider) {
 			case "openrouter":
-			case "cline":
+			case "caret":
 				const modelId = apiConfiguration.openRouterModelId || openRouterDefaultModelId // in case the user hasn't changed the model id, it will be undefined by default
 				if (!modelId) {
 					return "You must provide a model ID."

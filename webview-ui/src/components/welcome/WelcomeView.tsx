@@ -6,7 +6,7 @@ import { useExtensionState } from "../../context/ExtensionStateContext"
 import { validateApiConfiguration } from "../../utils/validate"
 import { vscode } from "../../utils/vscode"
 import ApiOptions from "../settings/ApiOptions"
-import ClineLogoWhite from "../../assets/ClineLogoWhite"
+import CaretLogoWhite from "../../assets/CaretLogoWhite"
 
 const WelcomeView = () => {
 	const { apiConfiguration } = useExtensionState()
@@ -45,9 +45,9 @@ const WelcomeView = () => {
 					padding: "0 20px",
 					overflow: "auto",
 				}}>
-				<h2>Hi, I'm Cline</h2>
+				<h2>Hi, I'm Caret</h2>
 				<div style={{ display: "flex", justifyContent: "center", margin: "20px 0" }}>
-					<ClineLogoWhite className="size-16" />
+					<CaretLogoWhite className="size-16" />
 				</div>
 				<p>
 					I can do all kinds of tasks thanks to breakthroughs in{" "}

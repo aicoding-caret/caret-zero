@@ -1,8 +1,8 @@
 {
   "project_overview": {
-    "name": "Caret (formerly Cline-Alpha)",
+    "name": "Caret (formerly Caret-Alpha)",
     "description": "VSCode extension for AI assistance, focusing on personalized development partnership.",
-    "repository_url": "https://github.com/fstory97/cline"
+    "repository_url": "https://github.com/fstory97/caret"
   },
   "architecture": {
     "summary": "Modular: Core TypeScript backend, React webview frontend.",
@@ -21,9 +21,9 @@
       },
       {
         "name": "State Management",
-        "core_provider": "src/core/webview/ClineProvider.ts",
+        "core_provider": "src/core/webview/CaretProvider.ts",
         "webview_context": "webview-ui/src/context/ExtensionStateContext.tsx",
-        "description": "Core state in ClineProvider, synced to webview via messages."
+        "description": "Core state in CaretProvider, synced to webview via messages."
       },
       {
         "name": "Task Management",
@@ -40,7 +40,7 @@
     "diagram_reference": "caret-docs/architecture/extension-architecture.mmd"
   },
   "development_process": {
-    "state_management_guideline": "Core Extension (ClineProvider) is the source of truth. Sync state via messages.",
+    "state_management_guideline": "Core Extension (CaretProvider) is the source of truth. Sync state via messages.",
     "tool_integration": "Follow patterns in src/integrations/, respect .caretignore.",
     "api_providers": "Implementations in src/api/providers/.",
     "testing": "Refer to caret-docs/testing/ for plans.",
@@ -64,7 +64,7 @@
     "caret-docs/",
     "src/extension.ts",
     "src/core/task/index.ts",
-    "src/core/webview/ClineProvider.ts",
+    "src/core/webview/CaretProvider.ts",
     "webview-ui/src/App.tsx",
     "webview-ui/src/context/ExtensionStateContext.tsx",
     "agents-rules/alpha/"

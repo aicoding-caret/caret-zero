@@ -37,7 +37,7 @@ docker run --rm -d --name vllm-qwen2.5-4bit --gpus all ^
     -e VLLM_DISABLE_TORCH_COMPILE=1 ^
     -e NCCL_P2P_DISABLE=1 ^
     -p 8000:8000 ^
-    -v D:\dev\cline\models:/root/.cache/huggingface ^
+    -v D:\dev\caret\models:/root/.cache/huggingface ^
     vllm/vllm-openai:v0.5.1 ^
     --model Qwen/Qwen2.5-Coder-32B-Instruct-GPTQ-Int4 ^
     --quantization gptq ^

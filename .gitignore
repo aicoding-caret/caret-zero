@@ -9,7 +9,7 @@ tmp
 
 pnpm-lock.yaml
 
-.clineignore
+.caretignore
 
 # Model Cache (e.g., downloaded by TGI)
 models/

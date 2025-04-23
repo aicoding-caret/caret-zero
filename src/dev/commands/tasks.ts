@@ -3,7 +3,7 @@ import * as fs from "fs/promises"
 import * as path from "path"
 import { Controller } from "../../core/controller"
 import { HistoryItem } from "../../shared/HistoryItem"
-import { ClineMessage } from "../../shared/ExtensionMessage"
+import { CaretMessage } from "../../shared/ExtensionMessage"
 
 /**
  * Registers development-only commands for task manipulation.
@@ -11,7 +11,7 @@ import { ClineMessage } from "../../shared/ExtensionMessage"
  */
 export function registerTaskCommands(context: vscode.ExtensionContext, controller: Controller): vscode.Disposable[] {
 	return [
-		vscode.commands.registerCommand("cline.dev.createTestTasks", async () => {
+		vscode.commands.registerCommand("caret.dev.createTestTasks", async () => {
 			const count = await vscode.window.showInputBox({
 				title: "Test Tasks",
 				prompt: "How many test tasks to create?",
@@ -106,7 +106,7 @@ export function registerTaskCommands(context: vscode.ExtensionContext, controlle
 /**
  * Creates a realistic sequence of messages that would occur in a typical task
  */
-function createRealisticMessageSequence(baseTimestamp: number, taskPrompt: string, taskIndex: number): ClineMessage[] {
+function createRealisticMessageSequence(baseTimestamp: number, taskPrompt: string, taskIndex: number): CaretMessage[] {
 	// Use an incrementing timestamp to ensure messages appear in sequence
 	let timestamp = baseTimestamp
 	const getNextTimestamp = () => {
@@ -119,8 +119,8 @@ function createRealisticMessageSequence(baseTimestamp: number, taskPrompt: strin
 	const commitHash = `commit${taskIndex}${Math.floor(Math.random() * 1000000).toString(16)}`
 
 	// Create a realistic message sequence
-	const messages: ClineMessage[] = [
-		// Initial task message - uses "say" with "text" which is the format used in Cline.ts
+	const messages: CaretMessage[] = [
+		// Initial task message - uses "say" with "text" which is the format used in Caret.ts
 		{
 			ts: baseTimestamp,
 			type: "say",

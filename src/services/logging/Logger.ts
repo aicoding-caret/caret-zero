@@ -128,7 +128,7 @@ export class Logger implements ILogger {
 
 // export function initializeGlobalLogger(context: vscode.ExtensionContext): Logger {
 //   if (!globalLogger) {
-//     globalLogger = new Logger("Cline", context); // Use your extension's name
+//     globalLogger = new Logger("Caret", context); // Use your extension's name
 //   }
 //   return globalLogger;
 // }

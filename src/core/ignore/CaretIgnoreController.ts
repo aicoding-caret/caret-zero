@@ -8,20 +8,20 @@ export const LOCK_TEXT_SYMBOL = "\u{1F512}"
 
 /**
  * Controls LLM access to files by enforcing ignore patterns.
- * Designed to be instantiated once in Cline.ts and passed to file manipulation services.
- * Uses the 'ignore' library to support standard .gitignore syntax in .clineignore files.
+ * Designed to be instantiated once in Caret.ts and passed to file manipulation services.
+ * Uses the 'ignore' library to support standard .gitignore syntax in .caretignore files.
  */
-export class ClineIgnoreController {
+export class CaretIgnoreController {
 	private cwd: string
 	private ignoreInstance: Ignore
 	private disposables: vscode.Disposable[] = []
-	clineIgnoreContent: string | undefined
+	caretIgnoreContent: string | undefined
 
 	constructor(cwd: string) {
 		this.cwd = cwd
 		this.ignoreInstance = ignore()
-		this.clineIgnoreContent = undefined
-		// Set up file watcher for .clineignore
+		this.caretIgnoreContent = undefined
+		// Set up file watcher for .caretignore
 		this.setupFileWatcher()
 	}
 
@@ -30,26 +30,26 @@ export class ClineIgnoreController {
 	 * Must be called after construction and before using the controller
 	 */
 	async initialize(): Promise<void> {
-		await this.loadClineIgnore()
+		await this.loadCaretIgnore()
 	}
 
 	/**
-	 * Set up the file watcher for .clineignore changes
+	 * Set up the file watcher for .caretignore changes
 	 */
 	private setupFileWatcher(): void {
-		const clineignorePattern = new vscode.RelativePattern(this.cwd, ".clineignore")
-		const fileWatcher = vscode.workspace.createFileSystemWatcher(clineignorePattern)
+		const caretignorePattern = new vscode.RelativePattern(this.cwd, ".caretignore")
+		const fileWatcher = vscode.workspace.createFileSystemWatcher(caretignorePattern)
 
 		// Watch for changes and updates
 		this.disposables.push(
 			fileWatcher.onDidChange(() => {
-				this.loadClineIgnore()
+				this.loadCaretIgnore()
 			}),
 			fileWatcher.onDidCreate(() => {
-				this.loadClineIgnore()
+				this.loadCaretIgnore()
 			}),
 			fileWatcher.onDidDelete(() => {
-				this.loadClineIgnore()
+				this.loadCaretIgnore()
 			}),
 		)
 
@@ -58,24 +58,24 @@ export class ClineIgnoreController {
 	}
 
 	/**
-	 * Load custom patterns from .clineignore if it exists
+	 * Load custom patterns from .caretignore if it exists
 	 */
-	private async loadClineIgnore(): Promise<void> {
+	private async loadCaretIgnore(): Promise<void> {
 		try {
 			// Reset ignore instance to prevent duplicate patterns
 			this.ignoreInstance = ignore()
-			const ignorePath = path.join(this.cwd, ".clineignore")
+			const ignorePath = path.join(this.cwd, ".caretignore")
 			if (await fileExistsAtPath(ignorePath)) {
 				const content = await fs.readFile(ignorePath, "utf8")
-				this.clineIgnoreContent = content
+				this.caretIgnoreContent = content
 				this.ignoreInstance.add(content)
-				this.ignoreInstance.add(".clineignore")
+				this.ignoreInstance.add(".caretignore")
 			} else {
-				this.clineIgnoreContent = undefined
+				this.caretIgnoreContent = undefined
 			}
 		} catch (error) {
 			// Should never happen: reading file failed even though it exists
-			console.error("Unexpected error loading .clineignore:", error)
+			console.error("Unexpected error loading .caretignore:", error)
 		}
 	}
 
@@ -85,8 +85,8 @@ export class ClineIgnoreController {
 	 * @returns true if file is accessible, false if ignored
 	 */
 	validateAccess(filePath: string): boolean {
-		// Always allow access if .clineignore does not exist
-		if (!this.clineIgnoreContent) {
+		// Always allow access if .caretignore does not exist
+		if (!this.caretIgnoreContent) {
 			return true
 		}
 		try {
@@ -109,8 +109,8 @@ export class ClineIgnoreController {
 	 * @returns path of file that is being accessed if it is being accessed, undefined if command is allowed
 	 */
 	validateCommand(command: string): string | undefined {
-		// Always allow if no .clineignore exists
-		if (!this.clineIgnoreContent) {
+		// Always allow if no .caretignore exists
+		if (!this.caretIgnoreContent) {
 			return undefined
 		}
 

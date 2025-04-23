@@ -54,7 +54,7 @@ const remarkUrlToLink = () => {
 /**
  * Custom remark plugin that prevents filenames with extensions from being parsed as bold text
  * For example: __init__.py should not be rendered as bold "init" followed by ".py"
- * Solves https://github.com/cline/cline/issues/1028
+ * Solves https://github.com/caret/caret/issues/1028
  */
 const remarkPreventBoldFilenames = () => {
 	return (tree: any) => {

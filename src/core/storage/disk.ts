@@ -3,14 +3,14 @@ import * as vscode from "vscode"
 import fs from "fs/promises"
 import { Anthropic } from "@anthropic-ai/sdk"
 import { fileExistsAtPath } from "../../utils/fs"
-import { ClineMessage } from "../../shared/ExtensionMessage"
+import { CaretMessage } from "../../shared/ExtensionMessage"
 
 export interface FileMetadataEntry {
 	path: string
 	record_state: "active" | "stale"
-	record_source: "read_tool" | "user_edited" | "cline_edited" | "file_mentioned"
-	cline_read_date: number | null
-	cline_edit_date: number | null
+	record_source: "read_tool" | "user_edited" | "caret_edited" | "file_mentioned"
+	caret_read_date: number | null
+	caret_edit_date: number | null
 	user_edit_date?: number | null
 }
 
@@ -23,8 +23,8 @@ export const GlobalFileNames = {
 	contextHistory: "context_history.json", // Added from upstream
 	uiMessages: "ui_messages.json",
 	openRouterModels: "openrouter_models.json",
-	mcpSettings: "cline_mcp_settings.json",
-	clineRules: process.env.CARET_RULES_FILE || ".caretrules",
+	mcpSettings: "caret_mcp_settings.json",
+	caretRules: process.env.CARET_RULES_FILE || ".caretrules",
 	taskMetadata: "task_metadata.json", // Added from upstream
 }
 
@@ -61,7 +61,7 @@ export async function saveApiConversationHistory(
 	}
 }
 
-export async function getSavedClineMessages(context: vscode.ExtensionContext, taskId: string): Promise<ClineMessage[]> {
+export async function getSavedCaretMessages(context: vscode.ExtensionContext, taskId: string): Promise<CaretMessage[]> {
 	const filePath = path.join(await ensureTaskDirectoryExists(context, taskId), GlobalFileNames.uiMessages)
 	if (await fileExistsAtPath(filePath)) {
 		return JSON.parse(await fs.readFile(filePath, "utf8"))
@@ -77,7 +77,7 @@ export async function getSavedClineMessages(context: vscode.ExtensionContext, ta
 	return []
 }
 
-export async function saveClineMessages(context: vscode.ExtensionContext, taskId: string, uiMessages: ClineMessage[]) {
+export async function saveCaretMessages(context: vscode.ExtensionContext, taskId: string, uiMessages: CaretMessage[]) {
 	try {
 		const taskDir = await ensureTaskDirectoryExists(context, taskId)
 		const filePath = path.join(taskDir, GlobalFileNames.uiMessages)

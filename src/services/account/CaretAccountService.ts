@@ -1,9 +1,9 @@
 import axios, { AxiosRequestConfig, AxiosResponse } from "axios"
 import { Controller } from "../../core/controller"
-import type { BalanceResponse, PaymentTransaction, UsageTransaction } from "../../shared/ClineAccount"
+import type { BalanceResponse, PaymentTransaction, UsageTransaction } from "../../shared/CaretAccount"
 
-export class ClineAccountService {
-	private readonly baseUrl = "https://api.cline.bot/v1"
+export class CaretAccountService {
+	private readonly baseUrl = "https://api.caret.bot/v1"
 	private controllerRef: WeakRef<Controller>
 
 	constructor(controller: Controller) {
@@ -11,37 +11,37 @@ export class ClineAccountService {
 	}
 
 	/**
-	 * Get the user's Cline Account key from the apiConfiguration
+	 * Get the user's Caret Account key from the apiConfiguration
 	 */
-	private async getClineApiKey(): Promise<string | undefined> {
+	private async getCaretApiKey(): Promise<string | undefined> {
 		const provider = this.controllerRef.deref()
 		if (!provider) {
 			return undefined
 		}
 
 		const { apiConfiguration } = await provider.getStateToPostToWebview()
-		return apiConfiguration?.clineApiKey
+		return apiConfiguration?.caretApiKey
 	}
 
 	/**
-	 * Helper function to make authenticated requests to the Cline API
+	 * Helper function to make authenticated requests to the Caret API
 	 * @param endpoint The API endpoint to call (without the base URL)
 	 * @param config Additional axios request configuration
 	 * @returns The API response data
 	 * @throws Error if the API key is not found or the request fails
 	 */
 	private async authenticatedRequest<T>(endpoint: string, config: AxiosRequestConfig = {}): Promise<T> {
-		const clineApiKey = await this.getClineApiKey()
+		const caretApiKey = await this.getCaretApiKey()
 
-		if (!clineApiKey) {
-			throw new Error("Cline API key not found")
+		if (!caretApiKey) {
+			throw new Error("Caret API key not found")
 		}
 
 		const url = `${this.baseUrl}${endpoint}`
 		const requestConfig: AxiosRequestConfig = {
 			...config,
 			headers: {
-				Authorization: `Bearer ${clineApiKey}`,
+				Authorization: `Bearer ${caretApiKey}`,
 				"Content-Type": "application/json",
 				...config.headers,
 			},
