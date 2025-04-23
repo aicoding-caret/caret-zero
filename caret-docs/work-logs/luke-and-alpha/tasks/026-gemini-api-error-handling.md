@@ -1,211 +1,64 @@
-# 태스크 정보
+# Task 026: Gemini API 에러 처리 개선
 
-- **태스크 번호**: #026
-- **태스크 이름**: Gemini API 에러 처리 개선
-- **담당자**: 알파 & 마스터
-- **시작일**: 2025-04-14
-- **완료일**: 2025-04-15
-- **상태**: 완료
+## Task Information
 
-## 태스크 목적
+- **Task Number:** 026
+- **Task Name:** gemini-api-error-handling
+- **Status:** In Progress
 
-Gemini API 호출 시 발생하는 에러를 더 효과적으로 처리하고, 사용자에게 친절한 메시지를 제공하여 사용자 경험을 향상시킵니다. API에서 제공하는 재시도 지연 시간을 적절히 활용하여 안정성을 높이고, 한국어 메시지로 사용자에게 상황을 명확하게 전달합니다.
+## Task Purpose
 
-## 실행 단계
+Gemini API 호출 시 발생하는 에러를 처리하고, 재시도 상태 및 최종 실패 상태를 웹뷰 UI에 명확하게 표시하여 사용자 경험을 개선합니다.
+현재 Gemini 에러 지연에 대한 처리가 제대로 이루어지지 않고 UI가 업데이트 되지 않습니다.
+기존에 controller 에서 webview로 `retryStatus` 메시지를 전송하여 로직을 처리하게 되어있는데 이 코드에 문제가 있는것으로 추정됩니다.
+몇번의 재시도 끝에 최종 실패에 대한 API에러 메시지가 출력됩니다. 이때 status에 대한 상태가 넘어가게 되어있는데, 이는 정상적으로 처리 되므로 해당 로직을 분석후, 확인하거나 해당 로직을 이용하게 수정합니다.
+ 분석후 'retryStatus'가 불필요한 경우 삭제합니다.
+  * 되는 로직만을 사용합니다. 새로운 로직을 가능한 만들지 않습니다.
+  * UI는 "API 요청중.." 메시지 대신  "(2/5회) API요청 제한에 *초 후 재시도 합니다." 이렇게 노출 되고 대기하거나, 카운트를 해줄것
+  * retryStatus 와 state 값이 혼용 되고 있을 수 있음, 이를 state값으로 통일할 것
+  * 아래의 현상을 보면 메시지 발송이 제대로 안된것일 수 있으므로,  Created retry status message 로그이후 내용을 좀 더 상세하게 로깅을 하고 문제를 확인 중
 
-1. `src/api/retry.ts` 파일의 에러 처리 로직 분석
-2. API 에러 응답에서 `retryDelay` 정보 추출 및 활용 방법 개선
-3. 에러 유형별 한국어 메시지 구현
-4. 로깅 기능 강화로 디버깅 용이성 향상
-5. 코드 구조 개선 및 중복 코드 제거
 
-## 참고 자료
 
-- Google Vertex AI 문서 (에러 코드 및 재시도 정책)
-- 기존 `retry.ts` 파일의 구현 내용
-- 한국어 사용자 메시지 표준
+## Execution Steps
 
-## 상세 작업 체크리스트
+## Reference Materials
 
-### 1. 문제 분석 (✅)
-- [x] 현재 로깅 시스템 동작 분석
-- [x] Controller 코드 분석
-- [x] 웹뷰 UI 코드 분석 (ChatView.tsx)
-- [x] retry.ts 코드 분석
-- [x] 발견된 문제 정리:
-  - API에서 전달받은 재시도 지연 시간(retryDelay)만큼 기다리지 않음
-  - ChatView에 에러 메시지가 표시되지 않음
+-   [`webview-ui/src/components/chat/ChatView.tsx`](/webview-ui/src/components/chat/ChatView.tsx)
+-   [`src/extension/controller/`](/src/extension/controller/) (관련 컨트롤러 파일 경로 확인 필요)
+-   [`src/extension/utils/retry.ts`](/src/extension/utils/retry.ts) (가정)
 
-### 2. API 재시도 로직 개선
-- [x] retry.ts 파일 수정:
-  - RetryInfo에서 추출한 지연 시간 정확히 적용
-  - 웹뷰에 에러 메시지 표시 기능 개선
 
-### 3. 웹뷰 에러 메시지 표시 개선
-- [x] ChatView.tsx 파일에 에러 메시지 처리 로직 추가
-- [x] 에러 상태와 재시도 정보 표시 방식 개선
+## 현재 상태 및 다음 단계 (2025-04-15 알파 handover)
 
-### 4. 테스트 코드 작성
-- [x] 할당량 초과 에러(429) 테스트 케이스 작성
-- [x] 재시도 지연 시간 계산 테스트 작성
-- [x] 에러 메시지 표시 테스트 작성
+현재 Gemini API 재시도 로직 관련 타입 에러 해결을 진행 중입니다. 몇 가지 수정이 이루어졌지만, 여전히 해결해야 할 타입 에러들이 남아있습니다.
 
-### 5. 테스트 및 검증
-- [x] 테스트 코드 실행 및 검증
-- [x] 마스터가 제공한 API 에러 메시지 시나리오로 테스트
-- [x] 컴파일 확인 (npm run compile)
-- [x] 실제 환경에서 동작 확인
+**남아있는 작업:**
+로그를 보니 Gemini API에서 할당량 초과 에러가 발생하고 있고, 재시도 로직이 작동하고 있는 것 같습니다. 하지만 사용자가 "화면만 안나오는 것 같네"라고 말한 것으로 보아 웹뷰 UI에 재시도 상태가 표시되지 않는 문제가 있는 것 같습니다.
 
-### 6. 문서화 및 마무리
-- [x] 코드 주석 추가
-- [x] 작업 로그 업데이트
-- [x] 최종 검토 및 PR 준비
+로그에서 다음과 같은 내용을 확인할 수 있습니다:
 
-## 진행 상황
+[Extension Host] [Retry] Updating state with retryStatus:라는 로그가 있어 retryStatus가 업데이트되고 있는 것 같습니다.
+에러 타입은 '할당량 초과'로 표시되고 있습니다.
+재시도 지연 시간은 59000ms(59초)로 설정되어 있습니다.
+재시도 횟수는 2회로 표시되고 있습니다.
+그러나 웹뷰 UI에 이러한 정보가 표시되지 않는 것 같습니다. 이 문제를 해결하기 위해 다음 부분을 확인해야 합니다:
 
-- ✅ 에러 처리 로직 분석 완료
-- ✅ `retryDelay` 활용 개선 완료 (실제 시간 기다리도록 구현)
-- ✅ 웹뷰 에러 메시지 표시 개선 완료 (진행률 표시를 포함한 UI 구현)
-- ✅ 테스트 코드 작성 및 실행 완료
-- ✅ 컴파일 및 최종 검증 완료
-- [x] API재시도 UI노출 
+ExtensionStateContext에서 retryStatus가 제대로 업데이트되고 있는지 확인
+ChatView.tsx에서 retryStatus를 제대로 구독하고 있는지 확인
+RetryStatusContainer 컴포넌트가 제대로 렌더링되고 있는지 확인
+먼저 webview-ui/src/context/ExtensionStateContext.tsx 파일을 확인해보겠습니다.
 
-## 메모
+## 현재 상태 및 다음 단계 (2025-04-15 업데이트)
 
-- API 에러 응답에서 `retryDelay` 정보 추출 및 파싱 시 다양한 형식(s, ms, m, h)을 처리하도록 개선
-- `RetryStatusMessage` 인터페이스를 추가하여 재시도 상태 정보 구조화 및 전달 개선
-- ChatView에 할당량 초과 표시를 위한 상태 바 추가 (진행률 표시 포함)
-- 실시간 진행률 표시를 위한 타이머 구현 (100ms 마다 업데이트)
-- 테스트 코드를 통해 각각 429(할당량 초과), 503(서비스 불가) 오류 시나리오 검증
-- 테스트 실행 및 컴파일을 통해 완성된 개선 기능 검증 완료
-- Web-view UI에 노출되지 않음. ChatView.tsx. console.log를 넣었으나 미확인
+오늘 작업 결과:
+1. `src/core/storage/state-keys.ts` 파일에 `"retryStatus"` 키를 `GlobalStateKey` 타입에 추가했습니다.
+2. `src/core/controller/index.ts` 파일에 `RetryStatusMessage` 타입을 import 구문에 추가했습니다.
+3. `getStateToPostToWebview` 함수에 `retryStatus` 상수를 선언하고 `return` 객체에 추가했습니다.
 
-## 구조적 문제 및 의심되는 부분
 
-1. **인터페이스 불일치 문제**:
-   - `src/api/retry.ts`에서 로컬로 정의된 `RetryStatusMessage` 인터페이스와 `src/shared/ExtensionMessage.ts`에 정의된 `RetryStatusMessage` 인터페이스가 서로 다름
-   - 로컬 인터페이스: `{ errorType, quotaViolation?, delayMs, startTime, attempt, maxRetries }`
-   - 공유 인터페이스: `{ status, errorType, attempt, delay, quotaViolation?, retryTimestamp? }`
-   - 이로 인해 타입 오류 발생: `Object literal may only specify known properties, and 'status' does not exist in type 'RetryStatusMessage'`
+** 추가 수정 예정 내역:**
+ - 아래의 일일 할당량 모두 사용시 메시지 처리 필요
+ [GoogleGenerativeAI Error]: Error fetching from https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-pro-exp-03-25:streamGenerateContent?alt=sse: [429 Too Many Requests] You exceeded your current quota. Please migrate to Gemini 2.5 Pro Preview (models/gemini-2.5-pro-preview-03-25) for higher quota limits. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. [{"@type":"type.googleapis.com/google.rpc.QuotaFailure","violations":[{"quotaMetric":"generativelanguage.googleapis.com/generate_requests_per_model_per_day","quotaId":"GenerateRequestsPerDayPerProjectPerModel"}]},{"@type":"type.googleapis.com/google.rpc.Help","links":[{"description":"Learn more about Gemini API quotas","url":"https://ai.google.dev/gemini-api/docs/rate-limits"}]}]
 
-2. **메시지 전달 경로 문제**:
-   - 확장 프로그램 -> 웹뷰 메시지: `ExtensionMessage` 인터페이스 사용
-   - 웹뷰 -> 확장 프로그램 메시지: `WebviewMessage` 인터페이스 사용
-   - `togglePlanActMode` 타입이 `WebviewMessage`에 누락되어 있어 타입 오류 발생
-
-3. **웹뷰 UI 업데이트 문제**:
-   - `ChatView.tsx`의 `handleMessage` 함수에서 `retryStatus` 메시지를 받아 처리하지만 UI에 표시되지 않음
-   - 로그는 정상적으로 출력되지만 UI 업데이트가 되지 않는 문제
-
-## 개선 목표 및 방법
-
-### 1. 목표
-
-- Gemini API 에러 처리 시 표준화된 방식으로 웹뷰에 상태 전달하기
-- 기존 웹뷰 메시지 전송 방식(state 사용)과 통합하여 일관성 유지
-- 5번의 시도 이후 에러 발생 시 컨트롤러에서 적절히 처리하기
-
-### 2. 개선 방법
-
-1. **메시지 전송 방식 통일**:
-   - 모든 에러 상태 메시지를 `state` 객체를 통해 전송
-   - `postMessageToWebview` 메서드를 일관되게 사용
-
-2. **인터페이스 통합**:
-   - `RetryStatusMessage` 인터페이스를 `ExtensionMessage.ts`에 정의된 것으로 통일
-   - 로컬 인터페이스 대신 공유 인터페이스 사용
-
-3. **컨트롤러 처리 개선**:
-   - 5번의 재시도 실패 후 컨트롤러에서 에러 상태 처리
-   - 웹뷰에 적절한 에러 메시지와 안내 표시
-
-4. **UI 표시 개선**:
-   - `ChatView.tsx`에서 `retryStatus` 메시지를 받아 UI에 표시
-   - 재시도 진행 상황 및 남은 시간을 사용자에게 시각적으로 제공
-
-## 확인 가능한 로그
-
-```
-[Extension Host] [Retry] 34초 동안 대기 (at console.anonymous (
-file:///c:/Users/luke/AppData/Local/Programs/Microsoft%20VS%20Code/resources/app/out/vs/workbench/api/node/extensionHostProcess.js:94:1302))
-```
-
-```
-// ChatView.tsx에 추가한 디버그 로그
-console.debug("[ChatView] Received retry status message:", message.type, message.retryState);
-
-// retry.ts에 추가한 디버그 로그
-console.debug("[Retry Debug] Created retry status message:", retryStatusMessage);
-```
-
-```
-// 브라우저 콘솔에서 확인 가능한 로그
-[ChatView] Received retry status message: retryStatus {status: 429, errorType: "할당량 초과 오류", attempt: 2, delay: 34000, quotaViolation: "일일 요청 한도 초과", retryTimestamp: 1712345678900}
-```
-
-## 구현 계획
-
-### 1. 표준화된 메시지 전송 방식 적용
-
-```typescript
-// retry.ts에서 컨트롤러의 state를 통한 메시지 전송 방식 사용
-if ((this as any).controller && typeof (this as any).controller.postMessageToWebview === 'function') {
-  try {
-    // state 객체를 통해 메시지 전송
-    const state = {
-      retryStatus: {
-        status: error?.status,
-        errorType,
-        attempt: attempt + 1,
-        delay,
-        quotaViolation,
-        retryTimestamp: Date.now() + delay
-      }
-    };
-    
-    // 표준화된 방식으로 메시지 전송
-    ;(this as any).controller.postMessageToWebview({ type: 'state', state });
-    console.log("[Retry] 웹뷰로 재시도 상태 전송 성공 (state 방식)");
-  } catch (err) {
-    console.error("[Retry] 웹뷰로 재시도 상태 전송 실패:", err);
-  }
-}
-```
-
-### 2. ChatView.tsx에서 state 처리 방식 통합
-
-```typescript
-// ChatView.tsx에서 state 객체를 통해 retryStatus 처리
-case "state":
-  if (message.state?.retryStatus) {
-    console.debug("[ChatView] Received retry status from state:", message.state.retryStatus);
-    setRetryState(message.state.retryStatus);
-    // 타이머 시작 로직...
-  }
-  break;
-```
-
-### 3. 5번 재시도 후 처리 로직
-
-```typescript
-// retry.ts에서 최대 재시도 횟수 도달 시 처리
-if (isLastAttempt) {
-  console.warn(`[Retry] 최대 재시도 횟수(${maxRetries})에 도달했습니다. 컨트롤러에 에러 전달`);
-  
-  // 컨트롤러에 최종 에러 상태 전달
-  if ((this as any).controller) {
-    const finalErrorState = {
-      maxRetriesReached: true,
-      status: error?.status,
-      errorType,
-      attempts: maxRetries
-    };
-    
-    // 컨트롤러의 handleApiError 메서드 호출
-    ;(this as any).controller.handleApiError(finalErrorState);
-  }
-  
-  throw error; // 원래 에러 전파
-}
-```
-
+- 오늘의 구글 무료 할당량을 모두 사용하였습니다. 다른 모델로 변경하거나 유료 결제를 진행 바랍니다. 라는 메시지 출력하고 종료시켜야함
