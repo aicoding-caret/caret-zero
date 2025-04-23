@@ -29,6 +29,18 @@ Welcome to Caret! We aim to build a next-generation development environment with
 5.  **Community (Planned):** Updates and discussions will also happen in the [AICoding-Caret Facebook Group](https://facebook.com/aicoding-caret). We plan to offer **various educational materials and programs** through the community in the future.
 6.  **Easy Access (Future Plan):** We envision a future where you can create an account on the Caret website (planned for caret.team) to **use Caret's core features more easily**, without the hassle of configuring individual LLM API keys.
 
+## Future Roadmap (Brief)
+
+Caret will continue to evolve. Our key directions include: More detailed plans can be found [here](<path_to_detailed_plan_document>).
+
+*   **Advanced RAG:** Enhancing project context understanding (Vector DB integration, auto-sync, etc.).
+*   **Multi-Agent Collaboration:** Implementing seamless cooperation between specialized agents (Tester, Doc Writer, etc.).
+*   **Vibe Coding UX Improvements:** Optimizing real-time interaction and development flow between developers and AI.
+*   **Expanded LLM Support:** Providing more options and optimizations for various local/cloud models.
+*   **Plugin System (Long-term Goal):** Establishing a structure for users to extend Caret's functionality.
+
+Your feedback and contributions will enrich Caret's roadmap!
+
 ## Build & Packaging 🛠️
 
 ### Release Build
@@ -57,18 +69,6 @@ Get-Content -Path "logs/cline-debug-[timestamp].log" -Wait
 ## Contributing
 
 We welcome contributions to the Caret project! Whether it's bug reports, feature suggestions, or code contributions, all forms are appreciated. Please refer to the `CONTRIBUTING.md` file (to be added) for details.
-
-## Future Roadmap (Brief)
-
-Caret will continue to evolve. Our key directions include:
-
-*   **Advanced RAG:** Enhancing project context understanding (Vector DB integration, auto-sync, etc.).
-*   **Multi-Agent Collaboration:** Implementing seamless cooperation between specialized agents (Tester, Doc Writer, etc.).
-*   **Vibe Coding UX Improvements:** Optimizing real-time interaction and development flow between developers and AI.
-*   **Expanded LLM Support:** Providing more options and optimizations for various local/cloud models.
-*   **Plugin System (Long-term Goal):** Establishing a structure for users to extend Caret's functionality.
-
-Your feedback and contributions will enrich Caret's roadmap!
 
 ## Community & Communication Channels (Planned)
 *   **GitHub Issues:** For technical discussions, bug reports, feature suggestions.
