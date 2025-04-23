@@ -1,2 +1,0 @@
-This is the modified content for retrying the replace_in_file test.
-Let's replace the word 'initial'.
