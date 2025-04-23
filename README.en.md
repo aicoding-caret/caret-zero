@@ -4,7 +4,7 @@
 
 Welcome to Caret! We aim to build a next-generation development environment within VS Code where developers and AI agents collaborate and grow together. Caret enhances productivity and helps tackle complex problems through close partnership with AI. ｡•ᴗ•｡💕
 
-> **Note:** This project is a personal fork of the original [Cline](https://github.com/cline/cline) project by [fstory97](https://github.com/fstory97). Building upon Cline's excellent foundation, we are exploring deeper interactions with AI agents and more intelligent development support features. 🌿
+> **Note:** This project is a personal fork of the original [Cline](https://github.com/cline/cline) project. Building upon Cline's excellent foundation, we are exploring deeper interactions with AI agents and more intelligent development support features. 🌿
 
 ## Vision & Core Goals
 
