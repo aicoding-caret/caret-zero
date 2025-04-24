@@ -11,6 +11,11 @@ interface CheckpointOverlayProps {
 	messageTs?: number
 }
 
+interface MessageCheckpointProps {
+	messageId: string;
+	checkpointHash: string;
+}
+
 export const CheckpointOverlay = ({ messageTs }: CheckpointOverlayProps) => {
 	const [compareDisabled, setCompareDisabled] = useState(false)
 	const [restoreTaskDisabled, setRestoreTaskDisabled] = useState(false)
@@ -165,6 +170,25 @@ export const CheckpointOverlay = ({ messageTs }: CheckpointOverlayProps) => {
 					</RestoreConfirmTooltip>
 				)}
 			</div>
+		</CheckpointControls>
+	)
+}
+
+export const MessageCheckpoint = ({ messageId, checkpointHash }: MessageCheckpointProps) => {
+	return (
+		<CheckpointControls>
+			<VSCodeButton
+				title="Compare"
+				appearance="secondary"
+				style={{ cursor: "pointer" }}
+				onClick={() => {
+					vscode.postMessage({
+						type: "checkpointDiff",
+						text: checkpointHash
+					})
+				}}>
+				<i className="codicon codicon-diff-multiple" style={{ position: "absolute" }} />
+			</VSCodeButton>
 		</CheckpointControls>
 	)
 }

@@ -1,6 +1,6 @@
 # 도구 실행 불안정성 해결 (Tool Execution Instability Fix)
 
-- **태스크 번호**: #014
+- **태스크 번호**: #008
 - **태스크 이름**: 도구 실행 불안정성 해결 (Tool Execution Instability Fix)
 - **생성일**: 2025-04-06
 - **상태**: 완료

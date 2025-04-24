@@ -10,7 +10,8 @@ import { vscode } from "../../utils/vscode"
 import { BrowserSettingsMenu } from "../browser/BrowserSettingsMenu"
 import { CheckpointControls } from "../common/CheckpointControls"
 import CodeBlock, { CODE_BLOCK_BG_COLOR } from "../common/CodeBlock"
-import { ChatRowContent, ProgressIndicator } from "./ChatRow"
+import ChatRowContent from "./ChatRowContent"
+import ProgressIndicator from "./chat_ui/ProgressIndicator"
 
 interface BrowserSessionRowProps {
 	messages: CaretMessage[]
@@ -507,9 +508,6 @@ const BrowserSessionRowContent = ({
 								message={message}
 								isExpanded={isExpanded(message.ts)}
 								onToggleExpand={() => {
-									if (message.say === "api_req_started") {
-										setMaxActionHeight(0)
-									}
 									onToggleExpand(message.ts)
 								}}
 								lastModifiedMessage={lastModifiedMessage}
