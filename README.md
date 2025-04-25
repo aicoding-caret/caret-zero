@@ -1,6 +1,7 @@
 [한국어로 읽기](./README.ko.md)
 
 # Caret: Your AI Development Partner 
+<img src="./assets/icons/icon.png" alt="Caret icon">
 
 Caret is a VS Code extension that aims to create a next-generation development environment where developers and AI agents grow together to build software. Through close collaboration with AI, it helps increase development productivity and solve complex problems. ｡•ᴗ•｡💕
 
@@ -17,6 +18,7 @@ Caret is a VS Code extension that aims to create a next-generation development e
 * **Open Source Together (Apache 2.0):** Caret is an **open source project** where we think about and create the future of development in the AI era together. Let's share transparently, contribute freely, and grow together!
 
 ## Why Aren't Cursor / Windsurf Enough?
+<img src="./caret-docs/caret_feature.png" alt="Caret Features" width="600" height="400">
 | SaaS AI IDE Limitations | Why Control is Critical in Production Development |
 |------------------------|--------------------------------------------------|
 | **Black Box Context & Model Versions** | Cannot reproduce, debug, or regression test |

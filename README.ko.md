@@ -1,7 +1,7 @@
 [Read this document in English](./README.md)
 
 # Caret: Your AI Development Partner 
-
+<img src="./assets/icons/icon.png" alt="Caret icon">
 Caret은 개발자와 AI 에이전트가 함께 성장하며 소프트웨어를 만들어나가는 차세대 개발 환경을 목표로 하는 VS Code 확장 프로그램입니다. AI와의 긴밀한 협력을 통해 개발 생산성을 높이고, 복잡한 문제를 해결하는 데 도움을 드립니다. ｡•ᴗ•｡💕
 
 > **Note:** 이 프로젝트는 [Cline](https://github.com/cline/cline) 프로젝트의 포크 버전입니다. 원본 프로젝트의 훌륭한 기반 위에, AI 에이전트와의 더욱 깊은 상호작용과 지능적인 개발 지원 기능을 탐구하고 있습니다. 🌿
@@ -17,6 +17,8 @@ Caret은 개발자와 AI 에이전트가 함께 성장하며 소프트웨어를 
 *   **함께 만드는 오픈소스 (Apache 2.0):** Caret은 AI 시대의 개발 방향을 함께 고민하고 만들어가는 **오픈소스 프로젝트**입니다. 투명하게 공유하고, 자유롭게 기여하며, 함께 발전시켜 나갑시다!
 
 ## 왜 Cursor / Windsurf 만으로는 부족할까요?  
+<img src="./caret-docs/caret_feature.png" alt="Caret Features" width="600" height="400">
+
 | SaaS AI IDE 한계 | 실무 개발에서 꼭 통제해야 하는 이유 |
 |-----------------|------------------------------------|     
 | **블랙박스 컨텍스트·모델 버전** | 재현·디버깅·회귀 테스트 불가 |
