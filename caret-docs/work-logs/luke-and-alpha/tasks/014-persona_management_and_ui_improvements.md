@@ -84,8 +84,8 @@
 
 ### 리팩토링 필요 파일 식별 (기준: 400 라인 초과)
 - **`webview-ui/src/components/settings/ApiOptions.tsx` (1776 라인): 리팩토링 1순위**
-- `webview-ui/src/components/chat/ChatRow.tsx` (1512 라인): 리팩토링 필요
-- `webview-ui/src/components/chat/ChatView.tsx` (1170 라인): 리팩토링 필요
+- `webview-ui/src/components/chat/ChatRow.tsx` (1512 라인): 리팩토링 완료
+- `webview-ui/src/components/chat/ChatView.tsx` (1170 라인): 리팩토링 완료
 - `webview-ui/src/components/settings/SettingsView.tsx` (513 라인): 리팩토링 필요
 - `webview-ui/src/components/settings/ModeSettingsView.tsx` (403 라인): 리팩토링 검토 필요
 
@@ -97,17 +97,92 @@
 - 파일 길이가 1776 라인으로 매우 길어 가독성, 유지보수성, 입력 토큰 관리에 문제가 있습니다.
 
 **리팩토링 계획:**
-1.  **API 제공자별 컴포넌트 분리:**
+1. **API 제공자별 컴포넌트 분리:**
     - `ApiOptions.tsx` 내 각 제공자 설정 로직을 별도 컴포넌트 파일로 분리합니다. (예: `AnthropicOptions.tsx`, `OpenAiOptions.tsx`, `OllamaOptions.tsx` 등)
     - 각 컴포넌트는 해당 제공자 설정에 필요한 상태와 로직만 포함하도록 합니다.
-2.  **`ApiOptions` 역할 축소:**
+2. **`ApiOptions` 역할 축소:**
     - 최상위 API 제공자 선택 드롭다운과, 선택된 제공자에 맞는 설정 컴포넌트를 동적으로 로드/렌더링하는 역할만 수행하도록 변경합니다.
-3.  **공통 로직 분리:**
+3. **공통 로직 분리:**
     - `normalizeApiConfiguration` 함수, `ModelInfoView` 컴포넌트 등 공통 유틸리티/컴포넌트를 분리합니다.
-4.  **상태 관리 검토:**
+4. **상태 관리 검토:**
     - 각 제공자별 설정 상태 관리 방식을 검토하여 컴포넌트 분리에 맞게 조정합니다.
 
 **결정:** Task #014의 퍼소나 관련 기능 구현 전에 `ApiOptions.tsx` 리팩토링을 먼저 진행합니다.
+
+### `SettingsView.tsx` 분석 및 리팩토링 계획 (2025-04-25)
+
+**분석:**
+- 파일 길이: 513 라인 (400 라인 기준 초과)
+- 주요 역할: 설정 UI의 메인 컨테이너 역할 수행
+    - 프로필 이미지 (기본/생각 중) 설정 섹션
+    - 사용자 기본 규칙 (Custom Instructions) 섹션
+    - 모드 설정 (`ModeSettingsView` 컴포넌트 렌더링) 섹션
+    - 익명 오류 및 사용량 보고 섹션
+    - 상태 초기화 섹션
+    - 전체 설정 저장 (`handleSubmit`) 로직 처리
+    - 프로필 이미지 선택/초기화 액션 처리 (`vscode.postMessage` 사용)
+    - 레거시 Plan/Act 모드 전환 로직 포함 (`handleTabChange`, `getCurrentModeType`)
+    - 상단 고정 헤더 및 하단 푸터 포함
+
+**리팩토링 필요성:**
+- 파일 길이가 길어 가독성 및 유지보수성이 저하됨
+- 여러 설정 섹션의 로직이 한 파일에 혼재되어 있음
+- 레거시 모드 관련 로직 정리 필요
+
+**리팩토링 계획:**
+1. **설정 섹션별 컴포넌트 분리:**
+    - 각 `<SettingsSection>`을 별도 컴포넌트 파일로 분리합니다.
+    - `settings_ui/` 디렉토리 생성:
+        - `ProfileImageSettings.tsx`: 기본/생각 중 이미지 미리보기, 버튼, 관련 로직 포함
+        - `CustomInstructionsSettings.tsx`: 사용자 기본 규칙 텍스트 영역 관리
+        - `TelemetrySettings.tsx`: 익명 보고 관련 UI 및 로직
+        - `StateResetSettings.tsx`: 상태 초기화 버튼 및 설명
+2. **`SettingsView.tsx` 역할 축소:**
+    - 분리된 섹션 컴포넌트들을 가져와 렌더링하는 역할만 수행하도록 변경합니다.
+    - 필요한 상태와 핸들러를 props로 전달하거나 Context API를 활용합니다.
+3. **로직 정리 및 단순화:**
+    - `handleSubmit` 함수 검토: 유효성 검사 로직 명확화, `postMessage` 호출 통합 가능성 검토, 주석 처리된 레거시 코드 제거
+    - 레거시 Plan/Act 모드 전환 로직 (`handleTabChange`, `getCurrentModeType` 등) 제거 또는 `ModeSettingsView`와 통합하여 리팩토링
+4. **상태 관리 검토:**
+    - `SettingsView`의 로컬 상태 중 일부를 분리된 자식 컴포넌트로 이동하거나 Context API 사용을 검토합니다.
+5. **코드 정리:**
+    - 사용하지 않는 import, 주석 처리된 코드 등을 정리합니다.
+
+**결정:** Task #014의 퍼소나 관련 기능 구현 전에 `SettingsView.tsx` 리팩토링을 진행합니다.
+
+### `ModeSettingsView.tsx` 분석 및 리팩토링 계획 (2025-04-25)
+
+**분석:**
+- 파일 길이: 403 라인 (400 라인 기준 살짝 초과)
+- 주요 역할: 다양한 AI 모드(Plan, Do, Rule 등)의 설정을 관리하는 UI
+    - `VSCodePanels`를 사용하여 각 모드 설정을 탭으로 분리하여 표시
+    - 각 모드의 이름, 설명, 규칙(rules)을 편집하는 UI 제공 (`renderTabContent` 함수)
+    - 모드 설정 데이터를 로드(`useEffect` 내 `loadModesConfig`), 저장(`saveAllModeSettings`), 기본값 복원(`resetToDefaults`)하는 로직 포함 (`vscode.postMessage` 사용)
+    - `ExtensionState`의 `availableModes`를 기반으로 동적으로 탭 생성
+    - 내부 상태(`modeSettings`, `activeTab`)로 UI 및 데이터 관리
+
+**리팩토링 필요성:**
+- 파일 길이가 기준을 약간 초과했으며, 여러 책임(데이터 관리, UI 렌더링, 탭 관리)이 혼재되어 있음
+- 개별 모드 설정 UI(`renderTabContent`)와 데이터 관리 로직(로드/저장/초기화)을 분리하면 가독성과 유지보수성이 향상될 수 있음
+
+**리팩토링 계획:**
+1. **개별 모드 설정 UI 컴포넌트 분리:**
+    - `renderTabContent` 함수의 내용을 별도 컴포넌트 파일(`ModeTabContent.tsx`)로 분리합니다.
+    - 이 컴포넌트는 단일 모드의 이름, 설명, 규칙을 표시하고 수정하는 역할을 담당하며, 필요한 데이터와 업데이트 핸들러를 props로 받습니다.
+    - `settings_ui/` 또는 `mode_settings_ui/` 디렉토리 생성 고려
+2. **모드 설정 관리 로직 커스텀 훅 분리:**
+    - 모드 설정 데이터(`modeSettings` 상태)와 관련된 로직(로드, 저장, 초기화, 업데이트)을 커스텀 훅(`useModeSettingsManagement.ts`)으로 분리합니다.
+    - 이 훅은 `vscode.postMessage`를 통한 백엔드 통신을 포함하여 데이터 관리 책임을 가집니다.
+3. **`ModeSettingsView.tsx` 역할 축소:**
+    - `useModeSettingsManagement` 훅을 사용하여 모드 설정 데이터와 관련 액션 함수들을 가져옵니다.
+    - `VSCodePanels`, `VSCodePanelTab`을 렌더링하여 탭 구조를 관리합니다.
+    - 활성 탭에 해당하는 `ModeTabContent` 컴포넌트를 렌더링하고 필요한 props를 전달합니다.
+    - 전체적인 레이아웃(헤더, 푸터 버튼 등)을 유지합니다.
+4. **코드 정리:**
+    - `@ts-nocheck` 주석 제거 시도 (타입 문제 해결 후)
+    - 불필요한 콘솔 로그 정리
+
+**결정:** `SettingsView.tsx` 리팩토링 이후, `ModeSettingsView.tsx` 리팩토링을 진행하여 코드 구조를 개선합니다.
 
 ### `ChatRow.tsx` 리팩토링 계획 (2025-04-24)
 
@@ -150,10 +225,10 @@
 1. `ApiOptions.tsx` 리팩토링 실행 (새로운 태스크로 분리 가능성 검토)
 2. 다른 긴 파일들(`ChatRow.tsx`, `ChatView.tsx`, `SettingsView.tsx`, `ModeSettingsView.tsx`) 분석 및 리팩토링 계획 수립
 3. Task #014 목표 기능 구현 시작 (퍼소나 관리 및 UI 개선)
-    -   `SettingsView.tsx`에서 퍼소나 관련 UI (이미지, custom instruction) 확인 및 필요시 수정
-    -   `SettingsView.tsx`의 레거시 모드 관련 코드 제거 (`handleTabChange` 등)
-    -   `ChatView.tsx`, `ChatRow.tsx`에서 `<thinking>` 표시 및 이미지 로직 확인/개선
-    -   `Controller.ts` 및 상태 관리 로직에서 퍼소나 데이터 통합 및 이미지 처리 로직 확인/개선
+    - `SettingsView.tsx`에서 퍼소나 관련 UI (이미지, custom instruction) 확인 및 필요시 수정
+    - `SettingsView.tsx`의 레거시 모드 관련 코드 제거 (`handleTabChange` 등)
+    - `ChatView.tsx`, `ChatRow.tsx`에서 `<thinking>` 표시 및 이미지 로직 확인/개선
+    - `Controller.ts` 및 상태 관리 로직에서 퍼소나 데이터 통합 및 이미지 처리 로직 확인/개선
 
 ### `ApiOptions.tsx` 리팩토링 진행상황 (2025-04-24)
 
@@ -260,7 +335,6 @@ OpenRouterOptions 통합 이슈:
 1. 빌드 테스트에서 발견된 오류는 우리 작업과 무관한 AccountView.tsx의 CountUp 컴포넌트 관련 문제
 2. 작업 로그 업데이트
 3. 모든 작업이 완료되었으므로 PR 준비 가능
-
 
 ## 2025-04-24: ChatRow 컴포넌트 리팩토링 중간 진행
 
