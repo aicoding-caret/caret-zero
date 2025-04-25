@@ -1,89 +1,114 @@
-[Read this document in English](./README.en.md)
+[한국어로 읽기](./README.ko.md)
 
-# Caret: Your AI Development Partner ✨
+# Caret: Your AI Development Partner 
 
-Caret은 개발자와 AI 에이전트가 함께 성장하며 소프트웨어를 만들어나가는 차세대 개발 환경을 목표로 하는 VS Code 확장 프로그램입니다. AI와의 긴밀한 협력을 통해 개발 생산성을 높이고, 복잡한 문제를 해결하는 데 도움을 드립니다. ｡•ᴗ•｡💕
+Caret is a VS Code extension that aims to create a next-generation development environment where developers and AI agents grow together to build software. Through close collaboration with AI, it helps increase development productivity and solve complex problems. ｡•ᴗ•｡💕
 
-> **Note:** 이 프로젝트는 [Cline](https://github.com/cline/cline) 프로젝트의 포크 버전입니다. 원본 프로젝트의 훌륭한 기반 위에, AI 에이전트와의 더욱 깊은 상호작용과 지능적인 개발 지원 기능을 탐구하고 있습니다. 🌿
+> **Note:** This project is a fork of the [Cline](https://github.com/cline/cline) project. Building on the excellent foundation of the original project, we are exploring deeper interactions with AI agents and intelligent development support features. 🌿
 
-## 주요 목표 및 특징
+## Key Goals and Features
 
-**왜 Caret인가요?** 기존 AI 코딩 도구의 "블랙박스"에 답답함을 느끼셨나요? AI 에이전트를 내 방식대로 제어하고, 원하는 모델을 연결하며, 개발 워크플로우를 진정으로 맞춤화하고 싶으셨나요? Caret은 **개발자와 AI가 신뢰하는 동료로서 함께하는 경험**을 목표로 합니다. AI를 투명하게 이해하고, 자유롭게 확장하며, 최고의 동료처럼 함께 성장하는 환경을 제공합니다.
+**Why Caret?** Frustrated with the "black box" of existing AI coding tools? Want to control AI agents your way, connect the models you want, and truly customize your development workflow? Caret aims to provide **an experience where developers and AI work together as trusted colleagues**. Understand AI transparently, extend it freely, and grow together like the best teammates.
 
-*   **개발자 주도 AI 오케스트레이션:** 불투명한 내부 로직 대신, **명확한 JSON 규칙(`.caretrules`, 퍼소나)**으로 AI의 행동을 직접 정의하고 제어하세요. AI가 어떻게 작동하는지 이해하고, 내 프로젝트와 스타일에 맞게 길들일 수 있습니다.
-*   **워크플로우 맞춤 설정 (4+1 모드):** 정해진 틀을 넘어, **AI의 역할과 상호작용 방식을 직접 설계**하세요. 기본 제공되는 모드(Arch, Dev, Rule, Talk, Empty)를 수정하거나, 완전히 새로운 모드를 만들어 나만의 AI 개발 파트너를 구축할 수 있습니다.
-*   **모델 선택의 자유 (로컬 LLM & 프라이버시):** 특정 벤더 종속 없이 **원하는 LLM을 자유롭게 연결**하세요. 상용 API는 물론, **로컬 sLLM을 활용**하여 비용, 보안, 성능 요구사항을 충족하고 **데이터 프라이버시를 확보**할 수 있습니다.
-*   **AI와의 실질적 협업:** 단순 코드 생성을 넘어, 프로젝트 **맥락을 이해하고(RAG 목표)**, 개발자와 함께 문제를 해결하는 **지능적인 파트너**를 지향합니다. Caret은 AI의 가능성을 탐구하고 **AI와 효과적으로 협업하는 방법을 배우는 플랫폼**이 될 것입니다.
-*   **함께 만드는 오픈소스 (Apache 2.0):** Caret은 AI 시대의 개발 방향을 함께 고민하고 만들어가는 **오픈소스 프로젝트**입니다. 투명하게 공유하고, 자유롭게 기여하며, 함께 발전시켜 나갑시다!
+* **Developer-Driven AI Orchestration:** Instead of opaque internal logic, define and control AI behavior directly with **clear JSON rules (`.caretrules`, persona)**. Understand how AI works and train it to match your project and style.
+* **Customizable Workflow (4+1 Modes):** Beyond fixed templates, **design AI roles and interaction methods yourself**. Modify the provided modes (Arch, Dev, Rule, Talk, Empty) or create entirely new ones to build your own AI development partner.
+* **Freedom of Model Choice (Local LLM & Privacy):** **Connect any LLM freely** without vendor lock-in. Meet cost, security, and performance requirements while **ensuring data privacy** by utilizing commercial APIs or **local sLLMs**.
+* **Practical AI Collaboration:** Beyond simple code generation, aim for an **intelligent partner** that **understands project context (RAG goal)** and solves problems together with developers. Caret will be a platform for exploring AI possibilities and **learning how to collaborate effectively with AI**.
+* **Open Source Together (Apache 2.0):** Caret is an **open source project** where we think about and create the future of development in the AI era together. Let's share transparently, contribute freely, and grow together!
 
-## 시작하기
+## Why Aren't Cursor / Windsurf Enough?
+| SaaS AI IDE Limitations | Why Control is Critical in Production Development |
+|------------------------|--------------------------------------------------|
+| **Black Box Context & Model Versions** | Cannot reproduce, debug, or regression test |
+| **Plan & Quota Changes** | Budget prediction failure, cost explosion for large teams |
+| **Code & Logs on External Servers** | Potential security & regulation (PII, trade secrets) violations |
+| **Fixed VS Code Dependent Endpoints** | Difficult to integrate with CLI, CI, other IDEs |
+| **Limited Rules & Workflow Customization** | Cannot enforce team coding rules, domain regulations |
+| **No Local sLLM Support** | Cannot build air-gapped, low-latency, low-cost environments |
+| **File Safety (Text Patches)** | Structure damage, no rollback possible |
 
-Caret은 현재 활발히 개발 중이며, 아직 많은 기능이 준비 단계에 있습니다. 여러분의 관심과 참여로 함께 만들어가는 프로젝트입니다! 꾸준히 발전하는 모습을 지켜봐 주세요! ☕
+> **Caret** provides *complete control* by declaring models, infrastructure, and policies **all as code**.
 
-1.  **코드 저장소:** 개발 진행 상황은 [aicoding-caret/caret-zero](https://github.com/aicoding-caret/caret-zero) 레파지토리에서 확인하실 수 있습니다. (현재는 초기 구성 중!) 코드를 직접 빌드하고 사용해보시려면 이 레파지토리를 Star ⭐ 하고 지켜봐 주세요.
-2.  **설치 (향후):** 정식 배포 후에는 VS Code 마켓플레이스에서 "Caret"을 검색하여 설치할 수 있습니다. (아직 준비 중!)
-3.  **설정 (설치 후):**
-    *   프로젝트 루트에 `.caretrules` 파일을 생성하여 작업 모드와 규칙을 정의합니다.
-    *   `agents-rules/[에이전트명]/global-rules.json` 파일을 생성하여 에이전트의 퍼소나를 설정합니다. (예: [`agents-rules/alpha/global-rules.json`](./agents-rules/alpha/global-rules.json))
-4.  **참여 및 기여:** 프로젝트에 기여하거나 최신 소식을 받아보시려면 레파지토리를 Star ⭐ 해주시거나 Issue를 통해 의견을 남겨주세요!
-5.  **커뮤니티 (준비 중):** 최신 소식과 논의는 [AICoding-Caret Facebook 그룹](https://facebook.com/groups/aicoding-caret)에서도 이루어질 예정입니다. 향후 사용법, 고급 활용 팁 등 **다양한 교육 자료와 교육프로그램**도 커뮤니티를 통해 제공될 계획입니다.
-6.  **간편 접속 (향후 계획):** 미래에는 Caret 웹사이트(공식 웹사이트: caret.team 예정)를 통해 계정을 생성하면, 복잡한 개별 LLM API 키 설정 없이도 **Caret의 핵심 기능을 더 쉽게 이용**할 수 있도록 하는 방안을 구상하고 있습니다.
+## Core Features (✓ = Implemented, 🚧 = In Development, 🗓 = Planned)
 
-## 향후 로드맵 (간략)
+| Category | Feature | Status |
+|----------|---------|--------|
+| **Transparent Rule Engine** | Define AI behavior with `.caretrules` JSON → Git version control | ✓ |
+| **4 + 1 Modes** | Architect · Developer · Rule · Talk · (Empty) *instant switching* | ✓ |
+| **AI Colleague UI** | Customize agent thumbnails, names, chat colors | ✓ |
+| **LLM Router** | Hot-swap Local (Llama 3, Mistral etc) ↔ Cloud (OpenAI, Gemini) | 🚧 |
+| **CRDT Real-time Collaboration** | Yjs-based sync, shared cursors & presence | 🚧 |
+| **Vector RAG + AST Chunking** | Code semantics-based context injection | 🚧 |
+| **AST & Validation Based Safe Edits** | ts-morph, automatic test & lint execution | 🗓 |
+| **Semantic Caching / Prompt Compression** | 50-80% token & cost reduction | 🗓 |
 
-Caret은 지속적으로 발전해 나갈 것입니다. 주요 방향성은 다음과 같습니다. 더 자세한 계획은 [Caret 프로젝트 비전 및 개발 로드맵 문서](./caret-docs/plan/Caret%20프로젝트%20비전%20및%20개발%20로드맵.md)에서 확인하실 수 있습니다.
+## Getting Started
 
-*   **RAG 고도화:** 프로젝트 컨텍스트 이해 능력 강화 (벡터 DB 연동, 자동 동기화 등)
-*   **멀티 에이전트 협업:** 다양한 전문 에이전트(테스터, 문서 작성가 등) 간의 유기적인 협력 기능 구현
-*   **Vibe Coding UX 개선:** 개발자와 AI 간의 실시간 상호작용 및 개발 흐름 최적화
-*   **LLM 지원 확대:** 더 다양한 로컬/클라우드 모델 연동 옵션 제공 및 최적화
-*   **플러그인 시스템 (장기 목표):** 사용자가 직접 Caret의 기능을 확장할 수 있는 구조 마련
+Caret is actively under development, with many features still in preparation. It's a project we're building together with your interest and participation! Keep watching as we steadily progress! ☕
 
-여러분의 피드백과 기여는 Caret의 로드맵을 더욱 풍성하게 만들 것입니다!
+1. **Code Repository:** Check development progress at [aicoding-caret/caret-zero](https://github.com/aicoding-caret/caret-zero) repository. (Currently in initial setup!) Star ⭐ and watch the repository if you want to build and use the code directly.
+2. **Installation (Future):** Once officially released, you can install "Caret" from the VS Code marketplace. (Coming soon!)
+3. **Setup (After Installation):**
+   * Customize the provided AI agent personas. Templates include Pulse9's Sarangi, Ichika Madobe, Cyan, and Ubuntu-tan.
+   * Create a `.caretrules` file in your project root to define work modes and rules.
+   * Four modes (ARCH, DEV, RULE, TALK) with customizable AI models and system prompts are provided by default, allowing you to optimize for desired tasks using these four plus one additional mode.
+4. **Participation & Contribution:** Star ⭐ the repository or leave feedback through Issues to contribute or receive updates!
+5. **Community (Coming Soon):** Latest news and discussions will be available in the [AICoding-Caret Facebook group](https://facebook.com/groups/aicoding-caret). Future plans include providing **various educational materials and training programs** through the community.
+6. **Easy Access (Future Plan):** In the future, we plan to make **core Caret features more accessible** through account creation on the Caret website (official website: caret.team planned) without complex individual LLM API key setup.
 
-## 커뮤니티 및 소통 채널 (준비 중)
-*   **GitHub Issues:** 버그 리포트, 기능 제안 등 기술적인 논의
-*   **Facebook 그룹:** [AICoding-Caret](https://facebook.com/groups/aicoding-caret) (최신 소식, 사용자 간 논의)
+## Future Roadmap (Brief)
 
+Caret will continue to evolve. Main directions are as follows. For more detailed plans, check the [Caret Project Vision and Development Roadmap document](./caret-docs/plan/Caret%20프로젝트%20비전%20및%20개발%20로드맵.md).
 
-## 빌드 및 패키징 🛠️
+* **RAG Enhancement:** Strengthen project context understanding (vector DB integration, automatic synchronization, etc.)
+* **Multi-Agent Collaboration:** Implement organic cooperation between various specialist agents (testers, documentation writers, etc.)
+* **Vibe Coding UX Improvement:** Optimize real-time interaction and development flow between developers and AI
+* **Expanded LLM Support:** Provide and optimize more local/cloud model connection options
+* **Plugin System (Long-term Goal):** Establish structure for users to extend Caret's functionality directly
 
-### 릴리즈 빌드
+Your feedback and contributions will make Caret's roadmap even richer!
+
+## Community & Communication Channels (Coming Soon)
+* **GitHub Issues:** Technical discussions, bug reports, feature requests
+* **Facebook Group:** [AICoding-Caret](https://facebook.com/groups/aicoding-caret) (latest news, user discussions)
+
+## Build & Packaging 🛠️
+
+### Release Build
 
 ```powershell
-# 기존 빌드 정리, 의존성 재설치, 프로덕션 빌드, VSIX 생성
+# Clean existing build, reinstall dependencies, production build, generate VSIX
 ./clean-build-package.ps1
-# 생성 파일: caret-dev-[버전]-[타임스탬프].vsix
+# Generated file: caret-dev-[version]-[timestamp].vsix
 ```
 
-### 디버그 빌드
+### Debug Build
 
 ```powershell
-# 디버그 빌드, VSIX 생성, 로그 설정
+# Debug build, generate VSIX, setup logging
 ./debug-log.ps1
-# 생성 파일: caret-dev-[버전]-[타임스탬프]-debug.vsix
+# Generated file: caret-dev-[version]-[timestamp]-debug.vsix
 ```
 
-로그는 `logs/cline-debug-[타임스탬프].log`에 저장됩니다. 실시간 로그 확인:
+Logs are saved to `logs/cline-debug-[timestamp].log`. To view logs in real-time:
 
 ```powershell
-# PowerShell에서 실시간 로그 확인
-Get-Content -Path "logs/cline-debug-[타임스탬프].log" -Wait
+# View real-time logs in PowerShell
+Get-Content -Path "logs/cline-debug-[timestamp].log" -Wait
 ```
 
-## 기여하기
+## Contributing
 
-Caret 프로젝트는 여러분의 기여를 환영합니다! 버그 리포트, 기능 제안, 코드 기여 등 어떤 형태든 좋습니다. 자세한 내용은 `CONTRIBUTING.md`(추가 예정) 파일을 참고해주세요.
+The Caret project welcomes your contributions! Whether it's bug reports, feature suggestions, or code contributions, all forms are welcome. Please refer to the `CONTRIBUTING.md` (coming soon) file for details.
 
-## 문서
+## Documentation
 
-더 자세한 정보는 [`caret-docs`](./caret-docs/) 디렉토리의 문서를 참고해주세요.
+For more detailed information, please refer to the documents in the [`caret-docs`](./caret-docs/) directory.
 
-*   [아키텍처 개요](./caret-docs/architecture/extension-architecture.mmd)
-*   [작업 로그](./caret-docs/work-logs/)
-*   ... (다른 중요한 문서 링크 추가)
+* [Architecture Overview](./caret-docs/architecture/extension-architecture.mmd)
+* [Work Logs](./caret-docs/work-logs/)
+* ... (additional important document links to be added)
 
 ## License
 
-[Apache 2.0 © 2025 Cline Bot Inc.](./LICENSE)
-
+[Apache 2.0 © 2025 Cline Bot Inc.](./LICENSE) 
