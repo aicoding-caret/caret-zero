@@ -1,4 +1,4 @@
-import { useState, useRef, useCallback, RefObject } from 'react'
+import { useState, useRef, useCallback, RefObject, useMemo } from 'react'
 import { VirtuosoHandle } from 'react-virtuoso'
 
 /**
@@ -34,15 +34,29 @@ export function useScrollControl() {
     [scrollContainerRef, setIsAtBottom, setShowScrollToBottom, disableAutoScrollRef]
   )
 
-  // 자동 스크롤 (새 메시지가 추가될 때)
+  // 스크롤을 부드럽게 아래로 내리는 함수
+  const scrollToBottomSmooth = useMemo(
+    () => {
+      let timeoutId: NodeJS.Timeout | null = null;
+      return () => {
+        if (timeoutId) {
+          clearTimeout(timeoutId);
+        }
+        timeoutId = setTimeout(() => {
+          if (virtuosoRef.current) {
+            virtuosoRef.current.scrollTo({ top: Number.MAX_SAFE_INTEGER, behavior: "smooth" });
+          }
+        }, 10);
+      };
+    },
+    [],
+  );
+
+  // 스크롤을 즉시 아래로 내리는 함수
   const scrollToBottomAuto = useCallback(() => {
-    if (disableAutoScrollRef.current) return
-    virtuosoRef.current?.scrollToIndex({
-      index: 'LAST',
-      behavior: 'smooth',
-    })
+    virtuosoRef.current?.scrollTo({ top: Number.MAX_SAFE_INTEGER, behavior: "auto" })
   }, [])
-  
+
   // 수동 스크롤 (버튼 클릭 시)
   const scrollToBottomManual = useCallback(() => {
     virtuosoRef.current?.scrollToIndex({
@@ -53,9 +67,10 @@ export function useScrollControl() {
     disableAutoScrollRef.current = false
   }, [])
 
-  // 사용자가 스크롤업 할 때 자동 스크롤 비활성화
+  // 자동 스크롤 일시 중지
   const pauseAutoScroll = useCallback(() => {
     disableAutoScrollRef.current = true
+    setShowScrollToBottom(true)
   }, [])
 
   return {
@@ -65,7 +80,9 @@ export function useScrollControl() {
     showScrollToBottom,
     handleScroll,
     scrollToBottomAuto,
+    scrollToBottomSmooth,
     scrollToBottomManual,
     pauseAutoScroll,
+    disableAutoScrollRef
   }
 }

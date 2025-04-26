@@ -1,4 +1,4 @@
-import { VSCodeButton } from "@vscode/webview-ui-toolkit/react"
+import { VSCodeButton, VSCodeLink } from "@vscode/webview-ui-toolkit/react"
 import React, { useState, useRef, useCallback, useEffect, useMemo, UIEventHandler } from "react"
 import { Virtuoso, VirtuosoHandle } from "react-virtuoso"
 import styled from "styled-components"
@@ -12,6 +12,11 @@ import TaskHeader from "./TaskHeader"
 import { ApiProvider, ModelInfo } from "../../../../src/shared/api"
 import { CaretMessage } from "../../../../src/shared/ExtensionMessage"
 import { WebviewMessage } from "../../../../src/shared/WebviewMessage"
+import Announcement from "./Announcement"
+import AutoApproveMenu from "./AutoApproveMenu"
+import HistoryPreview from "../history/HistoryPreview"
+import TelemetryBanner from "../common/TelemetryBanner"
+import { AlertIcon } from "@primer/octicons-react"
 
 // 추출한 Hook 임포트
 import {
@@ -30,6 +35,148 @@ import ChatButtons from "./chat_ui/ChatButtons"
 import ScrollControls from "./chat_ui/ScrollControls"
 
 import { normalizeApiConfiguration } from "../settings/ApiOptions"
+
+// API 재시도 상태 UI 컴포넌트
+const RetryStatusContainer = styled.div`
+	margin: 8px 0;
+	padding: 10px;
+	border-radius: 4px;
+	background-color: var(--vscode-notifications-background);
+	border-left: 3px solid var(--vscode-notifications-foreground);
+	color: var(--vscode-notifications-foreground);
+	font-size: 0.9rem;
+	position: relative;
+`
+
+const RetryStatusHeader = styled.div`
+	display: flex;
+	align-items: center;
+	margin-bottom: 8px;
+	font-weight: 500;
+`
+
+const RetryStatusIcon = styled.span`
+	margin-right: 8px;
+	color: var(--vscode-notifications-foreground);
+`
+
+const RetryStatusInfo = styled.div`
+	margin-left: 24px;
+	display: flex;
+	flex-direction: column;
+	gap: 4px;
+`
+
+const RetryStatusProgress = styled.div`
+	margin-top: 8px;
+	height: 4px;
+	background-color: var(--vscode-progressBar-background);
+	border-radius: 2px;
+	overflow: hidden;
+`
+
+const RetryStatusProgressBar = styled.div<{ progress: number }>`
+	height: 100%;
+	width: ${(props) => props.progress}%;
+	background-color: var(--vscode-notifications-foreground);
+	transition: width 1s linear;
+`
+
+// API 에러 상태 UI 컴포넌트
+const ApiErrorContainer = styled.div`
+	margin: 8px 0;
+	padding: 10px;
+	border-radius: 4px;
+	background-color: var(--vscode-notificationsErrorIcon-foreground, #f85149);
+	color: var(--vscode-foreground);
+	font-size: 0.9rem;
+	position: relative;
+	display: flex;
+	align-items: center;
+`
+
+const ApiErrorIcon = styled.span`
+	margin-right: 8px;
+	color: var(--vscode-foreground);
+`
+
+const ApiErrorInfo = styled.div`
+	display: flex;
+	flex-direction: column;
+	gap: 4px;
+`
+
+// ModeSelectorContainer와 ModeButton 정의
+const ModeSelectorContainer = styled.div`
+	display: flex;
+	gap: 3px;
+	padding: 3px 5px;
+	position: fixed;
+	bottom: 8px;
+	right: 8px;
+	z-index: 100;
+	background-color: var(--vscode-editor-background);
+	border-radius: 4px;
+	box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+`
+
+const ModeButton = styled(VSCodeButton)`
+	min-width: 32px; /* 너비 축소 */
+	height: 18px; /* 높이 설정 */
+	&::part(control) {
+		padding: 1px 4px;
+		font-size: 0.8rem; /* 글자 크기 축소 */
+		line-height: 1;
+	}
+	/* Add tooltip for keyboard shortcuts */
+	&::after {
+		content: attr(data-shortcut);
+		position: absolute;
+		top: -18px;
+		left: 50%;
+		transform: translateX(-50%);
+		background-color: var(--vscode-editor-background);
+		color: var(--vscode-foreground);
+		font-size: 9px;
+		padding: 1px 3px;
+		border-radius: 2px;
+		opacity: 0;
+		transition: opacity 0.2s;
+	}
+
+	&:hover::after {
+		opacity: 1;
+	}
+`
+
+const SettingsButton = styled(VSCodeButton)`
+	flex-shrink: 0;
+	&::part(control) {
+		padding: 0 6px; /* Adjust padding as needed */
+		min-width: auto;
+	}
+`
+
+// ScrollToBottomButton 정의
+const ScrollToBottomButton = styled.div`
+	background-color: color-mix(in srgb, var(--vscode-toolbar-hoverBackground) 55%, transparent);
+	border-radius: 3px;
+	overflow: hidden;
+	cursor: pointer;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	flex: 1;
+	height: 25px;
+
+	&:hover {
+		background-color: color-mix(in srgb, var(--vscode-toolbar-hoverBackground) 90%, transparent);
+	}
+
+	&:active {
+		background-color: color-mix(in srgb, var(--vscode-toolbar-hoverBackground) 70%, transparent);
+	}
+`
 
 interface ChatViewProps {
 	isHidden: boolean
@@ -140,40 +287,112 @@ const ChatView = ({ isHidden, showAnnouncement, hideAnnouncement, showHistoryVie
 		!selectedModelInfo.supportsImages || textAreaDisabled || selectedImages.length >= MAX_IMAGES_PER_MESSAGE
 
 	// 보여줄 메시지 처리 (마지막 visible 메시지 이후의 것만)
-	const visibleMessages = modifiedMessages.filter((message) => {
-		// 메시지 필터링 로직 (기존과 동일)
-		// 특정 메시지 타입 숨기기 등
-		switch (message.type) {
-			case "say":
-				switch (message.say) {
-					case "text":
-						return true
-					case "mcp_server_request_started":
-						return false
-					case "api_req_started":
-						const text = message.text
-						return !text || !message.text?.includes("tokensIn") || !message.text?.includes("tokensOut")
-					case "tool":
-					case "task":
-					case "command":
-					case "command_output":
-					case "error":
-					case "use_mcp_server":
-					case "mcp_server_response":
-					case "completion_result":
-					case "api_req_finished":
-					case "browser_action":
-					case "browser_action_result":
-					case "browser_action_launch":
-						return true
-					default:
-						return false
+	const visibleMessages = useMemo(() => {
+		return modifiedMessages.filter((message) => {
+			// 내부 정보 필터링 - 환경 세부정보, 시스템 프롬프트, 토큰 정보 등
+			if (message.text) {
+				// 빈 응답 메시지 필터링
+				if (message.text === "" && 
+					(message.ask === "completion_result" || message.type === "say" && message.say === "text")) {
+					return false;
 				}
-			case "ask":
-				return true
-		}
-		return true
-	})
+				
+				// environment_details 태그가 있는 메시지 필터링
+				if (message.text.includes("<environment_details>")) {
+					return false;
+				}
+				
+				// 토큰 사용량 정보 필터링
+				if (message.text.includes("tokens used") || message.text.includes("\"tokensIn\":")) {
+					return false;
+				}
+				
+				// 시스템 프롬프트나 모델 정보 필터링
+				if ((message.text.includes("<") && message.text.includes(">")) || 
+					message.text.includes("<custom_instructions>") || 
+					message.text.includes("<functions>") ||
+					message.text.includes("<additional_data>") ||
+					message.text.includes("<user_query>") ||
+					message.text.includes("<attached_files>")) {
+					return false;
+				}
+				
+				// 모드 설명이나 규칙 필터링
+				if (message.text.includes("MODE\n") && 
+					(message.text.includes("You are in") || message.text.includes("Focus on"))) {
+					return false;
+				}
+				
+				// 내부 분석 메시지 필터링 (추가)
+				if (message.text.includes("The user is asking") || 
+					message.text.includes("I should") || 
+					message.text.includes("Based on the project structure") ||
+					message.text.includes("translates to")) {
+					return false;
+				}
+			}
+
+			// 특정 메시지 타입 필터링
+			switch (message.type) {
+				case "say":
+					switch (message.say) {
+						case "text":
+							return true
+						case "reasoning":
+							return false // 내부 사고 과정은 ChatRowContent에서 처리함
+						case "mcp_server_request_started":
+							return false
+						case "api_req_started":
+							// API 요청 시작 메시지는 토큰 정보가 있으면 숨김
+							const text = message.text
+							return !text || (!message.text?.includes("tokensIn") && !message.text?.includes("tokensOut"))
+						case "deleted_api_reqs":
+						case "diff_error":
+						case "caretignore_error":
+						case "shell_integration_warning":
+						case "api_req_finished":
+						case "api_req_retried":
+							return false
+						case "user_feedback":
+							// 사용자 피드백 표시 (Question 타입)
+							return true
+						case "tool":
+						case "task":
+						case "command":
+						case "command_output":
+						case "error":
+						case "use_mcp_server":
+						case "mcp_server_response":
+						case "completion_result":
+						case "browser_action":
+						case "browser_action_result":
+						case "browser_action_launch":
+							return true
+						default:
+							return false
+					}
+				case "ask":
+					switch (message.ask) {
+						case "followup":
+						case "plan_mode_respond":
+							// Question 타입 메시지 표시 (원본 cline과 동일하게 처리)
+							return true
+						case "completion_result":
+							// completion_result 메시지는 항상 표시
+							return true
+						case "api_req_failed":
+						case "resume_task":
+						case "resume_completed_task":
+							// 내부 처리 메시지는 표시하지 않음 (원본 cline과 동일하게 처리)
+							return false
+						default:
+							return true
+					}
+				default:
+					return true
+			}
+		});
+	}, [modifiedMessages]); // 의존성 배열에 modifiedMessages만 추가하여 필요할 때만 재계산
 
 	// 메시지 높이 변경 처리 - 시그니처 수정
 	const handleRowHeightChange = useCallback(
@@ -421,6 +640,68 @@ const ChatView = ({ isHidden, showAnnouncement, hideAnnouncement, showHistoryVie
 		// currentTaskItem 의존성 추가
 	}, [currentTaskItem])
 
+	// 재시도 진행 상태 관리
+	const [retryProgress, setRetryProgress] = useState(0);
+
+	// 재시도 진행 상태를 업데이트하는 타이머 참조
+	const retryProgressTimerRef = useRef<NodeJS.Timeout | null>(null);
+
+	// API 재시도 상태 업데이트 효과
+	useEffect(() => {
+		// 기존 타이머 정리
+		if (retryProgressTimerRef.current !== null) {
+			clearInterval(retryProgressTimerRef.current)
+			retryProgressTimerRef.current = null
+		}
+
+		// 새로운 retryStatus가 있고, 재시도 시간이 있다면 타이머 설정
+		if (retryStatus && retryStatus.retryTimestamp && retryStatus.delay) {
+			const totalTime = retryStatus.delay // ms
+			const endTime = retryStatus.retryTimestamp // ms
+			const startTime = endTime - totalTime
+
+			// 현재 시간과 남은 시간 계산
+			const now = Date.now()
+			const remainingTime = Math.max(0, endTime - now)
+			const initialProgress = Math.min(100, Math.max(0, ((now - startTime) / totalTime) * 100))
+
+			// 초기 진행률 설정
+			setRetryProgress(initialProgress)
+
+			// 진행률 업데이트 타이머 설정 (100ms 마다)
+			if (remainingTime > 0) {
+				const step = 100 / (remainingTime / 100) // 100ms 당 증가 퍼센트
+
+				retryProgressTimerRef.current = setInterval(() => {
+					setRetryProgress((prev) => {
+						const nextProgress = prev + step
+
+						// 100% 도달 또는 시간 초과 시 타이머 종료
+						if (nextProgress >= 100 || Date.now() >= endTime) {
+							if (retryProgressTimerRef.current !== null) {
+								clearInterval(retryProgressTimerRef.current)
+								retryProgressTimerRef.current = null
+							}
+							return 100
+						}
+						return nextProgress
+					})
+				}, 100)
+			}
+		} else {
+			// retryStatus가 null이면 진행률 0으로 초기화
+			setRetryProgress(0)
+		}
+
+		// 클린업: 컴포넌트 언마운트 또는 retryStatus 변경 시 타이머 제거
+		return () => {
+			if (retryProgressTimerRef.current !== null) {
+				clearInterval(retryProgressTimerRef.current)
+				retryProgressTimerRef.current = null
+			}
+		}
+	}, [retryStatus]) // retryStatus 상태 변경 시 이 useEffect 실행
+
 	return (
 		<div
 			style={{
@@ -434,63 +715,188 @@ const ChatView = ({ isHidden, showAnnouncement, hideAnnouncement, showHistoryVie
 				overflow: "hidden",
 			}}>
 			{/* 헤더 영역 */}
-			<ChatHeader
-				task={task}
-				// telemetrySetting 사용
-				telemetrySetting={telemetrySetting}
-				showAnnouncement={showAnnouncement}
-				// version 사용
-				version={version}
-				hideAnnouncement={hideAnnouncement}
-				handleTaskCloseButtonClick={handleCloseTask}
-				apiMetrics={apiMetrics}
-				lastApiReqTotalTokens={lastApiReqTotalTokens}
-				selectedProvider={selectedProvider}
-				selectedModelInfo={selectedModelInfo}
-			/>
-
-			{/* 메시지 목록 영역 */}
-			<div
-				style={{
-					flex: "1 1 auto",
-					minHeight: 0,
-					position: "relative",
-				}}>
-				<Virtuoso
-					ref={virtuosoRef}
-					style={{ height: "100%" }}
-					// ref 직접 전달
-					// scrollerRef={scrollContainerRef} // 수정: ref 객체 직접 전달 -> 제거
-					data={groupedMessages}
-					totalCount={groupedMessages.length}
-					itemContent={itemContent}
-					onScroll={handleScroll}
-					initialTopMostItemIndex={groupedMessages.length - 1}
-					followOutput={isAtBottom}
+			{task ? (
+				<TaskHeader
+					task={task}
+					tokensIn={apiMetrics.totalTokensIn}
+					tokensOut={apiMetrics.totalTokensOut}
+					doesModelSupportPromptCache={selectedModelInfo.supportsPromptCache}
+					cacheWrites={apiMetrics.totalCacheWrites}
+					cacheReads={apiMetrics.totalCacheReads}
+					totalCost={apiMetrics.totalCost}
+					lastApiReqTotalTokens={lastApiReqTotalTokens}
+					onClose={handleCloseTask}
 				/>
+			) : (
+				<div
+					style={{
+						flex: "1 1 0",
+						minHeight: 0,
+						overflowY: "auto",
+						display: "flex",
+						flexDirection: "column",
+						paddingBottom: "10px",
+					}}>
+					{telemetrySetting === "unset" && <TelemetryBanner />}
+					{showAnnouncement && <Announcement version={version} hideAnnouncement={hideAnnouncement} />}
+					<div style={{ padding: "0 20px", flexShrink: 0 }}>
+						<h2>What can I do for you?</h2>
+						<p>
+							Thanks to{" "}
+							<VSCodeLink href="https://www.anthropic.com/claude/sonnet" style={{ display: "inline" }}>
+								Claude 3.7 Sonnet's
+							</VSCodeLink>{" "}
+							agentic coding capabilities, I can handle complex software development tasks step-by-step. With tools
+							that let me create & edit files, explore complex projects, use a browser, and execute terminal
+							commands (after you grant permission), I can assist you in ways that go beyond code completion or tech
+							support. I can even use MCP to create new tools and extend my own capabilities.
+						</p>
+					</div>
+					{taskHistory.length > 0 && <HistoryPreview showHistoryView={showHistoryView} />}
+				</div>
+			)}
 
-				{/* 스크롤 컨트롤 */}
-				<ScrollControls 
-					showScrollToBottom={showScrollToBottom} 
-					onScrollToBottom={scrollToBottomManual} 
-				/>
-			</div>
+			{!task && <AutoApproveMenu style={{ marginBottom: -2, flex: "0 1 auto", minHeight: 0 }} />}
+
+			{/* 메시지 목록 영역 - task가 있을 때만 표시 */}
+			{task && (
+				<>
+					<div
+						style={{
+							flex: "1 1 auto",
+							minHeight: 0,
+							position: "relative",
+						}}>
+						<Virtuoso
+							ref={virtuosoRef}
+							key={task?.ts}
+							className="scrollable"
+							style={{ height: "100%" }}
+							components={{ Footer: () => <div style={{ height: 5 }} /> }}
+							increaseViewportBy={{ top: 3_000, bottom: Number.MAX_SAFE_INTEGER }}
+							data={groupedMessages}
+							totalCount={groupedMessages.length}
+							itemContent={itemContent}
+							onScroll={handleScroll}
+							initialTopMostItemIndex={groupedMessages.length - 1}
+							followOutput={isAtBottom}
+						/>
+
+						{/* 스크롤 컨트롤 */}
+						{showScrollToBottom && (
+							<div style={{ display: "flex", padding: "10px 15px 0px 15px" }}>
+								<ScrollToBottomButton
+									onClick={() => {
+										scrollToBottomManual()
+										disableAutoScrollRef.current = false
+									}}>
+									<span className="codicon codicon-chevron-down" style={{ fontSize: "18px" }}></span>
+								</ScrollToBottomButton>
+							</div>
+						)}
+					</div>
+					
+					{/* API 재시도 상태 UI */}
+					{retryStatus && (
+						<RetryStatusContainer>
+							<RetryStatusIcon>
+								<AlertIcon size={16} />
+							</RetryStatusIcon>
+							<RetryStatusInfo>
+								<span>
+									{retryStatus.attempt}/{retryStatus.maxRetries}회, {Math.round(retryStatus.delay / 1000)}초 후 재시도
+								</span>
+								{retryStatus.retryTimestamp && retryStatus.delay && (
+									<RetryStatusProgress>
+										<RetryStatusProgressBar progress={retryProgress} />
+									</RetryStatusProgress>
+								)}
+							</RetryStatusInfo>
+						</RetryStatusContainer>
+					)}
+
+					{/* API 최종 에러 상태 UI */}
+					{apiError && (
+						<ApiErrorContainer>
+							<ApiErrorIcon>
+								<AlertIcon size={16} />
+							</ApiErrorIcon>
+							<ApiErrorInfo>
+								<span>{apiError.message}</span>
+							</ApiErrorInfo>
+						</ApiErrorContainer>
+					)}
+					
+					<AutoApproveMenu />
+				</>
+			)}
 
 			{/* 하단 입력 영역 */}
 			<div style={{ padding: "10px 0" }}>
 				{/* 모드 선택 영역 */}				
-				<ModeSelector availableModes={availableModes} chatSettings={chatSettings} />
+				<ModeSelectorContainer>
+					{availableModes && availableModes.length > 0 ? (
+						// 모드 데이터가 있는 경우
+						availableModes.map((modeInfo, index) => (
+							<ModeButton
+								key={modeInfo.id}
+								appearance={chatSettings.mode === modeInfo.id ? "primary" : "secondary"}
+								data-shortcut={`Alt+${index + 1}`}
+								onClick={() => {
+									if (chatSettings.mode !== modeInfo.id) {
+										vscode.postMessage({
+											type: "updateSettings",
+											chatSettings: { ...chatSettings, mode: modeInfo.id },
+										})
+									}
+								}}>
+								{modeInfo.label || modeInfo.id}
+							</ModeButton>
+						))
+					) : (
+						// 모드 데이터가 없는 경우 기본 모드 버튼 표시
+						<>
+							{[
+								{ id: "arch", label: "Arch", shortcut: 1 },
+								{ id: "dev", label: "Dev", shortcut: 2 },
+								{ id: "rule", label: "Rule", shortcut: 3 },
+								{ id: "talk", label: "Talk", shortcut: 4 },
+							].map((fallbackMode) => (
+								<ModeButton
+									key={fallbackMode.id}
+									appearance={chatSettings.mode === fallbackMode.id ? "primary" : "secondary"}
+									data-shortcut={`Alt+${fallbackMode.shortcut}`}
+									onClick={() => {
+										if (chatSettings.mode !== fallbackMode.id) {
+											vscode.postMessage({
+												type: "updateSettings",
+												chatSettings: { ...chatSettings, mode: fallbackMode.id },
+											})
+										}
+									}}>
+									{fallbackMode.label}
+								</ModeButton>
+							))}
+						</>
+					)}
+					{/* 설정 버튼 */}
+					{onShowSettings && (
+						<SettingsButton appearance="icon" aria-label="Settings" onClick={onShowSettings}>
+							<span className="codicon codicon-gear" />
+						</SettingsButton>
+					)}
+				</ModeSelectorContainer>
 
 				{/* 버튼 영역 */}
 				{showScrollToBottom ? null : (
 					<ChatButtons
 						enableButtons={enableButtons}
-						primaryButtonText={primaryButtonText} // 훅에서 받은 텍스트 사용
-						secondaryButtonText={secondaryButtonText} // 훅에서 받은 텍스트 사용
+						primaryButtonText={primaryButtonText}
+						secondaryButtonText={secondaryButtonText}
 						onPrimaryClick={handlePrimaryButtonClick}
 						onSecondaryClick={handleSecondaryButtonClick}
-						isStreaming={isStreaming.current} // 현재 스트리밍 상태 전달
-						didClickCancel={didClickCancel} // 취소 버튼 클릭 여부 전달
+						isStreaming={isStreaming.current}
+						didClickCancel={didClickCancel}
 					/>
 				)}
 
@@ -503,7 +909,7 @@ const ChatView = ({ isHidden, showAnnouncement, hideAnnouncement, showHistoryVie
 					placeholderText={placeholderText}
 					selectedImages={selectedImages}
 					setSelectedImages={setSelectedImages}
-					onSend={handleSendClick} // Use the correct handler
+					onSend={handleSendClick}
 					onSelectImages={handleSelectImages}
 					shouldDisableImages={shouldDisableImages}
 					onHeightChange={() => {

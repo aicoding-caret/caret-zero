@@ -1,5 +1,7 @@
 # UI 개선 작업: 퍼소나 관리 및 내부 사고 과정 표시 개선
 
+* 이전 원본 위치 : `/private-cline` 에 있으므로 잘못된 동작시 원본과 비교하여 확인하면 용이함
+
 ## 배경
 현재 UI에서는 AI의 내부 사고 과정(`<thinking>` 태그 내용)과 실제 사용자와의 대화 내용이 함께 노출되고 있어 사용자가 혼란을 겪을 수 있습니다. 또한, 프로필 이미지 설정 및 생각중 이미지 표시에 문제가 있어 사용자 경험이 저하되고 있습니다. 더불어 custom_instruction과 에이전트 이미지가 별도로 관리되어 일관된 퍼소나 관리가 어려운 상황입니다.
 
@@ -86,8 +88,8 @@
 - **`webview-ui/src/components/settings/ApiOptions.tsx` (1776 라인): 리팩토링 1순위**
 - `webview-ui/src/components/chat/ChatRow.tsx` (1512 라인): 리팩토링 완료
 - `webview-ui/src/components/chat/ChatView.tsx` (1170 라인): 리팩토링 완료
-- `webview-ui/src/components/settings/SettingsView.tsx` (513 라인): 리팩토링 필요
-- `webview-ui/src/components/settings/ModeSettingsView.tsx` (403 라인): 리팩토링 검토 필요
+- `webview-ui/src/components/settings/SettingsView.tsx` (513 라인): 리팩토링 완료
+- `webview-ui/src/components/settings/ModeSettingsView.tsx` (403 라인): 리팩토링 완료
 
 ### `ApiOptions.tsx` 분석 및 리팩토링 계획
 

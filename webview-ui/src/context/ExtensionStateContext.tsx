@@ -30,6 +30,7 @@ interface ExtensionStateContextType extends ExtensionState {
 	availableModes: ModeInfo[] // Add availableModes
 	// 프로필 이미지 관련 상태 및 처리기
 	alphaAvatarUri: string
+	alphaThinkingAvatarUri: string
 	caretBanner?: string
 	selectAgentProfileImage: () => void
 	resetAgentProfileImage: () => void
@@ -55,6 +56,7 @@ export const ExtensionStateContextProvider: React.FC<{
 		planActSeparateModelsSetting: true,
 		availableModes: [], // Initialize availableModes
 		alphaAvatarUri: "https://raw.githubusercontent.com/fstory97/caret-avatar/main/alpha-maid.png", // 기본 프로필 이미지
+		alphaThinkingAvatarUri: "https://raw.githubusercontent.com/fstory97/caret-avatar/main/alpha-maid-thinking.png",
 		apiError: null, // API 에러 정보 초기화
 	})
 	const [didHydrateState, setDidHydrateState] = useState(false)
@@ -203,6 +205,8 @@ export const ExtensionStateContextProvider: React.FC<{
 		availableModes: state.availableModes, // Add availableModes to context value
 		// 프로필 이미지 관련 처리기
 		alphaAvatarUri: state.alphaAvatarUri || "https://raw.githubusercontent.com/fstory97/caret-avatar/main/alpha-maid.png",
+		alphaThinkingAvatarUri: state.alphaThinkingAvatarUri || "https://raw.githubusercontent.com/fstory97/caret-avatar/main/alpha-maid-thinking.png",
+		caretBanner: state.caretBanner,
 		selectAgentProfileImage: () => {
 			vscode.postMessage({ type: "selectAgentProfileImage" })
 		},

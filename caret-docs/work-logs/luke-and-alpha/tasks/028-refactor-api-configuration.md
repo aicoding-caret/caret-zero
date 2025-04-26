@@ -4,23 +4,26 @@
 api.ts파일의 리팩토링 작업으로 json으로 분리하고 공통로직을 개발합니다. 
  - 백업 참고용 원본 파일 정보 (`private-cline/src/shared/api.ts`) 
  - 리팩토링할 파일 정보 (`/src/shared/api.ts`)
+ - json은 분리했으나, api.ts파일내의 객체들을 외부참조하는 문제로 인해 에러가 많아 소스는 롤백함
+   * api.ts의 객체들을 유지한채로 json로딩 방법만 구현하는 형태로 다시 리팩토링 필요. 따라서 아래의 컴포넌트 구현도 전면 검토 해야함
 
 ## 현재 상태 (2024-05-13) 
 ### ✅ 완료된 작업
 1. **UI 컴포넌트**
-   - [x] `ApiProviderConfig.tsx`: Provider 설정 UI
-   - [x] `ModelInfoView.tsx`: 모델 정보 표시 UI
+   - [ ] `ApiProviderConfig.tsx`: Provider 설정 UI
+   - [ ] `ModelInfoView.tsx`: 모델 정보 표시 UI
 
 2. **설정 시스템**
-   - [x] `configLoader.ts`: Provider 설정 로드 시스템
-   - [x] `types.ts`: Provider 설정 타입 정의
+   - [ ] `configLoader.ts`: Provider 설정 로드 시스템
+   - [ ] `types.ts`: Provider 설정 타입 정의
 
 3. **Provider 설정 JSON 파일**
    - [x] 20개 제공자의 Provider 설정 JSON 파일 생성 (`src/shared/providers/`)
    - [x] Provider 정보 구조 정의 (api 키, 엔드포인트 등)
 
 4. **모델 정보 JSON 분리**
-   - [x] `api.ts`의 하드코딩된 모델 정보(158개)를 JSON으로 분리
+   - [x] 각 제공자별 모델 정보 파일 생성 (`src/shared/models/`)
+   - [] `api.ts`의 하드코딩된 모델 정보(158개)를 JSON으로 분리
    - [x] 각 제공자별 모델 정보 파일 생성 (`src/shared/models/`)
    - [x] 모든 모델의 JSON 형식 변환 검증
    - [x] 지원 모델 문서 생성 (`caret-docs/supported-models.md`, `caret-docs/supported-models.ko.md`)

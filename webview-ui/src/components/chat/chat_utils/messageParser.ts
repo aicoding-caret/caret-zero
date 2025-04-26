@@ -99,8 +99,6 @@ export function getMessageTypeText(message: CaretMessage): string | undefined {
 		}
 	} else if (message.type === "ask") {
 		switch (message.ask) {
-			case "tool":
-				return "Tool Request"
 			case "command":
 				return "Command Request"
 			case "followup":
@@ -120,13 +118,18 @@ export function getMessageTypeText(message: CaretMessage): string | undefined {
  * uba54uc2dcuc9c0uac00 AI uba54uc2dcuc9c0(uacc4uc0b0 uacb0uacfc, uc0acuc6a9uc790 ud53cub4dcubc31 uc81c uc678)uc778uc9c0 uc5ecubd80 ud655uc778
  */
 export function isAiMessage(message: CaretMessage): boolean {
-	if (
-		message.type === "say" &&
-		(message.say === "completion_result" || message.say === "reasoning")
-	) {
-		return true
+	// AI 메시지로 처리되어야 하는 메시지 타입 확인
+	if (message.type === "say") {
+		if (message.say === "completion_result" || 
+			message.say === "reasoning" ||
+			message.say === "text") {
+			return true;
+		}
+	} else if (message.type === "ask" && message.ask === "completion_result") {
+		// 생각 중 메시지도 AI 메시지로 처리
+		return true;
 	}
-	return false
+	return false;
 }
 
 /**

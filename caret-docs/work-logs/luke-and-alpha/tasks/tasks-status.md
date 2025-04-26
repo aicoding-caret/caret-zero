@@ -3,6 +3,7 @@
 ## 진행 중인 태스크 (Pending)
 
 - [ ] **Task #014:** 퍼소나 관리 및 UI 개선 ([014-persona_management_and_ui_improvements.md](./014-persona_management_and_ui_improvements.md))
+- [ ] **Task #028:** api.ts 파일 json 분리 및 리팩토링 ([028-refactor-api-configuration.md](./028-refactor-api-configuration.md))
 
 ## 대기 중인 태스크 (Pending)
 - [ ] **Task #027:** Caret Team 로그인 구현 ([027-caret-team-auth.md](./027-caret-team-auth.md))

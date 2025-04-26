@@ -1,112 +1,99 @@
-import React, { useRef, useLayoutEffect, useState, memo, useEffect } from "react"
+import React, { memo, useEffect, useRef } from "react"
 import { CaretMessage } from "../../../../src/shared/ExtensionMessage"
-import { useExtensionState } from "../../context/ExtensionStateContext"
-import { isAiMessage, isUserMessage, getMessageTypeText } from "./chat_utils/messageParser"
+import deepEqual from "fast-deep-equal"
 import ChatRowContent from "./ChatRowContent"
-import { MessageRowContainer, ChatRowContainer } from "./chat_ui/MessageContainer"
 import { VSCodeButton } from "@vscode/webview-ui-toolkit/react"
 import { vscode } from "../../utils/vscode"
+import styled from "styled-components"
 
-/**
- * ucc44ud305 ud589 ucef4ud3ecub10cud2b8 - uba54uc2dcuc9c0 ud45cuc2dc ubc0f ub192uc774 uace0ucd94
- */
-const ChatRow = memo((props: { 
-	message: CaretMessage; 
-	isExpanded: boolean; 
-	onToggleExpand: () => void; 
-	lastModifiedMessage?: CaretMessage; 
-	isLast?: boolean;
-	onHeightChange: (isTaller: boolean) => void;
-}) => {
-	const { message, isExpanded, onHeightChange } = props
-	const messageRef = useRef<HTMLDivElement>(null)
-	const [height, setHeight] = useState<number | null>(null)
-	const [node, setNode] = useState<HTMLDivElement | null>(null)
-	// 이전 높이를 기록하기 위한 ref
-	const prevHeightRef = useRef<number | null>(null)
+// 채팅 행 컨테이너
+const ChatRowContainer = styled.div`
+	position: relative;
+	padding: 10px 15px;
+	transition: background-color 0.2s ease;
+	
+	&:hover {
+		background-color: rgba(128, 128, 128, 0.05);
+	}
+`
 
-	// ucc98ube60uc2dcube0cuacfcuc778ud2b8 ud45cuac10 uac00ubd80 uacc0uc0ac
-	const shouldShowCheckpoints = message.lastCheckpointHash != null &&
-		(message.say === "tool" ||
-			message.ask === "tool" ||
-			message.say === "command" ||
-			message.ask === "command" ||
-			message.say === "use_mcp_server" ||
-			message.ask === "use_mcp_server")
+interface ChatRowProps {
+	message: CaretMessage
+	isLast: boolean
+	isExpanded: boolean
+	onToggleExpand: () => void
+	lastModifiedMessage?: CaretMessage
+	onHeightChange: (isTaller: boolean) => void
+}
 
-	useLayoutEffect(() => {
-		if (node !== messageRef.current) {
-			setNode(messageRef.current)
-		}
-	}, [messageRef.current])
+const ChatRow = memo(
+	({ message, isLast, isExpanded, onToggleExpand, lastModifiedMessage, onHeightChange }: ChatRowProps) => {
+		const heightRef = useRef<HTMLDivElement>(null);
+		const prevHeightRef = useRef(0);
 
-	useLayoutEffect(() => {
-		if (node) {
-			// getScrollHeight ub300uc2e0 getBoundingClientRect uc0acuc6a9
-			const newHeight = node.getBoundingClientRect().height
-			setHeight(newHeight || null)
-		}
-	}, [node, message, isExpanded])
+		// 높이 변화 감지
+		useEffect(() => {
+			if (heightRef.current && isLast) {
+				const safeHeight = heightRef.current.getBoundingClientRect().height;
+				const isInitialRender = prevHeightRef.current === 0;
 
-	// 높이 변경 감지 및 이벤트 발생
-	useEffect(() => {
-		if (height !== null && prevHeightRef.current !== null && height !== prevHeightRef.current) {
-			const isTaller = height > prevHeightRef.current
-			onHeightChange(isTaller)
-		}
-		prevHeightRef.current = height
+				if (safeHeight > 0 && safeHeight !== Infinity && safeHeight !== prevHeightRef.current) {
+					if (!isInitialRender) {
+						onHeightChange(safeHeight > prevHeightRef.current);
+					}
+					prevHeightRef.current = safeHeight;
+				}
+			}
+		}, [isLast, message, onHeightChange]);
 
-		// 마지막 메시지 변경 이벤트 발생
-		if (props.isLast) {
-			window.dispatchEvent(new CustomEvent("last-message-changed", { detail: { message } }))
-		}
-	}, [height, props.isLast, onHeightChange, message])
+		// 체크포인트 표시 여부 검사
+		const shouldAddCheckpointControls =
+			message.type === "ask" &&
+			(message.ask === "command" ||
+				message.ask === "command_output" ||
+				message.ask === "tool" ||
+				message.ask === "browser_action_launch" ||
+				message.ask === "use_mcp_server")
 
-	const chatrow = (
-		<ChatRowContainer>
-			{shouldShowCheckpoints && message.lastCheckpointHash && (
-				<div style={{ 
-					position: 'absolute', 
-					top: '3px', 
-					right: '6px', 
-					display: 'flex',
-					gap: '6px'
-				}}>
-					<VSCodeButton
-						title="Compare"
-						appearance="secondary"
-						style={{ cursor: "pointer", width: '24px', height: '24px' }}
-						onClick={() => {
-							vscode.postMessage({
-								type: "checkpointDiff",
-								text: message.lastCheckpointHash
-							})
-						}}>
-						<i className="codicon codicon-diff-multiple" style={{ position: "absolute" }} />
-					</VSCodeButton>
-				</div>
-			)}
-			<ChatRowContent message={message} isExpanded={isExpanded} onToggleExpand={props.onToggleExpand} 
-				lastModifiedMessage={props.lastModifiedMessage} isLast={props.isLast || false} />
-		</ChatRowContainer>
-	)
-
-	return (
-		<div
-			ref={messageRef}
-			data-testid="chat-row"
-			style={{ height: !node || !height || isExpanded ? "auto" : `${height}px` }}
-		>
-			{chatrow}
-		</div>
-	)
-}, (prevProps, nextProps) => {
-	// uba54uc2dcuc9c0 uac1duccb4uac00 ub3d9uc77cud558uace0 ud655uc7a5 uc0c1ud0dcuac00 ubcc0uacbdub418uc9c0 uc54auC58ub2e4uba74 ub9acub80cub354ub9c1 ubc29uc9c0
-	return (
-		prevProps.message === nextProps.message &&
-		prevProps.isExpanded === nextProps.isExpanded &&
-		prevProps.lastModifiedMessage === nextProps.lastModifiedMessage
-	)
-})
+		// 메인 렌더링 내용
+		return (
+			<div ref={heightRef} data-testid="chat-row">
+				<ChatRowContainer>
+					{shouldAddCheckpointControls && (
+						<div
+							style={{
+								position: "absolute",
+								top: 0,
+								right: "10px",
+								display: "flex",
+								flexDirection: "row",
+								gap: "5px",
+								zIndex: 100,
+							}}>
+							<VSCodeButton
+								appearance="icon"
+								onClick={() => {
+									vscode.postMessage({
+										type: "takeCheckpoint",
+										messageTs: message.ts,
+									})
+								}}>
+								<span className="codicon codicon-symbol-field"></span>
+							</VSCodeButton>
+						</div>
+					)}
+					<ChatRowContent
+						message={message}
+						isExpanded={isExpanded}
+						onToggleExpand={onToggleExpand}
+						lastModifiedMessage={lastModifiedMessage}
+						isLast={isLast}
+					/>
+				</ChatRowContainer>
+			</div>
+		)
+	},
+	deepEqual
+)
 
 export default ChatRow

@@ -67,13 +67,15 @@ const ModeSelector: React.FC<ModeSelectorProps> = ({ availableModes, chatSetting
 
 const ModeSelectorContainer = styled.div`
   display: flex;
-  flex-wrap: nowrap;
-  justify-content: center;
-  padding: 0 10px;
-  margin-bottom: 8px;
-  gap: 4px;
-  overflow-x: auto;
-  scrollbar-width: none;
+  gap: 3px;
+  padding: 3px 5px;
+  position: fixed;
+  bottom: 8px;
+  right: 8px;
+  z-index: 100;
+  background-color: var(--vscode-editor-background);
+  border-radius: 4px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
 
   &::-webkit-scrollbar {
     display: none;
@@ -81,21 +83,34 @@ const ModeSelectorContainer = styled.div`
 `
 
 const ModeButton = styled(VSCodeButton)`
-  min-width: 0;
-  flex: 1;
+  min-width: 32px;
+  height: 18px;
   white-space: nowrap;
-  padding: 2px 4px 2px 4px !important;
-  font-size: 11px !important;
   position: relative;
-  height: 22px !important;
+  
+  &::part(control) {
+    padding: 1px 4px;
+    font-size: 0.8rem;
+    line-height: 1;
+  }
   
   &[data-shortcut]::after {
     content: attr(data-shortcut);
     position: absolute;
-    top: -5px;
-    right: 1px;
-    font-size: 7px;
-    opacity: 0.7;
+    top: -18px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: var(--vscode-editor-background);
+    color: var(--vscode-foreground);
+    font-size: 9px;
+    padding: 1px 3px;
+    border-radius: 2px;
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+
+  &:hover::after {
+    opacity: 1;
   }
 `
 

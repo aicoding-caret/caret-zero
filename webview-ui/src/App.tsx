@@ -12,7 +12,7 @@ import { vscode } from "./utils/vscode"
 import McpView from "./components/mcp/McpView"
 
 const AppContent = () => {
-	const { didHydrateState, showWelcome, shouldShowAnnouncement, telemetrySetting, vscMachineId } = useExtensionState()
+	const { didHydrateState, showWelcome, shouldShowAnnouncement, telemetrySetting, vscMachineId, alphaAvatarUri, alphaThinkingAvatarUri } = useExtensionState()
 	const [showSettings, setShowSettings] = useState(false)
 	const [showHistory, setShowHistory] = useState(false)
 	const [showMcp, setShowMcp] = useState(false)
@@ -39,20 +39,17 @@ const AppContent = () => {
 						break
 					case "historyButtonClicked":
 						setShowSettings(false)
-						setShowSettings(false)
 						setShowHistory(true)
 						setShowMcp(false)
 						setShowAccount(false)
 						break
 					case "mcpButtonClicked":
 						setShowSettings(false)
-						setShowSettings(false)
 						setShowHistory(false)
 						setShowMcp(true)
 						setShowAccount(false)
 						break
 					case "accountButtonClicked":
-						setShowSettings(false)
 						setShowSettings(false)
 						setShowHistory(false)
 						setShowMcp(false)
@@ -71,14 +68,28 @@ const AppContent = () => {
 
 	useEvent("message", handleMessage)
 
-	// useEffect(() => {
-	// 	if (telemetrySetting === "enabled") {
-	// 		posthog.identify(vscMachineId)
-	// 		posthog.opt_in_capturing()
-	// 	} else {
-	// 		posthog.opt_out_capturing()
-	// 	}
-	// }, [telemetrySetting, vscMachineId])
+	// 확장 상태 확인 로깅
+	useEffect(() => {
+		if (didHydrateState) {
+			console.log("Extension state hydrated", { alphaAvatarUri });
+			
+			// 캐릭터 이미지 URL이 없으면 초기화
+			if (!alphaAvatarUri) {
+				vscode.postMessage({ 
+					type: "updateAgentProfileImage", 
+					text: "https://raw.githubusercontent.com/fstory97/caret-avatar/main/alpha-maid.png" 
+				});
+			}
+			
+			// 생각중 이미지 URL이 없으면 초기화
+			if (!alphaThinkingAvatarUri) {
+				vscode.postMessage({
+					type: "updateAgentThinkingImage",
+					text: "https://raw.githubusercontent.com/fstory97/caret-avatar/main/alpha-maid-thinking.png"
+				});
+			}
+		}
+	}, [didHydrateState, alphaAvatarUri, alphaThinkingAvatarUri]);
 
 	useEffect(() => {
 		if (shouldShowAnnouncement) {

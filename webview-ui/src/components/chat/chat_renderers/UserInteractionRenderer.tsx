@@ -5,51 +5,27 @@ import MarkdownBlock from "../../common/MarkdownBlock"
 import { OptionsButtons } from "../OptionsButtons"
 
 interface UserInteractionRendererProps {
-	/** uc0acuc6a9uc790 uc0c1ud638uc791uc6a9 uba54uc2dcuc9c0 */
+	/** 사용자 상호작용 메시지 */
 	message: CaretMessage
-	/** uc81cubaa9ud574uc11c ud45cuc2dcud560 ud0c0uc774ud2c0 */
+	/** 제목해서 표시할 타이틀 */
 	title?: string
-	/** ub9c8uc9c0ub9c9 uc218uc815ub41c uba54uc2dcuc9c0 */
+	/** 마지막 수정된 메시지 */
 	lastModifiedMessage?: CaretMessage
-	/** uba54uc2dcuc9c0uac00 ub9c8uc9c0ub9c9uc778uc9c0 uc5ecubd80 */
+	/** 메시지가 마지막인지 여부 */
 	isLast?: boolean
 }
 
 /**
- * followup, plan_mode_respond, user_feedback ub4f1 uc0acuc6a9uc790 uc0c1ud638uc791uc6a9 uba54uc2dcuc9c0 ub80cub354ub7ec
+ * followup, plan_mode_respond, user_feedback 등 사용자 상호작용 메시지 렌더러
  */
 const UserInteractionRenderer: React.FC<UserInteractionRendererProps> = ({ message, title, lastModifiedMessage, isLast }) => {
-	const headerStyle = {
-		display: "flex",
-		alignItems: "center",
-		marginBottom: 6,
-		fontSize: 13,
-		color: "var(--vscode-descriptionForeground)",
-	}
-
-	const icon = (
-		<i
-			className={"codicon codicon-account"}
-			style={{
-				color: "var(--vscode-charts-orange)",
-				marginRight: 6,
-			}}
-		/>
-	)
-
-	// followup uba54uc2dcuc9c0 (uc9c8ubb38uacfc uc120ud0dd uc635uc158)
+	// followup 메시지 (질문과 선택 옵션)
 	if (message.type === "ask" && message.ask === "followup") {
 		const { question, options, selected } = parseFollowupMessage(message)
 		
 		return (
 			<>
-				{title && (
-					<div style={headerStyle}>
-						{icon}
-						{title}
-					</div>
-				)}
-				<div style={{ paddingTop: 10 }}>
+				<div style={{ paddingTop: 6 }}>
 					<div style={{
 						wordBreak: "break-word",
 						overflowWrap: "anywhere",
@@ -68,7 +44,7 @@ const UserInteractionRenderer: React.FC<UserInteractionRendererProps> = ({ messa
 		)
 	}
 	
-	// plan_mode_respond uba54uc2dcuc9c0
+	// plan_mode_respond 메시지
 	if (message.type === "ask" && message.ask === "plan_mode_respond") {
 		const { response, options, selected } = parsePlanModeResponse(message)
 		
@@ -91,11 +67,10 @@ const UserInteractionRenderer: React.FC<UserInteractionRendererProps> = ({ messa
 		)
 	}
 	
-	// user_feedback uba54uc2dcuc9c0
+	// user_feedback 메시지
 	if (message.type === "say" && message.say === "user_feedback") {
 		return (
 			<div>
-				{title && <div style={headerStyle}>{icon}{title}</div>}
 				<div style={{
 					wordBreak: "break-word",
 					overflowWrap: "anywhere",
@@ -117,8 +92,8 @@ const UserInteractionRenderer: React.FC<UserInteractionRendererProps> = ({ messa
 		)
 	}
 
-	// uc77cuce58ud558ub294 uba54uc2dcuc9c0 ud0c0uc785uc774 uc5c6ub294 uacbduc6b0
-	return <div>Unsupported message type for user interaction renderer</div>
+	// 일치하는 메시지 타입이 없는 경우
+	return null;
 }
 
 export default UserInteractionRenderer

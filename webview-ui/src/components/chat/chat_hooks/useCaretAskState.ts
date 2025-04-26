@@ -60,7 +60,7 @@ export function useCaretAskState(
           case "plan_mode_respond":
             setTextAreaDisabled(isPartial)
             setCaretAsk(lastMessage.ask)
-            setEnableButtons(false)
+            setEnableButtons(true)
             break
             
           case "tool":
