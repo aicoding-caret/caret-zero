@@ -1,0 +1,81 @@
+import { ApiProvider } from "../../../src/shared/api"
+import { ProviderConfig } from "../config/providers/types"
+
+const providerConfigs: Record<string, ProviderConfig> = {}
+const modelInfoCache: Record<string, any> = {}
+
+export const loadProviderConfigs = async () => {
+  const providers: ApiProvider[] = [
+    "caret",
+    "openrouter",
+    "anthropic",
+    "bedrock",
+    "openai",
+    "vertex",
+    "gemini",
+    "deepseek",
+    "mistral",
+    "openai-native",
+    "vscode-lm",
+    "requesty",
+    "together",
+    "qwen",
+    "lmstudio",
+    "ollama",
+    "litellm",
+    "asksage",
+    "xai",
+    "sambanova",
+  ]
+
+  for (const provider of providers) {
+    try {
+      const config = await import(`../config/providers/${provider}.json`)
+      providerConfigs[provider] = config.default
+    } catch (error) {
+      console.error(`Failed to load config for ${provider}:`, error)
+    }
+  }
+}
+
+export const getProviderConfig = (provider: string): ProviderConfig | undefined => {
+  return providerConfigs[provider]
+}
+
+export const getProviderModels = (provider: string): Record<string, any> => {
+  const config = getProviderConfig(provider)
+  if (!config) return {}
+  // @ts-expect-error: ProviderConfig doesn't have models field yet
+  return config.models || {}
+}
+
+export const getDefaultModelId = (provider: string): string => {
+  const config = getProviderConfig(provider)
+  if (!config) return ""
+  return config.defaultModel
+}
+
+export const loadModelInfo = async (provider: string) => {
+  try {
+    const modelInfo = await import(`../../../src/shared/models/${provider}.json`)
+    return modelInfo.default
+  } catch (error) {
+    console.error(`Failed to load model info for ${provider}:`, error)
+    return null
+  }
+}
+
+export const getModelInfo = async (provider: string) => {
+  if (modelInfoCache[provider]) return modelInfoCache[provider]
+  
+  const info = await loadModelInfo(provider)
+  if (info) modelInfoCache[provider] = info
+  return info
+}
+
+export const getModelById = async (provider: string, modelId: string) => {
+  const modelInfo = await getModelInfo(provider)
+  if (!modelInfo || !modelInfo.models) return null
+  
+  return modelInfo.models[modelId] || null
+} 

@@ -1,7 +1,27 @@
-import { VSCodeButton } from "@vscode/webview-ui-toolkit/react"
+import { VSCodeButton, VSCodeLink } from "@vscode/webview-ui-toolkit/react"
 import { useFirebaseAuth } from "../../context/FirebaseAuthContext"
 import { vscode } from "../../utils/vscode"
 import { useExtensionState } from "../../context/ExtensionStateContext"
+import styled from "styled-components"
+
+const Card = styled.div`
+	padding: 8px;
+	background-color: var(--vscode-editor-background);
+	border: 1px solid var(--vscode-panel-border);
+	border-radius: 4px;
+`
+
+const Title = styled.h3`
+	margin: 0;
+	font-size: 14px;
+	font-weight: 500;
+`
+
+const Description = styled.p`
+	margin: 8px 0;
+	font-size: 12px;
+	color: var(--vscode-descriptionForeground);
+`
 
 export const CaretAccountInfoCard = () => {
 	const { user: firebaseUser, handleSignOut } = useFirebaseAuth()
@@ -25,50 +45,25 @@ export const CaretAccountInfoCard = () => {
 	}
 
 	return (
-		<div className="max-w-[600px]">
+		<Card>
+			<Title>Caret Account</Title>
+			<Description>
+				Caret is a powerful AI coding assistant that helps you write better code faster.{" "}
+				<VSCodeLink href="https://caret.team" target="_blank">
+					Learn more
+				</VSCodeLink>
+			</Description>
 			{user ? (
 				<VSCodeButton appearance="secondary" onClick={handleShowAccount}>
 					View Billing & Usage
 				</VSCodeButton>
 			) : (
-				// <div className="p-2 rounded-[2px] bg-[var(--vscode-dropdown-background)]">
-				// 	<div className="flex items-center gap-3">
-				// 		{user.photoURL ? (
-				// 			<img src={user.photoURL} alt="Profile" className="w-[38px] h-[38px] rounded-full flex-shrink-0" />
-				// 		) : (
-				// 			<div className="w-[38px] h-[38px] rounded-full bg-[var(--vscode-button-background)] flex items-center justify-center text-xl text-[var(--vscode-button-foreground)] flex-shrink-0">
-				// 				{user.displayName?.[0] || user.email?.[0] || "?"}
-				// 			</div>
-				// 		)}
-				// 		<div className="flex flex-col gap-1 flex-1 overflow-hidden">
-				// 			{user.displayName && (
-				// 				<div className="text-[13px] font-bold text-[var(--vscode-foreground)] break-words">
-				// 					{user.displayName}
-				// 				</div>
-				// 			)}
-				// 			{user.email && (
-				// 				<div className="text-[13px] text-[var(--vscode-descriptionForeground)] break-words overflow-hidden text-ellipsis">
-				// 					{user.email}
-				// 				</div>
-				// 			)}
-				// 			<div className="flex gap-2 flex-wrap mt-1">
-
-				// 				<VSCodeButton
-				// 					appearance="secondary"
-				// 					onClick={handleLogout}
-				// 					className="scale-[0.85] origin-left w-fit mt-0.5 mb-0 -mr-3">
-				// 					Log out
-				// 				</VSCodeButton>
-				// 			</div>
-				// 		</div>
-				// 	</div>
-				// </div>
 				<div>
 					<VSCodeButton onClick={handleLogin} className="mt-0">
 						Sign Up with Caret
 					</VSCodeButton>
 				</div>
 			)}
-		</div>
+		</Card>
 	)
 }

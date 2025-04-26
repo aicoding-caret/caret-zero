@@ -1,0 +1,6 @@
+{
+  "id": "vscode-lm",
+  "name": "VSCode Language Model",
+  "defaultModel": "vscode-lm",
+  "fields": {}
+} 

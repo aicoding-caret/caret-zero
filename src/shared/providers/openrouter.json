@@ -1,0 +1,19 @@
+{
+  "id": "openrouter",
+  "name": "OpenRouter",
+  "defaultModel": "anthropic/claude-3-sonnet",
+  "fields": {
+    "apiKey": {
+      "label": "API Key",
+      "placeholder": "sk-or-...",
+      "helpText": "Enter your OpenRouter API key.",
+      "helpLink": "https://openrouter.ai/keys"
+    },
+    "customUrl": {
+      "label": "Custom URL",
+      "placeholder": "https://openrouter.ai/api/v1",
+      "helpText": "Enter your OpenRouter API endpoint.",
+      "helpLink": "https://openrouter.ai/docs"
+    }
+  }
+} 

@@ -1,0 +1,13 @@
+{
+  "id": "lmstudio",
+  "name": "LM Studio",
+  "defaultModel": "local",
+  "fields": {
+    "baseUrl": {
+      "label": "LM Studio API URL",
+      "placeholder": "Enter LM Studio API URL...",
+      "defaultUrl": "http://localhost:1234",
+      "helpText": "로컬에서 실행 중인 LM Studio 서버의 URL을 입력하세요."
+    }
+  }
+} 

@@ -1,9 +1,8 @@
-import { VSCodeButton, VSCodeDivider, VSCodeLink } from "@vscode/webview-ui-toolkit/react"
+import { VSCodeButton, VSCodeDivider, VSCodeLink, VSCodeTextField } from "@vscode/webview-ui-toolkit/react"
 import { memo, useEffect, useState } from "react"
 import { useFirebaseAuth } from "@/context/FirebaseAuthContext"
 import { vscode } from "@/utils/vscode"
 import VSCodeButtonLink from "../common/VSCodeButtonLink"
-import CaretLogoWhite from "../../assets/CaretLogoWhite"
 import CountUp from "react-countup"
 import CreditsHistoryTable from "./CreditsHistoryTable"
 import { UsageTransaction, PaymentTransaction } from "@shared/CaretAccount"
@@ -127,7 +126,7 @@ export const CaretAccountView = () => {
 							) : (
 								<>
 									<span>$</span>
-									<CountUp end={balance} duration={0.66} decimals={2} />
+									<CountUp start={0} end={balance} decimals={2} />
 									<VSCodeButton
 										appearance="icon"
 										className="mt-1"
@@ -153,7 +152,7 @@ export const CaretAccountView = () => {
 				</div>
 			) : (
 				<div className="flex flex-col items-center pr-3">
-					<CaretLogoWhite className="size-16 mb-4" />
+					<img src="./assets/logo.png" className="size-16 mb-4" />
 
 					<p style={{}}>
 						Sign up for an account to get access to the latest models, billing dashboard to view usage and credits,

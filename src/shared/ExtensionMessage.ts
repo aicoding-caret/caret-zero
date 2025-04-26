@@ -179,6 +179,7 @@ export interface ExtensionState {
 	vscMachineId: string
 	alphaAvatarUri?: string // 알파 기본 아바타 URI
 	alphaThinkingAvatarUri?: string // 알파 생각 중 아바타 URI
+	caretBanner?: string // 캐럿 배너 이미지 URI
 	availableModes: ModeInfo[] // 사용 가능한 모드 목록
 	retryStatus?: RetryStatusMessage // 재시도 상태 정보
 	apiError: ApiErrorInfo | null // API 에러 정보

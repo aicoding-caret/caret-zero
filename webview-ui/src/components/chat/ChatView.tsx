@@ -478,8 +478,7 @@ const ChatView = ({ isHidden, showAnnouncement, hideAnnouncement, showHistoryVie
 
 			{/* 하단 입력 영역 */}
 			<div style={{ padding: "10px 0" }}>
-				{/* 모드 선택 영역 */}
-				// availableModes, chatSettings 사용
+				{/* 모드 선택 영역 */}				
 				<ModeSelector availableModes={availableModes} chatSettings={chatSettings} />
 
 				{/* 버튼 영역 */}

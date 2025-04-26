@@ -1,0 +1,13 @@
+{
+  "id": "mistral",
+  "name": "Mistral AI",
+  "defaultModel": "mistral-small",
+  "fields": {
+    "apiKey": {
+      "label": "API Key",
+      "placeholder": "Enter your Mistral AI API key",
+      "helpText": "You can find your API key in the Mistral AI dashboard",
+      "helpLink": "https://console.mistral.ai/"
+    }
+  }
+} 

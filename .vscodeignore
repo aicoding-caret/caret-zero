@@ -57,3 +57,11 @@ docs/**
 
 # Include icons
 !assets/icons/**
+
+# Include agent images
+!assets/*.png
+!assets/agent_*.png
+!assets/default_*.png
+
+# Include banner images
+!assets/imgs/**

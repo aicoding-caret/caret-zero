@@ -1,0 +1,18 @@
+{
+  "id": "sambanova",
+  "name": "SambaNova",
+  "defaultModel": "sambanova",
+  "fields": {
+    "apiKey": {
+      "label": "API Key",
+      "placeholder": "Enter your SambaNova API key",
+      "helpText": "You can find your API key in the SambaNova dashboard",
+      "helpLink": "https://sambanova.ai/"
+    },
+    "baseUrl": {
+      "label": "Base URL",
+      "placeholder": "Enter your SambaNova server URL",
+      "defaultUrl": "https://api.sambanova.ai"
+    }
+  }
+} 

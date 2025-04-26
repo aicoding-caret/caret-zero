@@ -7,6 +7,8 @@ import { resolve } from "path"
 
 export default defineConfig({
 	plugins: [react(), tailwindcss()],
+	publicDir: "public",
+	base: "./",
 	test: {
 		environment: "jsdom",
 		globals: true,

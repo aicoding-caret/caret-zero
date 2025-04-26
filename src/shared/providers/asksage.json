@@ -1,0 +1,13 @@
+{
+  "id": "asksage",
+  "name": "AskSage",
+  "defaultModel": "asksage",
+  "fields": {
+    "apiKey": {
+      "label": "API Key",
+      "placeholder": "Enter your AskSage API key",
+      "helpText": "You can find your API key in the AskSage dashboard",
+      "helpLink": "https://asksage.ai/"
+    }
+  }
+} 

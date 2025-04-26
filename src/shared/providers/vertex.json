@@ -1,0 +1,24 @@
+{
+  "id": "vertex",
+  "name": "GCP Vertex AI",
+  "defaultModel": "gemini-pro",
+  "fields": {
+    "apiKey": {
+      "label": "Google Cloud API Key",
+      "placeholder": "Enter API Key...",
+      "helpText": "이 키는 로컬에 저장되며 이 확장 프로그램의 API 요청에만 사용됩니다.",
+      "helpLink": "https://console.cloud.google.com/apis/credentials"
+    },
+    "projectId": {
+      "label": "Google Cloud Project ID",
+      "placeholder": "Enter Project ID...",
+      "helpText": "Vertex AI가 활성화된 프로젝트 ID를 입력하세요."
+    },
+    "region": {
+      "label": "Google Cloud Region",
+      "placeholder": "Select region...",
+      "helpText": "Vertex AI가 활성화된 리전을 선택하세요.",
+      "helpLink": "https://cloud.google.com/vertex-ai/docs/general/locations"
+    }
+  }
+} 

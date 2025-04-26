@@ -1,0 +1,13 @@
+{
+  "id": "xai",
+  "name": "XAI",
+  "defaultModel": "xai",
+  "fields": {
+    "apiKey": {
+      "label": "API Key",
+      "placeholder": "Enter your XAI API key",
+      "helpText": "You can find your API key in the XAI dashboard",
+      "helpLink": "https://xai.ai/"
+    }
+  }
+} 

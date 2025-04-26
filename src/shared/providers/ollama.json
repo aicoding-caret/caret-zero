@@ -1,0 +1,13 @@
+{
+  "id": "ollama",
+  "name": "Ollama",
+  "defaultModel": "llama2",
+  "fields": {
+    "baseUrl": {
+      "label": "Ollama API URL",
+      "placeholder": "Enter Ollama API URL...",
+      "defaultUrl": "http://localhost:11434",
+      "helpText": "로컬에서 실행 중인 Ollama 서버의 URL을 입력하세요."
+    }
+  }
+} 

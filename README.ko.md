@@ -1,7 +1,8 @@
 [Read this document in English](./README.md)
 
-# Caret: Your AI Development Partner 
+# 캐럿 : 당신의 AI개발 파트너
 <img src="./assets/icons/icon.png" alt="Caret icon">
+
 Caret은 개발자와 AI 에이전트가 함께 성장하며 소프트웨어를 만들어나가는 차세대 개발 환경을 목표로 하는 VS Code 확장 프로그램입니다. AI와의 긴밀한 협력을 통해 개발 생산성을 높이고, 복잡한 문제를 해결하는 데 도움을 드립니다. ｡•ᴗ•｡💕
 
 > **Note:** 이 프로젝트는 [Cline](https://github.com/cline/cline) 프로젝트의 포크 버전입니다. 원본 프로젝트의 훌륭한 기반 위에, AI 에이전트와의 더욱 깊은 상호작용과 지능적인 개발 지원 기능을 탐구하고 있습니다. 🌿
@@ -44,6 +45,43 @@ Caret은 개발자와 AI 에이전트가 함께 성장하며 소프트웨어를 
 | **Vector RAG + AST 청킹** | 코드 의미 기반 컨텍스트 주입 | 🚧 |
 | **AST·검증 기반 안전 수정** | ts-morph, 테스트·lint 자동 실행 | 🗓 |
 | **시맨틱 캐싱 / 프롬프트 압축** | 토큰·비용 50–80 % 절감 | 🗓 |
+
+
+## 지원하는 AI 모델과 제공자
+
+Caret은 다양한 AI 모델과 제공자를 지원하여 여러분의 필요에 가장 적합한 도구를 선택할 수 있는 자유를 제공합니다:
+
+| 제공자 | 모델 | 총 모델 수 |
+|--------|------|------------|
+| Anthropic | Claude 3.7 Sonnet, Claude 3.5 Sonnet v2, Claude 3.5 Sonnet, Claude 3.5 Haiku, Claude 3 Opus, Claude 3 Haiku | 6 |
+| AWS Bedrock | Amazon Nova Pro v1, Amazon Nova Lite v1, Amazon Nova Micro v1, Claude 3.7 Sonnet, Claude 3.5 Sonnet v2, Claude 3.5 Haiku, Claude 3.5 Sonnet, Claude 3 Opus | 8 |
+| Gemini | Gemini 2.5 Pro, Gemini 2.5 Pro Preview, Gemini 2.0 Flash, Gemini 1.5 Flash, Gemini 1.5 Flash 8B, Gemini 1.5 Pro, Gemini 1.5 Pro Preview | 7 |
+| OpenAI | GPT-4 Turbo, GPT-4 | 2 |
+| Vertex AI | Claude 3.7 Sonnet, Claude 3.5 Sonnet v2, Claude 3.5 Sonnet, Claude 3.5 Haiku, Claude 3 Opus, Claude 3 Haiku | 6 |
+| Ollama | Llama 2, CodeLlama, Mistral, Mixtral | 4 |
+| LM Studio | 로컬 모델 | 1 |
+| OpenAI Native | O3, O4 Mini, GPT-4.1, GPT-4.1 Mini, GPT-4.1 Nano, O3 Mini, O1, O1 Preview, O1 Mini, GPT-4O, GPT-4O Mini, ChatGPT-4O Latest, GPT-4.5 Preview | 13 |
+| Requesty | Requesty 모델 | 1 |
+| Together | Together 모델 | 1 |
+| DeepSeek | DeepSeek Chat, DeepSeek Reasoner | 2 |
+| Qwen | Qwen 2.5 Coder (32B, 14B, 7B, 3B, 1.5B, 0.5B), Qwen Coder Plus, Qwen Plus, Qwen Turbo, Qwen Max, Qwen VL Max, Qwen VL Plus | 18 |
+| Doubao | Doubao 1.5 Pro (256K, 32K), DeepSeek V3, DeepSeek R1 | 4 |
+| Mistral | Pixtral Large, Ministral 3B, Ministral 8B, Mistral Small, Pixtral 12B, Open Mistral Nemo, Open Codestral Mamba, Codestral | 8 |
+| VSCode LM | VSCode LM 모델 | 1 |
+| LiteLLM | LiteLLM 모델 | 1 |
+| AskSage | AskSage 모델 | 1 |
+| XAI | XAI 모델 | 1 |
+| SambaNova | SambaNova 모델 | 1 |
+| OpenRouter | OpenRouter 모델 | 1 |
+
+**총계: 20개 제공자, 105개 모델**
+
+각 모델은 다음과 같은 상세 정보로 구성되어 있습니다:
+- ID와 이름
+- 설명
+- 지원 기능 (이미지, 컴퓨터 사용, 프롬프트 캐시)
+- 토큰 제한
+- 가격 정보
 
 ## 시작하기
 
@@ -116,3 +154,17 @@ Caret 프로젝트는 여러분의 기여를 환영합니다! 버그 리포트, 
 ## License
 
 [Apache 2.0 © 2025 Cline Bot Inc.](./LICENSE)
+
+## 지원 모델
+
+Caret은 200개 다양한 제공자에 걸쳐 150개 이상의 AI 모델을 지원합니다:
+
+- **Anthropic Claude** (Claude 3.7 Sonnet, Claude 3.5 Sonnet, Claude 3 Opus 등)
+- **OpenAI** (GPT-4o, GPT-4.1 등)
+- **Google Gemini** (Gemini 2.5, Gemini 2.0 등)
+- **Mistral AI** (Mistral Large, Codestral 등)
+- **AWS Bedrock** (Amazon Nova, AWS의 Claude 등)
+- **Vertex AI** (Google Cloud의 AI 플랫폼)
+- Ollama 및 LM Studio를 통한 로컬 모델을 포함한 기타 다양한 모델
+
+지원되는 모델의 전체 목록은 [지원 모델 문서](caret-docs/supported-models.ko.md)를 참조하세요.

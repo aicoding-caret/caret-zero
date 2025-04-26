@@ -1,0 +1,18 @@
+{
+  "id": "litellm",
+  "name": "LiteLLM",
+  "defaultModel": "litellm",
+  "fields": {
+    "apiKey": {
+      "label": "API Key",
+      "placeholder": "Enter your LiteLLM API key",
+      "helpText": "You can find your API key in the LiteLLM dashboard",
+      "helpLink": "https://litellm.ai/"
+    },
+    "baseUrl": {
+      "label": "Base URL",
+      "placeholder": "Enter your LiteLLM server URL",
+      "defaultUrl": "http://localhost:8000"
+    }
+  }
+} 

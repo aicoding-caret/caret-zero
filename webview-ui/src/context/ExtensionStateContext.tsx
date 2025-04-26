@@ -30,6 +30,7 @@ interface ExtensionStateContextType extends ExtensionState {
 	availableModes: ModeInfo[] // Add availableModes
 	// 프로필 이미지 관련 상태 및 처리기
 	alphaAvatarUri: string
+	caretBanner?: string
 	selectAgentProfileImage: () => void
 	resetAgentProfileImage: () => void
 	updateAgentProfileImage: (imageUrl: string) => void

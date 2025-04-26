@@ -2427,12 +2427,16 @@ Here is the project's README to help you get started:\n\n${mcpDetails.readmeCont
 		const webview = this.webviewProviderRef.deref()?.view?.webview
 
 		// 기본 프로필 이미지 URI 생성
-		const alphaAvatarFileUri = vscode.Uri.joinPath(this.context.extensionUri, "assets", "agent_profile.png")
+		const alphaAvatarFileUri = vscode.Uri.joinPath(this.context.extensionUri, "assets", "default_ai_agent_profile.png")
 		const alphaAvatarWebviewUri = webview ? webview.asWebviewUri(alphaAvatarFileUri).toString() : undefined
 
 		// 생각 중 이미지 URI 생성
 		const alphaThinkingAvatarFileUri = vscode.Uri.joinPath(this.context.extensionUri, "assets", "agent_thinking.png")
 		const alphaThinkingAvatarWebviewUri = webview ? webview.asWebviewUri(alphaThinkingAvatarFileUri).toString() : undefined
+
+		// 배너 이미지 URI 생성
+		const caretBannerFileUri = vscode.Uri.joinPath(this.context.extensionUri, "assets", "imgs","main_banner.webp")
+		const caretBannerWebviewUri = webview ? webview.asWebviewUri(caretBannerFileUri).toString() : undefined
 
 		return {
 			version: this.context.extension?.packageJSON?.version ?? "",
@@ -2445,7 +2449,7 @@ Here is the project's README to help you get started:\n\n${mcpDetails.readmeCont
 			taskHistory: (taskHistory || [])
 				.filter((item) => item.ts && item.task)
 				.sort((a, b) => b.ts - a.ts)
-				.slice(0, 100), // for now we're only getting the latest 100 tasks, but a better solution here is to only pass in 3 for recent task history, and then get the full task history on demand when going to the task history view (maybe with pagination?)
+				.slice(0, 100),
 			shouldShowAnnouncement: lastShownAnnouncementId !== this.latestAnnouncementId,
 			platform: process.platform as Platform,
 			autoApprovalSettings,
@@ -2458,6 +2462,7 @@ Here is the project's README to help you get started:\n\n${mcpDetails.readmeCont
 			vscMachineId: vscode.env.machineId,
 			alphaAvatarUri: alphaAvatarWebviewUri, // 기본 프로필 이미지
 			alphaThinkingAvatarUri: alphaThinkingAvatarWebviewUri, // 생각 중 이미지 추가
+			caretBanner: caretBannerWebviewUri, // 배너 이미지
 			availableModes: this.availableModes, // 사용 가능한 모드 정보
 			retryStatus: retryStatus,
 			apiError: null, // API 에러 정보

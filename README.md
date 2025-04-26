@@ -19,6 +19,7 @@ Caret is a VS Code extension that aims to create a next-generation development e
 
 ## Why Aren't Cursor / Windsurf Enough?
 <img src="./caret-docs/caret_feature.png" alt="Caret Features" width="600" height="400">
+
 | SaaS AI IDE Limitations | Why Control is Critical in Production Development |
 |------------------------|--------------------------------------------------|
 | **Black Box Context & Model Versions** | Cannot reproduce, debug, or regression test |
@@ -43,6 +44,53 @@ Caret is a VS Code extension that aims to create a next-generation development e
 | **Vector RAG + AST Chunking** | Code semantics-based context injection | 🚧 |
 | **AST & Validation Based Safe Edits** | ts-morph, automatic test & lint execution | 🗓 |
 | **Semantic Caching / Prompt Compression** | 50-80% token & cost reduction | 🗓 |
+
+## Supported AI Models and Providers
+
+Caret supports a wide range of AI models and providers to give you the freedom to choose the best tools for your needs:
+
+| Provider | Models | Total Models |
+|----------|--------|--------------|
+| Anthropic | Claude 3.7 Sonnet, Claude 3.5 Sonnet v2, Claude 3.5 Sonnet, Claude 3.5 Haiku, Claude 3 Opus | 5 |
+| AWS Bedrock | Amazon Nova Pro v1, Amazon Nova Lite v1, Amazon Nova Micro v1, Claude 3.7 Sonnet, Claude 3.5 Sonnet v2, Claude 3.5 Haiku, Claude 3.5 Sonnet, Claude 3 Opus and more | 12 |
+| Gemini | Gemini 2.5 Pro, Gemini 2.5 Pro Preview, Gemini 2.0 Flash, Gemini 1.5 Flash, Gemini 1.5 Flash 8B, Gemini 1.5 Pro and more | 14 |
+| OpenAI | GPT-4 Turbo, GPT-4 and more | 7 |
+| Vertex AI | Claude 3.7 Sonnet, Claude 3.5 Sonnet v2, Claude 3.5 Sonnet, Claude 3.5 Haiku, Claude 3 Opus, Claude 3 Haiku and more | 17 |
+| Ollama | Llama 3, Mistral, CodeLlama | 3 |
+| LM Studio | Local Model | 1 |
+| OpenAI Native | O3, O4 Mini, GPT-4.1, GPT-4.1 Mini, GPT-4.1 Nano, O3 Mini, O1, O1 Preview, O1 Mini, GPT-4O, GPT-4O Mini, ChatGPT-4O Latest, GPT-4.5 Preview | 13 |
+| Requesty | Claude 3.7 Sonnet (Latest) | 1 |
+| Together | Llama 3 70B Chat, Mistral 7B Instruct v0.2, Llama 3 8B Chat | 3 |
+| DeepSeek | DeepSeek Chat, DeepSeek Coder | 2 |
+| Qwen | Qwen 2.5 Coder (32B, 14B, 7B, 3B, 1.5B), Qwen Coder Plus, Qwen Plus, Qwen Turbo, Qwen Max, Qwen VL Max, Qwen VL Plus | 11 |
+| Doubao | Doubao 1.5 Pro (256K, 32K), DeepSeek V3, DeepSeek R1 | 4 |
+| Mistral | Pixtral Large, Ministral 3B, Ministral 8B, Mistral Small, Pixtral 12B, Open Mistral Nemo, Open Codestral Mamba, Codestral and more | 10 |
+| XAI | Grok-3 Beta, Grok-3 Fast Beta, Grok-3 Mini Beta, Grok-3 Mini Fast Beta, Grok-2 models and more | 12 |
+| SambaNova | Meta-Llama-3.3-70B-Instruct, DeepSeek-R1-Distill-Llama-70B, Meta-Llama-3.1-405B-Instruct and more | 12 |
+| OpenRouter | Various models via API | 1 |
+
+**Total: 17 Providers, 128 Models**
+
+Each model is configured with detailed specifications including:
+- ID and name
+- Description
+- Supported features (images, computer use, prompt cache)
+- Token limits
+- Pricing information
+
+## Supported Models
+
+Caret provides support for over 150 AI models across 20 different providers including:
+
+- **Anthropic Claude** (Claude 3.7 Sonnet, Claude 3.5 Sonnet, Claude 3 Opus, etc.)
+- **OpenAI** (GPT-4o, GPT-4.1, etc.)
+- **Google Gemini** (Gemini 2.5, Gemini 2.0, etc.)
+- **Mistral AI** (Mistral Large, Codestral, etc.)
+- **AWS Bedrock** (Amazon Nova, Claude on AWS, etc.)
+- **Vertex AI** (Google Cloud's AI platform)
+- And many others including local models via Ollama and LM Studio
+
+For a complete list of supported models, see our [Supported Models documentation](caret-docs/supported-models.md).
 
 ## Getting Started
 

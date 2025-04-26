@@ -3,6 +3,9 @@
 ## 진행 중인 태스크 (Pending)
 
 - [ ] **Task #014:** 퍼소나 관리 및 UI 개선 ([014-persona_management_and_ui_improvements.md](./014-persona_management_and_ui_improvements.md))
+
+## 대기 중인 태스크 (Pending)
+- [ ] **Task #027:** Caret Team 로그인 구현 ([027-caret-team-auth.md](./027-caret-team-auth.md))
 - [ ] **Task #009:** 멀티 모드 시스템 구현 및 동적 프롬프트/규칙 관리 ([009-cline-multi-mode-core.md](./009-cline-multi-mode-core.md))
 - [ ] **Task #011:** Cline UI 현지화 ([011-cline-ui-localization.md](./011-cline-ui-localization.md))
 - [ ] **Task #012:** 다국어 규칙 지원 ([012-multilingual-rule-support.md](./012-multilingual-rule-support.md))
@@ -10,6 +13,7 @@
 - [ ] **Task #020:** 로깅 및 테스트 강화 ([020-enhance-logging-and-testing.md](./020-enhance-logging-and-testing.md))
 - [ ] **Task #022:** 채팅 중지 버튼 개선 ([022-chat-stop-button-improvement.md](./022-chat-stop-button-improvement.md))
 - [ ] **Task #024:** AI 에이전트 프로필 커스터마이징 ([024-ai-agent-profile-customization.md](./024-ai-agent-profile-customization.md))
+
 
 ## 완료된 태스크 (Complete)
 - [x] **Task #001:** Cline 규칙 시스템 수정 ([001-cline-rule-syste-modify.md](./001-cline-rule-syste-modify.md))

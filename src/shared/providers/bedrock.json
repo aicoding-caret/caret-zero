@@ -1,0 +1,29 @@
+{
+  "id": "bedrock",
+  "name": "AWS Bedrock",
+  "defaultModel": "anthropic.claude-3-sonnet-20240229-v1:0",
+  "fields": {
+    "apiKey": {
+      "label": "AWS Access Key ID",
+      "placeholder": "Enter Access Key ID...",
+      "helpText": "이 키는 로컬에 저장되며 이 확장 프로그램의 API 요청에만 사용됩니다.",
+      "helpLink": "https://console.aws.amazon.com/iam/home#/security_credentials"
+    },
+    "secretKey": {
+      "label": "AWS Secret Access Key",
+      "placeholder": "Enter Secret Access Key...",
+      "helpText": "이 키는 로컬에 저장되며 이 확장 프로그램의 API 요청에만 사용됩니다."
+    },
+    "region": {
+      "label": "AWS Region",
+      "placeholder": "Select region...",
+      "helpText": "AWS Bedrock이 활성화된 리전을 선택하세요.",
+      "helpLink": "https://docs.aws.amazon.com/bedrock/latest/userguide/what-is-bedrock.html"
+    },
+    "endpoint": {
+      "label": "Custom Endpoint",
+      "placeholder": "Enter custom endpoint...",
+      "defaultUrl": "https://bedrock-runtime.{region}.amazonaws.com"
+    }
+  }
+} 

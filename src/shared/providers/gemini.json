@@ -1,0 +1,18 @@
+{
+  "id": "gemini",
+  "name": "Google Gemini",
+  "defaultModel": "gemini-1.5-pro",
+  "fields": {
+    "apiKey": {
+      "label": "Google API Key",
+      "placeholder": "Enter API Key...",
+      "helpText": "이 키는 로컬에 저장되며 이 확장 프로그램의 API 요청에만 사용됩니다.",
+      "helpLink": "https://makersuite.google.com/app/apikey"
+    },
+    "baseUrl": {
+      "label": "Custom API URL",
+      "placeholder": "Enter custom API URL...",
+      "defaultUrl": "https://generativelanguage.googleapis.com"
+    }
+  }
+} 
