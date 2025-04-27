@@ -4,6 +4,7 @@ import React, { useState } from "react"
 export const TAB_NAVBAR_HEIGHT = 24
 const BUTTON_MARGIN_RIGHT = "3px"
 const LAST_BUTTON_MARGIN_RIGHT = "13px"
+const VISION_BUTTON_MARGIN_RIGHT = "3px"
 
 type TabNavbarProps = {
 	onPlusClick: () => void
@@ -137,7 +138,8 @@ const TabNavbar = ({ onPlusClick, onHistoryClick, onSettingsClick }: TabNavbarPr
 					style={buttonStyle}
 					onMouseEnter={(e) => showTooltip("New Chat", e, "center")}
 					onMouseLeave={hideTooltip}
-					onMouseMove={(e) => showTooltip("New Chat", e, "center")}>
+					onMouseMove={(e) => showTooltip("New Chat", e, "center")}
+				>
 					<span className="codicon codicon-add"></span>
 				</VSCodeButton>
 				<VSCodeButton
@@ -146,8 +148,24 @@ const TabNavbar = ({ onPlusClick, onHistoryClick, onSettingsClick }: TabNavbarPr
 					style={buttonStyle}
 					onMouseEnter={(e) => showTooltip("History", e, "center")}
 					onMouseLeave={hideTooltip}
-					onMouseMove={(e) => showTooltip("History", e, "center")}>
+					onMouseMove={(e) => showTooltip("History", e, "center")}
+				>
 					<span className="codicon codicon-history"></span>
+				</VSCodeButton>
+				<VSCodeButton
+					appearance="icon"
+					onClick={() => {
+						// Vision Inference 진입 핸들러 (App.tsx에서 prop으로 내려받는 구조로 확장 필요)
+						if (typeof window !== "undefined" && window.dispatchEvent) {
+							window.dispatchEvent(new CustomEvent("caret-show-vision-panel"));
+						}
+					}}
+					style={buttonStyle}
+					onMouseEnter={(e) => showTooltip("Vision Inference", e, "center")}
+					onMouseLeave={hideTooltip}
+					onMouseMove={(e) => showTooltip("Vision Inference", e, "center")}
+				>
+					<span className="codicon codicon-device-camera"></span>
 				</VSCodeButton>
 				<VSCodeButton
 					appearance="icon"
@@ -155,7 +173,8 @@ const TabNavbar = ({ onPlusClick, onHistoryClick, onSettingsClick }: TabNavbarPr
 					style={lastButtonStyle}
 					onMouseEnter={(e) => showTooltip("Settings", e, "right")}
 					onMouseLeave={hideTooltip}
-					onMouseMove={(e) => showTooltip("Settings", e, "right")}>
+					onMouseMove={(e) => showTooltip("Settings", e, "right")}
+				>
 					<span className="codicon codicon-settings-gear"></span>
 				</VSCodeButton>
 			</div>

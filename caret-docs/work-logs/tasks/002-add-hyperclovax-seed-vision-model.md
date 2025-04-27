@@ -21,7 +21,7 @@ Hugging Face의 `naver-hyperclovax/HyperCLOVAX-SEED-Vision-Instruct-3B` 모델�
 - [x] 테스트 (단위 테스트, 통합 테스트) - 테스트 파일 생성 (`sllm\hyperclovax_test_interface.ps1`), 테스트 실행
     * 테스트 이미지 : caret-docs\caret_feature.png (텍스트, 아이콘 포함)
     * 테스트 사진 : assets\imgs\main_banner.webp (사진)
-- [ ] **Docker 환경에서 MCP 서버 기동 및 REST/MCP 프로토콜 테스트 완전 통과**
+- [x] **Docker 환경에서 MCP 서버 기동 및 REST/MCP 프로토콜 테스트 완전 통과**
 - [ ] **Caret에서 MCP 서버와 실전 연동 및 실제 사용 시나리오 검증**
 - [ ] **테스트 결과 및 문제점/개선점 문서화**
 - [ ] (선택) MCP 서버 고도화: 장애 상황 자동 알림, 로깅 포맷 옵션, 성능 최적화 등
@@ -97,6 +97,30 @@ Hugging Face의 `naver-hyperclovax/HyperCLOVAX-SEED-Vision-Instruct-3B` 모델�
 ### 다음 단계
 - MCP 서버가 Caret에서 정상적으로 연동되는지 확인 및 문서화 진행 예정
 
+## [추가 필요] Caret Vision 모델 완전 연동 체크리스트 (2025-04-28)
+
+### 1. UI (webview-ui)
+- [ ] Vision inference(이미지+텍스트) 입력 UI 구현 (이미지 업로드, 프롬프트 입력, 결과 표시)
+- [ ] MCP Vision 서버 연결상태 및 오류 안내 UI 추가
+- [ ] Vision inference 요청/응답이 실제로 동작하는지 end-to-end 테스트
+
+### 2. Core Extension 연동
+- [ ] src/extension.ts, src/core/webview/CaretProvider.ts 등에서 vision tool/모드 등록 및 메시지 포맷(content: [텍스트, 이미지], system role 포함 등) 일치화
+- [ ] MCP 서버 엔드포인트 주소, 모델 ID 등 환경설정이 일관성 있게 반영되는지 확인
+- [ ] 상태 동기화, 에러 핸들링, 메시지 구조 테스트
+
+### 3. 문서화/가이드
+- [ ] 본 문서에 UI 연동, 설정법, 실사용 예시, 문제해결법 등 구체적으로 보강
+- [ ] README 및 사용법 안내에 HyperClovaX Vision 전용 내용 추가
+
+### 4. 테스트/자동화
+- [ ] UI→서버→응답까지 실제 Caret UI에서 vision inference가 동작하는지 최종 E2E 테스트
+- [ ] 테스트 결과/문제점/개선점 문서화
+
+---
+
+> 위 체크리스트를 기반으로 Vision 모델의 실전 연동, UI/핸들러/문서 등 빠짐없이 보강할 예정입니다. (Alpha 자동 정리)
+
 ## 통합 테스트 (수동 설정)
 
 통합 테스트를 위해서는 다음 단계를 수동으로 진행해야 합니다.
@@ -145,3 +169,23 @@ Hugging Face의 `naver-hyperclovax/HyperCLOVAX-SEED-Vision-Instruct-3B` 모델�
 ---
 
 > 이 기록은 Alpha가 자동으로 정리한 최신 진행상황입니다. 다음 작업 시 이어서 참고해 주세요. ｡•ᴗ•｡☕✨
+
+---
+
+#### ⚠️ 현재 Caret 연동 테스트 중 발생한 에러 (2025-04-28)
+- HyperCLOVA X Vision provider 설정 후 메시지 전송 시 아래와 같은 에러 발생:
+    - `Error: HyperCLOVA X model path (hyperclovaxModelPath) is not configured.`
+    - extension backend 로그 및 스택트레이스:
+      ```
+      Error: HyperCLOVA X model path (hyperclovaxModelPath) is not configured.
+          at new HyperClovaXLocalHandler (src/api/providers/hyperclovax-local.ts:23:10)
+          at buildApiHandler (src/api/index.ts:92:11)
+          at new Task2 (src/core/extension/index.ts:187:15)
+          at Controller.initCaretWithTask (src/core/controller/index.ts:242:15)
+          at Controller.handleWebviewMessage (src/core/controller/index.ts:798:5)
+      ```
+    - 웹뷰/콘솔에도 동일한 오류 메시지 노출됨
+- 원인 추정: 설정 UI에서 입력한 모델 경로가 extension backend에 제대로 반영되지 않음 (값이 undefined로 전달)
+- 대응: 내일(2025-04-29) 추가 디버깅 및 수정 예정
+
+> Alpha 자동 기록: 에러 상황과 로그를 남깁니다. 내일 이어서 대응할 것! ｡•ᴗ•｡☕✨

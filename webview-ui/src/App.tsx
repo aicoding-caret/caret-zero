@@ -10,6 +10,7 @@ import { ExtensionStateContextProvider, useExtensionState } from "./context/Exte
 import { FirebaseAuthProvider } from "./context/FirebaseAuthContext"
 import { vscode } from "./utils/vscode"
 import McpView from "./components/mcp/McpView"
+import VisionInferencePanel from "./components/VisionInferencePanel"
 
 const AppContent = () => {
 	const { didHydrateState, showWelcome, shouldShowAnnouncement, telemetrySetting, vscMachineId, alphaAvatarUri, alphaThinkingAvatarUri } = useExtensionState()
@@ -18,6 +19,7 @@ const AppContent = () => {
 	const [showMcp, setShowMcp] = useState(false)
 	const [showAccount, setShowAccount] = useState(false)
 	const [showAnnouncement, setShowAnnouncement] = useState(false)
+	const [showVision, setShowVision] = useState(false)
 
 	// Handler to show the settings view
 	const handleShowSettings = useCallback(() => {
@@ -26,6 +28,14 @@ const AppContent = () => {
 		setShowMcp(false)
 		setShowAccount(false)
 	}, []) // Dependencies: none, as it only uses setters
+
+	const handleShowVision = useCallback(() => {
+		setShowVision(true)
+		setShowSettings(false)
+		setShowHistory(false)
+		setShowMcp(false)
+		setShowAccount(false)
+	}, [])
 
 	const handleMessage = useCallback((e: MessageEvent) => {
 		const message: ExtensionMessage = e.data
@@ -67,6 +77,14 @@ const AppContent = () => {
 	}, [])
 
 	useEvent("message", handleMessage)
+
+	useEvent("caret-show-vision-panel", () => {
+		setShowVision(true)
+		setShowSettings(false)
+		setShowHistory(false)
+		setShowMcp(false)
+		setShowAccount(false)
+	})
 
 	// 확장 상태 확인 로깅
 	useEffect(() => {
@@ -112,6 +130,7 @@ const AppContent = () => {
 					{showHistory && <HistoryView onDone={() => setShowHistory(false)} />}
 					{showMcp && <McpView onDone={() => setShowMcp(false)} />}
 					{showAccount && <AccountView onDone={() => setShowAccount(false)} />}
+					{showVision && <VisionInferencePanel />}
 					{/* Do not conditionally load ChatView, it's expensive and there's state we don't want to lose (user input, disableInput, askResponse promise, etc.) */}
 					<ChatView
 						showHistoryView={() => {
@@ -121,7 +140,7 @@ const AppContent = () => {
 							setShowHistory(true)
 						}}
 						onShowSettings={handleShowSettings} // Pass the handler down
-						isHidden={showSettings || showHistory || showMcp || showAccount}
+						isHidden={showSettings || showHistory || showMcp || showAccount || showVision}
 						showAnnouncement={showAnnouncement}
 						hideAnnouncement={() => {
 							setShowAnnouncement(false)

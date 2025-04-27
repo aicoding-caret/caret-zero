@@ -22,7 +22,7 @@ def test_no_image(stream=False):
             print(chunk.decode("utf-8"), end="", flush=True)
             received += len(chunk)
         print()
-        elapsed = time.time() - start
+        elapsed = time.time() - start@
         print(f"[스트리밍(이미지X) TPS] 전체 소요: {elapsed:.2f}s, 총 바이트: {received}")
     else:
         print("--- 일반(이미지X) ---")

@@ -7,6 +7,7 @@ import {
 	VSCodeRadioGroup,
 	VSCodeTextField,
 } from "@vscode/webview-ui-toolkit/react"
+import React from "react"
 import { Fragment, memo, useCallback, useEffect, useMemo, useState } from "react"
 import ThinkingBudgetSlider from "./ThinkingBudgetSlider"
 import { useEvent, useInterval } from "react-use"
@@ -73,6 +74,7 @@ import { XAIOptions } from "./api_options/XAIOptions"
 import { SambanovaOptions } from "./api_options/SambanovaOptions"
 import { CaretOptions } from "./api_options/CaretOptions"
 import { AskSageOptions } from "./api_options/AskSageOptions"
+import HyperClovaXOptions from "./api_options/HyperClovaXOptions"
 
 interface ApiOptionsProps {
 	showModelOptions: boolean
@@ -116,11 +118,15 @@ const ApiOptions = ({ showModelOptions, apiErrorMessage, modelIdErrorMessage, is
 	const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false)
 	const [providerSortingSelected, setProviderSortingSelected] = useState(!!apiConfiguration?.openRouterProviderSorting)
 
+	// 기존 handleInputChange 대체: 입력 변경 시 설정 저장 + extension에 메시지 전송
 	const handleInputChange = (field: keyof ApiConfiguration) => (event: any) => {
-		setApiConfiguration({
+		const newConfig = {
 			...apiConfiguration,
 			[field]: event.target.value,
-		})
+		}
+		setApiConfiguration(newConfig)
+		// 설정 변경사항을 extension backend로 전달
+		vscode.postMessage({ type: "didUpdateSettings", apiConfiguration: newConfig })
 	}
 
 	const { selectedProvider, selectedModelId, selectedModelInfo } = useMemo(() => {
@@ -212,12 +218,13 @@ const ApiOptions = ({ showModelOptions, apiErrorMessage, modelIdErrorMessage, is
 						position: "relative",
 					}}>
 					<VSCodeOption value="caret">Caret</VSCodeOption>
-					<VSCodeOption value="openrouter">OpenRouter</VSCodeOption>
-					<VSCodeOption value="anthropic">Anthropic</VSCodeOption>
-					<VSCodeOption value="bedrock">AWS Bedrock</VSCodeOption>
-					<VSCodeOption value="openai">OpenAI Compatible</VSCodeOption>
-					<VSCodeOption value="vertex">GCP Vertex AI</VSCodeOption>
+					<VSCodeOption value="hyperclovax-local">HyperCLOVA X Vision (Local)</VSCodeOption>
 					<VSCodeOption value="gemini">Google Gemini</VSCodeOption>
+					<VSCodeOption value="anthropic">Anthropic</VSCodeOption>
+					<VSCodeOption value="openai">OpenAI Compatible</VSCodeOption>
+					<VSCodeOption value="openrouter">OpenRouter</VSCodeOption>
+					<VSCodeOption value="bedrock">AWS Bedrock</VSCodeOption>					
+					<VSCodeOption value="vertex">GCP Vertex AI</VSCodeOption>
 					<VSCodeOption value="deepseek">DeepSeek</VSCodeOption>
 					<VSCodeOption value="mistral">Mistral</VSCodeOption>
 					<VSCodeOption value="openai-native">OpenAI</VSCodeOption>
@@ -343,6 +350,14 @@ const ApiOptions = ({ showModelOptions, apiErrorMessage, modelIdErrorMessage, is
 
 			{selectedProvider === "sambanova" && (
 				<SambanovaOptions apiConfiguration={apiConfiguration} setApiConfiguration={setApiConfiguration} />
+			)}
+
+			{selectedProvider === "hyperclovax-local" && (
+				<div style={{ marginBottom: 14, marginTop: 4 }}>
+					<React.Suspense fallback={<div>옵션 로딩 중...</div>}>
+						<HyperClovaXOptions apiConfiguration={apiConfiguration} setApiConfiguration={setApiConfiguration} />
+					</React.Suspense>
+				</div>
 			)}
 
 			{apiErrorMessage && (
@@ -735,6 +750,12 @@ export function normalizeApiConfiguration(apiConfiguration?: ApiConfiguration): 
 			return getProviderData(xaiModels, xaiDefaultModelId)
 		case "sambanova":
 			return getProviderData(sambanovaModels, sambanovaDefaultModelId)
+		case "hyperclovax-local":
+			return {
+				selectedProvider: provider,
+				selectedModelId: "",
+				selectedModelInfo: openAiModelInfoSaneDefaults,
+			}
 		default:
 			return getProviderData(anthropicModels, anthropicDefaultModelId)
 	}
