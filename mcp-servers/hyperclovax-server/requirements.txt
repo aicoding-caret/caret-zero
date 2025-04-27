@@ -1,0 +1,12 @@
+fastapi
+uvicorn
+transformers
+torch
+pillow
+python-dotenv
+requests
+opencv-python
+timm
+einops
+av
+decord

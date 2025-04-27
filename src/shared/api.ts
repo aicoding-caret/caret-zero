@@ -22,6 +22,14 @@ export type ApiProvider =
 	| "asksage"
 	| "xai"
 	| "sambanova"
+	| "hyperclovax-local" // Add new provider type
+
+// Represents a chunk of data yielded by an API stream
+export type ApiStreamChunk =
+	| { type: "text"; text: string }
+	// Add other chunk types as needed (e.g., tool_use, usage)
+	// | { type: 'tool_use'; tool_use_id: string; input: any }
+	// | { type: 'usage'; usage: { input_tokens: number; output_tokens: number } }
 
 export interface ApiHandlerOptions {
 	apiModelId?: string
@@ -78,6 +86,9 @@ export interface ApiHandlerOptions {
 	thinkingBudgetTokens?: number
 	reasoningEffort?: string
 	sambanovaApiKey?: string
+	// Options for HyperCLOVA X SEED Vision local model
+	hyperclovaxModelPath?: string // Path to the downloaded model
+	hyperclovaxDevice?: "cuda" | "cpu" // Device to run the model on
 }
 
 export type ApiConfiguration = ApiHandlerOptions & {
@@ -1619,3 +1630,20 @@ export const requestyDefaultModelInfo: ModelInfo = {
 	cacheReadsPrice: 0.3,
 	description: "Anthropic's most intelligent model. Highest level of intelligence and capability.",
 }
+
+// HyperCLOVA X SEED Vision (Local)
+// https://huggingface.co/naver-hyperclovax/HyperCLOVAX-SEED-Vision-Instruct-3B
+export type HyperClovaXLocalModelId = keyof typeof hyperClovaXLocalModels
+export const hyperClovaXLocalDefaultModelId: HyperClovaXLocalModelId = "naver-hyperclovax/HyperCLOVAX-SEED-Vision-Instruct-3B"
+export const hyperClovaXLocalModels = {
+	"naver-hyperclovax/HyperCLOVAX-SEED-Vision-Instruct-3B": {
+		contextWindow: 16_384, // Updated based on provided info (16k)
+		maxTokens: 8192, // Keeping 8192 based on VLM example, might need adjustment
+		supportsImages: true, // Supports image and video input
+		supportsComputerUse: false, // Assuming no specific computer use tools integrated yet
+		supportsPromptCache: false, // Local model, caching handled differently or not applicable
+		inputPrice: 0, // Local model
+		outputPrice: 0, // Local model
+		description: "Naver's HyperCLOVA X SEED Vision Instruct 3B (3.2B LLM + 0.43B Vision) model. LLaVA-based architecture run locally using Transformers/PyTorch. Supports multimodal input (text, image, video) with 16k context length. Optimized for Korean language tasks. Knowledge cutoff: August 2024.",
+	},
+} as const satisfies Record<string, ModelInfo>

@@ -22,6 +22,7 @@ import { LiteLlmHandler } from "./providers/litellm"
 import { AskSageHandler } from "./providers/asksage"
 import { XAIHandler } from "./providers/xai"
 import { SambanovaHandler } from "./providers/sambanova"
+import { HyperClovaXLocalHandler } from "./providers/hyperclovax-local" // Import the new handler
 import { ExtensionState } from "../shared/ExtensionMessage"
 
 export interface ApiHandler {
@@ -87,6 +88,8 @@ export function buildApiHandler(
 			return new XAIHandler(optionsWithoutProvider)
 		case "sambanova":
 			return new SambanovaHandler(optionsWithoutProvider)
+		case "hyperclovax-local": // Add case for the new provider
+			return new HyperClovaXLocalHandler(optionsWithoutProvider)
 		default:
 			return new AnthropicHandler(optionsWithoutProvider)
 	}

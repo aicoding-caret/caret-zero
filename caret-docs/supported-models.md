@@ -27,6 +27,7 @@ Caret provides access to a wide range of AI models across 21 different providers
 | AskSage | 3 | Enterprise AI platform models |
 | X AI | 12 | X's Grok series models |
 | SambaNova | 12 | Enterprise AI models |
+| HyperCLOVA X Local | 1 | Local execution of Naver's HyperCLOVA X SEED Vision model |
 
 ## Detailed Model List
 
@@ -215,6 +216,9 @@ Caret provides access to a wide range of AI models across 21 different providers
 - QwQ-32B
 - DeepSeek-V3-0324
 
+### 22. HyperCLOVA X Local
+- naver-hyperclovax/HyperCLOVAX-SEED-Vision-Instruct-3B
+
 ## Adding New Models
 
 Caret uses a JSON-based configuration system for models. To add new models or update existing ones, follow these steps:
@@ -332,4 +336,4 @@ Some models have special properties:
 - `temperature`: Used by OpenAI compatible models
 - `isR1FormatRequired`: Used by certain provider models
 - `supportsImages`: Indicates if the model can process image inputs
-- `supportsComputerUse`: Indicates if the model can access computer tools 
+- `supportsComputerUse`: Indicates if the model can access computer tools

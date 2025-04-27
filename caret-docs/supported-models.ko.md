@@ -27,6 +27,7 @@ Caret은 21개의 서로 다른 제공자에서 제공하는 다양한 AI 모델
 | AskSage | 3 | 기업용 AI 플랫폼 모델 |
 | X AI | 12 | X의 Grok 시리즈 모델 |
 | SambaNova | 12 | 기업용 AI 모델 |
+| HyperCLOVA X Local | 1 | 네이버 HyperCLOVA X SEED Vision 모델 로컬 실행 |
 
 ## 상세 모델 목록
 
@@ -215,6 +216,9 @@ Caret은 21개의 서로 다른 제공자에서 제공하는 다양한 AI 모델
 - QwQ-32B
 - DeepSeek-V3-0324
 
+### 22. HyperCLOVA X Local
+- naver-hyperclovax/HyperCLOVAX-SEED-Vision-Instruct-3B
+
 ## 새 모델 추가하기
 
 Caret은 모델을 위해 JSON 기반 설정 시스템을 사용합니다. 새 모델을 추가하거나 기존 모델을 업데이트하려면 다음 단계를 따르세요:
@@ -332,4 +336,4 @@ OpenRouter, Requesty, Together AI, LiteLLM과 같은 제공자는 동적 모델 
 - `temperature`: OpenAI 호환 모델에서 사용
 - `isR1FormatRequired`: 특정 제공자 모델에서 사용
 - `supportsImages`: 모델이 이미지 입력을 처리할 수 있는지 여부
-- `supportsComputerUse`: 모델이 컴퓨터 도구에 접근할 수 있는지 여부 
+- `supportsComputerUse`: 모델이 컴퓨터 도구에 접근할 수 있는지 여부
