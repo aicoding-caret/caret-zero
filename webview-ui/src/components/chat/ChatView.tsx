@@ -826,6 +826,23 @@ const ChatView = ({ isHidden, showAnnouncement, hideAnnouncement, showHistoryVie
 					
 					{/* API 재시도 상태 UI */}
 					{retryStatus && (
+						<RetryStatusContainer>
+							<RetryStatusHeader>
+								<RetryStatusIcon><AlertIcon size={16} /></RetryStatusIcon> {/* Use appropriate icon */}
+								API Request Failed - Retrying...
+							</RetryStatusHeader>
+							<RetryStatusInfo>
+								<span>
+									Attempt {retryStatus.attempt} of {retryStatus.maxRetries}.
+									{/* Check if retryTimestamp exists before calculating remaining time */}
+									{retryStatus.retryTimestamp ? ` Retrying in ${Math.ceil(Math.max(0, retryStatus.retryTimestamp - Date.now()) / 1000)}s...` : ' Retrying...'}
+								</span>
+								{/* Optionally display the last error message */}
+								{/* <span>Last Error: {retryStatus.lastError?.message}</span> */}
+							</RetryStatusInfo>
+							<RetryStatusProgress>
+								<RetryStatusProgressBar progress={retryProgress} />
+							</RetryStatusProgress>
 						</RetryStatusContainer>
 					)}
 

@@ -180,7 +180,10 @@ export const ExtensionStateContextProvider: React.FC<{
 		setApiConfiguration: (value) =>
 			setState((prevState) => ({
 				...prevState,
-				apiConfiguration: value,
+				apiConfiguration: {
+					...value,
+					hyperclovaxModelPath: value.hyperclovaxMcpUrl,
+				},
 			})),
 		setCustomInstructions: (value) =>
 			setState((prevState) => ({

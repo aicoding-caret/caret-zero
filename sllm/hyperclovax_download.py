@@ -8,7 +8,7 @@ import platform
 
 # Configuration
 MODEL_NAME = "naver-hyperclovax/HyperCLOVAX-SEED-Vision-Instruct-3B"
-DOWNLOAD_DIR = "D:\dev\caret\models\HyperCLOVAX-SEED-Vision-Instruct-3B"
+DOWNLOAD_DIR = "D:\dev\caret-zero\models\HyperCLOVAX-SEED-Vision-Instruct-3B"
 
 def print_header():
     print("==================================================")

@@ -1,12 +1,12 @@
 {
   "id": "hyperclovax-local",
   "name": "HyperCLOVA X (Local)",
-  "description": "Run Naver HyperCLOVA X SEED models locally via a Python script.",
+  "description": "Run Naver HyperCLOVA X SEED models locally via an MCP server.",
   "settings": [
     {
-      "id": "hyperclovaxModelPath",
-      "name": "Model Path",
-      "description": "Absolute path to the downloaded HyperCLOVA X SEED model directory or Hugging Face model ID.",
+      "id": "hyperclovaxMcpUrl",
+      "name": "MCP 서버 URL",
+      "description": "URL to the running MCP server (e.g., http://localhost:8000).",
       "type": "text",
       "required": true
     }

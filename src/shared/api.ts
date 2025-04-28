@@ -86,13 +86,14 @@ export interface ApiHandlerOptions {
 	thinkingBudgetTokens?: number
 	reasoningEffort?: string
 	sambanovaApiKey?: string
-	// Options for HyperCLOVA X SEED Vision local model
-	hyperclovaxModelPath?: string // Path to the downloaded model
+	hyperclovaxMcpUrl?: string
+	// Options for HyperCLOVA X SEED Vision local model	
 }
 
 export type ApiConfiguration = ApiHandlerOptions & {
 	apiProvider?: ApiProvider
 	favoritedModelIds?: string[]
+	hyperclovaxMcpUrl?: string // Add hyperclovaxMcpUrl as an optional property
 }
 
 // Models

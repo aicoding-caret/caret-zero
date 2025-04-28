@@ -98,6 +98,11 @@ export function validateApiConfiguration(apiConfiguration?: ApiConfiguration): s
 					return "You must provide a valid API key or choose a different provider."
 				}
 				break
+			case "hyperclovax-local":
+				if (!apiConfiguration.hyperclovaxMcpUrl) {
+					return "MCP 서버 URL을 입력해야 합니다.";
+				}
+				break
 		}
 	}
 	return undefined

@@ -1,33 +1,37 @@
-import { spawn } from "child_process";
-import * as path from "path"; // Import path module
+import { spawn } from 'node:child_process'; // Use node: prefix for clarity
+import * as path from 'node:path'; // Use node: prefix for clarity
 import type { Anthropic } from "@anthropic-ai/sdk"; // Keep for MessageParam
 import type { ApiHandlerOptions, ModelInfo, ApiStreamChunk } from "../../shared/api"; // Add ApiStreamChunk
 import type { ApiHandler } from "../index";
 import type { ApiStream } from "../transform/stream";
 import { hyperClovaXLocalModels, HyperClovaXLocalModelId, hyperClovaXLocalDefaultModelId } from "../../shared/api"; // Import all needed types
 
-// Resolve the absolute path to the Python script relative to the extension's root
-// Assuming this file is in src/api/providers/ and the script is in scripts/
-const PYTHON_SCRIPT_PATH = path.resolve(__dirname, "../../../../scripts/run_hyperclovax.py");
+// Construct the absolute path to the Python script assuming CWD is project root
+// CWD: c:/dev/caret-zero
+const PYTHON_SCRIPT_PATH = path.resolve("scripts/run_hyperclovax.py");
 
 export class HyperClovaXLocalHandler implements ApiHandler {
+	// Use the standard ApiHandlerOptions type now
 	private options: ApiHandlerOptions;
 	private modelInfo: ModelInfo | undefined;
 
 	constructor(options: ApiHandlerOptions) {
+		// Assign options directly
 		this.options = options;
-		this.modelInfo = options.apiModelId ? hyperClovaXLocalModels[options.apiModelId as keyof typeof hyperClovaXLocalModels] : undefined;
+		// Access apiModelId using dot notation (it's in ApiHandlerOptions)
+		this.modelInfo = this.options.apiModelId ? hyperClovaXLocalModels[this.options.apiModelId as keyof typeof hyperClovaXLocalModels] : undefined;
 
-		// Validate required options
-		if (!this.options.hyperclovaxModelPath) {
-			throw new Error("HyperCLOVA X model path (hyperclovaxModelPath) is not configured.");
+		// Validate required options using dot notation (it's now directly in ApiHandlerOptions)
+		if (!this.options.hyperclovaxMcpUrl) {
+			throw new Error("HyperCLOVA X MCP 서버 URL (hyperclovaxMcpUrl)이 설정되지 않았습니다.");
 		}
 		// TODO: Add check if python executable exists? Or rely on spawn error.
 		// TODO: Check if PYTHON_SCRIPT_PATH exists?
 	}
 
 	createMessage(systemPrompt: string, messages: Anthropic.Messages.MessageParam[], abortSignal?: AbortSignal): ApiStream {
-		const modelPath = this.options.hyperclovaxModelPath;
+		// Access hyperclovaxMcpUrl using dot notation
+		const mcpUrl = this.options.hyperclovaxMcpUrl;
 
 		// Prepare input for the Python script's stdin
 		// Extract the last user message and potentially an image
@@ -69,24 +73,24 @@ export class HyperClovaXLocalHandler implements ApiHandler {
 			let pythonProcess;
 
 			try {
-				console.log(`Spawning HyperCLOVAX script: python ${PYTHON_SCRIPT_PATH} --model_path "${modelPath}"`);
+				console.log(`Spawning HyperCLOVAX script: python ${PYTHON_SCRIPT_PATH} --model_path "${mcpUrl}"`);
 				
 				pythonProcess = spawn("python", [
 					PYTHON_SCRIPT_PATH,
-					"--model_path", modelPath! // Already checked in constructor
+					"--model_path", mcpUrl! // Already checked in constructor
 				], { signal: abortSignal });
 
-				pythonProcess.stderr.on("data", (data) => {
+				pythonProcess.stderr.on("data", (data: Buffer) => { // Add Buffer type
 					stderrOutput += data.toString();
 					console.error(`HyperCLOVAX Python STDERR: ${data.toString().trim()}`);
 				});
 
-				pythonProcess.stdout.on("data", (data) => {
+				pythonProcess.stdout.on("data", (data: Buffer) => { // Add Buffer type
 					stdoutData += data.toString();
 				});
 
 				// Handle potential spawn errors
-				pythonProcess.on('error', (err) => {
+				pythonProcess.on('error', (err: Error) => { // Add Error type
 					console.error("Failed to start HyperCLOVAX Python script:", err);
 					// Reject the promise or handle error appropriately
 					// Note: This error might occur before the promise below resolves
@@ -148,7 +152,8 @@ export class HyperClovaXLocalHandler implements ApiHandler {
 
 	async isModelAvailable(modelId: string): Promise<boolean> {
 		// Basic check: model path configured and modelId is known
-		return !!this.options.hyperclovaxModelPath && modelId in hyperClovaXLocalModels;
+		// Access hyperclovaxMcpUrl using dot notation
+		return !!this.options.hyperclovaxMcpUrl && modelId in hyperClovaXLocalModels;
 		// TODO: Could add fs.existsSync check for model path if needed, but might be slow.
 	}
 
@@ -157,6 +162,7 @@ export class HyperClovaXLocalHandler implements ApiHandler {
 	}
 
 	getModel(): { id: string; info: ModelInfo } {
+		// Access apiModelId using dot notation
 		const modelId = this.options.apiModelId as HyperClovaXLocalModelId | undefined;
 		const defaultModelId = hyperClovaXLocalDefaultModelId;
 		const currentModelId = modelId && modelId in hyperClovaXLocalModels ? modelId : defaultModelId;
