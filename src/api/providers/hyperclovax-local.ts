@@ -28,7 +28,6 @@ export class HyperClovaXLocalHandler implements ApiHandler {
 
 	createMessage(systemPrompt: string, messages: Anthropic.Messages.MessageParam[], abortSignal?: AbortSignal): ApiStream {
 		const modelPath = this.options.hyperclovaxModelPath;
-		const device = this.options.hyperclovaxDevice || "cuda"; // Default to cuda if available, else cpu handled by script
 
 		// Prepare input for the Python script's stdin
 		// Extract the last user message and potentially an image
@@ -70,12 +69,11 @@ export class HyperClovaXLocalHandler implements ApiHandler {
 			let pythonProcess;
 
 			try {
-				console.log(`Spawning HyperCLOVAX script: python ${PYTHON_SCRIPT_PATH} --model_path "${modelPath}" --device "${device}"`);
-				// Pass model path and device as command line arguments
+				console.log(`Spawning HyperCLOVAX script: python ${PYTHON_SCRIPT_PATH} --model_path "${modelPath}"`);
+				
 				pythonProcess = spawn("python", [
 					PYTHON_SCRIPT_PATH,
-					"--model_path", modelPath!, // Already checked in constructor
-					"--device", device,
+					"--model_path", modelPath! // Already checked in constructor
 				], { signal: abortSignal });
 
 				pythonProcess.stderr.on("data", (data) => {

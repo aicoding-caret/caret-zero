@@ -88,7 +88,6 @@ export interface ApiHandlerOptions {
 	sambanovaApiKey?: string
 	// Options for HyperCLOVA X SEED Vision local model
 	hyperclovaxModelPath?: string // Path to the downloaded model
-	hyperclovaxDevice?: "cuda" | "cpu" // Device to run the model on
 }
 
 export type ApiConfiguration = ApiHandlerOptions & {

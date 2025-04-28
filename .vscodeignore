@@ -29,6 +29,11 @@ experiment/**
 .changeset/**
 .github/**
 .husky/**
+cline/**
+private-cline/**
+docs/**
+caret-docs/**
+release/**
 
 # Temporary / Backup files
 *.bak

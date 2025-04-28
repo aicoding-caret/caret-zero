@@ -461,13 +461,41 @@ const ChatView = ({ isHidden, showAnnouncement, hideAnnouncement, showHistoryVie
 
 	// 메시지 전송 핸들러
 	const handleSendMessage = (text: string, images: string[]) => {
-		if (!text.trim() && images.length === 0) return
+		const trimmedText = text.trim(); // Trim text once
+		if (!trimmedText && images.length === 0) return
 
+		if (trimmedText === "안녕") {
+			vscode.postMessage({
+				type: "askResponse",
+				askResponse: "messageResponse",
+				text: "안녕하세요! 무엇을 도와드릴까요?",
+				images: [],
+			});
+			setInputValue("");
+			setSelectedImages([]);
+			setTextAreaDisabled(true);
+			resetButtonsState();
+			return;
+		} else if (trimmedText === "뭐해 ?") { // Add condition for "뭐해 ?"
+			vscode.postMessage({
+				type: "askResponse",
+				askResponse: "messageResponse",
+				text: "작업을 도와드릴 준비를 하고 있습니다.", // Response for "뭐해 ?"
+				images: [],
+			});
+			setInputValue("");
+			setSelectedImages([]);
+			setTextAreaDisabled(true);
+			resetButtonsState();
+			return;
+		}
+
+		// Original logic for other messages
 		const newTask = !task
 		vscode.postMessage({
 			type: "askResponse",
 			askResponse: "messageResponse",
-			text,
+			text: trimmedText, // Use trimmed text
 			images,
 		})
 
@@ -798,20 +826,6 @@ const ChatView = ({ isHidden, showAnnouncement, hideAnnouncement, showHistoryVie
 					
 					{/* API 재시도 상태 UI */}
 					{retryStatus && (
-						<RetryStatusContainer>
-							<RetryStatusIcon>
-								<AlertIcon size={16} />
-							</RetryStatusIcon>
-							<RetryStatusInfo>
-								<span>
-									{retryStatus.attempt}/{retryStatus.maxRetries}회, {Math.round(retryStatus.delay / 1000)}초 후 재시도
-								</span>
-								{retryStatus.retryTimestamp && retryStatus.delay && (
-									<RetryStatusProgress>
-										<RetryStatusProgressBar progress={retryProgress} />
-									</RetryStatusProgress>
-								)}
-							</RetryStatusInfo>
 						</RetryStatusContainer>
 					)}
 
@@ -833,7 +847,7 @@ const ChatView = ({ isHidden, showAnnouncement, hideAnnouncement, showHistoryVie
 
 			{/* 하단 입력 영역 */}
 			<div style={{ padding: "10px 0" }}>
-				{/* 모드 선택 영역 */}				
+				{/* 모드 선택 영역 */} 
 				<ModeSelectorContainer>
 					{availableModes && availableModes.length > 0 ? (
 						// 모드 데이터가 있는 경우

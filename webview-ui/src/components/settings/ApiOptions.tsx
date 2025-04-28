@@ -352,7 +352,7 @@ const ApiOptions = ({ showModelOptions, apiErrorMessage, modelIdErrorMessage, is
 				<SambanovaOptions apiConfiguration={apiConfiguration} setApiConfiguration={setApiConfiguration} />
 			)}
 
-			{selectedProvider === "hyperclovax-local" && (
+			{selectedProvider === "hyperclovax-local" && apiConfiguration && (
 				<div style={{ marginBottom: 14, marginTop: 4 }}>
 					<React.Suspense fallback={<div>옵션 로딩 중...</div>}>
 						<HyperClovaXOptions apiConfiguration={apiConfiguration} setApiConfiguration={setApiConfiguration} />

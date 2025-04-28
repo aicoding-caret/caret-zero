@@ -1,6 +1,6 @@
 import React from "react";
 import { VSCodeTextField } from "@vscode/webview-ui-toolkit/react";
-import { ApiConfiguration } from "../../../../src/shared/api";
+import { ApiConfiguration } from "../../../../../src/shared/api"
 
 interface Props {
   apiConfiguration: ApiConfiguration;
@@ -20,16 +20,7 @@ const HyperClovaXOptions: React.FC<Props> = ({ apiConfiguration, setApiConfigura
       >
         모델 경로 (필수)
       </VSCodeTextField>
-      <VSCodeTextField
-        value={apiConfiguration.hyperclovaxDevice || "cuda"}
-        onInput={e =>
-          setApiConfiguration({ ...apiConfiguration, hyperclovaxDevice: (e.target as HTMLInputElement).value })
-        }
-        placeholder="cuda 또는 cpu"
-        style={{ width: "100%" }}
-      >
-        디바이스 (cuda/cpu, 기본값: cuda)
-      </VSCodeTextField>
+      {/* hyperclovaxDevice 입력란 제거 */}
       <div style={{ fontSize: 13, color: "var(--vscode-descriptionForeground)", marginBottom: 8 }}>
         MCP 서버가 실행 중이어야 하며, Vision Inference Panel에서 이미지를 업로드해 사용할 수 있습니다.<br />
         별도의 API Key는 필요하지 않습니다.<br />

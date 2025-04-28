@@ -9,14 +9,6 @@
       "description": "Absolute path to the downloaded HyperCLOVA X SEED model directory or Hugging Face model ID.",
       "type": "text",
       "required": true
-    },
-    {
-      "id": "hyperclovaxDevice",
-      "name": "Device",
-      "description": "Device to run the model on (e.g., 'cuda', 'cpu'). Defaults to 'cuda' if available, otherwise 'cpu'.",
-      "type": "text",
-      "required": false,
-      "default": "cuda"
     }
   ],
   "models": [
