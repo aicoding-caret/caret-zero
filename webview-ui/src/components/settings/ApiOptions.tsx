@@ -218,7 +218,7 @@ const ApiOptions = ({ showModelOptions, apiErrorMessage, modelIdErrorMessage, is
 						position: "relative",
 					}}>
 					<VSCodeOption value="caret">Caret</VSCodeOption>
-					<VSCodeOption value="hyperclovax-local">HyperCLOVA X Vision (Local)</VSCodeOption>
+					<VSCodeOption value="hyperclovax-local">HyperCLOVA X Vision(sLLM)</VSCodeOption>
 					<VSCodeOption value="gemini">Google Gemini</VSCodeOption>
 					<VSCodeOption value="anthropic">Anthropic</VSCodeOption>
 					<VSCodeOption value="openai">OpenAI Compatible</VSCodeOption>

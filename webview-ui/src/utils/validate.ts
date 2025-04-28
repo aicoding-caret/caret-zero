@@ -99,8 +99,8 @@ export function validateApiConfiguration(apiConfiguration?: ApiConfiguration): s
 				}
 				break
 			case "hyperclovax-local":
-				if (!apiConfiguration.hyperclovaxMcpUrl) {
-					return "MCP 서버 URL을 입력해야 합니다.";
+				if (apiConfiguration.apiProvider === "hyperclovax-local" && !(apiConfiguration as any).hyperclovaxUrl) {
+					return "HyperCLOVA X SLLM 서버 URL이 필요합니다.";
 				}
 				break
 		}

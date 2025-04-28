@@ -1,42 +1,69 @@
 # HyperCLOVA X SEED Vision Model Downloader
 # Configuration
-$MODEL_NAME = "naver-hyperclovax/HyperCLOVAX-SEED-Vision-Instruct-3B"
 
 # Get script directory
 $SCRIPT_DIR = Split-Path -Parent $MyInvocation.MyCommand.Path
 
-# Calculate download directory relative to the script location
-# Create 'models' subdir within the script's directory
-$MODEL_SUBDIR = $MODEL_NAME -replace '/', '-' # Replace slashes for directory name
-$DOWNLOAD_DIR = Join-Path $SCRIPT_DIR "models/$MODEL_SUBDIR" # Path is now script_dir/models/model-name
-
-# .env 파일에서 HUGGINGFACE_TOKEN 읽기 (이 부분은 유지)
+# .env 파일에서 HUGGINGFACE_TOKEN, MODEL_PATH 읽기 (MODEL_PATH 상대경로 지원, 없으면 입력받기)
 $envPath = Join-Path $SCRIPT_DIR ".env"
 if (Test-Path $envPath) {
-    if ($envContent = Get-Content $envPath | Where-Object { $_ -match '^HUGGINGFACE_TOKEN=' }) {
-        $HUGGINGFACE_TOKEN = $envContent -replace '^HUGGINGFACE_TOKEN=', ''
-    } else {
-        Write-Host "ERROR: .env 파일에 HUGGINGFACE_TOKEN이 없습니다."
+    $envLines = Get-Content $envPath
+    $tokenLine = $envLines | Where-Object { $_ -match '^HUGGINGFACE_TOKEN=' }
+    $modelPathLine = $envLines | Where-Object { $_ -match '^MODEL_PATH=' }
+    $modelNameLine = $envLines | Where-Object { $_ -match '^MODEL_NAME=' }
+    if ($tokenLine) {
+        $HUGGINGFACE_TOKEN = $tokenLine -replace '^HUGGINGFACE_TOKEN=', ''
+    }
+    else {
+        Write-Host "ERROR: HUGGINGFACE_TOKEN not found in .env file."
         exit 1
     }
-} else {
-    Write-Host "ERROR: .env 파일을 찾을 수 없습니다: $envPath"
+    if ($modelPathLine) {
+        $rawModelPath = $modelPathLine -replace '^MODEL_PATH=', ''
+        # Check if absolute or relative path
+        if ([System.IO.Path]::IsPathRooted($rawModelPath)) {
+            $DOWNLOAD_DIR = $rawModelPath
+        }
+        else {
+            $DOWNLOAD_DIR = Join-Path $SCRIPT_DIR $rawModelPath
+        }
+        # 모델 이름도 경로에서 추출
+        $modelName = Split-Path $DOWNLOAD_DIR -Leaf
+    }
+    elseif ($modelNameLine) {
+        $modelName = $modelNameLine -replace '^MODEL_NAME=', ''
+        $DOWNLOAD_DIR = Join-Path $PWD "models\$modelName"
+        Write-Host "MODEL_PATH is set to: $DOWNLOAD_DIR (from MODEL_NAME)"
+    }
+    else {
+        $modelName = Read-Host "MODEL_PATH and MODEL_NAME not found in .env. Please enter the HuggingFace model name (e.g., naver-hyperclovax/HyperCLOVAX-SEED-Vision-Instruct-3B)"
+        if (-not $modelName) {
+            Write-Host "ERROR: You must enter a model name."
+            exit 1
+        }
+        $DOWNLOAD_DIR = Join-Path $PWD $modelName
+        Write-Host "MODEL_PATH is set to: $DOWNLOAD_DIR (from entered MODEL_NAME)"
+    }
+}
+else {
+    Write-Host "ERROR: .env file not found: $envPath"
     exit 1
 }
 
 Write-Host "================================================="
 Write-Host "Downloading HyperCLOVA X SEED Vision Model"
-Write-Host "Model: $MODEL_NAME"
 Write-Host "Script Dir: $SCRIPT_DIR"
 Write-Host "Target Directory: $DOWNLOAD_DIR"
 Write-Host "================================================="
 Write-Host ""
+
 # Check Python
 Write-Host "Checking for Python..."
 try {
     $pythonVersion = python --version
     Write-Host "Python found: $pythonVersion"
-} catch {
+}
+catch {
     Write-Host "ERROR: Python not found or not in PATH. Please install Python 3.8+ and ensure it's in your PATH."
     exit 1
 }
@@ -46,7 +73,8 @@ Write-Host "Checking for pip..."
 try {
     $pipVersion = python -m pip --version
     Write-Host "pip found: $pipVersion"
-} catch {
+}
+catch {
     Write-Host "ERROR: pip not found. Please ensure pip is installed for your Python environment."
     exit 1
 }
@@ -61,7 +89,8 @@ foreach ($pkg in $requiredPackages) {
     if ($LASTEXITCODE -ne 0) {
         Write-Host "Installing $pkg..."
         python -m pip install $pkg
-    } else {
+    }
+    else {
         Write-Host "$pkg already installed."
     }
 }
@@ -71,7 +100,8 @@ Write-Host "Checking for required runtime Python libraries (torch)..."
 try {
     python -c "import torch" 2>$null
     Write-Host "Required runtime libraries already installed."
-} catch {
+}
+catch {
     Write-Host "Runtime libraries not found or incomplete. Attempting installation..."
     Write-Host "Installing torch... This might take some time."
     python -m pip install torch
@@ -99,19 +129,11 @@ if (-not $cliPath) {
     exit 1
 }
 
-# Hugging Face Token from .env
-if ($envContent = Get-Content $envPath | Where-Object { $_ -match '^HUGGINGFACE_TOKEN=' }) {
-    $HUGGINGFACE_TOKEN = $envContent -replace '^HUGGINGFACE_TOKEN=', ''
-} else {
-    Write-Host "ERROR: .env 파일에 HUGGINGFACE_TOKEN이 없습니다."
-    exit 1
-}
-
 Write-Host "Checking Hugging Face CLI login status..."
-# 로그인(토큰 직접 사용)
+# Login with token
 & $cliPath login --token $HUGGINGFACE_TOKEN
 if ($LASTEXITCODE -ne 0) {
-    Write-Host "ERROR: Hugging Face CLI 로그인 실패. 토큰을 확인하세요."
+    Write-Host "ERROR: Failed to login to Hugging Face CLI. Please check your token."
     exit 1
 }
 
@@ -119,12 +141,13 @@ Write-Host "Creating target directory if it doesn't exist: $DOWNLOAD_DIR"
 if (-not (Test-Path $DOWNLOAD_DIR)) {
     New-Item -Path $DOWNLOAD_DIR -ItemType Directory -Force | Out-Null
     Write-Host "Directory created."
-} else {
+}
+else {
     Write-Host "Directory already exists."
 }
 
 Write-Host "Starting model download using huggingface-cli..."
-& $cliPath download $MODEL_NAME --local-dir $DOWNLOAD_DIR --local-dir-use-symlinks False
+& $cliPath download $modelName --local-dir $DOWNLOAD_DIR --local-dir-use-symlinks False
 if ($LASTEXITCODE -ne 0) {
     Write-Host "ERROR: Model download failed. Check network connection, Hugging Face token, and available disk space."
     exit 1
@@ -137,7 +160,7 @@ Write-Host "=================================================="
 Write-Host ""
 Write-Host "NEXT STEPS:"
 Write-Host "1. Ensure the .env file in '$SCRIPT_DIR' has the correct MODEL_PATH pointing to:"
-Write-Host " MODEL_PATH=$DOWNLOAD_DIR"
+Write-Host "   MODEL_PATH=$DOWNLOAD_DIR"
 Write-Host "2. Run build_and_run_windows.ps1 :"
 Write-Host ""
 

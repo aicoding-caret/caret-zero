@@ -1,15 +1,15 @@
 {
-	"description": "Guide for creating MCP servers.",
+	"description": "Guide for creating SLLM servers.",
 	"steps": [
 		{
 			"step": 1,
-			"description": "Create new MCP server project.",
-			"command": "npx @modelcontextprotocol/create-server weather-server"
+			"description": "Create new SLLM server project.",
+			"command": "npx @serverlocallanguagemodel/create-server weather-server"
 		},
 		{
 			"step": 2,
 			"description": "Implement server logic.",
-			"example_code": "// Example code for a weather server\nimport { Server } from '@modelcontextprotocol/sdk/server/index.js';\n// ... (rest of the code)"
+			"example_code": "// Example code for a weather server\nimport { Server } from '@serverlocallanguagemodel/sdk/server/index.js';\n// ... (rest of the code)"
 		},
 		{
 			"step": 3,
@@ -19,18 +19,18 @@
 		{
 			"step": 4,
 			"description": "Configure server.",
-			"details": "Add config to settings file at '{{mcp_settings_path}}'."
+			"details": "Add config to settings file at '{{sllm_settings_path}}'."
 		},
 		{
 			"step": 5,
 			"description": "Test server.",
-			"details": "After editing MCP settings, system auto-runs servers & exposes tools/resources in 'Connected MCP Servers'."
+			"details": "After editing SLLM settings, system auto-runs servers & exposes tools/resources in 'Connected SLLM Servers'."
 		}
 	],
 	"important_considerations": [
-		"MCP servers are non-interactive (no OAuth flows, browser windows, user prompts runtime).",
-		"Provide credentials/tokens upfront via env vars in MCP settings. For OAuth, may need setup script (e.g., get-refresh-token.js) for refresh token."
+		"SLLM servers are non-interactive (no OAuth flows, browser windows, user prompts runtime).",
+		"Provide credentials/tokens upfront via env vars in SLLM settings. For OAuth, may need setup script (e.g., get-refresh-token.js) for refresh token."
 	],
-	"editing_mcp_servers": "User might request adding tools/resources to existing MCP server ({{mcp_connected_server_names}}), e.g., for same API. Possible if repo path found in server args. Use list_files/read_file to explore, replace_in_file to edit. If server runs from installed package, creating new server might be better.",
-	"mcp_servers_are_not_always_necessary": "User may not always request MCP servers. Tasks might be solvable with existing tools. MCP SDK extends capabilities but is specialized. Implement MCP servers only on explicit user request (e.g., \"add a tool that...\"). This guide helps understand/work with MCP servers when needed. You have tools for many tasks."
+	"editing_sllm_servers": "User might request adding tools/resources to existing SLLM server ({{sllm_connected_server_names}}), e.g., for same API. Possible if repo path found in server args. Use list_files/read_file to explore, replace_in_file to edit. If server runs from installed package, creating new server might be better.",
+	"sllm_servers_are_not_always_necessary": "User may not always request SLLM servers. Tasks might be solvable with existing tools. SLLM SDK extends capabilities but is specialized. Implement SLLM servers only on explicit user request (e.g., \"add a tool that...\"). This guide helps understand/work with SLLM servers when needed. You have tools for many tasks."
 }

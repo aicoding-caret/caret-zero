@@ -177,14 +177,16 @@ export const ExtensionStateContextProvider: React.FC<{
 		filePaths,
 		totalTasksSize,
 		apiError: state.apiError || null,
-		setApiConfiguration: (value) =>
+		setApiConfiguration: (value) => {
+			console.log('[Caret Debug] setApiConfiguration called with:', value)
 			setState((prevState) => ({
 				...prevState,
 				apiConfiguration: {
+					...prevState.apiConfiguration,
 					...value,
-					hyperclovaxModelPath: value.hyperclovaxMcpUrl,
 				},
-			})),
+			}))
+		},
 		setCustomInstructions: (value) =>
 			setState((prevState) => ({
 				...prevState,

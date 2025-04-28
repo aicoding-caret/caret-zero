@@ -86,14 +86,13 @@ export interface ApiHandlerOptions {
 	thinkingBudgetTokens?: number
 	reasoningEffort?: string
 	sambanovaApiKey?: string
-	hyperclovaxMcpUrl?: string
+	hyperclovaxUrl?: string
 	// Options for HyperCLOVA X SEED Vision local model	
 }
 
-export type ApiConfiguration = ApiHandlerOptions & {
+export interface ApiConfiguration extends ApiHandlerOptions {
 	apiProvider?: ApiProvider
 	favoritedModelIds?: string[]
-	hyperclovaxMcpUrl?: string // Add hyperclovaxMcpUrl as an optional property
 }
 
 // Models
@@ -121,6 +120,13 @@ export interface ModelInfo {
 export interface OpenAiCompatibleModelInfo extends ModelInfo {
 	temperature?: number
 	isR1FormatRequired?: boolean
+}
+
+// --- HyperClovaX Vision Message Types ---
+export type HyperClovaXVisionRole = "system" | "user";
+export interface HyperClovaXVisionMessage {
+  role: HyperClovaXVisionRole;
+  content: (string | { type: "image"; data: string; mimeType?: string })[];
 }
 
 // Anthropic

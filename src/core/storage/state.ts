@@ -115,6 +115,7 @@ export async function getAllExtensionState(context: vscode.ExtensionContext) {
 		thinkingBudgetTokens,
 		sambanovaApiKey,
 		planActSeparateModelsSettingRaw,
+		hyperclovaxUrlRaw
 	] = await Promise.all([
 		getGlobalState(context, "apiProvider") as Promise<ApiProvider | undefined>,
 		getGlobalState(context, "apiModelId") as Promise<string | undefined>,
@@ -179,8 +180,17 @@ export async function getAllExtensionState(context: vscode.ExtensionContext) {
 		getGlobalState(context, "thinkingBudgetTokens") as Promise<number | undefined>,
 		getSecret(context, "sambanovaApiKey") as Promise<string | undefined>,
 		getGlobalState(context, "planActSeparateModelsSetting") as Promise<boolean | undefined>,
+		getGlobalState(context, "hyperclovaxUrl") as Promise<string | undefined>
 	])
 
+	// Patch: Fix legacy boolean bug for hyperclovaxUrl only
+	let hyperclovaxUrl: string | undefined = undefined;
+	if (typeof hyperclovaxUrlRaw === "string") {
+		hyperclovaxUrl = hyperclovaxUrlRaw;
+	} else {
+		hyperclovaxUrl = undefined;
+	}
+	
 	let apiProvider: ApiProvider
 	if (storedApiProvider) {
 		apiProvider = storedApiProvider
@@ -269,6 +279,7 @@ export async function getAllExtensionState(context: vscode.ExtensionContext) {
 			asksageApiUrl,
 			xaiApiKey,
 			sambanovaApiKey,
+			hyperclovaxUrl,
 		},
 		lastShownAnnouncementId,
 		customInstructions,
@@ -322,7 +333,7 @@ export async function updateApiConfiguration(context: vscode.ExtensionContext, a
 		requestyModelId,
 		togetherApiKey,
 		togetherModelId,
-		qwenApiKey,
+		qwenApiKey,		
 		mistralApiKey,
 		azureApiVersion,
 		openRouterModelId,
@@ -339,6 +350,7 @@ export async function updateApiConfiguration(context: vscode.ExtensionContext, a
 		thinkingBudgetTokens,
 		caretApiKey,
 		sambanovaApiKey,
+		hyperclovaxUrl,
 	} = apiConfiguration
 	await updateGlobalState(context, "apiProvider", apiProvider)
 	await updateGlobalState(context, "apiModelId", apiModelId)
@@ -389,6 +401,14 @@ export async function updateApiConfiguration(context: vscode.ExtensionContext, a
 	await updateGlobalState(context, "thinkingBudgetTokens", thinkingBudgetTokens)
 	await storeSecret(context, "caretApiKey", caretApiKey)
 	await storeSecret(context, "sambanovaApiKey", sambanovaApiKey)
+    // 다른 프로바이더(openAiApiKey 등)와 동일하게 빈 문자열/undefined/null은 저장하지 않음
+    if (hyperclovaxUrl && typeof hyperclovaxUrl === "string" && hyperclovaxUrl.trim().length > 0) {
+        console.log("[Caret] [updateApiConfiguration] Saving hyperclovaxUrl (globalState):", hyperclovaxUrl)
+        await updateGlobalState(context, "hyperclovaxUrl", hyperclovaxUrl)
+    } else {
+        console.log("[Caret] [updateApiConfiguration] Removing hyperclovaxUrl (globalState):", hyperclovaxUrl)
+        await updateGlobalState(context, "hyperclovaxUrl", undefined)
+    }
 }
 
 export async function resetExtensionState(context: vscode.ExtensionContext) {

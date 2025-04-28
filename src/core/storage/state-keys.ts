@@ -66,3 +66,4 @@ export type GlobalStateKey =
 	| "thinkingBudgetTokens"
 	| "planActSeparateModelsSetting"
 	| "retryStatus"
+	| "hyperclovaxUrl"

@@ -1,4 +1,4 @@
-# HyperCLOVA X MCP Server (Docker)
+# HyperCLOVA X SLLM Server(Docker)
 
 Caret용 HyperCLOVA X SEED Vision Instruct 3B 모델 MCP 서버입니다.
 

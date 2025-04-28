@@ -1,4 +1,4 @@
-# HyperCLOVA X MCP 서버 Docker 빌드 및 실행 (Windows)
+# HyperCLOVA X SLLM 서버 Docker 빌드 및 실행 (Windows)
 # PowerShell에서 실행하세요.
 
 Write-Host "[INFO] Please make sure Docker Desktop is running! (Start Docker Desktop from the start menu)"
@@ -26,33 +26,26 @@ if ($port8000) {
     }
 }
 
-# 기존 MCP 컨테이너 중지 및 삭제 (8000 포트 충돌 방지)
+# 기존 SLLM 컨테이너 중지 및 삭제 (8000 포트 충돌 방지)
 $existing = docker ps -q --filter "ancestor=hyperclovax-server"
 if ($existing) {
-    Write-Host "[INFO] Stopping and deleting existing MCP container to prevent port 8000 conflict..."
+    Write-Host "[INFO] Stopping and deleting existing SLLM container to prevent port 8000 conflict..."
     docker stop $existing | Out-Null
     docker rm $existing | Out-Null
 }
 
-# .env에서 MODEL_PATH, LOG_DIR 읽기
-$envPath = Join-Path $PSScriptRoot ".env"
-$envLines = Get-Content $envPath
-$MODEL_PATH = ($envLines | Where-Object { $_ -match '^MODEL_PATH=' }) -replace '^MODEL_PATH=', ''
-$LOG_DIR = ($envLines | Where-Object { $_ -match '^LOG_DIR=' }) -replace '^LOG_DIR=', ''
-
-# 현재 경로 기준 절대경로로 변환
-$HOST_MODEL_DIR = Join-Path $PSScriptRoot (Split-Path $MODEL_PATH -Leaf)
-$HOST_LOG_DIR = Join-Path $PSScriptRoot (Split-Path $LOG_DIR -Leaf)
-
-$HOST_MODEL_DIR = $HOST_MODEL_DIR -replace "\\", "/"
-$HOST_LOG_DIR = $HOST_LOG_DIR -replace "\\", "/"
-$MODEL_PATH = $MODEL_PATH -replace "\\", "/"
-$LOG_DIR = $LOG_DIR -replace "\\", "/"
+$SCRIPT_DIR = Split-Path -Parent $MyInvocation.MyCommand.Path
 
 # Build
 Write-Host "[INFO] Building Docker image..."
 docker build -t hyperclovax-server .
 
 # Run
-Write-Host "[INFO] Running Docker container..."
-docker run -v "${HOST_MODEL_DIR}:${MODEL_PATH}" -v "${HOST_LOG_DIR}:${LOG_DIR}" -p 8000:8000 --env-file .env hyperclovax-server
+Write-Host "[INFO] Running Docker container via run_windows.ps1..."
+$runScript = Join-Path $SCRIPT_DIR "run_windows.ps1"
+if (Test-Path $runScript) {
+    & $runScript
+} else {
+    Write-Host "ERROR: run_windows.ps1 not found."
+    exit 1
+}

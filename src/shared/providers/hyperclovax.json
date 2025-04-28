@@ -1,0 +1,18 @@
+{
+  "id": "hyperclovax",
+  "name": "HyperCLOVA X (sLLM)",
+  "description": "Run Naver HyperCLOVA X SEED models locally via an sLLM server.",
+  "settings": [
+    {
+      "id": "hyperclovaxSllmUrl",
+      "name": "SLLM 서버 URL",
+      "description": "URL to the running SLLM server (e.g., http://localhost:8000).",
+      "type": "text",
+      "required": true
+    }
+  ],
+  "models": [
+    "hyperclovax-seed-1.1b-vision"
+  ],
+  "modelProvider": "hyperclovax-local"
+}

@@ -105,6 +105,7 @@ vi.mock("../../../context/ExtensionStateContext", async (importOriginal) => {
 				apiProvider: "openai",
 				requestyApiKey: "",
 				requestyModelId: "",
+				hyperclovaxSllmUrl: "", // added hyperclovaxSllmUrl property
 			},
 			setApiConfiguration: vi.fn(),
 			uriScheme: "vscode",
@@ -151,5 +152,26 @@ describe("OpenApiInfoOptions", () => {
 		fireEvent.click(screen.getByText("Model Configuration"))
 		const modelInput = screen.getByText("Max Output Tokens")
 		expect(modelInput).toBeInTheDocument()
+	})
+
+	it("renders hyperclovaxSllmUrl input", () => {
+		render(
+			<ExtensionStateContextProvider>
+				<ApiOptions showModelOptions={true} />
+			</ExtensionStateContextProvider>,
+		)
+		fireEvent.click(screen.getByText("Model Configuration"))
+		const hyperclovaxSllmUrlInput = screen.getByText("hyperclovaxSllmUrl")
+		expect(hyperclovaxSllmUrlInput).toBeInTheDocument()
+	})
+
+	it("accesses hyperclovaxSllmUrl through any casting", () => {
+		const apiConfiguration: any = {
+			apiProvider: "openai",
+			requestyApiKey: "",
+			requestyModelId: "",
+			hyperclovaxSllmUrl: "https://example.com",
+		}
+		expect(apiConfiguration.hyperclovaxSllmUrl).toBe("https://example.com")
 	})
 })
