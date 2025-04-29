@@ -149,7 +149,7 @@ export function useCaretAskState(
         switch (lastMessage.say) {
           case "api_req_started":
             if (secondLastMessage?.ask === "command_output") {
-              resetInput()
+              resetInput(true)
               setCaretAsk(undefined)
               setEnableButtons(false)
             }

@@ -14,11 +14,11 @@ export function useChatInputState() {
   const [selectedImages, setSelectedImages] = useState<string[]>([])
 
   // uc785ub825ucc3d ucd08uae30ud654
-  const resetInput = () => {
-    setInputValue("")
-    setSelectedImages([])
-    setTextAreaDisabled(false)
-  }
+  const resetInput = (disableInput: boolean = false) => {
+		setInputValue("")
+		setSelectedImages([])
+		setTextAreaDisabled(disableInput)
+	}
 
   // uc785ub825ucc3d ube44ud65cuc131ud654
   const disableInput = (disable: boolean = true) => {

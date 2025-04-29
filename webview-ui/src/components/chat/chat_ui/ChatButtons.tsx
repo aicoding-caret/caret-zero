@@ -8,8 +8,10 @@ interface ChatButtonsProps {
   enableButtons: boolean
   isStreaming: boolean
   didClickCancel: boolean
-  onPrimaryClick: () => void
-  onSecondaryClick: () => void
+  inputValue: string
+  selectedImages: string[]
+  onPrimaryClick: (text: string, images: string[]) => void
+  onSecondaryClick: (text: string, images: string[]) => void
 }
 
 /**
@@ -24,6 +26,8 @@ const ChatButtons: React.FC<ChatButtonsProps> = ({
   enableButtons,
   isStreaming,
   didClickCancel,
+  inputValue,
+  selectedImages,
   onPrimaryClick,
   onSecondaryClick
 }) => {
@@ -43,7 +47,7 @@ const ChatButtons: React.FC<ChatButtonsProps> = ({
           appearance="primary"
           disabled={!enableButtons}
           style={{ flex: secondaryButtonText ? 1 : 2, marginRight: secondaryButtonText ? "6px" : "0" }}
-          onClick={onPrimaryClick}
+          onClick={() => onPrimaryClick(inputValue, selectedImages)}
         >
           {primaryButtonText}
         </VSCodeButton>
@@ -54,7 +58,7 @@ const ChatButtons: React.FC<ChatButtonsProps> = ({
           appearance="secondary"
           disabled={!enableButtons && !(isStreaming && !didClickCancel)}
           style={{ flex: isStreaming ? 2 : 1, marginLeft: isStreaming ? 0 : "6px" }}
-          onClick={onSecondaryClick}
+          onClick={() => onSecondaryClick(inputValue, selectedImages)}
         >
           {isStreaming ? "Cancel" : secondaryButtonText}
         </VSCodeButton>

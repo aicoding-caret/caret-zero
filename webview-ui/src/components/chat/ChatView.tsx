@@ -515,7 +515,7 @@ const ChatView = ({ isHidden, showAnnouncement, hideAnnouncement, showHistoryVie
 	// 새 태스크 시작 함수
 	const startNewTask = useCallback(() => {
 		vscode.postMessage({ type: "clearTask" })
-		resetInput()
+		resetInput(true)
 		resetButtonsState() // 훅에서 받은 함수 사용
 	}, [resetInput, resetButtonsState]) // resetButtonsState 추가
 
@@ -553,7 +553,7 @@ const ChatView = ({ isHidden, showAnnouncement, hideAnnouncement, showHistoryVie
 						text: trimmedInput || base64Images ? trimmedInput : undefined,
 						images: base64Images,
 					})
-					resetInput() // Input clear after sending
+					resetInput(true) // Input clear after sending
 					break
 				case "command_output":
 					vscode.postMessage({
@@ -562,7 +562,7 @@ const ChatView = ({ isHidden, showAnnouncement, hideAnnouncement, showHistoryVie
 						text: trimmedInput || base64Images ? trimmedInput : undefined,
 						images: base64Images,
 					})
-					resetInput()
+					resetInput(true)
 					break
 				case "completion_result":
 				case "resume_completed_task": // Added based on original logic
@@ -613,7 +613,7 @@ const ChatView = ({ isHidden, showAnnouncement, hideAnnouncement, showHistoryVie
 						text: trimmedInput || base64Images ? trimmedInput : undefined,
 						images: base64Images,
 					})
-					resetInput()
+					resetInput(true)
 					break
 			}
 			// 공통 로직 (상태 설정 제거)
@@ -654,7 +654,7 @@ const ChatView = ({ isHidden, showAnnouncement, hideAnnouncement, showHistoryVie
 			}
 			vscode.postMessage(messageToSend)
 
-			resetInput() // 입력 초기화
+			resetInput(true) // 입력 초기화
 			resetButtonsState() // 버튼 상태 초기화 (훅 함수 사용)
 		}, [inputValue, selectedImages, setTextAreaDisabled, task, resetInput, resetButtonsState, startNewTask])
 
