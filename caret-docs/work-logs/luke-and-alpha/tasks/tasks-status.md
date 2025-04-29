@@ -2,7 +2,8 @@
 
 ## 진행 중인 태스크 (Pending)
 
-- [ ] **Task #014:** 퍼소나 관리 및 UI 개선 ([014-persona_management_and_ui_improvements.md](./014-persona_management_and_ui_improvements.md))
+- [ ] **Task #014:** 퍼소나/프로필 관리 및 UI 개선 (설계/구현/통합, [014-persona_management_and_ui_improvements.md](./014-persona_management_and_ui_improvements.md), [014-2-persona-management-design.md](./014-2-persona-management-design.md))
+- [ ] **Task #015:** ChatView/ChatRow 리팩토링 (분리, 중단상태, [014-1-chatview-refactoring.md](./014-1-chatview-refactoring.md))
 - [ ] **Task #028:** api.ts 파일 json 분리 및 리팩토링 ([028-refactor-api-configuration.md](./028-refactor-api-configuration.md))
 
 ## 대기 중인 태스크 (Pending)

@@ -22,3 +22,4 @@ logs/
 package-lock.json
 webview-ui/package-lock.json
 webview-ui/package-lock.json
+!src/shared/models/

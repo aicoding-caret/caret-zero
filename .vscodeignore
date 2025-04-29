@@ -23,6 +23,7 @@ demo.gif
 
 # Development/Repo specific folders
 caret-upstream/**
+private-cline/**
 models_backup/**
 sllm/**
 experiment/**
@@ -70,3 +71,6 @@ docs/**
 
 # Include banner images
 !assets/imgs/**
+
+#
+sllm-servers/** */
