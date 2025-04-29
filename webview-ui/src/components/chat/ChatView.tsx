@@ -928,6 +928,8 @@ const ChatView = ({ isHidden, showAnnouncement, hideAnnouncement, showHistoryVie
 						onSecondaryClick={handleSecondaryButtonClick}
 						isStreaming={isStreaming.current}
 						didClickCancel={didClickCancel}
+						inputValue={inputValue}
+						selectedImages={selectedImages}
 					/>
 				)}
 

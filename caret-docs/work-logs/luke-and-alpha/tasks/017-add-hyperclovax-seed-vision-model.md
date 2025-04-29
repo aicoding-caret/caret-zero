@@ -22,9 +22,9 @@ Hugging Face의 `naver-hyperclovax/HyperCLOVAX-SEED-Vision-Instruct-3B` 모델�
     * 테스트 이미지 : caret-docs\caret_feature.png (텍스트, 아이콘 포함)
     * 테스트 사진 : assets\imgs\main_banner.webp (사진)
 - [x] **Docker 환경에서 MCP 서버 기동 및 REST/MCP 프로토콜 테스트 완전 통과**
-- [ ] **Caret에서 MCP 서버와 실전 연동 및 실제 사용 시나리오 검증**
-- [ ] **테스트 결과 및 문제점/개선점 문서화**
-- [ ] (선택) MCP 서버 고도화: 장애 상황 자동 알림, 로깅 포맷 옵션, 성능 최적화 등
+- [x] **Caret에서 MCP 서버와 실전 연동 및 실제 사용 시나리오 검증**
+- [x] **테스트 결과 및 문제점/개선점 문서화**
+    * 테스트 보고서 (`caret-docs\reports\하이퍼클로바-sLLM-Caret적용을위한테스트보고서.md`)
 
 ## 참고사항
 - Vision 모델이므로 이미지/비디오 입력 처리 방식 고려 필요 (Python 스크립트 및 TypeScript 핸들러 양쪽에서 처리 필요)

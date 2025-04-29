@@ -31,3 +31,4 @@
 - [x] **Task #015:** `replace_in_file` 버그 조사 ([015-investigate-replace_in_file-bug.md](./015-investigate-replace_in_file-bug.md))
 - [x] **Task #016:** 공통 로깅 시스템 구현 보고서 ([016-implement-common-logging-system-report.md](./016-implement-common-logging-system-report.md))
 - [x] **Task #016:** 공통 로깅 시스템 구현 ([016-implement-common-logging-system.md](./016-implement-common-logging-system.md))
+- [x] **Task #017:** HyperClovaX Seed Vision 모델 추가 ([017-add-hyperclovax-seed-vision-model.md](./017-add-hyperclovax-seed-vision-model.md))

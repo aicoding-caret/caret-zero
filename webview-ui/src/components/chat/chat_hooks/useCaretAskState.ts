@@ -10,7 +10,7 @@ import { CaretMessage, CaretAsk, CaretSayTool } from '../../../../../src/shared/
 export function useCaretAskState(
   messages: CaretMessage[],
   setTextAreaDisabled: (disabled: boolean) => void,
-  resetInput: () => void
+  resetInput: (isPartial: boolean) => void
 ) {
   // ucc44ud305 ubc84ud2bc uad00ub828 uc0c1ud0dc
   const [caretAsk, setCaretAsk] = useState<CaretAsk | undefined>(undefined)
