@@ -18,6 +18,7 @@ import ModeSettingsView from "./ModeSettingsView"
 // Import the new section components
 import ProfileImageSettings from "./settings_ui/ProfileImageSettings"
 import CustomInstructionsSettings from "./settings_ui/CustomInstructionsSettings"
+import PersonaSettingsView from "./PersonaSettingsView"
 import TelemetrySettings from "./settings_ui/TelemetrySettings"
 import StateResetSettings from "./settings_ui/StateResetSettings"
 
@@ -192,6 +193,9 @@ const SettingsView = ({ onDone }: SettingsViewProps) => {
 			</div>
 			{/* Content container with padding */}
 			<div style={{ padding: "20px" }}>
+				{/* Persona 관리 섹션 (정책 안내 포함) */}
+				<PersonaSettingsView />
+
 				{/* Use the new components */}
 				<ProfileImageSettings
 					defaultImage={defaultImage}

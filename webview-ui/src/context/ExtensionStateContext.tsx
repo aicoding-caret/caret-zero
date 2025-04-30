@@ -58,6 +58,11 @@ export const ExtensionStateContextProvider: React.FC<{
 		alphaAvatarUri: "https://raw.githubusercontent.com/fstory97/caret-avatar/main/alpha-maid.png", // 기본 프로필 이미지
 		alphaThinkingAvatarUri: "https://raw.githubusercontent.com/fstory97/caret-avatar/main/alpha-maid-thinking.png",
 		apiError: null, // API 에러 정보 초기화
+		// Persona 관리 관련 기본값 추가
+		personaList: [],
+		selectedPersonaId: "",
+		selectedLanguage: "ko",
+		supportedLanguages: ["ko", "en"],
 	})
 	const [didHydrateState, setDidHydrateState] = useState(false)
 	const [showWelcome, setShowWelcome] = useState(false)

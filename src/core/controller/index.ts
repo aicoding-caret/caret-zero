@@ -2409,6 +2409,10 @@ Here is the project's README to help you get started:\n\n${mcpDetails.readmeCont
 			mcpMarketplaceEnabled,
 			telemetrySetting,
 			planActSeparateModelsSetting,
+			personaList,
+			selectedPersonaId,
+			selectedLanguage,
+			supportedLanguages,
 		} = await getAllExtensionState(this.context)
 
 		const retryStatus = (await getGlobalState(this.context, "retryStatus")) as RetryStatusMessage | undefined
@@ -2466,6 +2470,10 @@ Here is the project's README to help you get started:\n\n${mcpDetails.readmeCont
 			availableModes: this.availableModes, // 사용 가능한 모드 정보
 			retryStatus: retryStatus,
 			apiError: null, // API 에러 정보
+			personaList: personaList ?? [],
+			selectedPersonaId: selectedPersonaId ?? "",
+			selectedLanguage: selectedLanguage ?? "",
+			supportedLanguages: supportedLanguages ?? [],
 		}
 	}
 

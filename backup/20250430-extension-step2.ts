@@ -4,9 +4,6 @@ import { setTimeout as setTimeoutPromise } from "node:timers/promises"
 import * as vscode from "vscode"
 // import { Logger } from "./services/logging/Logger" // Removed static Logger import
 import { createCaretAPI } from "./exports"
-import { getAllExtensionState, updateGlobalState } from "./core/storage/state"
-import { PersonaManager } from "./core/persona/PersonaManager"
-import * as path from "path"
 import "./utils/path" // necessary to have access to String.prototype.toPosix
 import { DIFF_VIEW_URI_SCHEME } from "./integrations/editor/DiffViewProvider"
 import assert from "node:assert"
@@ -26,7 +23,7 @@ let outputChannel: vscode.OutputChannel
 
 // This method is called when your extension is activated
 // Your extension is activated the very first time the command is executed
-export async function activate(context: vscode.ExtensionContext) {
+export function activate(context: vscode.ExtensionContext) {
 	outputChannel = vscode.window.createOutputChannel("Caret")
 	context.subscriptions.push(outputChannel)
 
@@ -35,28 +32,6 @@ export async function activate(context: vscode.ExtensionContext) {
 
 	const sidebarWebview = new WebviewProvider(context, outputChannel)
 	sidebarWebview.controller.logger.log("Caret extension activated") // Use logger from controller
-
-	// --- Persona Management: 상태 동기화 및 초기화 ---
-	const workspaceRoot = vscode.workspace.workspaceFolders?.[0]?.uri.fsPath || process.cwd()
-	let extensionState = await getAllExtensionState(context)
-	if (!extensionState.personaList || extensionState.personaList.length === 0) {
-		// personas.json에서 읽어서 전역 상태에 저장
-		const personas = PersonaManager.loadPersonas(workspaceRoot)
-		await updateGlobalState(context, "personaList", personas)
-		extensionState.personaList = personas
-	}
-	// 선택된 personaId가 없으면 첫 번째로 설정
-	if (!extensionState.selectedPersonaId && extensionState.personaList && extensionState.personaList.length > 0) {
-		await updateGlobalState(context, "selectedPersonaId", extensionState.personaList[0].id)
-		extensionState.selectedPersonaId = extensionState.personaList[0].id
-	}
-	// 지원 언어 목록이 없으면 기본값(en, ko)으로 설정
-	if (!extensionState.supportedLanguages) {
-		await updateGlobalState(context, "supportedLanguages", ["en", "ko"])
-		extensionState.supportedLanguages = ["en", "ko"]
-	}
-	// postStateToWebview로 동기화
-	sidebarWebview.controller.postStateToWebview()
 
 	vscode.commands.executeCommand("setContext", "caret.isDevMode", IS_DEV && IS_DEV === "true")
 

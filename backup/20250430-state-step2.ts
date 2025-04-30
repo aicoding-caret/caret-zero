@@ -51,11 +51,6 @@ export async function getWorkspaceState(context: vscode.ExtensionContext, key: s
 }
 
 export async function getAllExtensionState(context: vscode.ExtensionContext) {
-	// --- Persona Management 확장: persona 관련 상태 가져오기 ---
-	const personaList = await getGlobalState(context, "personaList") as import("../../shared/types").Persona[] | undefined
-	const selectedPersonaId = await getGlobalState(context, "selectedPersonaId") as string | undefined
-	const selectedLanguage = await getGlobalState(context, "selectedLanguage") as string | undefined
-	const supportedLanguages = await getGlobalState(context, "supportedLanguages") as string[] | undefined
 	const [
 		storedApiProvider,
 		apiModelId,
@@ -301,10 +296,6 @@ export async function getAllExtensionState(context: vscode.ExtensionContext) {
 		mcpMarketplaceEnabled,
 		telemetrySetting: telemetrySetting || "unset",
 		planActSeparateModelsSetting,
-		personaList,
-		selectedPersonaId,
-		selectedLanguage,
-		supportedLanguages,
 	}
 }
 
@@ -424,12 +415,6 @@ export async function resetExtensionState(context: vscode.ExtensionContext) {
 	for (const key of context.globalState.keys()) {
 		await context.globalState.update(key, undefined)
 	}
-	// --- Persona Management 확장: persona 관련 상태도 초기화 ---
-	await updateGlobalState(context, "personaList", undefined)
-	await updateGlobalState(context, "selectedPersonaId", undefined)
-	await updateGlobalState(context, "selectedLanguage", undefined)
-	await updateGlobalState(context, "supportedLanguages", undefined)
-
 	const secretKeys: SecretKey[] = [
 		"apiKey",
 		"openRouterApiKey",

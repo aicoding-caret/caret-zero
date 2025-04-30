@@ -183,6 +183,24 @@ export interface ExtensionState {
 	availableModes: ModeInfo[] // 사용 가능한 모드 목록
 	retryStatus?: RetryStatusMessage // 재시도 상태 정보
 	apiError: ApiErrorInfo | null // API 에러 정보
+
+	// --- Persona Management 확장 ---
+	/**
+	 * 현재 등록된 모든 페르소나 목록
+	 */
+	personaList: import("./types").Persona[]
+	/**
+	 * 현재 선택된 페르소나 ID
+	 */
+	selectedPersonaId: string
+	/**
+	 * 현재 선택된 언어
+	 */
+	selectedLanguage: string
+	/**
+	 * 지원하는 언어 목록 (선택)
+	 */
+	supportedLanguages?: string[]
 }
 
 export interface CaretMessage {
