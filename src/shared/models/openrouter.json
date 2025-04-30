@@ -1,0 +1,27 @@
+{
+  "id": "openrouter",
+  "name": "OpenRouter",
+  "defaultModel": "openrouter/gpt-4-turbo-preview",
+  "models": {
+    "openrouter/gpt-4-turbo-preview": {
+      "id": "openrouter/gpt-4-turbo-preview",
+      "name": "GPT-4 Turbo Preview",
+      "description": "OpenAI's GPT-4 Turbo model through OpenRouter",
+      "supports": {
+        "images": true,
+        "computerUse": true,
+        "promptCache": true
+      },
+      "limits": {
+        "maxTokens": 128000,
+        "contextWindow": 128000
+      },
+      "pricing": {
+        "input": 10.0,
+        "output": 30.0,
+        "cacheWrites": 12.5,
+        "cacheReads": 1.0
+      }
+    }
+  }
+} 

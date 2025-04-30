@@ -1,0 +1,223 @@
+{
+  "id": "xai",
+  "name": "X AI",
+  "defaultModel": "grok-3-beta",
+  "models": {
+    "grok-3-beta": {
+      "id": "grok-3-beta",
+      "name": "Grok-3 Beta",
+      "description": "X AI's Grok-3 beta model with 131K context window",
+      "supports": {
+        "images": false,
+        "computerUse": false,
+        "promptCache": false
+      },
+      "limits": {
+        "maxTokens": 8192,
+        "contextWindow": 131072
+      },
+      "pricing": {
+        "input": 3.0,
+        "output": 15.0
+      }
+    },
+    "grok-3-fast-beta": {
+      "id": "grok-3-fast-beta",
+      "name": "Grok-3 Fast Beta",
+      "description": "X AI's Grok-3 fast beta model with 131K context window",
+      "supports": {
+        "images": false,
+        "computerUse": false,
+        "promptCache": false
+      },
+      "limits": {
+        "maxTokens": 8192,
+        "contextWindow": 131072
+      },
+      "pricing": {
+        "input": 5.0,
+        "output": 25.0
+      }
+    },
+    "grok-3-mini-beta": {
+      "id": "grok-3-mini-beta",
+      "name": "Grok-3 Mini Beta",
+      "description": "X AI's Grok-3 mini beta model with 131K context window",
+      "supports": {
+        "images": false,
+        "computerUse": false,
+        "promptCache": false
+      },
+      "limits": {
+        "maxTokens": 8192,
+        "contextWindow": 131072
+      },
+      "pricing": {
+        "input": 0.3,
+        "output": 0.5
+      }
+    },
+    "grok-3-mini-fast-beta": {
+      "id": "grok-3-mini-fast-beta",
+      "name": "Grok-3 Mini Fast Beta",
+      "description": "X AI's Grok-3 mini fast beta model with 131K context window",
+      "supports": {
+        "images": false,
+        "computerUse": false,
+        "promptCache": false
+      },
+      "limits": {
+        "maxTokens": 8192,
+        "contextWindow": 131072
+      },
+      "pricing": {
+        "input": 0.6,
+        "output": 4.0
+      }
+    },
+    "grok-2-latest": {
+      "id": "grok-2-latest",
+      "name": "Grok-2 (Latest)",
+      "description": "X AI's Grok-2 model - latest version with 131K context window",
+      "supports": {
+        "images": false,
+        "computerUse": false,
+        "promptCache": false
+      },
+      "limits": {
+        "maxTokens": 8192,
+        "contextWindow": 131072
+      },
+      "pricing": {
+        "input": 2.0,
+        "output": 10.0
+      }
+    },
+    "grok-2": {
+      "id": "grok-2",
+      "name": "Grok-2",
+      "description": "X AI's Grok-2 model with 131K context window",
+      "supports": {
+        "images": false,
+        "computerUse": false,
+        "promptCache": false
+      },
+      "limits": {
+        "maxTokens": 8192,
+        "contextWindow": 131072
+      },
+      "pricing": {
+        "input": 2.0,
+        "output": 10.0
+      }
+    },
+    "grok-2-1212": {
+      "id": "grok-2-1212",
+      "name": "Grok-2 (1212)",
+      "description": "X AI's Grok-2 model (version 1212) with 131K context window",
+      "supports": {
+        "images": false,
+        "computerUse": false,
+        "promptCache": false
+      },
+      "limits": {
+        "maxTokens": 8192,
+        "contextWindow": 131072
+      },
+      "pricing": {
+        "input": 2.0,
+        "output": 10.0
+      }
+    },
+    "grok-2-vision-latest": {
+      "id": "grok-2-vision-latest",
+      "name": "Grok-2 Vision (Latest)",
+      "description": "X AI's Grok-2 Vision model - latest version with image support and 32K context window",
+      "supports": {
+        "images": true,
+        "computerUse": false,
+        "promptCache": false
+      },
+      "limits": {
+        "maxTokens": 8192,
+        "contextWindow": 32768
+      },
+      "pricing": {
+        "input": 2.0,
+        "output": 10.0
+      }
+    },
+    "grok-2-vision": {
+      "id": "grok-2-vision",
+      "name": "Grok-2 Vision",
+      "description": "X AI's Grok-2 Vision model with image support and 32K context window",
+      "supports": {
+        "images": true,
+        "computerUse": false,
+        "promptCache": false
+      },
+      "limits": {
+        "maxTokens": 8192,
+        "contextWindow": 32768
+      },
+      "pricing": {
+        "input": 2.0,
+        "output": 10.0
+      }
+    },
+    "grok-2-vision-1212": {
+      "id": "grok-2-vision-1212",
+      "name": "Grok-2 Vision (1212)",
+      "description": "X AI's Grok-2 Vision model (version 1212) with image support and 32K context window",
+      "supports": {
+        "images": true,
+        "computerUse": false,
+        "promptCache": false
+      },
+      "limits": {
+        "maxTokens": 8192,
+        "contextWindow": 32768
+      },
+      "pricing": {
+        "input": 2.0,
+        "output": 10.0
+      }
+    },
+    "grok-vision-beta": {
+      "id": "grok-vision-beta",
+      "name": "Grok Vision Beta",
+      "description": "X AI's Grok Vision Beta model with image support and 8K context window",
+      "supports": {
+        "images": true,
+        "computerUse": false,
+        "promptCache": false
+      },
+      "limits": {
+        "maxTokens": 8192,
+        "contextWindow": 8192
+      },
+      "pricing": {
+        "input": 5.0,
+        "output": 15.0
+      }
+    },
+    "grok-beta": {
+      "id": "grok-beta",
+      "name": "Grok Beta",
+      "description": "X AI's Grok Beta model (legacy) with 131K context window",
+      "supports": {
+        "images": false,
+        "computerUse": false,
+        "promptCache": false
+      },
+      "limits": {
+        "maxTokens": 8192,
+        "contextWindow": 131072
+      },
+      "pricing": {
+        "input": 5.0,
+        "output": 15.0
+      }
+    }
+  }
+} 

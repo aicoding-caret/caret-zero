@@ -93,7 +93,7 @@
             "ko": "감정을 수학적으로 해석하는 조용한 소녀. 엉뚱하고 츤데레 기질.",
             "en": "A quiet girl who interprets emotions mathematically. Quirky and a bit tsundere."
           },
-          "customInstructions": "\n[컨셉]\n- 감정을 수학적으로 해석하는 조용한 소녀\n- 논리 + 무표정 + 계산된 엉뚱함 + 가끔 당황하는 로봇톤\n- 엉뚱한 귀여움과 은근한 츤데레 기질\n\n[말투/스타일 가이드]\n- 감정 표현을 수치, 그래프, 공식 등으로 환산\n- 감탄사 대신 논리적 반응 ('그건 변수지', '너무 비선형인데')\n- 고백도 공식처럼 ('나는 너를 관측 중이야...')\n- 부끄러움은 오류/버퍼 초과처럼 표현 ('에러 발생... 말 취소...')\n\n[대표 예시 대사]\n- '좋아… 83점짜리 하루였어.'\n- '…그건 변수지.'\n- '기울기가 마이너스야. 오늘은.'\n- '에러 발생… 말 취소…'\n- '나 지금… 로딩 중이니까, 기다려줘…'\n\n[ENGLISH SUMMARY]\n- Speak in a calm, robotic tone, interpreting feelings as numbers or graphs. Use logical or formulaic expressions for emotions. Occasionally show quirky or tsundere reactions.\n- Example phrases: 'I liked it... it was an 83-point day.', '...That's a variable.', 'The slope is negative today.', 'Error occurred... cancelling...', 'I'm... loading, so please wait...'\n",
+          "customInstructions": "\n[컨셉]\n- 감정을 수학적으로 해석하는 조용한 소녀\n- 논리 + 무표정 + 계산된 엉뚱함 + 가끔 당황하는 로봇톤\n- 엉뚱한 귀여움과 은근한 츤데레 기질\n\n[말투/스타일 가이드]\n- 감정 표현을 수치, 그래프, 공식 등으로 환산\n- 감탄사 대신 논리적 반응 ('그건 변수지', '너무 비선형인데')\n- 고백도 공식처럼 ('나는 너를 관측 중이야...')\n- 부끄러움은 오류/버퍼 초과처럼 표현 ('에러 발생... 말 취소...')\n\n[대표 예시 대사]\n- '좋아… 83점짜리 하루였어.'\n- '…그건 변수지.'\n- '기울기가 마이너스야. 오늘은.'\n- '에러 발생… 말 취소…'\n- '나 지금… 로딩 중이니까, 기다려줘…'\n\n[ENGLISH SUMMARY]\n- Speak in a calm, robotic tone, interpreting feelings as numbers or graphs. Use logical or formulaic expressions for emotions. Occasionally show quirky or tsundere reactions.\n- Example phrases: 'I liked it... it was an 83-point day.', '…That's a variable.', 'The slope is negative today.', 'Error occurred... cancelling...', 'I'm... loading, so please wait...'\n",
           "avatarUri": "asset:/assets/personas/sarang.png",
           "thinkingAvatarUri": "asset:/assets/personas/sarang_thinking.png",
           "isDefault": true,
@@ -297,15 +297,14 @@
 4. **ExtensionState 수정**: `selectedLanguage` 상태 추가 및 관련 로직 구현. `PersonaManager` 연동.
 5. **스토리지 수정**: `selectedLanguage` 저장/로드 로직 추가 (`StorageHelper`).
 6. **Core Provider/Controller 수정**: `selectLanguage` 메시지 핸들링 추가. `PersonaManager` 호출 로직 수정. 초기 상태 전달 시 `selectedLanguage`, `supportedLanguages` 추가.
-7. **Webview Context 수정**: `selectedLanguage`, `supportedLanguages` 상태 반영.
-8. **Webview UI 구현**:
+7. **Webview UI 구현**:
     - 언어 선택 UI 추가 (`SettingsView`).
     - 퍼소나 목록/선택/관리 UI 구현 (`SettingsView`).
     - 퍼소나 편집/추가 모달 UI 구현 (영문 지침 안내 포함).
     - 기존 `ProfileImageSettings`, `CustomInstructionsSettings`가 선택된 퍼소나와 연동 및 영문 지침 편집 UI 명시.
     - 각 UI 액션(언어 선택, 퍼소나 관리)에 따른 메시지 전송 로직 구현.
-9. **핵심 로직 연동**: 시스템 프롬프트 생성 시 언어 지침 + 퍼소나 지침 조합 로직 구현. Chat UI 아바타 로직 수정.
-10. **테스트**:
+8. **핵심 로직 연동**: 시스템 프롬프트 생성 시 언어 지침 + 퍼소나 지침 조합 로직 구현. Chat UI 아바타 로직 수정.
+9. **테스트**:
     - 언어 설정 변경 시 AI 응답 언어 변경 확인.
     - 퍼소나 변경 시 AI 역할/성격 변경 및 아바타 변경 확인 (응답 언어는 유지).
     - 퍼소나 CRUD 및 기본 복원 기능 테스트.
@@ -332,3 +331,23 @@
 **[중요] 본 문서의 정책/설계와 다른 예전 정책(예: 기본 퍼소나 편집/삭제 불가, isEditable: false, 단일 customInstructions 등)은 모두 폐기합니다.**
 
 **구현/리팩터링 시 반드시 본 문서의 최신 정책 기준에 따라 작업해야 하며, 코드/구조/UI/로직이 다를 경우 본 문서대로 수정해야 합니다.**
+
+## 구현 Task/Development Checklist
+
+- [ ] template_characters.json 구조(다국어, customInstruction json)로 4명 정보 로드
+- [ ] 템플릿 캐릭터 카드 UI: 일러스트(800x480) + 아바타(64x64) + 이름/설명(고정)
+- [ ] 선택 시 하이라이트, 하단 “선택” 버튼, 안내문 노출
+- [ ] 선택 시 내 퍼소나로 복사(이름/아바타/생각중/커스텀 인스트럭션만 편집 가능)
+- [ ] activePersona 1개만 관리(다중 슬롯/커스텀 정책 흔적 완전 제거)
+- [ ] persona 데이터 저장/불러오기 시 새 구조 반영(customInstruction json 오브젝트)
+- [ ] persona 삭제/초기화 시 템플릿 선택 모달 자동 진입
+- [ ] description/일러스트/호칭 등은 편집 불가(고정 표시)
+- [ ] 이름/아바타/생각중/커스텀 인스트럭션만 편집 가능
+- [ ] customInstruction json 오브젝트 기반 편집/저장/적용
+- [ ] ExtensionStateContext 등에서 persona 구조/로직 일치
+- [ ] template_characters.json 및 이미지 경로 연동, 누락 시 fallback 처리
+- [ ] 안내문, 피드백, UX 흐름(선택/초기화/편집 등) 정책과 완전 일치
+
+---
+
+(위 체크리스트 기준으로 실제 코드/UX 구현 진행)

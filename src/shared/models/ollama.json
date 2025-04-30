@@ -1,0 +1,63 @@
+{
+  "id": "ollama",
+  "name": "Ollama",
+  "defaultModel": "llama3",
+  "description": "Ollama allows running various open-source models locally. Models are dynamically loaded from the Ollama server.",
+  "models": {
+    "llama3": {
+      "id": "llama3",
+      "name": "Llama 3",
+      "description": "Meta's Llama 3 model",
+      "supports": {
+        "images": false,
+        "computerUse": false,
+        "promptCache": false
+      },
+      "limits": {
+        "maxTokens": 4096,
+        "contextWindow": 8192
+      },
+      "pricing": {
+        "input": 0,
+        "output": 0
+      }
+    },
+    "mistral": {
+      "id": "mistral",
+      "name": "Mistral",
+      "description": "Mistral AI's base model",
+      "supports": {
+        "images": false,
+        "computerUse": false,
+        "promptCache": false
+      },
+      "limits": {
+        "maxTokens": 4096,
+        "contextWindow": 8192
+      },
+      "pricing": {
+        "input": 0,
+        "output": 0
+      }
+    },
+    "codellama": {
+      "id": "codellama",
+      "name": "Code Llama",
+      "description": "Meta's Code Llama model optimized for code generation",
+      "supports": {
+        "images": false,
+        "computerUse": false,
+        "promptCache": false
+      },
+      "limits": {
+        "maxTokens": 4096,
+        "contextWindow": 8192
+      },
+      "pricing": {
+        "input": 0,
+        "output": 0
+      }
+    }
+  },
+  "dynamicModelLoading": true
+} 

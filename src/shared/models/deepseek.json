@@ -1,0 +1,47 @@
+{
+  "id": "deepseek",
+  "name": "DeepSeek",
+  "defaultModel": "deepseek-chat",
+  "models": {
+    "deepseek-chat": {
+      "id": "deepseek-chat",
+      "name": "DeepSeek Chat",
+      "description": "DeepSeek's general purpose chat model",
+      "supports": {
+        "images": false,
+        "computerUse": false,
+        "promptCache": true
+      },
+      "limits": {
+        "maxTokens": 8000,
+        "contextWindow": 64000
+      },
+      "pricing": {
+        "input": 0,
+        "output": 1.1,
+        "cacheWrites": 0.27,
+        "cacheReads": 0.07
+      }
+    },
+    "deepseek-reasoner": {
+      "id": "deepseek-reasoner",
+      "name": "DeepSeek Reasoner",
+      "description": "DeepSeek's model optimized for reasoning tasks",
+      "supports": {
+        "images": false,
+        "computerUse": false,
+        "promptCache": true
+      },
+      "limits": {
+        "maxTokens": 8000,
+        "contextWindow": 64000
+      },
+      "pricing": {
+        "input": 0,
+        "output": 2.19,
+        "cacheWrites": 0.55,
+        "cacheReads": 0.14
+      }
+    }
+  }
+} 

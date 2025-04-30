@@ -1,0 +1,329 @@
+{
+  "id": "vertex",
+  "name": "Vertex AI",
+  "defaultModel": "claude-3-7-sonnet@20250219",
+  "models": {
+    "claude-3-7-sonnet@20250219": {
+      "id": "claude-3-7-sonnet@20250219",
+      "name": "Claude 3.7 Sonnet (Vertex)",
+      "description": "Anthropic's Claude 3.7 Sonnet model via Google Vertex AI",
+      "supports": {
+        "images": true,
+        "computerUse": true,
+        "promptCache": true
+      },
+      "limits": {
+        "maxTokens": 8192,
+        "contextWindow": 200000
+      },
+      "pricing": {
+        "input": 3.0,
+        "output": 15.0
+      }
+    },
+    "claude-3-5-sonnet-v2@20241022": {
+      "id": "claude-3-5-sonnet-v2@20241022",
+      "name": "Claude 3.5 Sonnet v2 (Vertex)",
+      "description": "Anthropic's Claude 3.5 Sonnet v2 model via Google Vertex AI",
+      "supports": {
+        "images": true,
+        "computerUse": true,
+        "promptCache": true
+      },
+      "limits": {
+        "maxTokens": 8192,
+        "contextWindow": 200000
+      },
+      "pricing": {
+        "input": 3.0,
+        "output": 15.0,
+        "cacheWrites": 3.75,
+        "cacheReads": 0.3
+      }
+    },
+    "claude-3-5-sonnet@20240620": {
+      "id": "claude-3-5-sonnet@20240620",
+      "name": "Claude 3.5 Sonnet (06/20) (Vertex)",
+      "description": "Anthropic's Claude 3.5 Sonnet (June 2024) model via Google Vertex AI",
+      "supports": {
+        "images": true,
+        "computerUse": false,
+        "promptCache": true
+      },
+      "limits": {
+        "maxTokens": 8192,
+        "contextWindow": 200000
+      },
+      "pricing": {
+        "input": 3.0,
+        "output": 15.0,
+        "cacheWrites": 3.75,
+        "cacheReads": 0.3
+      }
+    },
+    "claude-3-5-haiku@20241022": {
+      "id": "claude-3-5-haiku@20241022",
+      "name": "Claude 3.5 Haiku (Vertex)",
+      "description": "Anthropic's Claude 3.5 Haiku model via Google Vertex AI",
+      "supports": {
+        "images": false,
+        "computerUse": false,
+        "promptCache": true
+      },
+      "limits": {
+        "maxTokens": 8192,
+        "contextWindow": 200000
+      },
+      "pricing": {
+        "input": 1.0,
+        "output": 5.0,
+        "cacheWrites": 1.25,
+        "cacheReads": 0.1
+      }
+    },
+    "claude-3-opus@20240229": {
+      "id": "claude-3-opus@20240229",
+      "name": "Claude 3 Opus (Vertex)",
+      "description": "Anthropic's Claude 3 Opus model via Google Vertex AI",
+      "supports": {
+        "images": true,
+        "computerUse": false,
+        "promptCache": true
+      },
+      "limits": {
+        "maxTokens": 4096,
+        "contextWindow": 200000
+      },
+      "pricing": {
+        "input": 15.0,
+        "output": 75.0,
+        "cacheWrites": 18.75,
+        "cacheReads": 1.5
+      }
+    },
+    "claude-3-haiku@20240307": {
+      "id": "claude-3-haiku@20240307",
+      "name": "Claude 3 Haiku (Vertex)",
+      "description": "Anthropic's Claude 3 Haiku model via Google Vertex AI",
+      "supports": {
+        "images": true,
+        "computerUse": false,
+        "promptCache": true
+      },
+      "limits": {
+        "maxTokens": 4096,
+        "contextWindow": 200000
+      },
+      "pricing": {
+        "input": 0.25,
+        "output": 1.25,
+        "cacheWrites": 0.3,
+        "cacheReads": 0.03
+      }
+    },
+    "gemini-2.0-flash-001": {
+      "id": "gemini-2.0-flash-001",
+      "name": "Gemini 2.0 Flash (Vertex)",
+      "description": "Google's Gemini 2.0 Flash model via Vertex AI",
+      "supports": {
+        "images": true,
+        "computerUse": false,
+        "promptCache": false
+      },
+      "limits": {
+        "maxTokens": 8192,
+        "contextWindow": 1048576
+      },
+      "pricing": {
+        "input": 0.1,
+        "output": 0.4
+      }
+    },
+    "gemini-2.0-flash-thinking-exp-1219": {
+      "id": "gemini-2.0-flash-thinking-exp-1219",
+      "name": "Gemini 2.0 Flash Thinking Exp (12-19) (Vertex)",
+      "description": "Experimental thinking-focused Gemini model via Vertex AI",
+      "supports": {
+        "images": true,
+        "computerUse": false,
+        "promptCache": false
+      },
+      "limits": {
+        "maxTokens": 8192,
+        "contextWindow": 32767
+      },
+      "pricing": {
+        "input": 0,
+        "output": 0
+      }
+    },
+    "gemini-2.0-flash-exp": {
+      "id": "gemini-2.0-flash-exp",
+      "name": "Gemini 2.0 Flash Exp (Vertex)",
+      "description": "Experimental version of Gemini 2.0 Flash via Vertex AI",
+      "supports": {
+        "images": true,
+        "computerUse": false,
+        "promptCache": false
+      },
+      "limits": {
+        "maxTokens": 8192,
+        "contextWindow": 1048576
+      },
+      "pricing": {
+        "input": 0,
+        "output": 0
+      }
+    },
+    "gemini-2.5-pro-exp-03-25": {
+      "id": "gemini-2.5-pro-exp-03-25",
+      "name": "Gemini 2.5 Pro Exp (Vertex)",
+      "description": "Google's Gemini 2.5 Pro experimental model via Vertex AI",
+      "supports": {
+        "images": true,
+        "computerUse": false,
+        "promptCache": false
+      },
+      "limits": {
+        "maxTokens": 65536,
+        "contextWindow": 1048576
+      },
+      "pricing": {
+        "input": 0,
+        "output": 0
+      }
+    },
+    "gemini-2.5-pro-preview-03-25": {
+      "id": "gemini-2.5-pro-preview-03-25",
+      "name": "Gemini 2.5 Pro Preview (Vertex)",
+      "description": "Google's Gemini 2.5 Pro preview model with tiered pricing via Vertex AI",
+      "supports": {
+        "images": true,
+        "computerUse": false,
+        "promptCache": false
+      },
+      "limits": {
+        "maxTokens": 65536,
+        "contextWindow": 1048576
+      },
+      "pricing": {
+        "inputTiers": [
+          { "tokenLimit": 200000, "price": 1.25 },
+          { "tokenLimit": 9999999999, "price": 2.5 }
+        ],
+        "outputTiers": [
+          { "tokenLimit": 200000, "price": 10.0 },
+          { "tokenLimit": 9999999999, "price": 15.0 }
+        ]
+      }
+    },
+    "gemini-2.0-flash-thinking-exp-01-21": {
+      "id": "gemini-2.0-flash-thinking-exp-01-21",
+      "name": "Gemini 2.0 Flash Thinking Exp (01-21) (Vertex)",
+      "description": "Experimental thinking-focused Gemini model via Vertex AI",
+      "supports": {
+        "images": true,
+        "computerUse": false,
+        "promptCache": false
+      },
+      "limits": {
+        "maxTokens": 65536,
+        "contextWindow": 1048576
+      },
+      "pricing": {
+        "input": 0,
+        "output": 0
+      }
+    },
+    "gemini-1.5-flash-002": {
+      "id": "gemini-1.5-flash-002",
+      "name": "Gemini 1.5 Flash (Vertex)",
+      "description": "Google's Gemini 1.5 Flash model via Vertex AI",
+      "supports": {
+        "images": true,
+        "computerUse": false,
+        "promptCache": false
+      },
+      "limits": {
+        "maxTokens": 8192,
+        "contextWindow": 1048576
+      },
+      "pricing": {
+        "input": 0,
+        "output": 0
+      }
+    },
+    "gemini-1.5-flash-exp-0827": {
+      "id": "gemini-1.5-flash-exp-0827",
+      "name": "Gemini 1.5 Flash Exp (Vertex)",
+      "description": "Experimental version of Gemini 1.5 Flash via Vertex AI",
+      "supports": {
+        "images": true,
+        "computerUse": false,
+        "promptCache": false
+      },
+      "limits": {
+        "maxTokens": 8192,
+        "contextWindow": 1048576
+      },
+      "pricing": {
+        "input": 0,
+        "output": 0
+      }
+    },
+    "gemini-1.5-flash-8b-exp-0827": {
+      "id": "gemini-1.5-flash-8b-exp-0827",
+      "name": "Gemini 1.5 Flash 8B Exp (Vertex)",
+      "description": "8B parameter experimental version of Gemini 1.5 Flash via Vertex AI",
+      "supports": {
+        "images": true,
+        "computerUse": false,
+        "promptCache": false
+      },
+      "limits": {
+        "maxTokens": 8192,
+        "contextWindow": 1048576
+      },
+      "pricing": {
+        "input": 0,
+        "output": 0
+      }
+    },
+    "gemini-1.5-pro-002": {
+      "id": "gemini-1.5-pro-002",
+      "name": "Gemini 1.5 Pro (Vertex)",
+      "description": "Google's Gemini 1.5 Pro model via Vertex AI",
+      "supports": {
+        "images": true,
+        "computerUse": false,
+        "promptCache": false
+      },
+      "limits": {
+        "maxTokens": 8192,
+        "contextWindow": 2097152
+      },
+      "pricing": {
+        "input": 0,
+        "output": 0
+      }
+    },
+    "gemini-1.5-pro-exp-0827": {
+      "id": "gemini-1.5-pro-exp-0827",
+      "name": "Gemini 1.5 Pro Exp (Vertex)",
+      "description": "Experimental version of Gemini 1.5 Pro via Vertex AI",
+      "supports": {
+        "images": true,
+        "computerUse": false,
+        "promptCache": false
+      },
+      "limits": {
+        "maxTokens": 8192,
+        "contextWindow": 2097152
+      },
+      "pricing": {
+        "input": 0,
+        "output": 0
+      }
+    }
+  }
+} 

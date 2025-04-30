@@ -1,0 +1,407 @@
+{
+  "id": "qwen",
+  "name": "Qwen (International)",
+  "defaultModel": "qwen-coder-plus-latest",
+  "models": {
+    "qwen2.5-coder-32b-instruct": {
+      "id": "qwen2.5-coder-32b-instruct",
+      "name": "Qwen 2.5 Coder 32B Instruct",
+      "description": "Qwen's 32B parameter code-focused model",
+      "supports": {
+        "images": false,
+        "computerUse": false,
+        "promptCache": false
+      },
+      "limits": {
+        "maxTokens": 8192,
+        "contextWindow": 131072
+      },
+      "pricing": {
+        "input": 0.002,
+        "output": 0.006,
+        "cacheWrites": 0.002,
+        "cacheReads": 0.006
+      }
+    },
+    "qwen2.5-coder-14b-instruct": {
+      "id": "qwen2.5-coder-14b-instruct",
+      "name": "Qwen 2.5 Coder 14B Instruct",
+      "description": "Qwen's 14B parameter code-focused model",
+      "supports": {
+        "images": false,
+        "computerUse": false,
+        "promptCache": false
+      },
+      "limits": {
+        "maxTokens": 8192,
+        "contextWindow": 131072
+      },
+      "pricing": {
+        "input": 0.002,
+        "output": 0.006,
+        "cacheWrites": 0.002,
+        "cacheReads": 0.006
+      }
+    },
+    "qwen2.5-coder-7b-instruct": {
+      "id": "qwen2.5-coder-7b-instruct",
+      "name": "Qwen 2.5 Coder 7B Instruct",
+      "description": "Qwen's 7B parameter code-focused model",
+      "supports": {
+        "images": false,
+        "computerUse": false,
+        "promptCache": false
+      },
+      "limits": {
+        "maxTokens": 8192,
+        "contextWindow": 131072
+      },
+      "pricing": {
+        "input": 0.001,
+        "output": 0.002,
+        "cacheWrites": 0.001,
+        "cacheReads": 0.002
+      }
+    },
+    "qwen2.5-coder-3b-instruct": {
+      "id": "qwen2.5-coder-3b-instruct",
+      "name": "Qwen 2.5 Coder 3B Instruct",
+      "description": "Qwen's 3B parameter code-focused model (free tier)",
+      "supports": {
+        "images": false,
+        "computerUse": false,
+        "promptCache": false
+      },
+      "limits": {
+        "maxTokens": 8192,
+        "contextWindow": 32768
+      },
+      "pricing": {
+        "input": 0.0,
+        "output": 0.0,
+        "cacheWrites": 0.0,
+        "cacheReads": 0.0
+      }
+    },
+    "qwen2.5-coder-1.5b-instruct": {
+      "id": "qwen2.5-coder-1.5b-instruct",
+      "name": "Qwen 2.5 Coder 1.5B Instruct",
+      "description": "Qwen's 1.5B parameter code-focused model (free tier)",
+      "supports": {
+        "images": false,
+        "computerUse": false,
+        "promptCache": false
+      },
+      "limits": {
+        "maxTokens": 8192,
+        "contextWindow": 32768
+      },
+      "pricing": {
+        "input": 0.0,
+        "output": 0.0,
+        "cacheWrites": 0.0,
+        "cacheReads": 0.0
+      }
+    },
+    "qwen2.5-coder-0.5b-instruct": {
+      "id": "qwen2.5-coder-0.5b-instruct",
+      "name": "Qwen 2.5 Coder 0.5B Instruct",
+      "description": "Qwen's 0.5B parameter code-focused model (free tier)",
+      "supports": {
+        "images": false,
+        "computerUse": false,
+        "promptCache": false
+      },
+      "limits": {
+        "maxTokens": 8192,
+        "contextWindow": 32768
+      },
+      "pricing": {
+        "input": 0.0,
+        "output": 0.0,
+        "cacheWrites": 0.0,
+        "cacheReads": 0.0
+      }
+    },
+    "qwen-coder-plus-latest": {
+      "id": "qwen-coder-plus-latest",
+      "name": "Qwen Coder Plus (Latest)",
+      "description": "Latest version of Qwen's premium code-focused model",
+      "supports": {
+        "images": false,
+        "computerUse": false,
+        "promptCache": false
+      },
+      "limits": {
+        "maxTokens": 129024,
+        "contextWindow": 131072
+      },
+      "pricing": {
+        "input": 3.5,
+        "output": 7.0,
+        "cacheWrites": 3.5,
+        "cacheReads": 7.0
+      }
+    },
+    "qwen-plus-latest": {
+      "id": "qwen-plus-latest",
+      "name": "Qwen Plus (Latest)",
+      "description": "Latest version of Qwen's plus-tier general model",
+      "supports": {
+        "images": false,
+        "computerUse": false,
+        "promptCache": false
+      },
+      "limits": {
+        "maxTokens": 129024,
+        "contextWindow": 131072
+      },
+      "pricing": {
+        "input": 0.8,
+        "output": 2.0,
+        "cacheWrites": 0.8,
+        "cacheReads": 0.2
+      }
+    },
+    "qwen-turbo-latest": {
+      "id": "qwen-turbo-latest",
+      "name": "Qwen Turbo (Latest)",
+      "description": "Latest version of Qwen's high-speed model with very large context",
+      "supports": {
+        "images": false,
+        "computerUse": false,
+        "promptCache": false
+      },
+      "limits": {
+        "maxTokens": 1000000,
+        "contextWindow": 1000000
+      },
+      "pricing": {
+        "input": 0.8,
+        "output": 2.0,
+        "cacheWrites": 0.8,
+        "cacheReads": 2.0
+      }
+    },
+    "qwen-max-latest": {
+      "id": "qwen-max-latest",
+      "name": "Qwen Max (Latest)",
+      "description": "Latest version of Qwen's most powerful model",
+      "supports": {
+        "images": false,
+        "computerUse": false,
+        "promptCache": false
+      },
+      "limits": {
+        "maxTokens": 30720,
+        "contextWindow": 32768
+      },
+      "pricing": {
+        "input": 2.4,
+        "output": 9.6,
+        "cacheWrites": 2.4,
+        "cacheReads": 9.6
+      }
+    },
+    "qwen-coder-plus": {
+      "id": "qwen-coder-plus",
+      "name": "Qwen Coder Plus",
+      "description": "Qwen's premium code-focused model",
+      "supports": {
+        "images": false,
+        "computerUse": false,
+        "promptCache": false
+      },
+      "limits": {
+        "maxTokens": 129024,
+        "contextWindow": 131072
+      },
+      "pricing": {
+        "input": 3.5,
+        "output": 7.0,
+        "cacheWrites": 3.5,
+        "cacheReads": 7.0
+      }
+    },
+    "qwen-plus": {
+      "id": "qwen-plus",
+      "name": "Qwen Plus",
+      "description": "Qwen's plus-tier general model",
+      "supports": {
+        "images": false,
+        "computerUse": false,
+        "promptCache": false
+      },
+      "limits": {
+        "maxTokens": 129024,
+        "contextWindow": 131072
+      },
+      "pricing": {
+        "input": 0.8,
+        "output": 2.0,
+        "cacheWrites": 0.8,
+        "cacheReads": 0.2
+      }
+    },
+    "qwen-turbo": {
+      "id": "qwen-turbo",
+      "name": "Qwen Turbo",
+      "description": "Qwen's high-speed model with very large context",
+      "supports": {
+        "images": false,
+        "computerUse": false,
+        "promptCache": false
+      },
+      "limits": {
+        "maxTokens": 1000000,
+        "contextWindow": 1000000
+      },
+      "pricing": {
+        "input": 0.3,
+        "output": 0.6,
+        "cacheWrites": 0.3,
+        "cacheReads": 0.6
+      }
+    },
+    "qwen-max": {
+      "id": "qwen-max",
+      "name": "Qwen Max",
+      "description": "Qwen's most powerful model",
+      "supports": {
+        "images": false,
+        "computerUse": false,
+        "promptCache": false
+      },
+      "limits": {
+        "maxTokens": 30720,
+        "contextWindow": 32768
+      },
+      "pricing": {
+        "input": 2.4,
+        "output": 9.6,
+        "cacheWrites": 2.4,
+        "cacheReads": 9.6
+      }
+    },
+    "deepseek-v3": {
+      "id": "deepseek-v3",
+      "name": "DeepSeek V3",
+      "description": "DeepSeek's general purpose model (on Qwen platform)",
+      "supports": {
+        "images": false,
+        "computerUse": false,
+        "promptCache": true
+      },
+      "limits": {
+        "maxTokens": 8000,
+        "contextWindow": 64000
+      },
+      "pricing": {
+        "input": 0.0,
+        "output": 0.28,
+        "cacheWrites": 0.14,
+        "cacheReads": 0.014
+      }
+    },
+    "deepseek-r1": {
+      "id": "deepseek-r1",
+      "name": "DeepSeek R1",
+      "description": "DeepSeek's reasoning model (on Qwen platform)",
+      "supports": {
+        "images": false,
+        "computerUse": false,
+        "promptCache": true
+      },
+      "limits": {
+        "maxTokens": 8000,
+        "contextWindow": 64000
+      },
+      "pricing": {
+        "input": 0.0,
+        "output": 2.19,
+        "cacheWrites": 0.55,
+        "cacheReads": 0.14
+      }
+    },
+    "qwen-vl-max": {
+      "id": "qwen-vl-max",
+      "name": "Qwen VL Max",
+      "description": "Qwen's vision-language model with image understanding",
+      "supports": {
+        "images": true,
+        "computerUse": false,
+        "promptCache": false
+      },
+      "limits": {
+        "maxTokens": 30720,
+        "contextWindow": 32768
+      },
+      "pricing": {
+        "input": 3.0,
+        "output": 9.0,
+        "cacheWrites": 3.0,
+        "cacheReads": 9.0
+      }
+    },
+    "qwen-vl-max-latest": {
+      "id": "qwen-vl-max-latest",
+      "name": "Qwen VL Max (Latest)",
+      "description": "Latest version of Qwen's vision-language model",
+      "supports": {
+        "images": true,
+        "computerUse": false,
+        "promptCache": false
+      },
+      "limits": {
+        "maxTokens": 129024,
+        "contextWindow": 131072
+      },
+      "pricing": {
+        "input": 3.0,
+        "output": 9.0,
+        "cacheWrites": 3.0,
+        "cacheReads": 9.0
+      }
+    },
+    "qwen-vl-plus": {
+      "id": "qwen-vl-plus",
+      "name": "Qwen VL Plus",
+      "description": "Qwen's mid-tier vision-language model",
+      "supports": {
+        "images": true,
+        "computerUse": false,
+        "promptCache": false
+      },
+      "limits": {
+        "maxTokens": 6000,
+        "contextWindow": 8000
+      },
+      "pricing": {
+        "input": 1.5,
+        "output": 4.5,
+        "cacheWrites": 1.5,
+        "cacheReads": 4.5
+      }
+    },
+    "qwen-vl-plus-latest": {
+      "id": "qwen-vl-plus-latest",
+      "name": "Qwen VL Plus (Latest)",
+      "description": "Latest version of Qwen's mid-tier vision-language model",
+      "supports": {
+        "images": true,
+        "computerUse": false,
+        "promptCache": false
+      },
+      "limits": {
+        "maxTokens": 129024,
+        "contextWindow": 131072
+      },
+      "pricing": {
+        "input": 1.5,
+        "output": 4.5,
+        "cacheWrites": 1.5,
+        "cacheReads": 4.5
+      }
+    }
+  }
+} 

@@ -1,0 +1,27 @@
+{
+  "id": "lmstudio",
+  "name": "LM Studio",
+  "defaultModel": "local-model",
+  "description": "LM Studio allows running various open-source models locally. Models are dynamically loaded from the LM Studio server.",
+  "models": {
+    "local-model": {
+      "id": "local-model",
+      "name": "Local Model",
+      "description": "Generic placeholder for a locally running model via LM Studio",
+      "supports": {
+        "images": false,
+        "computerUse": false,
+        "promptCache": false
+      },
+      "limits": {
+        "maxTokens": 4096,
+        "contextWindow": 8192
+      },
+      "pricing": {
+        "input": 0,
+        "output": 0
+      }
+    }
+  },
+  "dynamicModelLoading": true
+} 

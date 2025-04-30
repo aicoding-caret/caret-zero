@@ -1,0 +1,223 @@
+{
+  "id": "sambanova",
+  "name": "SambaNova",
+  "defaultModel": "Meta-Llama-3.3-70B-Instruct",
+  "models": {
+    "Meta-Llama-3.3-70B-Instruct": {
+      "id": "Meta-Llama-3.3-70B-Instruct",
+      "name": "Meta Llama 3.3 70B Instruct",
+      "description": "Meta's Llama 3.3 70B instruction-tuned model",
+      "supports": {
+        "images": false,
+        "computerUse": false,
+        "promptCache": false
+      },
+      "limits": {
+        "maxTokens": 4096,
+        "contextWindow": 128000
+      },
+      "pricing": {
+        "input": 0,
+        "output": 0
+      }
+    },
+    "DeepSeek-R1-Distill-Llama-70B": {
+      "id": "DeepSeek-R1-Distill-Llama-70B",
+      "name": "DeepSeek R1 Distill Llama 70B",
+      "description": "DeepSeek R1 distilled with Llama architecture (70B)",
+      "supports": {
+        "images": false,
+        "computerUse": false,
+        "promptCache": false
+      },
+      "limits": {
+        "maxTokens": 4096,
+        "contextWindow": 32000
+      },
+      "pricing": {
+        "input": 0,
+        "output": 0
+      }
+    },
+    "Llama-3.1-Swallow-70B-Instruct-v0.3": {
+      "id": "Llama-3.1-Swallow-70B-Instruct-v0.3",
+      "name": "Llama 3.1 Swallow 70B Instruct v0.3",
+      "description": "Llama 3.1 Swallow variant with 70B parameters (instruction-tuned)",
+      "supports": {
+        "images": false,
+        "computerUse": false,
+        "promptCache": false
+      },
+      "limits": {
+        "maxTokens": 4096,
+        "contextWindow": 16000
+      },
+      "pricing": {
+        "input": 0,
+        "output": 0
+      }
+    },
+    "Llama-3.1-Swallow-8B-Instruct-v0.3": {
+      "id": "Llama-3.1-Swallow-8B-Instruct-v0.3",
+      "name": "Llama 3.1 Swallow 8B Instruct v0.3",
+      "description": "Llama 3.1 Swallow variant with 8B parameters (instruction-tuned)",
+      "supports": {
+        "images": false,
+        "computerUse": false,
+        "promptCache": false
+      },
+      "limits": {
+        "maxTokens": 4096,
+        "contextWindow": 16000
+      },
+      "pricing": {
+        "input": 0,
+        "output": 0
+      }
+    },
+    "Meta-Llama-3.1-405B-Instruct": {
+      "id": "Meta-Llama-3.1-405B-Instruct",
+      "name": "Meta Llama 3.1 405B Instruct",
+      "description": "Meta's largest Llama 3.1 model with 405B parameters",
+      "supports": {
+        "images": false,
+        "computerUse": false,
+        "promptCache": false
+      },
+      "limits": {
+        "maxTokens": 4096,
+        "contextWindow": 16000
+      },
+      "pricing": {
+        "input": 0,
+        "output": 0
+      }
+    },
+    "Meta-Llama-3.1-8B-Instruct": {
+      "id": "Meta-Llama-3.1-8B-Instruct",
+      "name": "Meta Llama 3.1 8B Instruct",
+      "description": "Meta's Llama 3.1 model with 8B parameters",
+      "supports": {
+        "images": false,
+        "computerUse": false,
+        "promptCache": false
+      },
+      "limits": {
+        "maxTokens": 4096,
+        "contextWindow": 16000
+      },
+      "pricing": {
+        "input": 0,
+        "output": 0
+      }
+    },
+    "Meta-Llama-3.2-1B-Instruct": {
+      "id": "Meta-Llama-3.2-1B-Instruct",
+      "name": "Meta Llama 3.2 1B Instruct",
+      "description": "Meta's Llama 3.2 model with 1B parameters",
+      "supports": {
+        "images": false,
+        "computerUse": false,
+        "promptCache": false
+      },
+      "limits": {
+        "maxTokens": 4096,
+        "contextWindow": 16000
+      },
+      "pricing": {
+        "input": 0,
+        "output": 0
+      }
+    },
+    "Qwen2.5-72B-Instruct": {
+      "id": "Qwen2.5-72B-Instruct",
+      "name": "Qwen 2.5 72B Instruct",
+      "description": "Qwen 2.5 model with 72B parameters",
+      "supports": {
+        "images": false,
+        "computerUse": false,
+        "promptCache": false
+      },
+      "limits": {
+        "maxTokens": 4096,
+        "contextWindow": 16000
+      },
+      "pricing": {
+        "input": 0,
+        "output": 0
+      }
+    },
+    "Qwen2.5-Coder-32B-Instruct": {
+      "id": "Qwen2.5-Coder-32B-Instruct",
+      "name": "Qwen 2.5 Coder 32B Instruct",
+      "description": "Qwen 2.5 model optimized for coding with 32B parameters",
+      "supports": {
+        "images": false,
+        "computerUse": false,
+        "promptCache": false
+      },
+      "limits": {
+        "maxTokens": 4096,
+        "contextWindow": 16000
+      },
+      "pricing": {
+        "input": 0,
+        "output": 0
+      }
+    },
+    "QwQ-32B-Preview": {
+      "id": "QwQ-32B-Preview",
+      "name": "QwQ 32B Preview",
+      "description": "QwQ model with 32B parameters (preview version)",
+      "supports": {
+        "images": false,
+        "computerUse": false,
+        "promptCache": false
+      },
+      "limits": {
+        "maxTokens": 4096,
+        "contextWindow": 16000
+      },
+      "pricing": {
+        "input": 0,
+        "output": 0
+      }
+    },
+    "QwQ-32B": {
+      "id": "QwQ-32B",
+      "name": "QwQ 32B",
+      "description": "QwQ model with 32B parameters",
+      "supports": {
+        "images": false,
+        "computerUse": false,
+        "promptCache": false
+      },
+      "limits": {
+        "maxTokens": 4096,
+        "contextWindow": 16000
+      },
+      "pricing": {
+        "input": 0.5,
+        "output": 1.0
+      }
+    },
+    "DeepSeek-V3-0324": {
+      "id": "DeepSeek-V3-0324",
+      "name": "DeepSeek V3 (0324)",
+      "description": "DeepSeek V3 model (March 2024 version)",
+      "supports": {
+        "images": false,
+        "computerUse": false,
+        "promptCache": false
+      },
+      "limits": {
+        "maxTokens": 4096,
+        "contextWindow": 8192
+      },
+      "pricing": {
+        "input": 1.0,
+        "output": 1.5
+      }
+    }
+  }
+} 

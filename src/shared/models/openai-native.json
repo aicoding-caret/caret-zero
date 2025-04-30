@@ -1,0 +1,252 @@
+{
+  "id": "openai-native",
+  "name": "OpenAI Native",
+  "defaultModel": "gpt-4.1",
+  "models": {
+    "o3": {
+      "id": "o3",
+      "name": "Claude Opus 3",
+      "description": "Anthropic's Claude Opus 3 model via OpenAI Native",
+      "supports": {
+        "images": true,
+        "computerUse": false,
+        "promptCache": true
+      },
+      "limits": {
+        "maxTokens": 100000,
+        "contextWindow": 200000
+      },
+      "pricing": {
+        "input": 10.0,
+        "output": 40.0,
+        "cacheReads": 2.5
+      }
+    },
+    "o4-mini": {
+      "id": "o4-mini",
+      "name": "Claude Opus 4 Mini",
+      "description": "Anthropic's Claude Opus 4 Mini model via OpenAI Native",
+      "supports": {
+        "images": true,
+        "computerUse": false,
+        "promptCache": true
+      },
+      "limits": {
+        "maxTokens": 100000,
+        "contextWindow": 200000
+      },
+      "pricing": {
+        "input": 1.1,
+        "output": 4.4,
+        "cacheReads": 0.275
+      }
+    },
+    "gpt-4.1": {
+      "id": "gpt-4.1",
+      "name": "GPT-4.1",
+      "description": "OpenAI's GPT-4.1 model",
+      "supports": {
+        "images": true,
+        "computerUse": false,
+        "promptCache": true
+      },
+      "limits": {
+        "maxTokens": 32768,
+        "contextWindow": 1047576
+      },
+      "pricing": {
+        "input": 2.0,
+        "output": 8.0,
+        "cacheReads": 0.5
+      }
+    },
+    "gpt-4.1-mini": {
+      "id": "gpt-4.1-mini",
+      "name": "GPT-4.1 Mini",
+      "description": "OpenAI's GPT-4.1 Mini model",
+      "supports": {
+        "images": true,
+        "computerUse": false,
+        "promptCache": true
+      },
+      "limits": {
+        "maxTokens": 32768,
+        "contextWindow": 1047576
+      },
+      "pricing": {
+        "input": 0.4,
+        "output": 1.6,
+        "cacheReads": 0.1
+      }
+    },
+    "gpt-4.1-nano": {
+      "id": "gpt-4.1-nano",
+      "name": "GPT-4.1 Nano",
+      "description": "OpenAI's GPT-4.1 Nano model",
+      "supports": {
+        "images": true,
+        "computerUse": false,
+        "promptCache": true
+      },
+      "limits": {
+        "maxTokens": 32768,
+        "contextWindow": 1047576
+      },
+      "pricing": {
+        "input": 0.1,
+        "output": 0.4,
+        "cacheReads": 0.025
+      }
+    },
+    "o3-mini": {
+      "id": "o3-mini",
+      "name": "Claude Opus 3 Mini",
+      "description": "Anthropic's Claude Opus 3 Mini model via OpenAI Native",
+      "supports": {
+        "images": false,
+        "computerUse": false,
+        "promptCache": true
+      },
+      "limits": {
+        "maxTokens": 100000,
+        "contextWindow": 200000
+      },
+      "pricing": {
+        "input": 1.1,
+        "output": 4.4,
+        "cacheReads": 0.55
+      }
+    },
+    "o1": {
+      "id": "o1",
+      "name": "Claude Opus 1",
+      "description": "Anthropic's Claude Opus 1 model via OpenAI Native",
+      "supports": {
+        "images": true,
+        "computerUse": false,
+        "promptCache": false
+      },
+      "limits": {
+        "maxTokens": 100000,
+        "contextWindow": 200000
+      },
+      "pricing": {
+        "input": 15.0,
+        "output": 60.0,
+        "cacheReads": 7.5
+      }
+    },
+    "o1-preview": {
+      "id": "o1-preview",
+      "name": "Claude Opus 1 Preview",
+      "description": "Anthropic's Claude Opus 1 Preview model via OpenAI Native",
+      "supports": {
+        "images": true,
+        "computerUse": false,
+        "promptCache": true
+      },
+      "limits": {
+        "maxTokens": 32768,
+        "contextWindow": 128000
+      },
+      "pricing": {
+        "input": 15.0,
+        "output": 60.0,
+        "cacheReads": 7.5
+      }
+    },
+    "o1-mini": {
+      "id": "o1-mini",
+      "name": "Claude Opus 1 Mini",
+      "description": "Anthropic's Claude Opus 1 Mini model via OpenAI Native",
+      "supports": {
+        "images": true,
+        "computerUse": false,
+        "promptCache": true
+      },
+      "limits": {
+        "maxTokens": 65536,
+        "contextWindow": 128000
+      },
+      "pricing": {
+        "input": 1.1,
+        "output": 4.4,
+        "cacheReads": 0.55
+      }
+    },
+    "gpt-4o": {
+      "id": "gpt-4o",
+      "name": "GPT-4o",
+      "description": "OpenAI's GPT-4o model",
+      "supports": {
+        "images": true,
+        "computerUse": false,
+        "promptCache": true
+      },
+      "limits": {
+        "maxTokens": 4096,
+        "contextWindow": 128000
+      },
+      "pricing": {
+        "input": 2.5,
+        "output": 10.0,
+        "cacheReads": 1.25
+      }
+    },
+    "gpt-4o-mini": {
+      "id": "gpt-4o-mini",
+      "name": "GPT-4o Mini",
+      "description": "OpenAI's GPT-4o Mini model",
+      "supports": {
+        "images": true,
+        "computerUse": false,
+        "promptCache": true
+      },
+      "limits": {
+        "maxTokens": 16384,
+        "contextWindow": 128000
+      },
+      "pricing": {
+        "input": 0.15,
+        "output": 0.6,
+        "cacheReads": 0.075
+      }
+    },
+    "chatgpt-4o-latest": {
+      "id": "chatgpt-4o-latest",
+      "name": "ChatGPT 4o Latest",
+      "description": "OpenAI's latest ChatGPT 4o model",
+      "supports": {
+        "images": true,
+        "computerUse": false,
+        "promptCache": false
+      },
+      "limits": {
+        "maxTokens": 16384,
+        "contextWindow": 128000
+      },
+      "pricing": {
+        "input": 5.0,
+        "output": 15.0
+      }
+    },
+    "gpt-4.5-preview": {
+      "id": "gpt-4.5-preview",
+      "name": "GPT-4.5 Preview",
+      "description": "OpenAI's GPT-4.5 Preview model",
+      "supports": {
+        "images": true,
+        "computerUse": false,
+        "promptCache": true
+      },
+      "limits": {
+        "maxTokens": 16384,
+        "contextWindow": 128000
+      },
+      "pricing": {
+        "input": 75.0,
+        "output": 150.0
+      }
+    }
+  }
+} 

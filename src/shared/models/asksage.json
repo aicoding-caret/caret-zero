@@ -1,0 +1,63 @@
+{
+  "id": "asksage",
+  "name": "AskSage",
+  "defaultModel": "claude-35-sonnet",
+  "description": "AskSage API를 통한 다양한 AI 모델",
+  "baseUrl": "https://api.asksage.ai/server",
+  "models": {
+    "gpt-4o": {
+      "id": "gpt-4o",
+      "name": "GPT-4o",
+      "description": "AskSage를 통한 OpenAI의 GPT-4o 모델",
+      "supports": {
+        "images": true,
+        "computerUse": false,
+        "promptCache": true
+      },
+      "limits": {
+        "maxTokens": 4096,
+        "contextWindow": 128000
+      },
+      "pricing": {
+        "input": 0,
+        "output": 0
+      }
+    },
+    "claude-35-sonnet": {
+      "id": "claude-35-sonnet",
+      "name": "Claude 3.5 Sonnet",
+      "description": "AskSage를 통한 Anthropic의 Claude 3.5 Sonnet 모델",
+      "supports": {
+        "images": true,
+        "computerUse": false,
+        "promptCache": true
+      },
+      "limits": {
+        "maxTokens": 4096,
+        "contextWindow": 200000
+      },
+      "pricing": {
+        "input": 0,
+        "output": 0
+      }
+    },
+    "claude-37-sonnet": {
+      "id": "claude-37-sonnet",
+      "name": "Claude 3.7 Sonnet",
+      "description": "AskSage를 통한 Anthropic의 Claude 3.7 Sonnet 모델",
+      "supports": {
+        "images": true,
+        "computerUse": false,
+        "promptCache": true
+      },
+      "limits": {
+        "maxTokens": 4096,
+        "contextWindow": 200000
+      },
+      "pricing": {
+        "input": 0,
+        "output": 0
+      }
+    }
+  }
+} 

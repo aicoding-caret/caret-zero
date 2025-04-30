@@ -1,0 +1,29 @@
+{
+  "id": "requesty",
+  "name": "Requesty",
+  "defaultModel": "anthropic/claude-3-7-sonnet-latest",
+  "description": "Requesty.ai is a service that provides access to various AI models through a unified API",
+  "models": {
+    "anthropic/claude-3-7-sonnet-latest": {
+      "id": "anthropic/claude-3-7-sonnet-latest",
+      "name": "Claude 3.7 Sonnet (Latest)",
+      "description": "Anthropic's most intelligent model. Highest level of intelligence and capability.",
+      "supports": {
+        "images": true,
+        "computerUse": false,
+        "promptCache": true
+      },
+      "limits": {
+        "maxTokens": 8192,
+        "contextWindow": 200000
+      },
+      "pricing": {
+        "input": 3.0,
+        "output": 15.0,
+        "cacheWrites": 3.75,
+        "cacheReads": 0.3
+      }
+    }
+  },
+  "dynamicModelLoading": true
+} 

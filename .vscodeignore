@@ -5,6 +5,21 @@ models_temp/** # Ignore temporary model files (moved higher)
 out/**
 node_modules/**
 src/**
+back/**
+caret-docs/**
+cline/**
+docs/** 
+experiment/**
+locales/** 
+**/node_modules/**
+private-cline/**
+release/**
+scripts/**
+sllm-servers/**
+test/**
+**/src/**
+
+
 .gitignore
 .yarnrc
 esbuild.js
@@ -14,6 +29,12 @@ vsc-extension-quickstart.md
 **/*.map
 **/*.ts
 **/.vscode-test.*
+**/test/**
+**/*.map
+**/README.md
+**/docs/**
+**/.git/**
+
 
 # Custom
 demo.gif
@@ -23,7 +44,7 @@ demo.gif
 
 # Development/Repo specific folders
 caret-upstream/**
-private-cline/**
+cline/**
 models_backup/**
 sllm/**
 experiment/**
@@ -68,6 +89,7 @@ docs/**
 !assets/*.png
 !assets/agent_*.png
 !assets/default_*.png
+!assets/template_characters/**
 
 # Include banner images
 !assets/imgs/**

@@ -1,0 +1,45 @@
+{
+  "id": "vscode-lm",
+  "name": "VS Code Language Model",
+  "defaultModel": "copilot-gpt-4",
+  "description": "VS Code의 언어 모델 API를 통해 접근할 수 있는 모델들입니다. GitHub Copilot Chat이 설치된 환경에서 사용 가능합니다.",
+  "models": {
+    "copilot-gpt-4": {
+      "id": "copilot-gpt-4",
+      "name": "Copilot GPT-4",
+      "description": "GitHub Copilot의 GPT-4 모델",
+      "supports": {
+        "images": false,
+        "computerUse": false,
+        "promptCache": false
+      },
+      "limits": {
+        "maxTokens": 4096,
+        "contextWindow": 128000
+      },
+      "pricing": {
+        "input": 0,
+        "output": 0
+      }
+    },
+    "copilot-gpt-3.5": {
+      "id": "copilot-gpt-3.5",
+      "name": "Copilot GPT-3.5",
+      "description": "GitHub Copilot의 GPT-3.5 모델",
+      "supports": {
+        "images": false,
+        "computerUse": false,
+        "promptCache": false
+      },
+      "limits": {
+        "maxTokens": 4096,
+        "contextWindow": 16000
+      },
+      "pricing": {
+        "input": 0,
+        "output": 0
+      }
+    }
+  },
+  "dynamicModelLoading": true
+} 

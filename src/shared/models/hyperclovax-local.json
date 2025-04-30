@@ -1,0 +1,12 @@
+{
+  "naver-hyperclovax/HyperCLOVAX-SEED-Vision-Instruct-3B": {
+    "contextWindow": 16384,
+    "maxTokens": 8192,
+    "supportsImages": true,
+    "supportsComputerUse": false,
+    "supportsPromptCache": false,
+    "inputPrice": 0,
+    "outputPrice": 0,
+    "description": "Naver's HyperCLOVA X SEED Vision Instruct 3B (3.2B LLM + 0.43B Vision) model. LLaVA-based architecture run locally using Transformers/PyTorch. Supports multimodal input (text, image, video) with 16k context length. Optimized for Korean language tasks. Knowledge cutoff: August 2024."
+  }
+}

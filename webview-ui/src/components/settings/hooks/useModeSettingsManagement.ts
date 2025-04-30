@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { vscode } from "../../../utils/vscode";
 import { WebviewMessage } from "../../../../../src/shared/WebviewMessage";
 import { ModeSettingsData } from "../mode_settings_ui/ModeTabContent"; // Import shared type
@@ -24,8 +24,15 @@ export const useModeSettingsManagement = () => {
   const [initialModeSettings, setInitialModeSettings] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(true); // Add loading state
 
+  // 중복 호출 방지용 ref
+  const hasRequestedConfig = useRef(false);
+
   // Effect for loading initial settings from modes.json
   useEffect(() => {
+    if (hasRequestedConfig.current) {
+      return;
+    }
+    hasRequestedConfig.current = true;
     setIsLoading(true);
     console.log("[useModeSettingsManagement] Initial load effect triggered. Requesting modes config...");
     const loadConfigMessage: WebviewMessage = { type: "loadModesConfig" };

@@ -87,7 +87,23 @@ export class Controller {
 		}
 
 		this.workspaceTracker = new WorkspaceTracker(this)
-		this.mcpHub = new McpHub(this)
+		// MCP: cline 스타일로 의존성 주입
+		this.mcpHub = new McpHub(
+			async () => {
+				return path.join(this.context.globalStorageUri.fsPath, "mcp-servers")
+			},
+			async () => {
+				return path.join(this.context.globalStorageUri.fsPath, "settings")
+			},
+			async (message: any) => {
+				// webviewProvider가 있으면 메시지 전달
+				const provider = this.webviewProviderRef.deref()
+				if (provider) {
+					await provider.postMessage(message)
+				}
+			},
+			this.context.extension.packageJSON?.version ?? "1.0.0"
+		)
 		this.accountService = new CaretAccountService(this)
 
 		// 모드 목록 초기 로드 (웹뷰에서도 다시 로드됨)
@@ -1459,6 +1475,37 @@ export class Controller {
 				}
 				break
 			}
+			// [ALPHA] Handle template character JSON URI request from webview
+			case "requestTemplateCharacters": {
+				this.logger.log("[PersonaSettings] template 캐릭터 로딩 요청 수신 - template_characters.json 로드 시작")
+				try {
+					const jsonFilePath = vscode.Uri.joinPath(this.context.extensionUri, "assets", "template_characters", "template_characters.json");
+					const fs = require("fs");
+					const exists = fs.existsSync(jsonFilePath.fsPath);
+					if (!exists) {
+						this.logger.error("[PersonaSettings] template_characters.json 파일이 존재하지 않음:", jsonFilePath.fsPath);
+						await this.postMessageToWebview({
+							type: "templateCharactersLoaded",
+							text: "[]"
+						} as import("../../shared/ExtensionMessage").ExtensionMessage);
+						break;
+					}
+					const jsonStr = fs.readFileSync(jsonFilePath.fsPath, "utf-8");
+					this.logger.log("[PersonaSettings] template_characters.json 파일 읽기 성공, 내용 일부:", jsonStr.slice(0, 80));
+					await this.postMessageToWebview({
+						type: "templateCharactersLoaded",
+						text: jsonStr
+					} as import("../../shared/ExtensionMessage").ExtensionMessage);
+					this.logger.log("[PersonaSettings] template_characters.json 데이터 전송 완료:", jsonFilePath.fsPath);
+				} catch (err) {
+					this.logger.error("[PersonaSettings] template_characters.json 로드 실패:", err);
+					await this.postMessageToWebview({
+						type: "templateCharactersLoaded",
+						text: "[]"
+					} as import("../../shared/ExtensionMessage").ExtensionMessage);
+				}
+				break;
+			}
 			// Add more switch case statements here as more webview message commands
 			// are created within the webview context (i.e. inside media/main.js)
 		}
@@ -1799,12 +1846,6 @@ export class Controller {
 			return "~/Documents/Caret/MCP" // in case creating a directory in documents fails for whatever reason (e.g. permissions) - this is fine since this path is only ever used in the system prompt
 		}
 		return mcpServersDir
-	}
-
-	async ensureSettingsDirectoryExists(): Promise<string> {
-		const settingsDir = path.join(this.context.globalStorageUri.fsPath, "settings")
-		await fs.mkdir(settingsDir, { recursive: true })
-		return settingsDir
 	}
 
 	// VSCode LM API

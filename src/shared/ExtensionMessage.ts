@@ -86,7 +86,12 @@ export interface ExtensionMessage {
 		| "relativePathsResponse" // Handles single and multiple path responses
 		| "fileSearchResults"
 		| "modesConfigLoaded"
+		| "templateCharactersJsonUri" // [ALPHA] Added for persona/character support
+		| "requestTemplateCharactersJsonUri" // [ALPHA] Added for persona/character support
+		| "templateCharactersLoaded" // [ALPHA] Persona template character response
+		| "requestTemplateCharacters" // [ALPHA] Persona template character request
 	text?: string
+	uri?: string // [ALPHA] Added for persona/character support, templateCharactersJsonUri
 	paths?: (string | null)[] // Used for relativePathsResponse
 	action?:
 		| "chatButtonClicked"

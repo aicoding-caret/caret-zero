@@ -1,0 +1,177 @@
+{
+  "id": "mistral",
+  "name": "Mistral AI",
+  "defaultModel": "codestral-2501",
+  "models": {
+    "mistral-large-2411": {
+      "id": "mistral-large-2411",
+      "name": "Mistral Large 2411",
+      "description": "Mistral's flagship large model with 131K context window",
+      "supports": {
+        "images": false,
+        "promptCache": false
+      },
+      "limits": {
+        "maxTokens": 131000,
+        "contextWindow": 131000
+      },
+      "pricing": {
+        "input": 2.0,
+        "output": 6.0
+      }
+    },
+    "pixtral-large-2411": {
+      "id": "pixtral-large-2411",
+      "name": "Pixtral Large 2411",
+      "description": "Mistral's multimodal large model with 131K context window",
+      "supports": {
+        "images": true,
+        "promptCache": false
+      },
+      "limits": {
+        "maxTokens": 131000,
+        "contextWindow": 131000
+      },
+      "pricing": {
+        "input": 2.0,
+        "output": 6.0
+      }
+    },
+    "ministral-3b-2410": {
+      "id": "ministral-3b-2410",
+      "name": "Ministral 3B 2410",
+      "description": "Mistral's 3B parameter model with 131K context window",
+      "supports": {
+        "images": false,
+        "promptCache": false
+      },
+      "limits": {
+        "maxTokens": 131000,
+        "contextWindow": 131000
+      },
+      "pricing": {
+        "input": 0.04,
+        "output": 0.04
+      }
+    },
+    "ministral-8b-2410": {
+      "id": "ministral-8b-2410",
+      "name": "Ministral 8B 2410",
+      "description": "Mistral's 8B parameter model with 131K context window",
+      "supports": {
+        "images": false,
+        "promptCache": false
+      },
+      "limits": {
+        "maxTokens": 131000,
+        "contextWindow": 131000
+      },
+      "pricing": {
+        "input": 0.1,
+        "output": 0.1
+      }
+    },
+    "mistral-small-latest": {
+      "id": "mistral-small-latest",
+      "name": "Mistral Small (Latest)",
+      "description": "Mistral's small model with 131K context window and image support",
+      "supports": {
+        "images": true,
+        "promptCache": false
+      },
+      "limits": {
+        "maxTokens": 131000,
+        "contextWindow": 131000
+      },
+      "pricing": {
+        "input": 0.1,
+        "output": 0.3
+      }
+    },
+    "mistral-small-2501": {
+      "id": "mistral-small-2501",
+      "name": "Mistral Small 2501",
+      "description": "Mistral's small model with 32K context window",
+      "supports": {
+        "images": false,
+        "promptCache": false
+      },
+      "limits": {
+        "maxTokens": 32000,
+        "contextWindow": 32000
+      },
+      "pricing": {
+        "input": 0.1,
+        "output": 0.3
+      }
+    },
+    "pixtral-12b-2409": {
+      "id": "pixtral-12b-2409",
+      "name": "Pixtral 12B 2409",
+      "description": "Mistral's 12B parameter multimodal model with 131K context window",
+      "supports": {
+        "images": true,
+        "promptCache": false
+      },
+      "limits": {
+        "maxTokens": 131000,
+        "contextWindow": 131000
+      },
+      "pricing": {
+        "input": 0.15,
+        "output": 0.15
+      }
+    },
+    "open-mistral-nemo-2407": {
+      "id": "open-mistral-nemo-2407",
+      "name": "Open Mistral Nemo 2407",
+      "description": "Open Mistral Nemo model with 131K context window",
+      "supports": {
+        "images": false,
+        "promptCache": false
+      },
+      "limits": {
+        "maxTokens": 131000,
+        "contextWindow": 131000
+      },
+      "pricing": {
+        "input": 0.15,
+        "output": 0.15
+      }
+    },
+    "open-codestral-mamba": {
+      "id": "open-codestral-mamba",
+      "name": "Open Codestral Mamba",
+      "description": "Open Codestral model with 256K context window",
+      "supports": {
+        "images": false,
+        "promptCache": false
+      },
+      "limits": {
+        "maxTokens": 256000,
+        "contextWindow": 256000
+      },
+      "pricing": {
+        "input": 0.15,
+        "output": 0.15
+      }
+    },
+    "codestral-2501": {
+      "id": "codestral-2501",
+      "name": "Codestral 2501",
+      "description": "Mistral's specialized coding model with 256K context window",
+      "supports": {
+        "images": false,
+        "promptCache": false
+      },
+      "limits": {
+        "maxTokens": 256000,
+        "contextWindow": 256000
+      },
+      "pricing": {
+        "input": 0.3,
+        "output": 0.9
+      }
+    }
+  }
+} 

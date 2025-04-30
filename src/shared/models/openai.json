@@ -1,0 +1,147 @@
+{
+  "id": "openai",
+  "name": "OpenAI",
+  "defaultModel": "gpt-4o-2024-05-13",
+  "models": {
+    "gpt-4o-2024-05-13": {
+      "id": "gpt-4o-2024-05-13",
+      "name": "GPT-4o",
+      "description": "OpenAI's GPT-4o model with improved capabilities",
+      "supports": {
+        "images": true,
+        "computerUse": true,
+        "promptCache": true
+      },
+      "limits": {
+        "maxTokens": 4096,
+        "contextWindow": 128000
+      },
+      "pricing": {
+        "input": 5.0,
+        "output": 15.0,
+        "cacheWrites": 6.25,
+        "cacheReads": 0.5
+      }
+    },
+    "gpt-4-1106-preview": {
+      "id": "gpt-4-1106-preview",
+      "name": "GPT-4 Turbo",
+      "description": "OpenAI's GPT-4 Turbo preview model",
+      "supports": {
+        "images": true,
+        "computerUse": true,
+        "promptCache": true
+      },
+      "limits": {
+        "maxTokens": 4096,
+        "contextWindow": 128000
+      },
+      "pricing": {
+        "input": 10.0,
+        "output": 30.0,
+        "cacheWrites": 12.5,
+        "cacheReads": 1.0
+      }
+    },
+    "gpt-4-turbo-2024-04-09": {
+      "id": "gpt-4-turbo-2024-04-09",
+      "name": "GPT-4 Turbo (04/09)",
+      "description": "OpenAI's GPT-4 Turbo updated model",
+      "supports": {
+        "images": true,
+        "computerUse": true,
+        "promptCache": true
+      },
+      "limits": {
+        "maxTokens": 4096,
+        "contextWindow": 128000
+      },
+      "pricing": {
+        "input": 10.0,
+        "output": 30.0,
+        "cacheWrites": 12.5,
+        "cacheReads": 1.0
+      }
+    },
+    "gpt-4-vision-preview": {
+      "id": "gpt-4-vision-preview",
+      "name": "GPT-4 Vision",
+      "description": "OpenAI's GPT-4 with enhanced vision capabilities",
+      "supports": {
+        "images": true,
+        "computerUse": true,
+        "promptCache": true
+      },
+      "limits": {
+        "maxTokens": 4096,
+        "contextWindow": 128000
+      },
+      "pricing": {
+        "input": 10.0,
+        "output": 30.0,
+        "cacheWrites": 12.5,
+        "cacheReads": 1.0
+      }
+    },
+    "gpt-4": {
+      "id": "gpt-4",
+      "name": "GPT-4",
+      "description": "OpenAI's GPT-4 base model",
+      "supports": {
+        "images": false,
+        "computerUse": true,
+        "promptCache": true
+      },
+      "limits": {
+        "maxTokens": 4096,
+        "contextWindow": 8192
+      },
+      "pricing": {
+        "input": 30.0,
+        "output": 60.0,
+        "cacheWrites": 37.5,
+        "cacheReads": 3.0
+      }
+    },
+    "gpt-3.5-turbo": {
+      "id": "gpt-3.5-turbo",
+      "name": "GPT-3.5 Turbo",
+      "description": "OpenAI's GPT-3.5 Turbo model",
+      "supports": {
+        "images": false,
+        "computerUse": true,
+        "promptCache": true
+      },
+      "limits": {
+        "maxTokens": 4096,
+        "contextWindow": 16385
+      },
+      "pricing": {
+        "input": 0.5,
+        "output": 1.5,
+        "cacheWrites": 0.625,
+        "cacheReads": 0.05
+      }
+    },
+    "gpt-3.5-turbo-0125": {
+      "id": "gpt-3.5-turbo-0125",
+      "name": "GPT-3.5 Turbo (01/25)",
+      "description": "OpenAI's GPT-3.5 Turbo updated version",
+      "supports": {
+        "images": false,
+        "computerUse": true,
+        "promptCache": true
+      },
+      "limits": {
+        "maxTokens": 4096,
+        "contextWindow": 16385
+      },
+      "pricing": {
+        "input": 0.5,
+        "output": 1.5,
+        "cacheWrites": 0.625,
+        "cacheReads": 0.05
+      }
+    }
+  }
+} 

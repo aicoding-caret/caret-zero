@@ -1,0 +1,63 @@
+{
+  "id": "together",
+  "name": "Together AI",
+  "defaultModel": "meta-llama/Llama-3-70b-chat-hf",
+  "description": "Together AI provides access to a wide range of open and closed source models",
+  "models": {
+    "meta-llama/Llama-3-70b-chat-hf": {
+      "id": "meta-llama/Llama-3-70b-chat-hf",
+      "name": "Llama 3 70B Chat",
+      "description": "Meta's Llama 3 70B parameter chat model",
+      "supports": {
+        "images": false,
+        "computerUse": false,
+        "promptCache": false
+      },
+      "limits": {
+        "maxTokens": 4096,
+        "contextWindow": 8192
+      },
+      "pricing": {
+        "input": 0.9,
+        "output": 0.9
+      }
+    },
+    "mistralai/Mistral-7B-Instruct-v0.2": {
+      "id": "mistralai/Mistral-7B-Instruct-v0.2",
+      "name": "Mistral 7B Instruct v0.2",
+      "description": "Mistral AI's 7B parameter instruction model",
+      "supports": {
+        "images": false,
+        "computerUse": false,
+        "promptCache": false
+      },
+      "limits": {
+        "maxTokens": 4096,
+        "contextWindow": 8192
+      },
+      "pricing": {
+        "input": 0.2,
+        "output": 0.2
+      }
+    },
+    "meta-llama/Llama-3-8b-chat-hf": {
+      "id": "meta-llama/Llama-3-8b-chat-hf",
+      "name": "Llama 3 8B Chat",
+      "description": "Meta's Llama 3 8B parameter chat model",
+      "supports": {
+        "images": false,
+        "computerUse": false,
+        "promptCache": false
+      },
+      "limits": {
+        "maxTokens": 4096,
+        "contextWindow": 8192
+      },
+      "pricing": {
+        "input": 0.2,
+        "output": 0.2
+      }
+    }
+  },
+  "dynamicModelLoading": true
+} 

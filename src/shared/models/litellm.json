@@ -1,0 +1,29 @@
+{
+  "id": "litellm",
+  "name": "LiteLLM",
+  "defaultModel": "gpt-3.5-turbo",
+  "description": "다양한 모델에 통합 접근 인터페이스를 제공합니다.",
+  "models": {
+    "gpt-3.5-turbo": {
+      "id": "gpt-3.5-turbo",
+      "name": "GPT-3.5 Turbo",
+      "description": "LiteLLM을 통한 기본 모델",
+      "supports": {
+        "images": true,
+        "computerUse": false,
+        "promptCache": true
+      },
+      "limits": {
+        "maxTokens": -1,
+        "contextWindow": 128000
+      },
+      "pricing": {
+        "input": 0,
+        "output": 0,
+        "cacheWrites": 0,
+        "cacheReads": 0
+      }
+    }
+  },
+  "dynamicModelLoading": true
+} 

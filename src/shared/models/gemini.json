@@ -1,0 +1,265 @@
+{
+  "id": "gemini",
+  "name": "Google Gemini",
+  "defaultModel": "gemini-2.0-flash-001",
+  "models": {
+    "gemini-2.5-pro-exp-03-25": {
+      "id": "gemini-2.5-pro-exp-03-25",
+      "name": "Gemini 2.5 Pro Exp",
+      "description": "Google's Gemini 2.5 Pro experimental model",
+      "supports": {
+        "images": true,
+        "computerUse": false,
+        "promptCache": false
+      },
+      "limits": {
+        "maxTokens": 65536,
+        "contextWindow": 1048576
+      },
+      "pricing": {
+        "input": 0,
+        "output": 0
+      }
+    },
+    "gemini-2.5-pro-preview-03-25": {
+      "id": "gemini-2.5-pro-preview-03-25",
+      "name": "Gemini 2.5 Pro Preview",
+      "description": "Google's Gemini 2.5 Pro preview model with tiered pricing",
+      "supports": {
+        "images": true,
+        "computerUse": false,
+        "promptCache": false
+      },
+      "limits": {
+        "maxTokens": 65536,
+        "contextWindow": 1048576
+      },
+      "pricing": {
+        "inputTiers": [
+          { "tokenLimit": 200000, "price": 1.25 },
+          { "tokenLimit": 9999999999, "price": 2.5 }
+        ],
+        "outputTiers": [
+          { "tokenLimit": 200000, "price": 10.0 },
+          { "tokenLimit": 9999999999, "price": 15.0 }
+        ]
+      }
+    },
+    "gemini-2.0-flash-001": {
+      "id": "gemini-2.0-flash-001",
+      "name": "Gemini 2.0 Flash",
+      "description": "Google's Gemini 2.0, optimized for speed",
+      "supports": {
+        "images": true,
+        "computerUse": false,
+        "promptCache": false
+      },
+      "limits": {
+        "maxTokens": 8192,
+        "contextWindow": 1048576
+      },
+      "pricing": {
+        "input": 0,
+        "output": 0
+      }
+    },
+    "gemini-2.0-flash-lite-preview-02-05": {
+      "id": "gemini-2.0-flash-lite-preview-02-05",
+      "name": "Gemini 2.0 Flash Lite Preview",
+      "description": "Lightweight version of Gemini 2.0 Flash",
+      "supports": {
+        "images": true,
+        "computerUse": false,
+        "promptCache": false
+      },
+      "limits": {
+        "maxTokens": 8192,
+        "contextWindow": 1048576
+      },
+      "pricing": {
+        "input": 0,
+        "output": 0
+      }
+    },
+    "gemini-2.0-pro-exp-02-05": {
+      "id": "gemini-2.0-pro-exp-02-05",
+      "name": "Gemini 2.0 Pro Exp",
+      "description": "Experimental version of Gemini 2.0 Pro",
+      "supports": {
+        "images": true,
+        "computerUse": false,
+        "promptCache": false
+      },
+      "limits": {
+        "maxTokens": 8192,
+        "contextWindow": 2097152
+      },
+      "pricing": {
+        "input": 0,
+        "output": 0
+      }
+    },
+    "gemini-2.0-flash-thinking-exp-01-21": {
+      "id": "gemini-2.0-flash-thinking-exp-01-21",
+      "name": "Gemini 2.0 Flash Thinking Exp (01-21)",
+      "description": "Experimental thinking-focused model",
+      "supports": {
+        "images": true,
+        "computerUse": false,
+        "promptCache": false
+      },
+      "limits": {
+        "maxTokens": 65536,
+        "contextWindow": 1048576
+      },
+      "pricing": {
+        "input": 0,
+        "output": 0
+      }
+    },
+    "gemini-2.0-flash-thinking-exp-1219": {
+      "id": "gemini-2.0-flash-thinking-exp-1219",
+      "name": "Gemini 2.0 Flash Thinking Exp (12-19)",
+      "description": "Experimental thinking-focused model",
+      "supports": {
+        "images": true,
+        "computerUse": false,
+        "promptCache": false
+      },
+      "limits": {
+        "maxTokens": 8192,
+        "contextWindow": 32767
+      },
+      "pricing": {
+        "input": 0,
+        "output": 0
+      }
+    },
+    "gemini-2.0-flash-exp": {
+      "id": "gemini-2.0-flash-exp",
+      "name": "Gemini 2.0 Flash Exp",
+      "description": "Experimental version of Gemini 2.0 Flash",
+      "supports": {
+        "images": true,
+        "computerUse": false,
+        "promptCache": false
+      },
+      "limits": {
+        "maxTokens": 8192,
+        "contextWindow": 1048576
+      },
+      "pricing": {
+        "input": 0,
+        "output": 0
+      }
+    },
+    "gemini-1.5-flash-002": {
+      "id": "gemini-1.5-flash-002",
+      "name": "Gemini 1.5 Flash",
+      "description": "Gemini 1.5 Flash model",
+      "supports": {
+        "images": true,
+        "computerUse": false,
+        "promptCache": false
+      },
+      "limits": {
+        "maxTokens": 8192,
+        "contextWindow": 1048576
+      },
+      "pricing": {
+        "input": 0,
+        "output": 0
+      }
+    },
+    "gemini-1.5-flash-exp-0827": {
+      "id": "gemini-1.5-flash-exp-0827",
+      "name": "Gemini 1.5 Flash Exp",
+      "description": "Experimental version of Gemini 1.5 Flash",
+      "supports": {
+        "images": true,
+        "computerUse": false,
+        "promptCache": false
+      },
+      "limits": {
+        "maxTokens": 8192,
+        "contextWindow": 1048576
+      },
+      "pricing": {
+        "input": 0,
+        "output": 0
+      }
+    },
+    "gemini-1.5-flash-8b-exp-0827": {
+      "id": "gemini-1.5-flash-8b-exp-0827",
+      "name": "Gemini 1.5 Flash 8B Exp",
+      "description": "8B parameter version of Gemini 1.5 Flash",
+      "supports": {
+        "images": true,
+        "computerUse": false,
+        "promptCache": false
+      },
+      "limits": {
+        "maxTokens": 8192,
+        "contextWindow": 1048576
+      },
+      "pricing": {
+        "input": 0,
+        "output": 0
+      }
+    },
+    "gemini-1.5-pro-002": {
+      "id": "gemini-1.5-pro-002",
+      "name": "Gemini 1.5 Pro",
+      "description": "Gemini 1.5 Pro model",
+      "supports": {
+        "images": true,
+        "computerUse": false,
+        "promptCache": false
+      },
+      "limits": {
+        "maxTokens": 8192,
+        "contextWindow": 2097152
+      },
+      "pricing": {
+        "input": 0,
+        "output": 0
+      }
+    },
+    "gemini-1.5-pro-exp-0827": {
+      "id": "gemini-1.5-pro-exp-0827",
+      "name": "Gemini 1.5 Pro Exp",
+      "description": "Experimental version of Gemini 1.5 Pro",
+      "supports": {
+        "images": true,
+        "computerUse": false,
+        "promptCache": false
+      },
+      "limits": {
+        "maxTokens": 8192,
+        "contextWindow": 2097152
+      },
+      "pricing": {
+        "input": 0,
+        "output": 0
+      }
+    },
+    "gemini-exp-1206": {
+      "id": "gemini-exp-1206",
+      "name": "Gemini Exp (12-06)",
+      "description": "Experimental Gemini model",
+      "supports": {
+        "images": true,
+        "computerUse": false,
+        "promptCache": false
+      },
+      "limits": {
+        "maxTokens": 8192,
+        "contextWindow": 2097152
+      },
+      "pricing": {
+        "input": 0,
+        "output": 0
+      }
+    }
+  }
+} 
