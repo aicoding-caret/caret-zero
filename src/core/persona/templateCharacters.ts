@@ -40,22 +40,36 @@ export class TemplateCharacterManager {
   public loadTemplateCharacters(): TemplateCharacter[] {
     this.logger.log("[TemplateCharacterManager] 템플릿 캐릭터 로드 시작");
     try {
-      const jsonFilePath = vscode.Uri.joinPath(this.extensionContext.extensionUri, "assets", "template_characters", "template_characters.json");
-      
-      // 파일 존재 확인
+      const jsonFilePath = vscode.Uri.joinPath(
+        this.extensionContext.extensionUri,
+        "assets",
+        "template_characters",
+        "template_characters.json"
+      );
       if (!fs.existsSync(jsonFilePath.fsPath)) {
-        this.logger.error("[TemplateCharacterManager] template_characters.json 파일이 존재하지 않음:", jsonFilePath.fsPath);
         return [];
       }
-      
-      // JSON 파일 읽기
       const jsonStr = fs.readFileSync(jsonFilePath.fsPath, "utf-8");
-      this.logger.log("[TemplateCharacterManager] template_characters.json 파일 읽기 성공");
-      
-      // JSON 파싱
-      const templateCharacters = JSON.parse(jsonStr);
-      this.logger.log("[TemplateCharacterManager] 템플릿 캐릭터 데이터 파싱 성공", { count: templateCharacters.length });
-      
+      const rawList = JSON.parse(jsonStr);
+  
+      // 언어 우선순위 결정 (예: 시스템 locale, 기본값 en)
+      const lang = "ko"; // 또는 "en" 등 동적으로 결정
+  
+      const templateCharacters: TemplateCharacter[] = rawList.map((raw: any) => {
+        const localeData = raw[lang] ?? raw["en"] ?? {};
+        return {
+          id: raw.character ?? "",
+          name: localeData.name ?? "",
+          description: localeData.description ?? "",
+          avatarUri: raw.avatarUri ?? "",
+          thinkingAvatarUri: raw.thinkingAvatarUri,
+          introIllustrationUri: raw.introIllustrationUri,
+          customInstructions: localeData.customInstruction
+            ? JSON.stringify(localeData.customInstruction)
+            : undefined,
+        };
+      });
+  
       return templateCharacters;
     } catch (err) {
       this.logger.error("[TemplateCharacterManager] 템플릿 캐릭터 로드 실패:", err);

@@ -1,5 +1,5 @@
 // TemplateCharacterSelectModal: 상단 아바타 탭 + 하단 상세 미리보기형으로 완전 재구현
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 // --- Modal import 경로 lint 오류 수정 ---
 // 기존: import Modal from '../../common/Modal';
@@ -131,6 +131,15 @@ const TemplateCharacterSelectModal: React.FC<Props> = ({ characters, language, o
       ? character.introIllustrationUri.replace("asset:/", "/assets/")
       : "/assets/template_characters/default_illustration.png";
   };
+
+  useEffect(() => {
+    if (window.vscode && typeof window.vscode.postMessage === "function") {
+      window.vscode.postMessage({ type: "requestTemplateCharacters" });
+      console.log("[TemplateCharacterSelectModal] requestTemplateCharacters 메시지 전송!");
+    } else {
+      console.warn("[TemplateCharacterSelectModal] vscode API를 찾을 수 없습니다.");
+    }
+  }, []);
 
   return (
     <Modal onClose={onClose} title="AI에이전트 템플릿 캐릭터 설정">
