@@ -23,23 +23,19 @@ export class PersonaManager {
   }
 
   static restoreDefaultPersonas(workspaceRoot: string, defaultPersonas: Persona[]): void {
-    let personas = this.loadPersonas(workspaceRoot);
-    // 커스텀 퍼소나는 남기고, 기본 퍼소나만 교체
-    const custom = personas.filter(p => !p.isDefault);
-    this.savePersonas(workspaceRoot, [...defaultPersonas, ...custom]);
+    // 기본 퍼소나만 저장 (단일 퍼소나)
+    if (defaultPersonas.length > 0) {
+      this.savePersonas(workspaceRoot, [defaultPersonas[0]]);
+    }
   }
 
   static deletePersona(workspaceRoot: string, personaId: string): void {
-    let personas = this.loadPersonas(workspaceRoot);
-    personas = personas.filter(p => p.id !== personaId);
-    this.savePersonas(workspaceRoot, personas);
+    // 퍼소나 삭제 시 빈 배열 저장 (단일 퍼소나 시스템에서는 삭제 = 비우기)
+    this.savePersonas(workspaceRoot, []);
   }
 
   static addOrUpdatePersona(workspaceRoot: string, persona: Persona): void {
-    let personas = this.loadPersonas(workspaceRoot);
-    const idx = personas.findIndex(p => p.id === persona.id);
-    if (idx >= 0) personas[idx] = persona;
-    else personas.push(persona);
-    this.savePersonas(workspaceRoot, personas);
+    // 단일 퍼소나만 저장 (이전 퍼소나는 모두 덮어쓰기)
+    this.savePersonas(workspaceRoot, [persona]);
   }
 }

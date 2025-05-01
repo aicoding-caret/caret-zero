@@ -10,6 +10,7 @@ import { BrowserSettings } from "../../shared/BrowserSettings"
 import { ChatSettings } from "../../shared/ChatSettings"
 import { TelemetrySetting } from "../../shared/TelemetrySetting"
 import { UserInfo } from "../../shared/UserInfo"
+import { Persona } from "../../shared/types"
 /*
 	Storage
 	https://dev.to/kompotkot/how-to-use-secretstorage-in-your-vscode-extensions-2hco
@@ -52,8 +53,7 @@ export async function getWorkspaceState(context: vscode.ExtensionContext, key: s
 
 export async function getAllExtensionState(context: vscode.ExtensionContext) {
 	// --- Persona Management 확장: persona 관련 상태 가져오기 ---
-	const personaList = await getGlobalState(context, "personaList") as import("../../shared/types").Persona[] | undefined
-	const selectedPersonaId = await getGlobalState(context, "selectedPersonaId") as string | undefined
+	const persona = await getGlobalState(context, "persona") as Persona | undefined
 	const selectedLanguage = await getGlobalState(context, "selectedLanguage") as string | undefined
 	const supportedLanguages = await getGlobalState(context, "supportedLanguages") as string[] | undefined
 	const [
@@ -301,8 +301,7 @@ export async function getAllExtensionState(context: vscode.ExtensionContext) {
 		mcpMarketplaceEnabled,
 		telemetrySetting: telemetrySetting || "unset",
 		planActSeparateModelsSetting,
-		personaList,
-		selectedPersonaId,
+		persona,
 		selectedLanguage,
 		supportedLanguages,
 	}
@@ -425,8 +424,7 @@ export async function resetExtensionState(context: vscode.ExtensionContext) {
 		await context.globalState.update(key, undefined)
 	}
 	// --- Persona Management 확장: persona 관련 상태도 초기화 ---
-	await updateGlobalState(context, "personaList", undefined)
-	await updateGlobalState(context, "selectedPersonaId", undefined)
+	await updateGlobalState(context, "persona", undefined)
 	await updateGlobalState(context, "selectedLanguage", undefined)
 	await updateGlobalState(context, "supportedLanguages", undefined)
 

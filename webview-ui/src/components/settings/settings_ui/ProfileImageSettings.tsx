@@ -49,18 +49,14 @@ interface ProfileImageSettingsProps {
   defaultImage: string | undefined;
   thinkingImage: string | undefined;
   onSelectDefaultImage: () => void;
-  onResetDefaultImage: () => void;
   onSelectThinkingImage: () => void;
-  onResetThinkingImage: () => void;
 }
 
 const ProfileImageSettings: React.FC<ProfileImageSettingsProps> = ({
   defaultImage,
   thinkingImage,
   onSelectDefaultImage,
-  onResetDefaultImage,
   onSelectThinkingImage,
-  onResetThinkingImage,
 }) => {
   return (
     <SettingsSection>
@@ -93,7 +89,6 @@ const ProfileImageSettings: React.FC<ProfileImageSettingsProps> = ({
             </ProfileImagePreview>
             <ProfileImageActions>
               <VSCodeButton onClick={onSelectDefaultImage}>이미지 선택</VSCodeButton>
-              <VSCodeButton onClick={onResetDefaultImage}>기본으로 초기화</VSCodeButton>
             </ProfileImageActions>
           </ProfileImageWrapper>
         </div>
@@ -124,8 +119,7 @@ const ProfileImageSettings: React.FC<ProfileImageSettingsProps> = ({
               )}
             </ProfileImagePreview>
             <ProfileImageActions>
-              <VSCodeButton onClick={onSelectThinkingImage}>이미지 선택</VSCodeButton>
-              <VSCodeButton onClick={onResetThinkingImage}>기본으로 초기화</VSCodeButton>
+              <VSCodeButton onClick={onSelectThinkingImage}>이미지 선택</VSCodeButton>              
             </ProfileImageActions>
           </ProfileImageWrapper>
         </div>

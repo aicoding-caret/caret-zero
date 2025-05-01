@@ -39,6 +39,7 @@ const AvatarRow = styled.div`
   justify-content: flex-start;
   gap: 18px;
   margin-bottom: 10px;
+  align-items: center;
 `;
 const AvatarBtn = styled.button<{ selected: boolean }>`
   border: 2px solid ${p => (p.selected ? "#0078d4" : "#ccc")};
@@ -95,6 +96,11 @@ const Notice = styled.div`
   font-weight: 500;
 `;
 
+// 모달 내용을 감싸는 컨테이너 추가
+const ModalContent = styled.div`
+  text-align: center;
+`;
+
 const TemplateCharacterSelectModal: React.FC<Props> = ({ characters, language, open, onSelect, onClose }) => {
   const [selected, setSelected] = useState(0);
   const t = (c: TemplateCharacter) => (language === "ko" ? c.ko : c.en);
@@ -126,26 +132,32 @@ const TemplateCharacterSelectModal: React.FC<Props> = ({ characters, language, o
 
   return (
     <Modal onClose={onClose} title="AI에이전트 템플릿 캐릭터 설정">
-      <Notice>
-        * 원하는 캐릭터를 선택하세요. 선택한 캐릭터는 자유롭게 편집하여 나만의 퍼소나로 쓸 수 있습니다.
-      </Notice>
-      <AvatarRow>
-        {characters.map((c, i) => (
-          <AvatarBtn key={c.character} selected={i === selected} onClick={() => setSelected(i)}>
-            <AvatarImg src={getSafeAvatarUri(c).replace("asset:/", "/assets/")} alt={getSafeName(c, language)} />
-          </AvatarBtn>
-        ))}
-      </AvatarRow>
-      {selectedChar && (
-        <>
-          <Name>{getSafeName(selectedChar, language)}</Name>
-          <Illust src={getSafeIllustrationUri(selectedChar)} alt="일러스트" />
-          <Desc>{getSafeDescription(selectedChar, language)}</Desc>
-          <SelectBtn appearance="primary" onClick={() => onSelect(selectedChar)}>
-            선택
-          </SelectBtn>
-        </>
-      )}
+      <ModalContent>
+        <Notice>
+          * 원하는 캐릭터를 선택하세요. 선택한 캐릭터는 자유롭게 편집하여 나만의 퍼소나로 쓸 수 있습니다.
+        </Notice>
+        <AvatarRow style={{ display: 'flex', justifyContent: 'center', flexWrap: 'wrap' }}>
+          {characters.map((c, i) => (
+            <AvatarBtn key={c.character} selected={i === selected} onClick={() => setSelected(i)}>
+              <AvatarImg src={getSafeAvatarUri(c).replace("asset:/", "/assets/")} alt={getSafeName(c, language)} />
+            </AvatarBtn>
+          ))}
+        </AvatarRow>
+        {selectedChar && (
+          <>
+            <Name>{getSafeName(selectedChar, language)}</Name>
+            <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '1rem' }}>
+              <Illust src={getSafeIllustrationUri(selectedChar)} alt="일러스트" />
+            </div>
+            <Desc>{getSafeDescription(selectedChar, language)}</Desc>
+            <div style={{ display: 'flex', justifyContent: 'center', marginTop: '1rem' }}>
+              <SelectBtn appearance="primary" onClick={() => onSelect(selectedChar)}>
+                선택
+              </SelectBtn>
+            </div>
+          </>
+        )}
+      </ModalContent>
     </Modal>
   );
 };

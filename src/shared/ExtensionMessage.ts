@@ -1,14 +1,20 @@
 // type that represents json data that is sent from extension to webview, called ExtensionMessage and has 'type' enum which can be 'plusButtonClicked' or 'settingsButtonClicked' or 'hello'
 
-import { GitCommit } from "../utils/git"
-import { ApiConfiguration, ModelInfo } from "./api"
+import { ApiConfiguration, ApiProvider, ModelInfo } from "./api"
 import { AutoApprovalSettings } from "./AutoApprovalSettings"
 import { BrowserSettings } from "./BrowserSettings"
 import { ChatSettings } from "./ChatSettings"
 import { HistoryItem } from "./HistoryItem"
-import { McpServer, McpMarketplaceCatalog, McpMarketplaceItem, McpDownloadResponse } from "./mcp"
+import { McpServer, McpMarketplaceCatalog, McpMarketplaceCatalog, McpMarketplaceItem, McpDownloadResponse } from "./mcp"
 import { TelemetrySetting } from "./TelemetrySetting"
+import { Persona } from "./types"
+import { UserInfo } from "./UserInfo"
+import { GitCommit } from "../utils/git"
 import type { BalanceResponse, UsageTransaction, PaymentTransaction } from "../shared/CaretAccount"
+import { CaretMessage } from "./CaretMessage"
+import { ModeInfo } from "./ModeInfo"
+import { Platform } from "./Platform"
+import { RetryStatusMessage } from "./RetryStatusMessage"
 
 // Define ModeInfo interface
 export interface ModeInfo {
@@ -34,6 +40,7 @@ export interface RetryStatusMessage {
 	delay: number // 대기 시간 (ms)
 	quotaViolation?: string // 할당량 위반 정보
 	retryTimestamp?: number // 재시도 예정 시간(ms 타임스탬프)
+	platform: string // Platform
 }
 
 /**
@@ -50,17 +57,42 @@ export interface ApiErrorInfo {
 
 export interface ExtensionMessage {
 	type:
+		| "theme"
 		| "action"
 		| "state"
 		| "selectedImages"
 		| "ollamaModels"
 		| "lmStudioModels"
-		| "theme"
 		| "workspaceUpdated"
 		| "invoke"
 		| "partialMessage"
 		| "openRouterModels"
 		| "openAiModels"
+		| "anthropicModels"
+		| "azureOpenAiModels"
+		| "googleAiModels"
+		| "mistralAiModels"
+		| "togetherAiModels"
+		| "perplexityAiModels"
+		| "claudeModels"
+		| "groqModels"
+		| "apiError"
+		| "taskStatus"
+		| "taskCreated"
+		| "taskUpdated"
+		| "taskDeleted"
+		| "taskHistoryLoaded"
+		| "taskHistoryUpdated"
+		| "taskHistoryCleared"
+		| "taskHistoryItemDeleted"
+		| "taskHistoryItemRestored"
+		| "addOrUpdatePersona"
+		| "deletePersona"
+		| "getLatestState"
+		| "personaLoaded"
+		| "templateCharactersLoaded"
+		| "requestTemplateCharacters"
+		| "personaUpdated"
 		| "mcpServers"
 		| "relinquishControl"
 		| "vsCodeLmModels"
@@ -90,6 +122,8 @@ export interface ExtensionMessage {
 		| "requestTemplateCharactersJsonUri" // [ALPHA] Added for persona/character support
 		| "templateCharactersLoaded" // [ALPHA] Persona template character response
 		| "requestTemplateCharacters" // [ALPHA] Persona template character request
+		| "personaUpdated" // [ALPHA] Persona updated notification
+		| "personaLoaded" // [ALPHA] Persona loaded notification
 	text?: string
 	uri?: string // [ALPHA] Added for persona/character support, templateCharactersJsonUri
 	paths?: (string | null)[] // Used for relativePathsResponse
@@ -150,6 +184,9 @@ export interface ExtensionMessage {
 		serverName: string
 		error?: string
 	}
+	// [ALPHA] ud398ub974uc18cub098 uad00ub828 ud544ub4dc ucd94uac00
+	personaId?: string
+	persona?: Persona // [ALPHA] Persona object
 }
 
 export type Invoke = "sendMessage" | "primaryButtonClick" | "secondaryButtonClick"
@@ -159,53 +196,40 @@ export type Platform = "aix" | "darwin" | "freebsd" | "linux" | "openbsd" | "sun
 export const DEFAULT_PLATFORM = "unknown"
 
 export interface ExtensionState {
-	apiConfiguration?: ApiConfiguration
+	version: string
+	theme: string
+	mode: string
+	apiConfiguration: ApiConfiguration
+	customInstructions: string
+	telemetrySetting: TelemetrySetting
+	planActSeparateModelsSetting: boolean
+	shouldShowAnnouncement: boolean
+	availableModes: ModeInfo[]
+	alphaAvatarUri?: string
+	alphaThinkingAvatarUri?: string
+	apiError: ApiErrorInfo | null
+	// ud37cuc18cub098 uad00ub828 ud544ub4dc (ub2e8uc77c ud37cuc18cub098 uc2dcuc2a4ud15c)
+	persona?: Persona
+	selectedLanguage?: string
+	supportedLanguages?: string[]
+	// uae30uc874 ud544ub4dcub4e4
 	autoApprovalSettings: AutoApprovalSettings
 	browserSettings: BrowserSettings
-	remoteBrowserHost?: string // Added
+	remoteBrowserHost?: string
 	chatSettings: ChatSettings
-	checkpointTrackerErrorMessage?: string
-	caretMessages: CaretMessage[]
-	currentTaskItem?: HistoryItem
-	customInstructions?: string
-	mcpMarketplaceEnabled?: boolean
-	planActSeparateModelsSetting: boolean
-	platform: Platform
-	shouldShowAnnouncement: boolean
+	historyItems: HistoryItem[]
+	modelInfo?: ModelInfo
+	platform: ModeInfo
+	retryStatus?: RetryStatusMessage
 	taskHistory: HistoryItem[]
-	telemetrySetting: TelemetrySetting
-	uriScheme?: string
-	userInfo?: {
-		displayName: string | null
-		email: string | null
-		photoURL: string | null
-	}
-	version: string
-	vscMachineId: string
-	alphaAvatarUri?: string // 알파 기본 아바타 URI
-	alphaThinkingAvatarUri?: string // 알파 생각 중 아바타 URI
-	caretBanner?: string // 캐럿 배너 이미지 URI
-	availableModes: ModeInfo[] // 사용 가능한 모드 목록
-	retryStatus?: RetryStatusMessage // 재시도 상태 정보
-	apiError: ApiErrorInfo | null // API 에러 정보
-
-	// --- Persona Management 확장 ---
-	/**
-	 * 현재 등록된 모든 페르소나 목록
-	 */
-	personaList: import("./types").Persona[]
-	/**
-	 * 현재 선택된 페르소나 ID
-	 */
-	selectedPersonaId: string
-	/**
-	 * 현재 선택된 언어
-	 */
-	selectedLanguage: string
-	/**
-	 * 지원하는 언어 목록 (선택)
-	 */
-	supportedLanguages?: string[]
+	userInfo?: UserInfo
+	vscMachineId?: string
+	currentTaskItem?: any
+	checkpointTrackerErrorMessage?: string
+	caretMessages?: any[]
+	caretBanner?: string
+	mcpMarketplaceEnabled?: boolean
+	retryStatusMessage?: any
 }
 
 export interface CaretMessage {
@@ -354,3 +378,37 @@ export interface CaretApiReqInfo {
 export type CaretApiReqCancelReason = "streaming_failed" | "user_cancelled"
 
 export const COMPLETION_RESULT_CHANGES_FLAG = "HAS_CHANGES"
+
+export type MessageType =
+	| "theme"
+	| "action"
+	| "state"
+	| "selectedImages"
+	| "ollamaModels"
+	| "lmStudioModels"
+	| "workspaceUpdated"
+	| "invoke"
+	| "partialMessage"
+	| "openRouterModels"
+	| "openAiModels"
+	| "anthropicModels"
+	| "azureOpenAiModels"
+	| "googleAiModels"
+	| "mistralAiModels"
+	| "togetherAiModels"
+	| "perplexityAiModels"
+	| "claudeModels"
+	| "groqModels"
+	| "apiError"
+	| "taskStatus"
+	| "taskCreated"
+	| "taskUpdated"
+	| "taskDeleted"
+	| "taskHistoryLoaded"
+	| "taskHistoryUpdated"
+	| "taskHistoryCleared"
+	| "taskHistoryItemDeleted"
+	| "taskHistoryItemRestored"
+	| "personaLoaded"
+	| "templateCharactersLoaded"
+	| "personaUpdated"

@@ -72,6 +72,71 @@ const PolicyNotice = styled.div`
   margin-bottom: 10px;
 `;
 
+const PersonaAvatarSelector = styled.div`
+  display: flex;
+  gap: 12px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+`;
+
+const AvatarButton = styled.button<{ selected: boolean }>`
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  padding: 0;
+  cursor: pointer;
+  border: 3px solid ${props => props.selected ? 'var(--vscode-focusBorder)' : 'transparent'};
+  transition: border-color 0.2s;
+  background: transparent;
+  
+  &:hover {
+    border-color: var(--vscode-focusBorder);
+    opacity: 0.9;
+  }
+`;
+
+const PersonaDetailSection = styled.div`
+  margin-top: 16px;
+  padding: 16px;
+  background: var(--vscode-editor-background);
+  border-radius: 4px;
+  border: 1px solid var(--vscode-settings-headerBorder);
+`;
+
+const PersonaDetailHeader = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 16px;
+`;
+
+const PersonaDetailAvatar = styled.img`
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  object-fit: cover;
+  background: var(--vscode-editor-background);
+`;
+
+const PersonaDetailInfo = styled.div`
+  flex: 1;
+`;
+
+const PersonaDetailName = styled.h4`
+  margin: 0 0 4px 0;
+  font-size: 16px;
+`;
+
+const PersonaDetailDesc = styled.p`
+  margin: 0;
+  font-size: 12px;
+  color: var(--vscode-descriptionForeground);
+`;
+
+const SettingsSaveButton = styled(VSCodeButton)`
+  margin-top: 16px;
+`;
+
 interface PersonaForm {
   id: string;
   name: { [lang: string]: string };
@@ -100,24 +165,37 @@ export default function PersonaSettingsView() {
   const [error, setError] = useState("");
   const [showTemplateModal, setShowTemplateModal] = useState(false);
   const [templateCharacters, setTemplateCharacters] = useState<TemplateCharacter[]>([]);
+  const [editingPersona, setEditingPersona] = useState(false);
+  const [hasChanges, setHasChanges] = useState(false);
 
   console.log('[PersonaSettingsView] mount');
 
-  const policyNotice = "기본값으로 초기화 시, 커스텀 퍼소나는 삭제되지 않고 그대로 남아 있습니다. 커스텀 퍼소나는 개별 삭제만 가능합니다.";
+  const policyNotice = "템플릿 캐릭터 선택 시 현재 퍼소나가 덮어씌워집니다. 초기화를 원하시면 템플릿 캐릭터 선택 버튼을 눌러 새 템플릿으로 교체하세요.";
 
   const handlePersonaDelete = useCallback((id: string) => {
     vscode.postMessage({ type: "deletePersona", personaId: id });
   }, []);
 
-  const handlePersonaRestore = useCallback(() => {
-    vscode.postMessage({ type: "restoreDefaultPersonas" });
-  }, []);
-
   const handlePersonaSelect = useCallback((id: string) => {
     if (id !== selectedPersonaId) {
       vscode.postMessage({ type: "selectPersona", personaId: id });
+      
+      const selectedPersona = personaList.find(p => p.id === id);
+      if (selectedPersona) {
+        setForm({
+          id: selectedPersona.id,
+          name: { ...selectedPersona.name },
+          description: { ...selectedPersona.description },
+          customInstructions: selectedPersona.customInstructions || "",
+          avatarUri: selectedPersona.avatarUri || "",
+          thinkingAvatarUri: selectedPersona.thinkingAvatarUri || "",
+          isDefault: selectedPersona.isDefault,
+          isEditable: selectedPersona.isEditable,
+        });
+        setHasChanges(false);
+      }
     }
-  }, [selectedPersonaId]);
+  }, [selectedPersonaId, personaList]);
 
   const handleInput = (field: keyof PersonaForm, value: string, lang?: string) => {
     setForm((prev) => {
@@ -126,211 +204,180 @@ export default function PersonaSettingsView() {
       }
       return { ...prev, [field]: value };
     });
-  };
-
-  const openAddModal = () => {
-    setForm({
-      id: "persona-" + Date.now(),
-      name: { [selectedLanguage || "ko"]: "" },
-      description: { [selectedLanguage || "ko"]: "" },
-      customInstructions: "",
-      avatarUri: "",
-      thinkingAvatarUri: "",
-      isDefault: false,
-      isEditable: true,
-    });
-    setEditPersona(null);
-    setShowAdd(true);
-    setError("");
-  };
-
-  const openEditModal = (persona: any) => {
-    setForm({
-      id: persona.id,
-      name: persona.name || {},
-      description: persona.description || {},
-      customInstructions: persona.customInstructions || "",
-      avatarUri: persona.avatarUri || "",
-      thinkingAvatarUri: persona.thinkingAvatarUri || "",
-      isDefault: !!persona.isDefault,
-      isEditable: persona.isEditable !== false,
-    });
-    setEditPersona(persona);
-    setShowAdd(true);
-    setError("");
-  };
-
-  const closeModal = () => {
-    setShowAdd(false);
-    setEditPersona(null);
-    setError("");
+    setHasChanges(true);
   };
 
   const handleSave = () => {
-    const langs = supportedLanguages || [selectedLanguage || "ko", "en"];
-    let valid = false;
-    langs.forEach((lang) => {
-      if (form.name?.[lang] && form.description?.[lang]) valid = true;
-    });
-    if (!valid || !form.customInstructions) {
-      setError("이름, 설명, 지침을 모두 입력해주세요 (최소 1개 언어)");
+    if (!form.name[selectedLanguage || "ko"]) {
+      setError("이름을 입력해주세요.");
       return;
     }
+
     vscode.postMessage({
       type: "addOrUpdatePersona",
       persona: form,
     });
-    closeModal();
+
+    setHasChanges(false);
+    setEditingPersona(false);
   };
 
   useEffect(() => {
-    console.log('[PersonaSettingsView] mount, template 캐릭터 로딩 요청');
-    if (window.vscode && typeof window.vscode.postMessage === "function") {
-      window.vscode.postMessage({ type: "requestTemplateCharacters" });
-      console.log('[PersonaSettingsView] requestTemplateCharacters 메시지 전송');
-    } else {
-      console.warn("[PersonaSettingsView] window.vscode.postMessage is not available (likely not running in VSCode webview)");
+    vscode.postMessage({ type: "requestTemplateCharacters" });
+
+    if (personaList.length === 0) {
+      setShowTemplateModal(true);
     }
-  }, []);
+  }, [personaList.length]);
 
   useEffect(() => {
-    function handleTemplateCharactersLoaded(event: MessageEvent) {
-      if (event.data && event.data.type === "templateCharactersLoaded" && event.data.text) {
-        try {
-          const data = JSON.parse(event.data.text);
-          setTemplateCharacters(data);
-          console.log('[PersonaSettingsView] templateCharactersLoaded 수신, 데이터:', data);
-        } catch (err) {
-          console.error("템플릿 캐릭터 파싱 실패", err);
-        }
+    if (selectedPersonaId) {
+      const selectedPersona = personaList.find(p => p.id === selectedPersonaId);
+      if (selectedPersona) {
+        setForm({
+          id: selectedPersona.id,
+          name: { ...selectedPersona.name },
+          description: { ...selectedPersona.description },
+          customInstructions: selectedPersona.customInstructions || "",
+          avatarUri: selectedPersona.avatarUri || "",
+          thinkingAvatarUri: selectedPersona.thinkingAvatarUri || "",
+          isDefault: selectedPersona.isDefault,
+          isEditable: selectedPersona.isEditable,
+        });
+        setHasChanges(false);
       }
     }
-    window.addEventListener("message", handleTemplateCharactersLoaded);
-    return () => window.removeEventListener("message", handleTemplateCharactersLoaded);
-  }, []);
-
-  useEffect(() => {
-    console.log('[PersonaSettingsView] templateCharacters 상태 변경:', templateCharacters);
-  }, [templateCharacters]);
+  }, [selectedPersonaId, personaList]);
 
   const handleTemplateSelect = (character: TemplateCharacter) => {
-    console.log('[PersonaSettingsView] 캐릭터 선택됨', character);
-    const lang: "ko" | "en" = selectedLanguage === "en" ? "en" : "ko";
-    const persona = {
-      id: `persona-${Date.now()}`,
-      name: { [lang]: character[lang].name },
-      description: { [lang]: character[lang].description },
-      customInstructions: character[lang].customInstruction || "",
-      avatarUri: character.avatarUri,
-      thinkingAvatarUri: character.thinkingAvatarUri,
+    const newPersona: PersonaForm = {
+      id: "persona-" + Date.now(),
+      name: { ...character.name },
+      description: { ...character.description },
+      customInstructions: character.customInstructions || "",
+      avatarUri: character.avatarUri || "",
+      thinkingAvatarUri: character.thinkingAvatarUri || "",
       isDefault: false,
       isEditable: true,
     };
-    vscode.postMessage({ type: "addOrUpdatePersona", persona });
+
+    vscode.postMessage({
+      type: "addOrUpdatePersona",
+      persona: newPersona,
+    });
+
     setShowTemplateModal(false);
-    console.log('[PersonaSettingsView] persona 추가 postMessage 전송', persona);
   };
+
+  const selectedPersona = personaList.find(p => p.id === selectedPersonaId);
+
+  const defaultAvatarUrl = "https://raw.githubusercontent.com/fstory97/caret-avatar/main/default-avatar.png";
 
   return (
     <PersonaSection>
       <h3>퍼소나 관리</h3>
       <PolicyNotice>{policyNotice}</PolicyNotice>
-      <PersonaList>
-        {personaList && personaList.length > 0 ? (
-          personaList.map((persona) => {
-            const isSelected = persona.id === selectedPersonaId;
-            return (
-              <PersonaItem key={persona.id} style={isSelected ? { background: "#e6f0fa", borderRadius: 6, border: "1.5px solid #0078d4" } : {}}>
-                <PersonaRadio
-                  name="persona-select"
-                  checked={isSelected}
-                  onChange={() => handlePersonaSelect(persona.id)}
-                  aria-label={persona.name.ko || persona.name.en || persona.id}
-                  style={{ marginRight: 8 }}
-                />
-                {persona.avatarUri ? (
-                  <PersonaAvatar src={persona.avatarUri} alt={persona.name.ko || persona.name.en || "avatar"} />
-                ) : (
-                  <PersonaAvatar src="https://raw.githubusercontent.com/fstory97/caret-avatar/main/alpha-maid.png" alt="avatar" />
-                )}
-                <PersonaInfo>
-                  <PersonaName>
-                    {persona.name.ko || persona.name.en || persona.id}
-                    {persona.isDefault && <span style={{ marginLeft: 6, color: "#888", fontSize: 10 }}>(기본)</span>}
-                  </PersonaName>
-                  <PersonaDesc>{persona.description?.ko || persona.description?.en || ""}</PersonaDesc>
-                </PersonaInfo>
-                <PersonaActions>
-                  {persona.isDefault ? null : (
-                    <VSCodeButton appearance="secondary" onClick={() => handlePersonaDelete(persona.id)}>
-                      삭제
-                    </VSCodeButton>
-                  )}
-                  {persona.isEditable && (
-                    <VSCodeButton appearance="secondary" onClick={() => openEditModal(persona)}>
-                      편집
-                    </VSCodeButton>
-                  )}
-                </PersonaActions>
-              </PersonaItem>
-            );
-          })
+      
+      <PersonaAvatarSelector>
+        {personaList.length > 0 ? (
+          personaList.map((persona) => (
+            <AvatarButton 
+              key={persona.id} 
+              selected={persona.id === selectedPersonaId}
+              onClick={() => handlePersonaSelect(persona.id)}
+              title={persona.name.ko || persona.name.en || persona.id}
+            >
+              <PersonaAvatar 
+                src={persona.avatarUri || defaultAvatarUrl} 
+                alt={persona.name.ko || persona.name.en || persona.id} 
+              />
+            </AvatarButton>
+          ))
         ) : (
           <span style={{ color: "var(--vscode-descriptionForeground)", fontSize: 13 }}>등록된 퍼소나가 없습니다.</span>
         )}
-      </PersonaList>
-      <div style={{ marginTop: 16, display: "flex", gap: 8 }}>
+      </PersonaAvatarSelector>
+      
+      <div style={{ marginBottom: 16 }}>
         <VSCodeButton appearance="secondary" onClick={() => setShowTemplateModal(true)}>
           템플릿 캐릭터 선택
         </VSCodeButton>
       </div>
-      {showAdd && (
-        <Modal onClose={closeModal} title={editPersona ? "퍼소나 편집" : "퍼소나 추가"}>
-          {supportedLanguages?.map((lang) => (
-            <div key={lang} style={{ marginBottom: 8 }}>
+      
+      {selectedPersona && (
+        <PersonaDetailSection>
+          <PersonaDetailHeader>
+            <PersonaDetailAvatar 
+              src={selectedPersona.avatarUri || defaultAvatarUrl} 
+              alt={selectedPersona.name.ko || selectedPersona.name.en || selectedPersona.id} 
+            />
+            <PersonaDetailInfo>
+              <PersonaDetailName>
+                {selectedPersona.name.ko || selectedPersona.name.en || selectedPersona.id}
+                {selectedPersona.isDefault && <span style={{ marginLeft: 6, color: "#888", fontSize: 10 }}>(기본)</span>}
+              </PersonaDetailName>
+              <PersonaDetailDesc>
+                {selectedPersona.description?.ko || selectedPersona.description?.en || ""}
+              </PersonaDetailDesc>
+            </PersonaDetailInfo>
+          </PersonaDetailHeader>
+          
+          {selectedPersona.isEditable && (
+            <div>
+              {supportedLanguages?.map((lang) => (
+                <div key={lang} style={{ marginBottom: 8 }}>
+                  <VSCodeTextField
+                    value={form.name?.[lang] || ""}
+                    onInput={(e) => handleInput("name", (e.target as HTMLInputElement).value, lang)}
+                    placeholder={`이름 (${lang})`}
+                    style={{ width: "100%", marginBottom: 4 }}
+                  />
+                  <VSCodeTextArea
+                    value={form.description?.[lang] || ""}
+                    onInput={(e) => handleInput("description", (e.target as HTMLTextAreaElement).value, lang)}
+                    placeholder={`설명 (${lang})`}
+                    style={{ width: "100%", minHeight: 40 }}
+                  />
+                </div>
+              ))}
+              <VSCodeTextArea
+                value={form.customInstructions}
+                onInput={(e) => handleInput("customInstructions", (e.target as HTMLTextAreaElement).value)}
+                placeholder="영문 custom instructions (권장)"
+                style={{ width: "100%", minHeight: 40, marginBottom: 8 }}
+              />
               <VSCodeTextField
-                value={form.name?.[lang] || ""}
-                onInput={(e) => handleInput("name", (e.target as HTMLInputElement).value, lang)}
-                placeholder={`이름 (${lang})`}
+                value={form.avatarUri}
+                onInput={(e) => handleInput("avatarUri", (e.target as HTMLInputElement).value)}
+                placeholder="프로필 이미지 URL (선택)"
                 style={{ width: "100%", marginBottom: 4 }}
               />
-              <VSCodeTextArea
-                value={form.description?.[lang] || ""}
-                onInput={(e) => handleInput("description", (e.target as HTMLTextAreaElement).value, lang)}
-                placeholder={`설명 (${lang})`}
-                style={{ width: "100%", minHeight: 40 }}
+              <VSCodeTextField
+                value={form.thinkingAvatarUri}
+                onInput={(e) => handleInput("thinkingAvatarUri", (e.target as HTMLInputElement).value)}
+                placeholder="생각 중 이미지 URL (선택)"
+                style={{ width: "100%", marginBottom: 4 }}
               />
+              {error && <div style={{ color: "var(--vscode-errorForeground)", marginBottom: 8 }}>{error}</div>}
+              
+              {hasChanges && (
+                <SettingsSaveButton appearance="primary" onClick={handleSave}>
+                  저장
+                </SettingsSaveButton>
+              )}
             </div>
-          ))}
-          <VSCodeTextArea
-            value={form.customInstructions}
-            onInput={(e) => handleInput("customInstructions", (e.target as HTMLTextAreaElement).value)}
-            placeholder="영문 custom instructions (권장)"
-            style={{ width: "100%", minHeight: 40, marginBottom: 8 }}
-          />
-          <VSCodeTextField
-            value={form.avatarUri}
-            onInput={(e) => handleInput("avatarUri", (e.target as HTMLInputElement).value)}
-            placeholder="프로필 이미지 URL (선택)"
-            style={{ width: "100%", marginBottom: 4 }}
-          />
-          <VSCodeTextField
-            value={form.thinkingAvatarUri}
-            onInput={(e) => handleInput("thinkingAvatarUri", (e.target as HTMLInputElement).value)}
-            placeholder="생각 중 이미지 URL (선택)"
-            style={{ width: "100%", marginBottom: 4 }}
-          />
-          {error && <div style={{ color: "var(--vscode-errorForeground)", marginBottom: 8 }}>{error}</div>}
-          <div style={{ display: "flex", gap: 8, marginTop: 12 }}>
-            <VSCodeButton appearance="primary" onClick={handleSave}>
-              저장
-            </VSCodeButton>
-            <VSCodeButton appearance="secondary" onClick={closeModal}>
-              취소
-            </VSCodeButton>
-          </div>
-        </Modal>
+          )}
+          
+          {!selectedPersona.isDefault && (
+            <div style={{ marginTop: 16 }}>
+              <VSCodeButton appearance="secondary" onClick={() => handlePersonaDelete(selectedPersona.id)}>
+                삭제
+              </VSCodeButton>
+            </div>
+          )}
+        </PersonaDetailSection>
       )}
+      
       {showTemplateModal && (
         <TemplateCharacterSelectModal
           characters={templateCharacters}

@@ -5,6 +5,7 @@ import { ChatSettings } from "./ChatSettings"
 import { UserInfo } from "./UserInfo"
 import { ChatContent } from "./ChatContent"
 import { TelemetrySetting } from "./TelemetrySetting"
+import { Persona } from "./types"
 
 export interface WebviewMessage {
 	type:
@@ -93,6 +94,13 @@ export interface WebviewMessage {
 		| "templateCharactersJsonUri" // [ALPHA] Added for persona/character support
 		| "requestTemplateCharacters"
 		| "templateCharactersLoaded"
+		// 페르소나 관련 메시지 타입 추가
+		| "selectPersona"
+		| "updatePersona"
+		| "createPersona"
+		| "deletePersona"
+		| "selectLanguage"
+		| "addOrUpdatePersona"
 	// | "relaunchChromeDebugMode"
 	text?: string
 	uris?: string[] // Used for getRelativePaths
@@ -129,6 +137,9 @@ export interface WebviewMessage {
 	feedbackType?: TaskFeedbackType
 	mentionsRequestId?: string
 	query?: string
+	// 페르소나 데이터
+	persona?: Persona
+	personaId?: string
 }
 
 export type CaretAskResponse = "yesButtonClicked" | "noButtonClicked" | "messageResponse"

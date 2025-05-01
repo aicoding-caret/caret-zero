@@ -1,0 +1,31 @@
+case "requestTemplateCharacters": {
+	this.logger.log("[PersonaSettings] template uce90ub9adud130 ub85cub529 uc694uccad uc218uc2e0 - template_characters.json ub85cub4dc uc2dcuc791")
+	try {
+		const jsonFilePath = vscode.Uri.joinPath(this.context.extensionUri, "assets", "template_characters", "template_characters.json");
+		const fs = require("fs");
+		const exists = fs.existsSync(jsonFilePath.fsPath);
+		if (!exists) {
+			this.logger.error("[PersonaSettings] template_characters.json ud30cuc77cuc774 uc874uc7acud558uc9c0 uc54auc74c:", jsonFilePath.fsPath);
+			await this.postMessageToWebview({
+				type: "templateCharactersLoaded",
+				text: "[]"
+			} as import("../../shared/ExtensionMessage").ExtensionMessage);
+			break;
+		}
+		const jsonStr = fs.readFileSync(jsonFilePath.fsPath, "utf-8");
+		this.logger.log("[PersonaSettings] template_characters.json ud30cuc77c uc77duae30 uc131uacf5, ub0b4uc6a9 uc77cubd80:", jsonStr.slice(0, 80));
+		await this.postMessageToWebview({
+			type: "templateCharactersLoaded",
+			text: jsonStr
+		} as import("../../shared/ExtensionMessage").ExtensionMessage);
+		this.logger.log("[PersonaSettings] template_characters.json ub370uc774ud130 uc804uc1a1 uc644ub8cc:", jsonFilePath.fsPath);
+	} catch (err) {
+		this.logger.error("[PersonaSettings] template_characters.json ub85cub4dc uc2e4ud328:", err);
+		await this.postMessageToWebview({
+			type: "templateCharactersLoaded",
+			text: "[]",
+			error: String(err)
+		} as import("../../shared/ExtensionMessage").ExtensionMessage);
+	}
+	break
+}

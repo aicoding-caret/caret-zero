@@ -67,7 +67,6 @@ export type GlobalStateKey =
 	| "planActSeparateModelsSetting"
 	| "retryStatus"
 	| "hyperclovaxUrl"
-	| "personaList"
-	| "selectedPersonaId"
+	| "persona"
 	| "selectedLanguage"
 	| "supportedLanguages"

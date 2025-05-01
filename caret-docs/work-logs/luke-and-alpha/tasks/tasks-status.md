@@ -2,9 +2,13 @@
 
 ## 진행 중인 태스크 (Pending)
 
-- [ ] **Task #014:** 퍼소나/프로필 관리 및 UI 개선 (설계/구현/통합, [014-persona_management_and_ui_improvements.md](./014-persona_management_and_ui_improvements.md), [014-2-persona-management-design.md](./014-2-persona-management-design.md))
+- [ ] **Task #018:** 퍼소나/프로필 관리 및 UI 개선 (설계/구현/통합)
+  * 퍼소나 관리 시스템 설계 및 구현 계획 ([018-01-01-plan-persona-management.md](./018-01-01-plan-persona-management.md))
+  * 템플릿/캐릭터 정책 및 최신 설계 ([018-01-02-plan-template-character-policy-and-design-latest.md](./018-01-02-plan-template-character-policy-and-design-latest.md))
+  * 퍼소나 관리 액션 체크리스트 ([018-02-01-action-checklist-persona-management.md](./018-02-01-action-checklist-persona-management.md))
+
 - [ ] **Task #015:** ChatView/ChatRow 리팩토링 (분리, 중단상태, [014-1-chatview-refactoring.md](./014-1-chatview-refactoring.md))
-- [ ] **Task #028:** api.ts 파일 json 분리 및 리팩토링 ([028-refactor-api-configuration.md](./028-refactor-api-configuration.md))
+- [ ] **Task #028:** api.ts 파일 json 분리 및 리팩토링 ([018-02-01-action-checklist-persona-management.md](./018-02-01-action-checklist-persona-management.md))
 
 ## 대기 중인 태스크 (Pending)
 - [ ] **Task #027:** Caret Team 로그인 구현 ([027-caret-team-auth.md](./027-caret-team-auth.md))
@@ -12,7 +16,7 @@
 - [ ] **Task #011:** Cline UI 현지화 ([011-cline-ui-localization.md](./011-cline-ui-localization.md))
 - [ ] **Task #012:** 다국어 규칙 지원 ([012-multilingual-rule-support.md](./012-multilingual-rule-support.md))
 - [ ] **Task #013:** AI 기반 규칙 관리 ([013-ai-assisted-rule-management.md](./013-ai-assisted-rule-management.md))
-- [ ] **Task #020:** 로깅 및 테스트 강화 ([020-enhance-logging-and-testing.md](./020-enhance-logging-and-testing.md))
+- [ ] **Task #020:** 로깅 및 테스트 강화 ([018-01-plan-persona-management.md](./018-01-plan-persona-management.md) 2.1절)
 - [ ] **Task #022:** 채팅 중지 버튼 개선 ([022-chat-stop-button-improvement.md](./022-chat-stop-button-improvement.md))
 - [ ] **Task #024:** AI 에이전트 프로필 커스터마이징 ([024-ai-agent-profile-customization.md](./024-ai-agent-profile-customization.md))
 

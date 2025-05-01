@@ -10,6 +10,7 @@ import { vscode } from "../utils/vscode"
 import { DEFAULT_BROWSER_SETTINGS } from "../../../src/shared/BrowserSettings"
 import { DEFAULT_CHAT_SETTINGS } from "../../../src/shared/ChatSettings"
 import { TelemetrySetting } from "../../../src/shared/TelemetrySetting"
+import { Persona } from "../../../src/shared/types"
 
 interface ExtensionStateContextType extends ExtensionState {
 	didHydrateState: boolean
@@ -35,6 +36,10 @@ interface ExtensionStateContextType extends ExtensionState {
 	selectAgentProfileImage: () => void
 	resetAgentProfileImage: () => void
 	updateAgentProfileImage: (imageUrl: string) => void
+	// 퍼소나 관련 필드 (단일 퍼소나 시스템)
+	persona?: Persona
+	selectedLanguage?: string
+	supportedLanguages?: string[]
 }
 
 const ExtensionStateContext = createContext<ExtensionStateContextType | undefined>(undefined)
@@ -59,8 +64,7 @@ export const ExtensionStateContextProvider: React.FC<{
 		alphaThinkingAvatarUri: "https://raw.githubusercontent.com/fstory97/caret-avatar/main/alpha-maid-thinking.png",
 		apiError: null, // API 에러 정보 초기화
 		// Persona 관리 관련 기본값 추가
-		personaList: [],
-		selectedPersonaId: "",
+		persona: undefined,
 		selectedLanguage: "ko",
 		supportedLanguages: ["ko", "en"],
 	})
@@ -76,6 +80,7 @@ export const ExtensionStateContextProvider: React.FC<{
 	const [openAiModels, setOpenAiModels] = useState<string[]>([])
 	const [mcpServers, setMcpServers] = useState<McpServer[]>([])
 	const [mcpMarketplaceCatalog, setMcpMarketplaceCatalog] = useState<McpMarketplaceCatalog>({ items: [] })
+
 	const handleMessage = useCallback((event: MessageEvent) => {
 		const message: ExtensionMessage = event.data
 		switch (message.type) {
@@ -161,6 +166,16 @@ export const ExtensionStateContextProvider: React.FC<{
 				setTotalTasksSize(message.totalTasksSize ?? null)
 				break
 			}
+			case "personaUpdated": {
+				// personaUpdated 메시지 처리 추가
+				console.log("[ExtensionStateContext] personaUpdated 메시지 수신:", message.persona);
+				
+				// 페르소나 목록 다시 로드 요청
+				vscode.postMessage({
+					type: "getLatestState"
+				});
+				break;
+			}
 		}
 	}, [])
 
@@ -230,6 +245,10 @@ export const ExtensionStateContextProvider: React.FC<{
 				alphaAvatarUri: imageUrl,
 			}))
 		},
+		// 퍼소나 관련 필드 (단일 퍼소나 시스템)
+		persona: state.persona,
+		selectedLanguage: state.selectedLanguage,
+		supportedLanguages: state.supportedLanguages,
 	}
 
 	return <ExtensionStateContext.Provider value={contextValue}>{children}</ExtensionStateContext.Provider>

@@ -1,10 +1,12 @@
-# Task #014-2: 퍼소나 관리 시스템 설계 및 구현 계획 (v2 - 언어 설정 분리 반영)
+# Task #018-01-01: 퍼소나 관리 시스템 설계 및 구현 계획
 
-## 구현시 필수 지침
+## 구현시 필수 지침 !!!!!
 
 - 본 퍼소나 관리 기능(및 관련 설정, 이미지 업로드 등)은 반드시 [`caret-docs/development/ui-to-storage-flow.md`](../development/ui-to-storage-flow.md) 문서의 표준 흐름에 따라 구현하세요.
-    - UI 입력 → postMessage → Extension 저장 → 불러오기/동기화의 일관된 구조를 따릅니다.
-    - 기존에 임의로 구현된 로컬 상태, 임시 저장 등은 모두 삭제하고, 본 방식으로 재구현해야 합니다.
+  - UI 입력 → postMessage → Extension 저장 → 불러오기/동기화의 일관된 구조를 따릅니다.
+  - 기존에 임의로 구현된 로컬 상태, 임시 저장 등은 모두 삭제하고, 본 방식으로 재구현해야 합니다.
+- 500라인 이상의 코드에 신규 기능을 구현할때는 신규 기능은 별도 파일로 분리하여 구현하세요.
+- 함수 진입, 분기, 나가는 영역에는 로그를 반드시 남기시고, src\services\logging\ILogger.ts 를 사용하여 로그를 남기세요.    
 - 기존 구현사항이 남아 있으면 반드시 제거 후, 본 문서 기준으로 통일하세요.
 
 ## 1. 목표
@@ -57,7 +59,7 @@
 - **작업 시작 전**: 수정 대상 파일은 반드시 원본을 백업(예: `backup/날짜-파일명` 등 별도 디렉터리)해 둘 것.
 - **진행 중간**: 작업 내용(의도/변경점/문제/의문 등)은 별도의 마크다운 파일에 중간 중간 기록할 것. 끝나고 한 번에 쓰지 말고, 단계별로 즉시 기록.
     - **보고서 파일이 너무 커지지 않도록 작업 단위/날짜/작업자별로 여러 개로 분할해서 작성할 것!**
-    - 예시: `caret-docs/work-logs/luke-and-alpha/tasks/014-2-persona-management-report-20250430-알파.md`, `014-2-persona-management-report-step1.md` 등
+    - 예시: `caret-docs/work-logs/luke-and-alpha/tasks/018-persona-management-report-20250430-알파.md`, `018-persona-management-report-step1.md` 등
 - **작업 완료 후**: 백업 파일 및 모든 중간 보고서 파일을 함께 제출/공유할 것.
 
 ---
@@ -260,15 +262,15 @@
 
 ---
 
-#### 📚 다음 세션에서 반드시 확인해야 할 014-2 관련 문서 목록
+#### 📚 다음 세션에서 반드시 확인해야 할 018 관련 문서 목록
 
-- [014-2-persona-management-design.md] (이 문서, 전체 설계/진행상황/체크리스트)
-- 014-2-persona-management-report-20250430-알파-step1.md ~ stepN.md (단계별 작업/이슈/의문/정책 위반 여부)
-- 014-persona_management_and_ui_improvements.md (UI/정책 개선 요구, 추가 아이디어)
+- [018-persona-management-design.md] (이 문서, 전체 설계/진행상황/체크리스트)
+- 018-persona-management-report-20250430-알파-step1.md ~ stepN.md (단계별 작업/이슈/의문/정책 위반 여부)
+- 018-persona_management_and_ui_improvements.md (UI/정책 개선 요구, 추가 아이디어)
 - 기타 관련 정책/실무 가이드 문서 (work-logs, development 등)
 
 ---
-
+### 4. 개발 시 준수 패턴: UI→스토리지 표준 흐름
 ## 4. 개발 시 준수 패턴: UI→스토리지 표준 흐름
 
 > **아래 표준 패턴을 반드시 준수하여 개발할 것!**
@@ -332,22 +334,3 @@
 
 **구현/리팩터링 시 반드시 본 문서의 최신 정책 기준에 따라 작업해야 하며, 코드/구조/UI/로직이 다를 경우 본 문서대로 수정해야 합니다.**
 
-## 구현 Task/Development Checklist
-
-- [ ] template_characters.json 구조(다국어, customInstruction json)로 4명 정보 로드
-- [ ] 템플릿 캐릭터 카드 UI: 일러스트(800x480) + 아바타(64x64) + 이름/설명(고정)
-- [ ] 선택 시 하이라이트, 하단 “선택” 버튼, 안내문 노출
-- [ ] 선택 시 내 퍼소나로 복사(이름/아바타/생각중/커스텀 인스트럭션만 편집 가능)
-- [ ] activePersona 1개만 관리(다중 슬롯/커스텀 정책 흔적 완전 제거)
-- [ ] persona 데이터 저장/불러오기 시 새 구조 반영(customInstruction json 오브젝트)
-- [ ] persona 삭제/초기화 시 템플릿 선택 모달 자동 진입
-- [ ] description/일러스트/호칭 등은 편집 불가(고정 표시)
-- [ ] 이름/아바타/생각중/커스텀 인스트럭션만 편집 가능
-- [ ] customInstruction json 오브젝트 기반 편집/저장/적용
-- [ ] ExtensionStateContext 등에서 persona 구조/로직 일치
-- [ ] template_characters.json 및 이미지 경로 연동, 누락 시 fallback 처리
-- [ ] 안내문, 피드백, UX 흐름(선택/초기화/편집 등) 정책과 완전 일치
-
----
-
-(위 체크리스트 기준으로 실제 코드/UX 구현 진행)

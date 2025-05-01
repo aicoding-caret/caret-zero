@@ -49,10 +49,6 @@ import { GlobalFileNames } from "../storage/disk"
 import { discoverChromeInstances } from "../../services/browser/BrowserDiscovery" // Corrected import path if needed
 import { searchWorkspaceFiles } from "../../services/search/file-search"
 import { ILogger } from "../../services/logging/ILogger" // Import ILogger
-import { TemplateCharacterManager } from '../persona/templateCharacters';
-import { BaseController } from './base-controller';
-import { PersonaController } from './persona-controller';
-import { MessageType, PersonaMessages } from './message-types';
 
 /*
 https://github.com/microsoft/vscode-webview-ui-toolkit-samples/blob/main/default/weather-webview/src/providers/WeatherViewProvider.ts
@@ -70,7 +66,6 @@ export class Controller {
 	private webviewProviderRef: WeakRef<WebviewProvider>
 	logger: ILogger // Add logger property
 	private availableModes: ModeInfo[] = [] // Store available modes
-	private personaController: PersonaController
 
 	constructor(
 		readonly context: vscode.ExtensionContext,
@@ -120,9 +115,6 @@ export class Controller {
 		cleanupLegacyCheckpoints(this.context.globalStorageUri.fsPath, this.outputChannel).catch((error) => {
 			console.error("Failed to cleanup legacy checkpoints:", error)
 		})
-
-		// PersonaController 인스턴스 생성
-		this.personaController = new PersonaController(this.context, this.logger, this.postMessageToWebview.bind(this));
 	}
 
 	// Function to load available modes from modes.json
@@ -294,25 +286,23 @@ export class Controller {
 
 	// Send any JSON serializable data to the react app
 	async postMessageToWebview(message: ExtensionMessage) {
-		console.log("[Controller:postMessageToWebview] 웹뷰로 메시지 전송 시도:", message.type)
+		console.log("[Controller] 웹뷰로 메시지 전송 시도:", message.type)
 		try {
 			const webviewProvider = this.webviewProviderRef.deref()
 			if (!webviewProvider) {
-				console.error("[Controller:postMessageToWebview] 웹뷰 프로바이더가 유효하지 않음")
+				console.error("[Controller] 웹뷰 프로바이더가 유효하지 않음")
 				return
 			}
 
 			const view = webviewProvider.view
 			if (!view) {
-				console.error("[Controller:postMessageToWebview] 웹뷰가 유효하지 않음")
+				console.error("[Controller] 웹뷰가 유효하지 않음")
 				return
-			}			
+			}
 
 			await view.webview.postMessage(message)
-			console.log("[Controller:postMessageToWebview] 웹뷰로 메시지 전송 성공", message.type)
-
 		} catch (error) {
-			console.error("[Controller:postMessageToWebview] 웹뷰로 메시지 전송 실패:", error)
+			console.error("[Controller] 웹뷰로 메시지 전송 실패:", error)
 		}
 	}
 
@@ -323,20 +313,12 @@ export class Controller {
 	 * @param webview A reference to the extension webview
 	 */
 	async handleWebviewMessage(message: WebviewMessage) {
-		// 페르소나 컨트롤러에서 처리 가능한 메시지인지 확인
-		if (this.personaController.canHandle(message.type)) {
-			const handled = await this.personaController.handleMessage(message);
-			if (handled) {
-				return;
-			}
-		}
-
 		switch (message.type) {
 			case "webviewDidLaunch": {
 				this.logger.log("웹뷰 시작 신호 수신 - 모드 로딩 시작")
 				// 모드 목록 로드
 				await this.loadAvailableModes()
-								
+				
 				// 상태를 웹뷰로 전송
 				const state = await this.getStateToPostToWebview()
 				this.logger.log("웹뷰에 상태 전송. 가능한 모드:", state.availableModes?.map(m => m.id).join(", "))
@@ -346,6 +328,8 @@ export class Controller {
 				})
 				break
 			}
+			
+			// 모드 설정 관련 핸들러
 			case "loadModesConfig": {
 				try {
 					// 기본 로그
@@ -1047,7 +1031,10 @@ export class Controller {
 				break
 			case "requestLmStudioModels":
 				const lmStudioModels = await this.getLmStudioModels(message.text)
-				this.postMessageToWebview({ type: "lmStudioModels", lmStudioModels })
+				this.postMessageToWebview({
+					type: "lmStudioModels",
+					lmStudioModels,
+				})
 				break
 			case "requestVsCodeLmModels":
 				const vsCodeLmModels = await this.getVsCodeLmModels()
@@ -1492,57 +1479,35 @@ export class Controller {
 			case "requestTemplateCharacters": {
 				this.logger.log("[PersonaSettings] template 캐릭터 로딩 요청 수신 - template_characters.json 로드 시작")
 				try {
-					// 템플릿 캐릭터 관리자 생성
-					const templateManager = new TemplateCharacterManager(this.context, this.logger);
-					
-					// 템플릿 캐릭터 데이터 로드
-					const templateCharacters = templateManager.loadTemplateCharacters();
-					if (templateCharacters.length === 0) {
-						this.logger.warn("[PersonaSettings] 로드된 템플릿 캐릭터가 없습니다.");
+					const jsonFilePath = vscode.Uri.joinPath(this.context.extensionUri, "assets", "template_characters", "template_characters.json");
+					const fs = require("fs");
+					const exists = fs.existsSync(jsonFilePath.fsPath);
+					if (!exists) {
+						this.logger.error("[PersonaSettings] template_characters.json 파일이 존재하지 않음:", jsonFilePath.fsPath);
 						await this.postMessageToWebview({
 							type: "templateCharactersLoaded",
 							text: "[]"
 						} as import("../../shared/ExtensionMessage").ExtensionMessage);
 						break;
 					}
-					
-					// 웹뷰 찾기
-					const view = WebviewProvider.getSidebarInstance()?.view;
-					if (!view || !view.webview) {
-						this.logger.error("[PersonaSettings] 웹뷰를 찾을 수 없습니다.");
-						await this.postMessageToWebview({
-							type: "templateCharactersLoaded",
-							text: "[]",
-							error: "웹뷰를 찾을 수 없습니다."
-						} as import("../../shared/ExtensionMessage").ExtensionMessage);
-						break;
-					}
-					
-					// 이미지 경로 변환
-					const preparedCharacters = templateManager.prepareTemplateCharactersForWebview(view.webview, templateCharacters);
-					
-					// 변환된 데이터 전송
+					const jsonStr = fs.readFileSync(jsonFilePath.fsPath, "utf-8");
+					this.logger.log("[PersonaSettings] template_characters.json 파일 읽기 성공, 내용 일부:", jsonStr.slice(0, 80));
 					await this.postMessageToWebview({
 						type: "templateCharactersLoaded",
-						text: JSON.stringify(preparedCharacters)
+						text: jsonStr
 					} as import("../../shared/ExtensionMessage").ExtensionMessage);
-					this.logger.log("[PersonaSettings] template_characters.json 데이터 전송 완료");
+					this.logger.log("[PersonaSettings] template_characters.json 데이터 전송 완료:", jsonFilePath.fsPath);
 				} catch (err) {
 					this.logger.error("[PersonaSettings] template_characters.json 로드 실패:", err);
 					await this.postMessageToWebview({
 						type: "templateCharactersLoaded",
-						text: "[]",
-						error: String(err)
+						text: "[]"
 					} as import("../../shared/ExtensionMessage").ExtensionMessage);
 				}
-				break
+				break;
 			}
 			// Add more switch case statements here as more webview message commands
 			// are created within the webview context (i.e. inside media/main.js)
-			default: {
-				// PersonaController 인스턴스에 메시지 전달
-				await this.personaController.handleMessage(message);
-			}
 		}
 	}
 
@@ -2485,7 +2450,8 @@ Here is the project's README to help you get started:\n\n${mcpDetails.readmeCont
 			mcpMarketplaceEnabled,
 			telemetrySetting,
 			planActSeparateModelsSetting,
-			persona, // personaList 대신 persona 사용
+			personaList,
+			selectedPersonaId,
 			selectedLanguage,
 			supportedLanguages,
 		} = await getAllExtensionState(this.context)
@@ -2520,8 +2486,8 @@ Here is the project's README to help you get started:\n\n${mcpDetails.readmeCont
 		return {
 			version: this.context.extension?.packageJSON?.version ?? "",
 			apiConfiguration,
-			customInstructions: customInstructions ?? "", // 기본값 추가
-			// uriScheme 필드 제거
+			customInstructions,
+			uriScheme: vscode.env.uriScheme,
 			currentTaskItem: this.task?.taskId ? (taskHistory || []).find((item) => item.id === this.task?.taskId) : undefined,
 			checkpointTrackerErrorMessage: this.task?.checkpointTrackerErrorMessage,
 			caretMessages: this.task?.caretMessages || [],
@@ -2545,14 +2511,10 @@ Here is the project's README to help you get started:\n\n${mcpDetails.readmeCont
 			availableModes: this.availableModes, // 사용 가능한 모드 정보
 			retryStatus: retryStatus,
 			apiError: null, // API 에러 정보
-			persona: persona, // 단일 퍼소나 시스템으로 변경
+			personaList: personaList ?? [],
+			selectedPersonaId: selectedPersonaId ?? "",
 			selectedLanguage: selectedLanguage ?? "",
 			supportedLanguages: supportedLanguages ?? [],
-			// *** Add new properties here ***
-			mode: "chat", // 기본값 설정
-			theme: vscode.window.activeColorTheme.kind === vscode.ColorThemeKind.Dark ? "dark" : "light",
-			historyItems: [],
-			modelInfo: undefined,
 		}
 	}
 
