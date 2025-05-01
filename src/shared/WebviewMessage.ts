@@ -90,8 +90,6 @@ export interface WebviewMessage {
 		| "updateAgentProfileImage"
 		// 모드 전환 관련 메시지 타입
 		| "togglePlanActMode"
-		| "requestTemplateCharactersJsonUri" // [ALPHA] Added for persona/character support
-		| "templateCharactersJsonUri" // [ALPHA] Added for persona/character support
 		| "requestTemplateCharacters"
 		| "templateCharactersLoaded"
 		// 페르소나 관련 메시지 타입 추가

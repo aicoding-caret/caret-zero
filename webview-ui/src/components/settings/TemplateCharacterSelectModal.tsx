@@ -7,22 +7,18 @@ import styled from "styled-components";
 import Modal from '../common/Modal';
 import { VSCodeButton } from "@vscode/webview-ui-toolkit/react";
 
+export interface TemplateCharacterLocale {
+  name: string;
+  description: string;
+  customInstruction: any;
+}
+
 export interface TemplateCharacter {
   character: string;
-  en: {
-    name: string;
-    description: string;
-    customInstruction: any;
-  };
-  ko: {
-    name: string;
-    description: string;
-    customInstruction: any;
-  };
+  [lang: string]: TemplateCharacterLocale | string | boolean | undefined;
   avatarUri: string;
   thinkingAvatarUri: string;
-  introIllustrationUri: string;
-  isDefault: boolean;
+  introIllustrationUri: string;  
 }
 
 interface Props {
@@ -103,7 +99,6 @@ const ModalContent = styled.div`
 
 const TemplateCharacterSelectModal: React.FC<Props> = ({ characters, language, open, onSelect, onClose }) => {
   const [selected, setSelected] = useState(0);
-  const t = (c: TemplateCharacter) => (language === "ko" ? c.ko : c.en);
   const selectedChar = characters[selected];
 
   // --- 캐릭터 목록/탭 미표시 버그 디버깅용 로그 추가 ---
@@ -116,11 +111,18 @@ const TemplateCharacterSelectModal: React.FC<Props> = ({ characters, language, o
   const getSafeThinkingUri = (character: TemplateCharacter) => {
     return character.thinkingAvatarUri || "/assets/template_characters/default_thinking.png";
   };
-  const getSafeName = (character: TemplateCharacter, lang: "ko" | "en") => {
-    return character[lang]?.name || "이름 없음";
+
+  // 언어 locale 안전하게 가져오기 (동적, fallback)
+  const getLocale = (character: TemplateCharacter, lang: string) => {
+    // en이 항상 fallback
+    return (character[lang] as TemplateCharacterLocale) || (character["en"] as TemplateCharacterLocale) || { name: "", description: "", customInstruction: "" };
   };
-  const getSafeDescription = (character: TemplateCharacter, lang: "ko" | "en") => {
-    return character[lang]?.description || "설명이 없습니다.";
+
+  const getSafeName = (character: TemplateCharacter, lang: string) => {
+    return getLocale(character, lang).name || "이름 없음";
+  };
+  const getSafeDescription = (character: TemplateCharacter, lang: string) => {
+    return getLocale(character, lang).description || "설명이 없습니다.";
   };
 
   // --- introIllustrationUri 누락 시 fallback 처리 추가 ---

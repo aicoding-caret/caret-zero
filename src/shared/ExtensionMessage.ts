@@ -5,16 +5,12 @@ import { AutoApprovalSettings } from "./AutoApprovalSettings"
 import { BrowserSettings } from "./BrowserSettings"
 import { ChatSettings } from "./ChatSettings"
 import { HistoryItem } from "./HistoryItem"
-import { McpServer, McpMarketplaceCatalog, McpMarketplaceCatalog, McpMarketplaceItem, McpDownloadResponse } from "./mcp"
+import { McpServer, McpMarketplaceCatalog, McpMarketplaceItem, McpDownloadResponse } from "./mcp"
 import { TelemetrySetting } from "./TelemetrySetting"
 import { Persona } from "./types"
 import { UserInfo } from "./UserInfo"
 import { GitCommit } from "../utils/git"
 import type { BalanceResponse, UsageTransaction, PaymentTransaction } from "../shared/CaretAccount"
-import { CaretMessage } from "./CaretMessage"
-import { ModeInfo } from "./ModeInfo"
-import { Platform } from "./Platform"
-import { RetryStatusMessage } from "./RetryStatusMessage"
 
 // Define ModeInfo interface
 export interface ModeInfo {
@@ -118,14 +114,13 @@ export interface ExtensionMessage {
 		| "relativePathsResponse" // Handles single and multiple path responses
 		| "fileSearchResults"
 		| "modesConfigLoaded"
-		| "templateCharactersJsonUri" // [ALPHA] Added for persona/character support
-		| "requestTemplateCharactersJsonUri" // [ALPHA] Added for persona/character support
+		| "requestTemplateCharacters" // [ALPHA] Added for persona/character support
 		| "templateCharactersLoaded" // [ALPHA] Persona template character response
-		| "requestTemplateCharacters" // [ALPHA] Persona template character request
 		| "personaUpdated" // [ALPHA] Persona updated notification
 		| "personaLoaded" // [ALPHA] Persona loaded notification
+		| "agentProfileImageUpdated" // [ALPHA] Agent profile image updated notification
 	text?: string
-	uri?: string // [ALPHA] Added for persona/character support, templateCharactersJsonUri
+	uri?: string // [ALPHA] Added for persona/character support
 	paths?: (string | null)[] // Used for relativePathsResponse
 	action?:
 		| "chatButtonClicked"
@@ -187,6 +182,10 @@ export interface ExtensionMessage {
 	// [ALPHA] ud398ub974uc18cub098 uad00ub828 ud544ub4dc ucd94uac00
 	personaId?: string
 	persona?: Persona // [ALPHA] Persona object
+	// [ALPHA] Agent profile image update fields
+	imageType?: "default" | "thinking"
+	imageUrl?: string
+	isTmp?: boolean // 임시 이미지 여부(썸네일 미리보기용)
 }
 
 export type Invoke = "sendMessage" | "primaryButtonClick" | "secondaryButtonClick"
@@ -199,8 +198,8 @@ export interface ExtensionState {
 	version: string
 	theme: string
 	mode: string
-	apiConfiguration: ApiConfiguration
-	customInstructions: string
+	apiConfiguration?: ApiConfiguration
+	customInstructions?: string
 	telemetrySetting: TelemetrySetting
 	planActSeparateModelsSetting: boolean
 	shouldShowAnnouncement: boolean
@@ -208,25 +207,23 @@ export interface ExtensionState {
 	alphaAvatarUri?: string
 	alphaThinkingAvatarUri?: string
 	apiError: ApiErrorInfo | null
-	// ud37cuc18cub098 uad00ub828 ud544ub4dc (ub2e8uc77c ud37cuc18cub098 uc2dcuc2a4ud15c)
 	persona?: Persona
 	selectedLanguage?: string
 	supportedLanguages?: string[]
-	// uae30uc874 ud544ub4dcub4e4
 	autoApprovalSettings: AutoApprovalSettings
 	browserSettings: BrowserSettings
 	remoteBrowserHost?: string
 	chatSettings: ChatSettings
 	historyItems: HistoryItem[]
 	modelInfo?: ModelInfo
-	platform: ModeInfo
+	platform: Platform
 	retryStatus?: RetryStatusMessage
 	taskHistory: HistoryItem[]
 	userInfo?: UserInfo
 	vscMachineId?: string
 	currentTaskItem?: any
 	checkpointTrackerErrorMessage?: string
-	caretMessages?: any[]
+	caretMessages?: CaretMessage[]
 	caretBanner?: string
 	mcpMarketplaceEnabled?: boolean
 	retryStatusMessage?: any
@@ -412,3 +409,4 @@ export type MessageType =
 	| "personaLoaded"
 	| "templateCharactersLoaded"
 	| "personaUpdated"
+	| "agentProfileImageUpdated" // [ALPHA] Agent profile image updated notification

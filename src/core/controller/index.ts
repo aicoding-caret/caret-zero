@@ -50,9 +50,9 @@ import { discoverChromeInstances } from "../../services/browser/BrowserDiscovery
 import { searchWorkspaceFiles } from "../../services/search/file-search"
 import { ILogger } from "../../services/logging/ILogger" // Import ILogger
 import { TemplateCharacterManager } from '../persona/templateCharacters';
-import { BaseController } from './base-controller';
 import { PersonaController } from './persona-controller';
 import { MessageType, PersonaMessages } from './message-types';
+import { PersonaManager } from '../persona/PersonaManager';
 
 /*
 https://github.com/microsoft/vscode-webview-ui-toolkit-samples/blob/main/default/weather-webview/src/providers/WeatherViewProvider.ts
@@ -323,6 +323,7 @@ export class Controller {
 	 * @param webview A reference to the extension webview
 	 */
 	async handleWebviewMessage(message: WebviewMessage) {
+		this.logger.log("[DEBUG] handleWebviewMessage received", message);
 		// 페르소나 컨트롤러에서 처리 가능한 메시지인지 확인
 		if (this.personaController.canHandle(message.type)) {
 			const handled = await this.personaController.handleMessage(message);
@@ -630,31 +631,38 @@ export class Controller {
 								this.logger.warn("assets 디렉토리 생성 중 오류 (이미 존재할 수 있음):", err)
 							}
 
-							// 이미지 타입에 따른 파일명 결정
-							const imageFileName = isThinking ? "agent_thinking.png" : "agent_profile.png"
-							const targetPath = path.join(assetsDir, imageFileName)
+							// 이미지 타입에 따른 파일명 결정 (TMP 우선)
+							const tmpImageFileName = isThinking ? PersonaManager.AGENT_THINKING_TMP_FILENAME : PersonaManager.AGENT_PROFILE_TMP_FILENAME;
+							const tmpTargetPath = path.join(assetsDir, tmpImageFileName)
 
-							// 파일 복사
+							// 파일 복사 (임시 파일)
 							try {
 								const imageBuffer = await fs.readFile(selectedPath)
-								await fs.writeFile(targetPath, imageBuffer)
-								this.logger.log(`${imageType} 이미지 저장 완료:`, targetPath)
+								await fs.writeFile(tmpTargetPath, imageBuffer)
+								this.logger.log(`${imageType} 임시 이미지 저장 완료:`, tmpTargetPath)
 
-								// 설정 키 결정 및 저장
-								const settingKey = isThinking ? "alphaThinkingAvatarUri" : "alphaAvatarUri"
-								await this.context.globalState.update(settingKey, imageFileName)
+								// 설정 키는 아직 업데이트하지 않음 (확정 저장 아님)
 
-								// 상태 업데이트
-								await this.postStateToWebview()
+								// 상태 업데이트: TMP 파일 webview로 알려주기
+								const webview = this.webviewProviderRef.deref()?.view?.webview;
+								if (webview) {
+									const tmpWebviewUri = webview.asWebviewUri(vscode.Uri.joinPath(this.context.extensionUri, "assets", tmpImageFileName)).toString() + `?t=${Date.now()}`;
+									await this.postMessageToWebview({
+										type: "agentProfileImageUpdated",
+										imageType,
+										imageUrl: tmpWebviewUri,
+										isTmp: true
+									});
+								}
 
-								// 성공 메시지
+								// 성공 메시지 (임시 반영)
 								const successMessage = isThinking 
-									? "AI 에이전트 생각 중 이미지가 성공적으로 변경되었습니다."
-									: "AI 에이전트 프로필 이미지가 성공적으로 변경되었습니다."
+									? "AI 에이전트 생각 중 이미지가 임시로 반영되었습니다. 저장을 눌러야 적용됩니다."
+									: "AI 에이전트 프로필 이미지가 임시로 반영되었습니다. 저장을 눌러야 적용됩니다.";
 								vscode.window.showInformationMessage(successMessage)
 							} catch (err) {
-								this.logger.error(`${imageType} 이미지 저장 중 오류:`, err)
-								vscode.window.showErrorMessage(`이미지 저장 중 오류가 발생했습니다: ${err.message}`)
+								this.logger.error(`${imageType} 임시 이미지 저장 중 오류:`, err);
+								vscode.window.showErrorMessage(`임시 이미지 저장 중 오류가 발생했습니다: ${err.message}`);
 							}
 						}
 					})
@@ -667,46 +675,10 @@ export class Controller {
 
 			case "resetAgentProfileImage": {
 				try {
-					// 이미지 타입 확인 (기본값: default)
-					const imageType = message.imageType || "default"
-					const isThinking = imageType === "thinking"
-
-					// 기본 이미지 위치
-					const assetsDir = path.join(this.context.extensionUri.fsPath, "assets")
+					// To-do : reset시 AgetnProfileImage는 비우고 template중 다시 고르게 한다. 
 					
-					// 파일명 결정
-					const defaultImageFileName = isThinking ? "default_ai_agent_thinking.png" : "default_ai_agent_profile.png"
-					const targetImageFileName = isThinking ? "agent_thinking.png" : "agent_profile.png"
 					
-					// 경로 결정
-					const defaultImagePath = path.join(assetsDir, defaultImageFileName)
-					const targetPath = path.join(assetsDir, targetImageFileName)
-
-					// 기본 이미지 파일 확인
-					if (await fileExistsAtPath(defaultImagePath)) {
-						// 기본 이미지 복사
-						const imageBuffer = await fs.readFile(defaultImagePath)
-						await fs.writeFile(targetPath, imageBuffer)
-						this.logger.log(`${imageType} 이미지 초기화 완료: ${targetPath}`)
-
-						// 설정 키 및 값 결정
-						const settingKey = isThinking ? "alphaThinkingAvatarUri" : "alphaAvatarUri" 
-						await this.context.globalState.update(settingKey, targetImageFileName)
-
-						// 상태 업데이트
-						await this.postStateToWebview()
-
-						// 성공 메시지
-						const successMessage = isThinking
-							? "AI 에이전트 생각 중 이미지가 기본 이미지로 초기화되었습니다."
-							: "AI 에이전트 프로필 이미지가 기본 이미지로 초기화되었습니다."
-						
-						vscode.window.showInformationMessage(successMessage)
-					} else {
-						throw new Error(`기본 이미지 파일을 찾을 수 없습니다: ${defaultImagePath}`)
-					}
-				} catch (error) {
-					this.logger.error(`${message.imageType || "default"} 이미지 초기화 중 오류:`, error)
+				} catch (error) {					
 					vscode.window.showErrorMessage(`이미지 초기화 중 오류가 발생했습니다: ${error.message}`)
 				}
 				break
@@ -1385,6 +1357,53 @@ export class Controller {
 				await this.postStateToWebview()
 
 				await this.postMessageToWebview({ type: "didUpdateSettings" })
+
+				// [ALPHA] 프로필/생각중 이미지 TMP → 정식 파일로 move/rename
+				try {
+					const assetsDir = path.join(this.context.extensionUri.fsPath, "assets");
+					const webview = this.webviewProviderRef.deref()?.view?.webview;
+					let profileImageChanged = false;
+
+					// 프로필 이미지
+					const tmpProfilePath = path.join(assetsDir, PersonaManager.AGENT_PROFILE_TMP_FILENAME);
+					const finalProfilePath = path.join(assetsDir, PersonaManager.AGENT_PROFILE_FILENAME);
+					if (await fileExistsAtPath(tmpProfilePath)) {
+						this.logger.log(`[프로필] TMP → 정식 move: ${tmpProfilePath} → ${finalProfilePath}`);
+						await fs.rename(tmpProfilePath, finalProfilePath);
+						await this.context.globalState.update("alphaAvatarUri", PersonaManager.AGENT_PROFILE_FILENAME);
+						profileImageChanged = true;
+					}
+					// 생각중 이미지
+					const tmpThinkingPath = path.join(assetsDir, PersonaManager.AGENT_THINKING_TMP_FILENAME);
+					const finalThinkingPath = path.join(assetsDir, PersonaManager.AGENT_THINKING_FILENAME);
+					if (await fileExistsAtPath(tmpThinkingPath)) {
+						this.logger.log(`[생각중] TMP → 정식 move: ${tmpThinkingPath} → ${finalThinkingPath}`);
+						await fs.rename(tmpThinkingPath, finalThinkingPath);
+						await this.context.globalState.update("alphaThinkingAvatarUri", PersonaManager.AGENT_THINKING_FILENAME);
+						profileImageChanged = true;
+					}
+					// 최종 반영 메시지
+					if (profileImageChanged && webview) {
+						const profileWebviewUri = webview.asWebviewUri(vscode.Uri.joinPath(this.context.extensionUri, "assets", PersonaManager.AGENT_PROFILE_FILENAME)).toString() + `?t=${Date.now()}`;
+						const thinkingWebviewUri = webview.asWebviewUri(vscode.Uri.joinPath(this.context.extensionUri, "assets", PersonaManager.AGENT_THINKING_FILENAME)).toString() + `?t=${Date.now()}`;
+						this.logger.log(`[프로필] 최종 반영 메시지 전송: ${profileWebviewUri}`);
+						await this.postMessageToWebview({
+							type: "agentProfileImageUpdated",
+							imageType: "default",
+							imageUrl: profileWebviewUri,
+							isTmp: false
+						});
+						this.logger.log(`[생각중] 최종 반영 메시지 전송: ${thinkingWebviewUri}`);
+						await this.postMessageToWebview({
+							type: "agentProfileImageUpdated",
+							imageType: "thinking",
+							imageUrl: thinkingWebviewUri,
+							isTmp: false
+						});
+					}
+				} catch (err) {
+					this.logger.error("[이미지 저장(move) 중 오류]", err);
+				}
 				break
 			}
 			case "clearAllTaskHistory": {
@@ -1905,6 +1924,11 @@ export class Controller {
 			if (!URL.canParse(baseUrl)) {
 				return []
 			}
+			const config: Record<string, any> = {}
+			if (baseUrl) {
+				config["headers"] = { "Content-Type": "application/json" }
+			}
+
 			const response = await axios.get(`${baseUrl}/api/tags`)
 			const modelsArray = response.data?.models?.map((model: any) => model.name) || []
 			const models = [...new Set<string>(modelsArray)]
@@ -2179,7 +2203,6 @@ Here is the project's README to help you get started:\n\n${mcpDetails.readmeCont
 			if (!URL.canParse(baseUrl)) {
 				return []
 			}
-
 			const config: Record<string, any> = {}
 			if (apiKey) {
 				config["headers"] = { Authorization: `Bearer ${apiKey}` }
@@ -2506,16 +2529,18 @@ Here is the project's README to help you get started:\n\n${mcpDetails.readmeCont
 		const webview = this.webviewProviderRef.deref()?.view?.webview
 
 		// 기본 프로필 이미지 URI 생성
-		const alphaAvatarFileUri = vscode.Uri.joinPath(this.context.extensionUri, "assets", "default_ai_agent_profile.png")
-		const alphaAvatarWebviewUri = webview ? webview.asWebviewUri(alphaAvatarFileUri).toString() : undefined
+		const alphaAvatarFileUri = vscode.Uri.joinPath(this.context.extensionUri, "assets", PersonaManager.AGENT_PROFILE_FILENAME)
+		const now = new Date();
+		const dailyCacheBuster = `${now.getFullYear()}${String(now.getMonth()+1).padStart(2,'0')}${String(now.getDate()).padStart(2,'0')}`;
+		const alphaAvatarWebviewUri = webview ? webview.asWebviewUri(alphaAvatarFileUri).toString() + `?d=${dailyCacheBuster}` : undefined
 
 		// 생각 중 이미지 URI 생성
-		const alphaThinkingAvatarFileUri = vscode.Uri.joinPath(this.context.extensionUri, "assets", "agent_thinking.png")
-		const alphaThinkingAvatarWebviewUri = webview ? webview.asWebviewUri(alphaThinkingAvatarFileUri).toString() : undefined
+		const alphaThinkingAvatarFileUri = vscode.Uri.joinPath(this.context.extensionUri, "assets", PersonaManager.AGENT_THINKING_FILENAME)
+		const alphaThinkingAvatarWebviewUri = webview ? webview.asWebviewUri(alphaThinkingAvatarFileUri).toString() + `?d=${dailyCacheBuster}` : undefined
 
 		// 배너 이미지 URI 생성
 		const caretBannerFileUri = vscode.Uri.joinPath(this.context.extensionUri, "assets", "imgs","main_banner.webp")
-		const caretBannerWebviewUri = webview ? webview.asWebviewUri(caretBannerFileUri).toString() : undefined
+		const caretBannerWebviewUri = webview ? webview.asWebviewUri(caretBannerFileUri).toString() + `?d=${dailyCacheBuster}` : undefined
 
 		return {
 			version: this.context.extension?.packageJSON?.version ?? "",

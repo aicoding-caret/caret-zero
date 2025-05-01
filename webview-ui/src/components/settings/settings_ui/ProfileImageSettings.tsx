@@ -21,13 +21,12 @@ const SectionTitle = styled.h4`
 `;
 
 const ProfileImagePreview = styled.div`
-	width: 100px;
-	height: 100px;
+	width: 64px;
+	height: 64px;
 	border-radius: 50%;
 	background-color: var(--vscode-editor-background);
-	border: 2px solid var(--vscode-button-background);
 	overflow: hidden;
-	margin-right: 15px;
+	margin-bottom: 8px;
 	display: flex;
 	align-items: center;
 	justify-content: center;
@@ -45,6 +44,23 @@ const ProfileImageActions = styled.div`
 	gap: 8px;
 `;
 
+const ImagesContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+  gap: 28px;
+  align-items: flex-start;
+  justify-content: center;
+  width: 100%;
+`;
+
+const SingleImageSection = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  width: 120px;
+`;
+
 interface ProfileImageSettingsProps {
   defaultImage: string | undefined;
   thinkingImage: string | undefined;
@@ -58,73 +74,54 @@ const ProfileImageSettings: React.FC<ProfileImageSettingsProps> = ({
   onSelectDefaultImage,
   onSelectThinkingImage,
 }) => {
+  // 이미지 로딩 실패 상태
+  const [defaultImageError, setDefaultImageError] = React.useState(false);
+  const [thinkingImageError, setThinkingImageError] = React.useState(false);
+
   return (
     <SettingsSection>
-      <SectionTitle>AI 에이전트 프로필 이미지 설정</SectionTitle>
-      <div style={{ display: "flex", justifyContent: "space-between" }}>
-        {/* 기본 이미지 설정 */}
-        <div style={{ flex: 1, marginRight: "15px" }}>
-          <div style={{ marginBottom: "5px", fontWeight: "500" }}>기본 이미지</div>
-          <ProfileImageWrapper>
-            <ProfileImagePreview>
-              {defaultImage ? (
-                <img
-                  src={defaultImage}
-                  alt="AI 에이전트 프로필"
-                  style={{ width: "100%", height: "100%", objectFit: "cover" }}
-                />
-              ) : (
-                <div
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    color: "var(--vscode-descriptionForeground)",
-                    width: "100%",
-                    height: "100%",
-                  }}>
-                  <i className="codicon codicon-account" style={{ fontSize: "32px" }} />
-                </div>
-              )}
-            </ProfileImagePreview>
-            <ProfileImageActions>
-              <VSCodeButton onClick={onSelectDefaultImage}>이미지 선택</VSCodeButton>
-            </ProfileImageActions>
-          </ProfileImageWrapper>
-        </div>
+      <ImagesContainer>
+        {/* 기본 이미지 */}
+        <SingleImageSection>
+          <div style={{ marginBottom: "4px", fontWeight: 500, textAlign: "center", fontSize: 13 }}>기본 이미지</div>
+          <ProfileImagePreview>
+            {!defaultImageError && defaultImage ? (
+              <img
+                src={defaultImage}
+                alt="AI 에이전트 프로필"
+                style={{ width: "64px", height: "64px", objectFit: "cover" }}
+                onError={() => setDefaultImageError(true)}
+              />
+            ) : (
+              <span style={{ fontSize: 12, color: "var(--vscode-descriptionForeground)", textAlign: "center" }}>이미지 없음</span>
+            )}
+          </ProfileImagePreview>
+          <ProfileImageActions>
+            <VSCodeButton onClick={onSelectDefaultImage}>이미지 선택</VSCodeButton>
+          </ProfileImageActions>
+        </SingleImageSection>
 
-        {/* 생각 중 이미지 설정 */}
-        <div style={{ flex: 1 }}>
-          <div style={{ marginBottom: "5px", fontWeight: "500" }}>생각 중 이미지</div>
-          <ProfileImageWrapper>
-            <ProfileImagePreview>
-              {thinkingImage ? (
-                <img
-                  src={thinkingImage}
-                  alt="AI 에이전트 생각 중"
-                  style={{ width: "100%", height: "100%", objectFit: "cover" }}
-                />
-              ) : (
-                <div
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    color: "var(--vscode-descriptionForeground)",
-                    width: "100%",
-                    height: "100%",
-                  }}>
-                  <i className="codicon codicon-loading" style={{ fontSize: "32px" }} />
-                </div>
-              )}
-            </ProfileImagePreview>
-            <ProfileImageActions>
-              <VSCodeButton onClick={onSelectThinkingImage}>이미지 선택</VSCodeButton>              
-            </ProfileImageActions>
-          </ProfileImageWrapper>
-        </div>
-      </div>
-      <p style={{ fontSize: "12px", color: "var(--vscode-descriptionForeground)", marginTop: "10px" }}>
+        {/* 생각 중 이미지 */}
+        <SingleImageSection>
+          <div style={{ marginBottom: "4px", fontWeight: 500, textAlign: "center", fontSize: 13 }}>생각 중 이미지</div>
+          <ProfileImagePreview>
+            {!thinkingImageError && thinkingImage ? (
+              <img
+                src={thinkingImage}
+                alt="AI 에이전트 생각 중"
+                style={{ width: "64px", height: "64px", objectFit: "cover" }}
+                onError={() => setThinkingImageError(true)}
+              />
+            ) : (
+              <span style={{ fontSize: 12, color: "var(--vscode-descriptionForeground)", textAlign: "center" }}>이미지 없음</span>
+            )}
+          </ProfileImagePreview>
+          <ProfileImageActions>
+            <VSCodeButton onClick={onSelectThinkingImage}>이미지 선택</VSCodeButton>
+          </ProfileImageActions>
+        </SingleImageSection>
+      </ImagesContainer>
+      <p style={{ fontSize: "13px", color: "var(--vscode-descriptionForeground)", marginTop: "12px", textAlign: "center" }}>
         AI 에이전트의 프로필 이미지를 설정합니다. 기본 이미지는 일반 대화에서, 생각 중 이미지는 AI가 응답을 생성할 때 표시됩니다.
       </p>
     </SettingsSection>

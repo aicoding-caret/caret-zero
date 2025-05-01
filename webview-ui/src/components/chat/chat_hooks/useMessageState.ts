@@ -19,11 +19,11 @@ export function useMessageState(messages: CaretMessage[]) {
   const [expandedRows, setExpandedRows] = useState<Record<number, boolean>>({})
 
   // 첫 번째 메시지는 task, 나머지는 대화 내용
-  const task = useMemo(() => messages.at(0), [messages])
+  const task = useMemo(() => (messages ?? []).at(0), [messages])
   
   // 메시지 결합 및 변환 (API 요청 및 명령어 시퀀스 결합)
   const modifiedMessages = useMemo(
-    () => combineApiRequests(combineCommandSequences(messages.slice(1))),
+    () => combineApiRequests(combineCommandSequences((messages ?? []).slice(1))),
     [messages]
   )
 

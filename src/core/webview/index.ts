@@ -70,13 +70,6 @@ export class WebviewProvider implements vscode.WebviewViewProvider {
 				? await this.getHMRHtmlContent(webviewView.webview)
 				: this.getHtmlContent(webviewView.webview)
 
-		// --- Template Character JSON Webview URI를 웹뷰로 전달 ---
-		const templateCharactersJsonUri = this.getTemplateCharactersJsonWebviewUri(webviewView.webview)
-		this.controller.postMessageToWebview({
-			type: "templateCharactersJsonUri",
-			uri: templateCharactersJsonUri,
-		})
-
 		// Sets up an event listener to listen for messages passed from the webview view context
 		// and executes code based on the message that is received
 		this.setWebviewMessageListener(webviewView.webview)
@@ -306,22 +299,6 @@ export class WebviewProvider implements vscode.WebviewViewProvider {
 	}
 
 	/**
-	 * Template Character JSON Webview URI를 생성합니다.
-	 *
-	 * @param webview A reference to the extension webview
-	 * @returns Template Character JSON Webview URI
-	 */
-	public getTemplateCharactersJsonWebviewUri(webview: vscode.Webview): string {
-		const templateCharactersPath = vscode.Uri.joinPath(
-			this.context.extensionUri,
-			"assets",
-			"template_characters",
-			"template_characters.json"
-		)
-		return webview.asWebviewUri(templateCharactersPath).toString()
-	}
-
-	/**
 	 * Sets up an event listener to listen for messages passed from the webview context and
 	 * executes code based on the message that is received.
 	 *
@@ -348,6 +325,9 @@ export class WebviewProvider implements vscode.WebviewViewProvider {
 	private setWebviewMessageListener(webview: vscode.Webview) {
 		webview.onDidReceiveMessage(
 			(message) => {
+				console.log("[WebviewProvider] onDidReceiveMessage (raw):", message);
+				this.outputChannel.appendLine(`[WebviewProvider] onDidReceiveMessage (raw): ${JSON.stringify(message)}`);
+				this.controller.logger.log("[WebviewProvider] onDidReceiveMessage (raw):", message);
 				this.controller.handleWebviewMessage(message)
 			},
 			null,

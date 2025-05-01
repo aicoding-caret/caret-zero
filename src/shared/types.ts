@@ -1,10 +1,17 @@
 export interface Persona {
   id: string;
-  name: Record<string, string>; // 언어별 이름
-  description: Record<string, string>; // 언어별 설명
-  customInstructions: string; // 영문 권장
+  name: string; 
+  description: string; 
+  customInstructions?: string; 
   avatarUri?: string;
   thinkingAvatarUri?: string;
   isDefault?: boolean;
   isEditable?: boolean;
+}
+
+export interface TemplateCharacter {
+  name: string;
+  description: string;
+  customInstructions?: string;
+  // 필요한 경우 cline과 동일하게 맞춤 (추가 필드 있으면 추가)
 }

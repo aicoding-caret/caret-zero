@@ -104,8 +104,8 @@ function ChatRowContent({ message, isExpanded, onToggleExpand, lastModifiedMessa
 	const extensionState = useExtensionState();
 	
 	// 아바타 URL 설정 (기본값 포함)
-	const alphaAvatarUri = extensionState.alphaAvatarUri || "assets/default_ai_agent_profile.png";
-	const alphaThinkingAvatarUri = extensionState.alphaThinkingAvatarUri || "assets/default_ai_agent_thinking.png";
+	const alphaAvatarUri = extensionState.alphaAvatarUri;
+	const alphaThinkingAvatarUri = extensionState.alphaThinkingAvatarUri;
 	
 	// 내부 분석 메시지 또는 환경 메시지 확인
 	const isInternal = isInternalEnvironmentMessage(message.text);

@@ -108,7 +108,7 @@ declare module "vscode" {
 }
 
 const ApiOptions = ({ showModelOptions, apiErrorMessage, modelIdErrorMessage, isPopup }: ApiOptionsProps) => {
-	const { apiConfiguration, setApiConfiguration, uriScheme } = useExtensionState()
+	const { apiConfiguration, setApiConfiguration } = useExtensionState()
 	const [ollamaModels, setOllamaModels] = useState<string[]>([])
 	const [lmStudioModels, setLmStudioModels] = useState<string[]>([])
 	const [vsCodeLmModels, setVsCodeLmModels] = useState<vscodemodels.LanguageModelChatSelector[]>([])
@@ -273,7 +273,7 @@ const ApiOptions = ({ showModelOptions, apiErrorMessage, modelIdErrorMessage, is
 			)}
 
 			{selectedProvider === "openrouter" && (
-				<OpenRouterOptions apiConfiguration={apiConfiguration} setApiConfiguration={setApiConfiguration} uriScheme={uriScheme} />
+				<OpenRouterOptions apiConfiguration={apiConfiguration} setApiConfiguration={setApiConfiguration} />
 			)}
 
 			{selectedProvider === "bedrock" && (

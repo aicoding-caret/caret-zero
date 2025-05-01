@@ -20,8 +20,8 @@ export function useCaretAskState(
   const [didClickCancel, setDidClickCancel] = useState(false)
 
   // ub9c8uc9c0ub9c9 uba54uc2dcuc9c0uc640 uadf8 uc804 uba54uc2dcuc9c0 ucd94ucd9c
-  const lastMessage = useMemo(() => messages.at(-1), [messages])
-  const secondLastMessage = useMemo(() => messages.at(-2), [messages])
+  const lastMessage = useMemo(() => (messages ?? []).at(-1), [messages])
+  const secondLastMessage = useMemo(() => (messages ?? []).at(-2), [messages])
 
   // ub9c8uc9c0ub9c9 uba54uc2dcuc9c0 ubcc0uacbduc2dc uc0c1ud0dc uc5c5ub370uc774ud2b8
   useEffect(() => {

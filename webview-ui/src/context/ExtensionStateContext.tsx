@@ -1,7 +1,7 @@
 import React, { createContext, useCallback, useContext, useEffect, useState } from "react"
 import { useEvent } from "react-use"
 import { DEFAULT_AUTO_APPROVAL_SETTINGS } from "../../../src/shared/AutoApprovalSettings"
-import { ExtensionMessage, ExtensionState, DEFAULT_PLATFORM, ModeInfo, ApiErrorInfo } from "../../../src/shared/ExtensionMessage" // Import ModeInfo, ApiErrorInfo
+import { ExtensionMessage, ExtensionState, DEFAULT_PLATFORM, ModeInfo, ApiErrorInfo, CaretMessage } from "../../../src/shared/ExtensionMessage" // Import ModeInfo, ApiErrorInfo, CaretMessage
 import { ApiConfiguration, ModelInfo, openRouterDefaultModelId, openRouterDefaultModelInfo } from "../../../src/shared/api"
 import { findLastIndex } from "../../../src/shared/array"
 import { McpMarketplaceCatalog, McpServer } from "../../../src/shared/mcp"
@@ -63,6 +63,9 @@ export const ExtensionStateContextProvider: React.FC<{
 		alphaAvatarUri: "https://raw.githubusercontent.com/fstory97/caret-avatar/main/alpha-maid.png", // 기본 프로필 이미지
 		alphaThinkingAvatarUri: "https://raw.githubusercontent.com/fstory97/caret-avatar/main/alpha-maid-thinking.png",
 		apiError: null, // API 에러 정보 초기화
+		theme: "", // Add theme to initial state
+		mode: "", // Add mode to initial state
+		historyItems: [], // Add historyItems to initial state
 		// Persona 관리 관련 기본값 추가
 		persona: undefined,
 		selectedLanguage: "ko",
@@ -126,12 +129,12 @@ export const ExtensionStateContextProvider: React.FC<{
 				break
 			}
 			case "partialMessage": {
-				const partialMessage = message.partialMessage!
+				const partialMessage: CaretMessage = message.partialMessage!
 				setState((prevState) => {
 					// worth noting it will never be possible for a more up-to-date message to be sent here or in normal messages post since the presentAssistantContent function uses lock
-					const lastIndex = findLastIndex(prevState.caretMessages, (msg) => msg.ts === partialMessage.ts)
+					const lastIndex = findLastIndex(prevState.caretMessages ?? [], (msg) => msg.ts === partialMessage.ts)
 					if (lastIndex !== -1) {
-						const newCaretMessages = [...prevState.caretMessages]
+						const newCaretMessages = [...(prevState.caretMessages ?? [])]
 						newCaretMessages[lastIndex] = partialMessage
 						return { ...prevState, caretMessages: newCaretMessages }
 					}
@@ -168,13 +171,30 @@ export const ExtensionStateContextProvider: React.FC<{
 			}
 			case "personaUpdated": {
 				// personaUpdated 메시지 처리 추가
-				console.log("[ExtensionStateContext] personaUpdated 메시지 수신:", message.persona);
+				console.log("[ExtensionStateContext] personaUpdated 메시지 수신:", message);
 				
 				// 페르소나 목록 다시 로드 요청
 				vscode.postMessage({
 					type: "getLatestState"
 				});
 				break;
+			}
+			case "agentProfileImageUpdated": {
+				console.log("[ExtensionStateContext] agentProfileImageUpdated message:", message);
+				if (message.imageType === "default") {
+					console.log("[ExtensionStateContext] Updating alphaAvatarUri to:", message.imageUrl);
+					setState((prevState) => ({
+						...prevState,
+						alphaAvatarUri: message.imageUrl,
+					}))
+				} else if (message.imageType === "thinking") {
+					console.log("[ExtensionStateContext] Updating alphaThinkingAvatarUri to:", message.imageUrl);
+					setState((prevState) => ({
+						...prevState,
+						alphaThinkingAvatarUri: message.imageUrl,
+					}))
+				}
+				break
 			}
 		}
 	}, [])

@@ -71,6 +71,8 @@ const SettingsView = ({ onDone }: SettingsViewProps) => {
 	// Local state for images to pass down (sync with context)
 	const [defaultImage, setDefaultImage] = useState<string | undefined>(alphaAvatarUri)
 	const [thinkingImage, setThinkingImage] = useState<string | undefined>(alphaThinkingAvatarUri)
+	const [defaultImageError, setDefaultImageError] = useState(false)
+	const [thinkingImageError, setThinkingImageError] = useState(false)
 
 	// Update local state when context values change
 	useEffect(() => {
@@ -80,6 +82,14 @@ const SettingsView = ({ onDone }: SettingsViewProps) => {
 	useEffect(() => {
 		setThinkingImage(alphaThinkingAvatarUri);
 	}, [alphaThinkingAvatarUri]);
+
+	// 이미지 변경 시 즉시 로딩 에러 상태 초기화
+	useEffect(() => {
+		setDefaultImageError(false)
+	}, [defaultImage])
+	useEffect(() => {
+		setThinkingImageError(false)
+	}, [thinkingImage])
 
 	const handleSubmit = (withoutDone: boolean = false) => {
 		// Validation logic can be kept if ApiOptions is used
@@ -201,9 +211,7 @@ const SettingsView = ({ onDone }: SettingsViewProps) => {
 					defaultImage={defaultImage}
 					thinkingImage={thinkingImage}
 					onSelectDefaultImage={handleImageSelect}
-					onResetDefaultImage={handleImageReset}
 					onSelectThinkingImage={handleThinkingImageSelect}
-					onResetThinkingImage={handleThinkingImageReset}
 				/>
 
 				<CustomInstructionsSettings

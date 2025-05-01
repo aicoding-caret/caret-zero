@@ -1,6 +1,6 @@
 import { VSCodeButton, VSCodeLink } from "@vscode/webview-ui-toolkit/react"
-import React, { useState, useRef, useCallback, useEffect, useMemo, UIEventHandler } from "react"
-import { Virtuoso, VirtuosoHandle } from "react-virtuoso"
+import { useState, useRef, useCallback, useEffect, useMemo } from "react"
+import { Virtuoso } from "react-virtuoso"
 import styled from "styled-components"
 import { useExtensionState } from "../../context/ExtensionStateContext"
 import { vscode } from "../../utils/vscode"
@@ -9,14 +9,12 @@ import BrowserSessionRow from "./BrowserSessionRow"
 import ChatRow from "./ChatRow"
 import ChatTextArea from "./ChatTextArea"
 import TaskHeader from "./TaskHeader"
-import { ApiProvider, ModelInfo } from "../../../../src/shared/api"
-import { CaretMessage } from "../../../../src/shared/ExtensionMessage"
-import { WebviewMessage } from "../../../../src/shared/WebviewMessage"
-import Announcement from "./Announcement"
 import AutoApproveMenu from "./AutoApproveMenu"
 import HistoryPreview from "../history/HistoryPreview"
 import TelemetryBanner from "../common/TelemetryBanner"
 import { AlertIcon } from "@primer/octicons-react"
+import { CaretMessage } from "../../../../src/shared/ExtensionMessage";
+import Announcement from "./Announcement"
 
 // 추출한 Hook 임포트
 import {
@@ -29,12 +27,10 @@ import {
 } from "./chat_hooks"
 
 // 분리한 UI 컴포넌트 임포트
-import ModeSelector from "./chat_ui/ModeSelector"
-import ChatHeader from "./chat_ui/ChatHeader"
-import ChatButtons from "./chat_ui/ChatButtons"
-import ScrollControls from "./chat_ui/ScrollControls"
+import 	ChatButtons from "./chat_ui/ChatButtons"
 
 import { normalizeApiConfiguration } from "../settings/ApiOptions"
+import { WebviewMessage } from "@shared/WebviewMessage"
 
 // API 재시도 상태 UI 컴포넌트
 const RetryStatusContainer = styled.div`
@@ -205,10 +201,13 @@ const ChatView = ({ isHidden, showAnnouncement, hideAnnouncement, showHistoryVie
 		currentTaskItem,
 	} = useExtensionState()
 
+	// 안전한 messages 배열 생성
+	const safeMessages: CaretMessage[] = messages ?? [];
+
 	// 메시지 상태 관리 Hook
 	const { task, modifiedMessages, apiMetrics, lastApiReqTotalTokens, isExpanded, toggleExpand } = useMessageState(
-		// messages 사용
-		messages
+		// safeMessages 사용
+		safeMessages
 	)
 	
 	// 스크롤 컨트롤 Hook
@@ -250,8 +249,8 @@ const ChatView = ({ isHidden, showAnnouncement, hideAnnouncement, showHistoryVie
 		secondaryButtonText, 
 		didClickCancel, // 이 값은 필요시 UI에 활용 가능
 		resetButtonsState 
-		// messages 사용
-	} = useCaretAskState(messages, setTextAreaDisabled, resetInput)
+		// safeMessages 사용
+	} = useCaretAskState(safeMessages, setTextAreaDisabled, resetInput)
 
 	// 모드 단축키 Hook
 	// availableModes, chatSettings 사용
@@ -783,8 +782,6 @@ const ChatView = ({ isHidden, showAnnouncement, hideAnnouncement, showHistoryVie
 					{taskHistory.length > 0 && <HistoryPreview showHistoryView={showHistoryView} />}
 				</div>
 			)}
-
-			{!task && <AutoApproveMenu style={{ marginBottom: -2, flex: "0 1 auto", minHeight: 0 }} />}
 
 			{/* 메시지 목록 영역 - task가 있을 때만 표시 */}
 			{task && (
