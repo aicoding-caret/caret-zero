@@ -1,12 +1,6 @@
 # 태스크 상태 관리
 
 ## 진행 중인 태스크 (Pending)
-
-- [ ] **Task #018:** 퍼소나/프로필 관리 및 UI 개선 (설계/구현/통합)
-  * 퍼소나 관리 시스템 설계 및 구현 계획 ([018-01-01-plan-persona-management.md](./018-01-01-plan-persona-management.md))
-  * 템플릿/캐릭터 정책 및 최신 설계 ([018-01-02-plan-template-character-policy-and-design-latest.md](./018-01-02-plan-template-character-policy-and-design-latest.md))
-  * 퍼소나 관리 액션 체크리스트 ([018-02-01-action-checklist-persona-management.md](./018-02-01-action-checklist-persona-management.md))
-
 - [ ] **Task #015:** ChatView/ChatRow 리팩토링 (분리, 중단상태, [014-1-chatview-refactoring.md](./014-1-chatview-refactoring.md))
 - [ ] **Task #028:** api.ts 파일 json 분리 및 리팩토링 ([018-02-01-action-checklist-persona-management.md](./018-02-01-action-checklist-persona-management.md))
 
@@ -37,3 +31,7 @@
 - [x] **Task #016:** 공통 로깅 시스템 구현 보고서 ([016-implement-common-logging-system-report.md](./016-implement-common-logging-system-report.md))
 - [x] **Task #016:** 공통 로깅 시스템 구현 ([016-implement-common-logging-system.md](./016-implement-common-logging-system.md))
 - [x] **Task #017:** HyperClovaX Seed Vision 모델 추가 ([017-add-hyperclovax-seed-vision-model.md](./017-add-hyperclovax-seed-vision-model.md))
+- [x] **Task #018:** 퍼소나/프로필 관리 및 UI 개선 (설계/구현/통합)
+  * 퍼소나 관리 시스템 설계 및 구현 계획 ([018-01-01-plan-persona-management.md](./018-01-01-plan-persona-management.md))
+  * 템플릿/캐릭터 정책 및 최신 설계 ([018-01-02-plan-template-character-policy-and-design-latest.md](./018-01-02-plan-template-character-policy-and-design-latest.md))
+  * 퍼소나 관리 액션 체크리스트 ([018-02-01-action-checklist-persona-management.md](./018-02-01-action-checklist-persona-management.md))

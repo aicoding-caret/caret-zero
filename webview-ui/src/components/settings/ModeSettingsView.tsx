@@ -1,4 +1,4 @@
-// @ts-nocheck removed, attempt to fix types later if needed
+// 타입 문제는 나중에 해결하도록 하고, 지금은 @ts-nocheck 제거
 import React, { useState, useEffect, useCallback } from "react"; // Added useCallback
 import styled from "styled-components";
 import {
@@ -62,11 +62,11 @@ const JsonInputArea = styled.div`
 
 // 기본 모드 설정 (availableModes가 없을 경우 폴백으로 사용) - 이 로직은 이제 availableModes 기반으로 처리됨
 const defaultModes = [
-	{ id: "plan", label: "Plan", description: "Planning and discussion mode" },
-	{ id: "do", label: "Do", description: "Task execution mode" },
+	{ id: "arch", label: "Arch", description: "Caret Architect: Technical strategy & design" },
+	{ id: "dev", label: "Dev", description: "Caret Developer: Implementation & debugging" },
 	{ id: "rule", label: "Rule", description: "AI 시스템 규칙 최적화 및 프롬프트 엔지니어링 모드" },
 	{ id: "talk", label: "Talk", description: "Casual conversation mode" },
-	{ id: "empty", label: "Empty", description: "Empty mode with no specific behavior" },
+	{ id: "custom", label: "Custom", description: "Custom mode with user-defined behavior" },
 ];
 
 const ModeSettingsView = ({ onDone }: { onDone: () => void }) => {
@@ -83,6 +83,11 @@ const ModeSettingsView = ({ onDone }: { onDone: () => void }) => {
 		resetToDefaults,
 	} = useModeSettingsManagement();
 
+	// 모드 설정 로그 출력
+	console.log("[ModeSettingsView] modeSettings:", modeSettings);
+	console.log("[ModeSettingsView] isLoading:", isLoading);
+	console.log("[ModeSettingsView] availableModes:", availableModes);
+
 	// Determine the list of modes to display based on availableModes or defaults
 	const modes =
 		Array.isArray(availableModes) && availableModes.length > 0
@@ -94,14 +99,14 @@ const ModeSettingsView = ({ onDone }: { onDone: () => void }) => {
 			: defaultModes;
 
 	// State for the active tab in VSCodePanels
-	const [activeTab, setActiveTab] = useState(modes[0]?.id || "plan");
+	const [activeTab, setActiveTab] = useState(modes[0]?.id || "arch");
 
 	// Update activeTab if the available modes change and the current tab is no longer valid
 	useEffect(() => {
-		if (!isLoading && modes.length > 0 && !modes.some(m => m.id === activeTab)) {
+		if (modes.length > 0 && !modes.some(m => m.id === activeTab)) {
 			setActiveTab(modes[0].id);
 		}
-	}, [modes, activeTab, isLoading]);
+	}, [modes, activeTab]);
 
 	// Handle the "Done" button click
 	const handleDoneClick = useCallback(() => {
@@ -129,31 +134,20 @@ const ModeSettingsView = ({ onDone }: { onDone: () => void }) => {
 	// Removed local state management and effects for loading/saving/updating settings (now in hook)
 	// Removed renderTabContent function (now handled by ModeTabContent component)
 
-	// Show loading indicator if settings are being loaded
-	if (isLoading) {
-		return (
-			<Container>
-				<div>Loading mode settings...</div>
-			</Container>
-		);
-	}
-
 	return (
 		<Container>
 			<Header>
 				<Title>Mode Settings</Title>
-				<VSCodeButton appearance="secondary" onClick={() => {
-				// (2) 변경 감지: 초기값과 현재값 비교
-				if (initialModeSettings && JSON.stringify(modeSettings) !== initialModeSettings) {
-					alert("모드 설정이 변경되어 새로고침합니다! (변경 사항이 즉시 반영됩니다)");
-					window.location.reload();
-				} else {
-					onDone();
-				}
-			}} >
+				<VSCodeButton appearance="secondary" onClick={handleDoneClick}>
 					Done
 				</VSCodeButton>
 			</Header>
+
+			{isLoading && (
+				<div style={{ padding: "10px 0", fontStyle: "italic" }}>
+					Loading mode settings...
+				</div>
+			)}
 
 			<VSCodePanels activeid={activeTab} onChange={(e: any) => setActiveTab(e.target.activeid)}>
 				{/* Generate tabs dynamically */}
@@ -166,13 +160,25 @@ const ModeSettingsView = ({ onDone }: { onDone: () => void }) => {
 				{/* Generate panel views dynamically using ModeTabContent */}
 				{modes.map((mode) => (
 					<VSCodePanelView key={`view-${mode.id}`} id={`view-${mode.id}`}>
-						{/* Pass necessary props to ModeTabContent */}
-						{/* Ensure modeSettings[mode.id] exists or provide a default */}
-						<ModeTabContent
-							modeId={mode.id}
-							settings={modeSettings[mode.id] || { name: mode.label, description: mode.description, rules: [] }}
-							updateModeSettings={updateModeSettings}
-						/>
+						{/* Show loading indicator or content */}
+						{isLoading ? (
+							<ContentArea>
+								<Section>
+									<SectionTitle>{mode.label} 설정</SectionTitle>
+									<div style={{ fontStyle: "italic", padding: "10px 0" }}>
+										모드 설정을 불러오는 중입니다...
+									</div>
+								</Section>
+							</ContentArea>
+						) : (
+							/* Pass necessary props to ModeTabContent */
+							/* Ensure modeSettings[mode.id] exists or provide a default */
+							<ModeTabContent
+								modeId={mode.id}
+								settings={modeSettings[mode.id] || { name: mode.label, description: mode.description, rules: [] }}
+								updateModeSettings={updateModeSettings}
+							/>
+						)}
 					</VSCodePanelView>
 				))}
 			</VSCodePanels>

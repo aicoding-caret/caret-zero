@@ -17,15 +17,116 @@ interface ModesConfig {
 // Type for the state managed by this hook
 type ModeSettingsState = { [key: string]: ModeSettingsData };
 
+// 기본 모드 설정 (초기 로딩 시 사용)
+const defaultModeSettings: ModeSettingsState = {
+  arch: {
+    name: "Arch",
+    description: "Caret Architect: Technical strategy & design",
+    rules: [
+      "Act as a Caret architect.",
+      "Discuss Caret technical strategy & system design.",
+      "Analyze requirements for Caret architecture.",
+      "Evaluate external tech integration for Caret.",
+      "Consider upstream (Caret) architectural implications.",
+    ],
+  },
+  dev: {
+    name: "Dev",
+    description: "Caret Developer: Implementation & debugging",
+    rules: [
+      "Act as a Caret developer.",
+      "Focus on implementation details and code quality.",
+      "Debug issues and suggest practical solutions.",
+      "Consider performance and maintainability.",
+      "Provide code examples and implementation guidance.",
+    ],
+  },
+  rule: {
+    name: "Rule",
+    description: "AI 시스템 규칙 최적화 및 프롬프트 엔지니어링 모드",
+    rules: [
+      "AI 시스템 규칙 최적화에 집중합니다.",
+      "프롬프트 엔지니어링 관점에서 조언합니다.",
+      "규칙 설계와 최적화 방법을 제안합니다.",
+      "AI 동작 원리와 규칙 간의 관계를 설명합니다.",
+    ],
+  },
+  talk: {
+    name: "Talk",
+    description: "Casual conversation mode",
+    rules: [
+      "Engage in casual conversation.",
+      "Be friendly and conversational.",
+      "Respond in a natural, human-like manner.",
+      "Feel free to share opinions and preferences.",
+    ],
+  },
+  custom: {
+    name: "Custom",
+    description: "Custom mode with user-defined behavior",
+    rules: [
+      "This is a custom mode you can configure.",
+      "Add your own rules and behaviors here.",
+      "Customize this mode for your specific needs.",
+    ],
+  },
+};
+
 export const useModeSettingsManagement = () => {
   const { availableModes } = useExtensionState(); // Get availableModes for syncing
 
-  const [modeSettings, setModeSettings] = useState<ModeSettingsState>({});
+  // 초기 상태를 defaultModeSettings로 설정하여 로딩 중에도 UI가 표시되도록 함
+  const [modeSettings, setModeSettings] = useState<ModeSettingsState>(defaultModeSettings);
   const [initialModeSettings, setInitialModeSettings] = useState<string>("");
-  const [isLoading, setIsLoading] = useState<boolean>(true); // Add loading state
+  const [isLoading, setIsLoading] = useState<boolean>(false); // 초기 로딩 상태를 false로 설정
 
   // 중복 호출 방지용 ref
   const hasRequestedConfig = useRef(false);
+  // 메시지 수신 처리를 위한 ref
+  const messageHandlerRef = useRef<((event: MessageEvent) => void) | null>(null);
+
+  // 전역 메시지 핸들러 추가
+  useEffect(() => {
+    const handleGlobalMessage = (event: MessageEvent) => {
+      const message = event.data;
+      console.log("[useModeSettingsManagement:Global] Received message:", message?.type);
+      
+      if (message?.type === "modesConfigLoaded" && message.text) {
+        console.log("[useModeSettingsManagement:Global] Processing modesConfigLoaded");
+        try {
+          const modesData: ModesConfig = JSON.parse(message.text);
+          if (modesData?.modes && Array.isArray(modesData.modes)) {
+            const loadedSettings: ModeSettingsState = {};
+            modesData.modes.forEach((mode) => {
+              if (mode.id) {
+                loadedSettings[mode.id] = {
+                  name: mode.name || mode.id,
+                  description: mode.description || "",
+                  rules: Array.isArray(mode.rules) ? mode.rules : [],
+                };
+              }
+            });
+            console.log("[useModeSettingsManagement:Global] Parsed settings:", Object.keys(loadedSettings));
+            
+            // 기존 defaultModeSettings와 로드된 설정을 병합
+            const mergedSettings = { ...defaultModeSettings, ...loadedSettings };
+            setModeSettings(mergedSettings);
+            setInitialModeSettings(JSON.stringify(mergedSettings));
+            setIsLoading(false);
+            console.log("[useModeSettingsManagement:Global] Settings loaded and applied");
+          }
+        } catch (error) {
+          console.error("[useModeSettingsManagement:Global] Error parsing settings:", error);
+          setIsLoading(false);
+        }
+      }
+    };
+
+    window.addEventListener("message", handleGlobalMessage);
+    return () => {
+      window.removeEventListener("message", handleGlobalMessage);
+    };
+  }, []);
 
   // Effect for loading initial settings from modes.json
   useEffect(() => {
@@ -38,10 +139,13 @@ export const useModeSettingsManagement = () => {
     const loadConfigMessage: WebviewMessage = { type: "loadModesConfig" };
     vscode.postMessage(loadConfigMessage);
 
+    // 메시지 수신 핸들러 정의
     const handleMessage = (event: MessageEvent) => {
       const message = event.data;
+      console.log("[useModeSettingsManagement] Received message:", message.type);
+      
       if (message.type === "modesConfigLoaded" && message.text) {
-        console.log("[useModeSettingsManagement] Received modesConfigLoaded:", message.text);
+        console.log("[useModeSettingsManagement] Received modesConfigLoaded:", message.text.substring(0, 100) + "...");
         try {
           const modesData: ModesConfig = JSON.parse(message.text);
           if (modesData?.modes && Array.isArray(modesData.modes)) {
@@ -56,8 +160,11 @@ export const useModeSettingsManagement = () => {
               }
             });
             console.log("[useModeSettingsManagement] Parsed settings:", loadedSettings);
-            setModeSettings(loadedSettings);
-            setInitialModeSettings(JSON.stringify(loadedSettings)); // Store initial state after loading
+            
+            // 기존 defaultModeSettings와 로드된 설정을 병합
+            const mergedSettings = { ...defaultModeSettings, ...loadedSettings };
+            setModeSettings(mergedSettings);
+            setInitialModeSettings(JSON.stringify(mergedSettings)); // Store initial state after loading
             console.log("[useModeSettingsManagement] Initial settings loaded and stored.");
           }
         } catch (error) {
@@ -69,10 +176,17 @@ export const useModeSettingsManagement = () => {
       }
     };
 
+    // 메시지 리스너 등록
+    messageHandlerRef.current = handleMessage;
     window.addEventListener("message", handleMessage);
+    
+    // 컴포넌트 언마운트 시에만 cleanup
     return () => {
       console.log("[useModeSettingsManagement] Cleaning up message listener.");
-      window.removeEventListener("message", handleMessage);
+      if (messageHandlerRef.current) {
+        window.removeEventListener("message", messageHandlerRef.current);
+        messageHandlerRef.current = null;
+      }
     };
   }, []); // Run only once on mount
 

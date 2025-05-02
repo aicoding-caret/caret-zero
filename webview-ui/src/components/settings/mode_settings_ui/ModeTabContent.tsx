@@ -47,6 +47,9 @@ const ModeTabContent: React.FC<ModeTabContentProps> = ({
   settings,
   updateModeSettings,
 }) => {
+  // 디버그 로그 추가
+  console.log(`[ModeTabContent] Rendering mode ${modeId} with settings:`, settings);
+  
   // Convert rules array to string for textarea
   const rulesText = settings.rules.join("\n");
 
