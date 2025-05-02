@@ -73,8 +73,8 @@ const Desc = styled.div`
   color: #333;
   background: #f9f9f9;
   border-radius: 6px;
-  padding: 10px;
-  margin-bottom: 18px;
+  padding: 16px;
+  margin: 0 8px 18px 8px;
   min-height: 40px;
 `;
 const SelectBtn = styled(VSCodeButton)`
@@ -95,6 +95,7 @@ const Notice = styled.div`
 // 모달 내용을 감싸는 컨테이너 추가
 const ModalContent = styled.div`
   text-align: center;
+  padding: 0 16px;
 `;
 
 const TemplateCharacterSelectModal: React.FC<Props> = ({ characters, language, open, onSelect, onClose }) => {
@@ -132,14 +133,15 @@ const TemplateCharacterSelectModal: React.FC<Props> = ({ characters, language, o
       : "/assets/template_characters/default_illustration.png";
   };
 
-  useEffect(() => {
-    if (window.vscode && typeof window.vscode.postMessage === "function") {
-      window.vscode.postMessage({ type: "requestTemplateCharacters" });
-      console.log("[TemplateCharacterSelectModal] requestTemplateCharacters 메시지 전송!");
-    } else {
-      console.warn("[TemplateCharacterSelectModal] vscode API를 찾을 수 없습니다.");
-    }
-  }, []);
+  // PersonaSettingsView에서 이미 템플릿 캐릭터를 요청하고 있으므로 중복 요청 제거
+  // useEffect(() => {
+  //   if (window.vscode && typeof window.vscode.postMessage === "function") {
+  //     window.vscode.postMessage({ type: "requestTemplateCharacters" });
+  //     console.log("[TemplateCharacterSelectModal] requestTemplateCharacters 메시지 전송!");
+  //   } else {
+  //     console.warn("[TemplateCharacterSelectModal] vscode API를 찾을 수 없습니다.");
+  //   }
+  // }, []);
 
   return (
     <Modal onClose={onClose} title="AI에이전트 템플릿 캐릭터 설정">

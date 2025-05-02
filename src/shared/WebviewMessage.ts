@@ -130,7 +130,9 @@ export interface WebviewMessage {
 	customInstructionsSetting?: string
 	profileImage?: string
 	// 프로필 이미지 타입 (기본/생각 중)
-	imageType?: "default" | "thinking"
+	// imagePath ud544ub4dcub97c uc81cuac70ud558uace0 uae30uc874 ud544ub4dcub97c uc0acuc6a9ud558ub3c4ub85d uc218uc815ud569ub2c8ub2e4.
+	imageType?: "default" | "thinking";
+
 	// For task feedback
 	feedbackType?: TaskFeedbackType
 	mentionsRequestId?: string
@@ -138,6 +140,7 @@ export interface WebviewMessage {
 	// 페르소나 데이터
 	persona?: Persona
 	personaId?: string
+	imagePath?: string;
 }
 
 export type CaretAskResponse = "yesButtonClicked" | "noButtonClicked" | "messageResponse"

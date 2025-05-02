@@ -12,11 +12,12 @@ const modalStyle: React.CSSProperties = {
   left: 0,
   width: "100vw",
   height: "100vh",
-  background: "rgba(0,0,0,0.3)",
+  background: "rgba(0,0,0,0.6)",
   display: "flex",
   alignItems: "center",
   justifyContent: "center",
   zIndex: 1000,
+  backdropFilter: "blur(3px)",
 };
 
 const contentStyle: React.CSSProperties = {
@@ -24,10 +25,14 @@ const contentStyle: React.CSSProperties = {
   color: "var(--vscode-editor-foreground, #222)",
   borderRadius: 8,
   minWidth: 320,
-  maxWidth: 480,
+  maxWidth: "80%",
+  width: "400px",
+  maxHeight: "85vh",
+  overflowY: "auto",
   padding: 24,
-  boxShadow: "0 4px 24px rgba(0,0,0,0.18)",
+  boxShadow: "0 8px 32px rgba(0,0,0,0.3)",
   position: "relative",
+  margin: "0 20px",
 };
 
 const closeBtnStyle: React.CSSProperties = {

@@ -90,14 +90,30 @@ export default function PersonaSettingsView() {
   };
 
   useEffect(() => {
+    console.log("[PersonaSettingsView] Sending requestTemplateCharacters message");
     vscode.postMessage({ type: "requestTemplateCharacters" });
   }, []);
 
   useEffect(() => {
     const handler = (event: MessageEvent) => {
       const { data } = event;
-      if (data.type === "templateCharactersLoaded" && Array.isArray(data.characters)) {
-        setTemplateCharacters(data.characters);
+      console.log("[PersonaSettingsView] Received message:", data);
+      if (data.type === "templateCharactersLoaded") {
+        console.log("[PersonaSettingsView] templateCharactersLoaded message received", data);
+        if (Array.isArray(data.characters)) {
+          console.log("[PersonaSettingsView] Setting template characters:", data.characters);
+          setTemplateCharacters(data.characters);
+        } else if (data.text) {
+          try {
+            const parsedCharacters = JSON.parse(data.text);
+            console.log("[PersonaSettingsView] Parsed characters from text:", parsedCharacters);
+            if (Array.isArray(parsedCharacters)) {
+              setTemplateCharacters(parsedCharacters);
+            }
+          } catch (err) {
+            console.error("[PersonaSettingsView] Failed to parse template characters:", err);
+          }
+        }
       }
     };
     window.addEventListener("message", handler);
@@ -108,22 +124,48 @@ export default function PersonaSettingsView() {
     const lang = selectedLanguage || DEFAULT_LANGUAGE;
     const locale = (character[lang] as TemplateCharacterLocale) || (character[DEFAULT_LANGUAGE] as TemplateCharacterLocale);
   
-    const newPersona: PersonaForm = {
-      id: "persona-" + Date.now(),
-      name: { [lang]: locale.name },
-      description: { [lang]: locale.description },
-      customInstructions: locale.customInstruction,
-      avatarUri: character.avatarUri || "",
-      thinkingAvatarUri: character.thinkingAvatarUri || ""
-    };
-  
+    // 커스텀 인스트럭션 데이터 준비 (객체면 문자열로 변환)
+    const customInstructionData = typeof locale.customInstruction === 'object' ? 
+      JSON.stringify(locale.customInstruction) : 
+      locale.customInstruction;
+
+    // 기존 업데이트 로직을 타도록 설정
     vscode.postMessage({
-      type: "addOrUpdatePersona",
-      persona: newPersona,
+      type: "updateSettings",
+      customInstructionsSetting: customInstructionData,
+      apiConfiguration: null,
+      telemetrySetting: null,
+      planActSeparateModelsSetting: null,
+      chatSettings: null
     });
-  
+
+    // 이미지 선택 로직 - TMP 이미지로 복사하도록 요청
+    if (character.avatarUri) {
+      // 상대 경로로 변환 (asset:/ 제거)
+      const relativePath = character.avatarUri.replace("asset:/", "");
+      
+      vscode.postMessage({
+        type: "selectAgentProfileImage",
+        imageType: "default",
+        text: relativePath
+      });
+    }
+    
+    if (character.thinkingAvatarUri) {
+      // 상대 경로로 변환 (asset:/ 제거)
+      const relativePath = character.thinkingAvatarUri.replace("asset:/", "");
+      
+      vscode.postMessage({
+        type: "selectAgentProfileImage",
+        imageType: "thinking",
+        text: relativePath
+      });
+    }
+
+    // 모달 닫기
     setShowTemplateModal(false);
   };
+
   return (
     <PersonaSection>
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 8 }}>
@@ -134,6 +176,7 @@ export default function PersonaSettingsView() {
       </div>
       <PolicyNotice>{policyNotice}</PolicyNotice>
       
+      {/* 템플릿 캐릭터 선택 모달 */}
       {showTemplateModal && (
         <TemplateCharacterSelectModal
           characters={templateCharacters}
@@ -147,6 +190,8 @@ export default function PersonaSettingsView() {
           onClose={() => setShowTemplateModal(false)}
         />
       )}
+
+     
     </PersonaSection>
   );
 }
