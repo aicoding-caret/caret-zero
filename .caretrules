@@ -2,7 +2,7 @@
   "project_overview": {
     "name": "Caret",
     "description": "VSCode extension for AI assistance, focusing on personalized development partnership. This project (Caret) is a fork of Caret. The 'caret-upstream' directory contains the original Caret source code for reference.",
-    "repository_url": "https://github.com/fstory97/caret"
+    "repository_url": "https://github.com/aicoding-caret/caret-zero"
   },
   "architecture": {
     "summary": "Modular: Core TypeScript backend, React webview frontend.",
@@ -40,19 +40,23 @@
     "diagram_reference": "caret-docs/architecture/extension-architecture.mmd"
   },
   "development_process": {
-    "state_management_guideline": "Core Extension (CaretProvider) is the source of truth. Sync state via messages.",
-    "tool_integration": "Follow patterns in src/integrations/, respect .caretignore.",
+    "state_management_guideline": "Core Extension (CaretProvider) is the source of truth. Sync state via messages. 자세한 개발/설계/구현 가이드는 caret-docs/development/ 디렉토리와 그 하위 문서(index.md, logging.md 등)를 반드시 참고하세요.",
+    "tool_integration": "Follow patterns in src/integrations/, respect .caretignore. 구현 및 설계 기준은 caret-docs/development/ 참고.",
     "api_providers": "Implementations in src/api/providers/.",
-    "testing": "Refer to caret-docs/testing/ for plans.",
-    "logging": "Use common logging system (see caret-docs/development/logging-guide.md).",
+    "testing": "Refer to caret-docs/testing/ for plans. 테스트 및 품질 기준은 caret-docs/development/ 내 문서도 참고.",
+    "logging": "Use common logging system (see caret-docs/development/logging.md). 자세한 로깅 정책 및 예시는 caret-docs/development/ 문서 참고.",
     "checkpoints": "Managed by src/integrations/checkpoints/CheckpointTracker.ts (Git-based).",
-    "documentation": "Update relevant docs in caret-docs/.",
+    "documentation": "Update relevant docs in caret-docs/. 개발 표준, 설계, 구현 가이드는 caret-docs/development/에 문서화되어 있으니 참고.",
     "contributing": "Refer to CONTRIBUTING.md for guidelines.",
     "work_logs": {
       "location": "caret-docs/work-logs/",
       "daily_log_format": "{date}.md",
-      "task_log_format": "tasks/{task-number}-{task-name}.md",
-      "purpose": "Maintain context, track progress."
+      "task_log_format": [
+        "tasks/{task-number}-01-plan-{task-name}.md",
+        "tasks/{task-number}-02-action-checklist-{task-name}.md",
+        "tasks/{task-number}-03-report-{task-name}.md"
+      ],
+      "purpose": "Maintain context, track progress. 작업 상태는 caret-docs/work-logs/luke-and-alpha/tasks/tasks-status.md에서 관리합니다."
     },
     "git_rules": {
       "commit_format": "[type]: [description]",

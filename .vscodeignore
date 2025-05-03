@@ -96,3 +96,5 @@ docs/**
 
 #
 sllm-servers/** */
+
+**/.venv/**
