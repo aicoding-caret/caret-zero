@@ -334,7 +334,7 @@
 		"@types/diff": "^5.2.1",
 		"@types/get-folder-size": "^3.0.4",
 		"@types/mocha": "^10.0.7",
-		"@types/node": "20.x",
+		"@types/node": "22.x",
 		"@types/p-timeout": "^1.2.1",
 		"@types/p-wait-for": "^2.0.0",
 		"@types/pdf-parse": "^1.1.4",
