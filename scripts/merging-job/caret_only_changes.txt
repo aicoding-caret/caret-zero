@@ -1,0 +1,561 @@
+"caret-docs/plan/Caret \355\224\204\353\241\234\354\240\235\355\212\270 \353\271\204\354\240\204 \353\260\217 \352\260\234\353\260\234 \353\241\234\353\223\234\353\247\265.md"
+"caret-docs/plan/LLM\352\270\260\353\260\230\354\235\230 \353\271\204\354\245\254\354\226\274 \354\275\224\353\224\251 \353\260\217 \355\206\240\355\201\260 \354\265\234\354\240\201\355\231\224\353\220\234 \352\260\234\353\260\234 \353\217\204\352\265\254 \352\260\234\353\260\234 \354\240\204\353\236\265.md"
+"caret-docs/releases/Cline \353\241\234\354\273\254 \353\271\214\353\223\234 \353\260\217 \354\204\244\354\271\230 \352\260\200\354\235\264\353\223\234.md"
+"caret-docs/reports/Caret \354\213\234\354\212\244\355\205\234 \355\224\204\353\241\254\355\224\204\355\212\270 \352\260\234\354\204\240 \353\266\204\354\204\235 \353\263\264\352\263\240\354\204\234/1\354\260\250/ChatGPT-o1-1\354\260\250\354\240\234\354\225\210.md"
+"caret-docs/reports/Caret \354\213\234\354\212\244\355\205\234 \355\224\204\353\241\254\355\224\204\355\212\270 \352\260\234\354\204\240 \353\266\204\354\204\235 \353\263\264\352\263\240\354\204\234/1\354\260\250/Claude-3.7 Sonnet-1\354\260\250\354\240\234\354\225\210.md"
+"caret-docs/reports/Caret \354\213\234\354\212\244\355\205\234 \355\224\204\353\241\254\355\224\204\355\212\270 \352\260\234\354\204\240 \353\266\204\354\204\235 \353\263\264\352\263\240\354\204\234/1\354\260\250/Gemini-2.5-1\354\260\250\354\240\234\354\225\210.md"
+"caret-docs/reports/Caret \354\213\234\354\212\244\355\205\234 \355\224\204\353\241\254\355\224\204\355\212\270 \352\260\234\354\204\240 \353\266\204\354\204\235 \353\263\264\352\263\240\354\204\234/2\354\260\250/ChatGPT-o1-2\354\260\250\354\240\234\354\225\210.md"
+"caret-docs/reports/Caret \354\213\234\354\212\244\355\205\234 \355\224\204\353\241\254\355\224\204\355\212\270 \352\260\234\354\204\240 \353\266\204\354\204\235 \353\263\264\352\263\240\354\204\234/2\354\260\250/Claude-3.7 Sonet-2\354\260\250\354\240\234\354\225\210.md"
+"caret-docs/reports/Caret \354\213\234\354\212\244\355\205\234 \355\224\204\353\241\254\355\224\204\355\212\270 \352\260\234\354\204\240 \353\266\204\354\204\235 \353\263\264\352\263\240\354\204\234/2\354\260\250/Gemini-2.5.md"
+"caret-docs/reports/Caret \354\213\234\354\212\244\355\205\234 \355\224\204\353\241\254\355\224\204\355\212\270 \352\260\234\354\204\240 \353\266\204\354\204\235 \353\263\264\352\263\240\354\204\234/\353\247\210\355\201\254\353\213\244\354\232\264-JSON \354\214\215 \352\265\254\354\241\260 \352\270\260\353\260\230 \354\213\234\354\212\244\355\205\234 \355\224\204\353\241\254\355\224\204\355\212\270 \354\265\234\354\240\201\355\231\224 \355\232\250\352\263\274 \353\266\204\354\204\235 \353\263\264\352\263\240\354\204\234.md"
+"caret-docs/reports/Caret \354\213\234\354\212\244\355\205\234 \355\224\204\353\241\254\355\224\204\355\212\270 \352\260\234\354\204\240 \353\266\204\354\204\235 \353\263\264\352\263\240\354\204\234/cline_org_rules.zip"
+"caret-docs/reports/Caret \354\213\234\354\212\244\355\205\234 \355\224\204\353\241\254\355\224\204\355\212\270 \352\260\234\354\204\240 \353\266\204\354\204\235 \353\263\264\352\263\240\354\204\234/sections/BASE_PROMPT_INTRO.json"
+"caret-docs/reports/Caret \354\213\234\354\212\244\355\205\234 \355\224\204\353\241\254\355\224\204\355\212\270 \352\260\234\354\204\240 \353\266\204\354\204\235 \353\263\264\352\263\240\354\204\234/sections/BASE_PROMPT_INTRO.md"
+"caret-docs/reports/Caret \354\213\234\354\212\244\355\205\234 \355\224\204\353\241\254\355\224\204\355\212\270 \352\260\234\354\204\240 \353\266\204\354\204\235 \353\263\264\352\263\240\354\204\234/sections/CAPABILITIES_SUMMARY.json"
+"caret-docs/reports/Caret \354\213\234\354\212\244\355\205\234 \355\224\204\353\241\254\355\224\204\355\212\270 \352\260\234\354\204\240 \353\266\204\354\204\235 \353\263\264\352\263\240\354\204\234/sections/CAPABILITIES_SUMMARY.md"
+"caret-docs/reports/Caret \354\213\234\354\212\244\355\205\234 \355\224\204\353\241\254\355\224\204\355\212\270 \352\260\234\354\204\240 \353\266\204\354\204\235 \353\263\264\352\263\240\354\204\234/sections/EDITING_FILES_GUIDE.json"
+"caret-docs/reports/Caret \354\213\234\354\212\244\355\205\234 \355\224\204\353\241\254\355\224\204\355\212\270 \352\260\234\354\204\240 \353\266\204\354\204\235 \353\263\264\352\263\240\354\204\234/sections/EDITING_FILES_GUIDE.md"
+"caret-docs/reports/Caret \354\213\234\354\212\244\355\205\234 \355\224\204\353\241\254\355\224\204\355\212\270 \352\260\234\354\204\240 \353\266\204\354\204\235 \353\263\264\352\263\240\354\204\234/sections/MCP_CONNECTED_SERVERS.json"
+"caret-docs/reports/Caret \354\213\234\354\212\244\355\205\234 \355\224\204\353\241\254\355\224\204\355\212\270 \352\260\234\354\204\240 \353\266\204\354\204\235 \353\263\264\352\263\240\354\204\234/sections/MCP_CONNECTED_SERVERS.md"
+"caret-docs/reports/Caret \354\213\234\354\212\244\355\205\234 \355\224\204\353\241\254\355\224\204\355\212\270 \352\260\234\354\204\240 \353\266\204\354\204\235 \353\263\264\352\263\240\354\204\234/sections/MCP_CREATION_GUIDE.json"
+"caret-docs/reports/Caret \354\213\234\354\212\244\355\205\234 \355\224\204\353\241\254\355\224\204\355\212\270 \352\260\234\354\204\240 \353\266\204\354\204\235 \353\263\264\352\263\240\354\204\234/sections/MCP_CREATION_GUIDE.md"
+"caret-docs/reports/Caret \354\213\234\354\212\244\355\205\234 \355\224\204\353\241\254\355\224\204\355\212\270 \352\260\234\354\204\240 \353\266\204\354\204\235 \353\263\264\352\263\240\354\204\234/sections/MCP_SERVERS_HEADER.json"
+"caret-docs/reports/Caret \354\213\234\354\212\244\355\205\234 \355\224\204\353\241\254\355\224\204\355\212\270 \352\260\234\354\204\240 \353\266\204\354\204\235 \353\263\264\352\263\240\354\204\234/sections/MCP_SERVERS_HEADER.md"
+"caret-docs/reports/Caret \354\213\234\354\212\244\355\205\234 \355\224\204\353\241\254\355\224\204\355\212\270 \352\260\234\354\204\240 \353\266\204\354\204\235 \353\263\264\352\263\240\354\204\234/sections/MODES_EXPLANATION.json"
+"caret-docs/reports/Caret \354\213\234\354\212\244\355\205\234 \355\224\204\353\241\254\355\224\204\355\212\270 \352\260\234\354\204\240 \353\266\204\354\204\235 \353\263\264\352\263\240\354\204\234/sections/MODES_EXPLANATION.md"
+"caret-docs/reports/Caret \354\213\234\354\212\244\355\205\234 \355\224\204\353\241\254\355\224\204\355\212\270 \352\260\234\354\204\240 \353\266\204\354\204\235 \353\263\264\352\263\240\354\204\234/sections/OBJECTIVE.json"
+"caret-docs/reports/Caret \354\213\234\354\212\244\355\205\234 \355\224\204\353\241\254\355\224\204\355\212\270 \352\260\234\354\204\240 \353\266\204\354\204\235 \353\263\264\352\263\240\354\204\234/sections/OBJECTIVE.md"
+"caret-docs/reports/Caret \354\213\234\354\212\244\355\205\234 \355\224\204\353\241\254\355\224\204\355\212\270 \352\260\234\354\204\240 \353\266\204\354\204\235 \353\263\264\352\263\240\354\204\234/sections/RULES_HEADER.json"
+"caret-docs/reports/Caret \354\213\234\354\212\244\355\205\234 \355\224\204\353\241\254\355\224\204\355\212\270 \352\260\234\354\204\240 \353\266\204\354\204\235 \353\263\264\352\263\240\354\204\234/sections/RULES_HEADER.md"
+"caret-docs/reports/Caret \354\213\234\354\212\244\355\205\234 \355\224\204\353\241\254\355\224\204\355\212\270 \352\260\234\354\204\240 \353\266\204\354\204\235 \353\263\264\352\263\240\354\204\234/sections/SYSTEM_INFORMATION.json"
+"caret-docs/reports/Caret \354\213\234\354\212\244\355\205\234 \355\224\204\353\241\254\355\224\204\355\212\270 \352\260\234\354\204\240 \353\266\204\354\204\235 \353\263\264\352\263\240\354\204\234/sections/SYSTEM_INFORMATION.md"
+"caret-docs/reports/Caret \354\213\234\354\212\244\355\205\234 \355\224\204\353\241\254\355\224\204\355\212\270 \352\260\234\354\204\240 \353\266\204\354\204\235 \353\263\264\352\263\240\354\204\234/sections/TOOLS_HEADER.json"
+"caret-docs/reports/Caret \354\213\234\354\212\244\355\205\234 \355\224\204\353\241\254\355\224\204\355\212\270 \352\260\234\354\204\240 \353\266\204\354\204\235 \353\263\264\352\263\240\354\204\234/sections/TOOLS_HEADER.md"
+"caret-docs/reports/Caret \354\213\234\354\212\244\355\205\234 \355\224\204\353\241\254\355\224\204\355\212\270 \352\260\234\354\204\240 \353\266\204\354\204\235 \353\263\264\352\263\240\354\204\234/sections/TOOL_DEFINITIONS.json"
+"caret-docs/reports/Caret \354\213\234\354\212\244\355\205\234 \355\224\204\353\241\254\355\224\204\355\212\270 \352\260\234\354\204\240 \353\266\204\354\204\235 \353\263\264\352\263\240\354\204\234/sections/TOOL_DEFINITIONS.md"
+"caret-docs/reports/Caret \354\213\234\354\212\244\355\205\234 \355\224\204\353\241\254\355\224\204\355\212\270 \352\260\234\354\204\240 \353\266\204\354\204\235 \353\263\264\352\263\240\354\204\234/sections/TOOL_USE_EXAMPLES.json"
+"caret-docs/reports/Caret \354\213\234\354\212\244\355\205\234 \355\224\204\353\241\254\355\224\204\355\212\270 \352\260\234\354\204\240 \353\266\204\354\204\235 \353\263\264\352\263\240\354\204\234/sections/TOOL_USE_EXAMPLES.md"
+"caret-docs/reports/Caret \354\213\234\354\212\244\355\205\234 \355\224\204\353\241\254\355\224\204\355\212\270 \352\260\234\354\204\240 \353\266\204\354\204\235 \353\263\264\352\263\240\354\204\234/sections/TOOL_USE_FORMAT.json"
+"caret-docs/reports/Caret \354\213\234\354\212\244\355\205\234 \355\224\204\353\241\254\355\224\204\355\212\270 \352\260\234\354\204\240 \353\266\204\354\204\235 \353\263\264\352\263\240\354\204\234/sections/TOOL_USE_FORMAT.md"
+"caret-docs/reports/Caret \354\213\234\354\212\244\355\205\234 \355\224\204\353\241\254\355\224\204\355\212\270 \352\260\234\354\204\240 \353\266\204\354\204\235 \353\263\264\352\263\240\354\204\234/sections/TOOL_USE_GUIDELINES.json"
+"caret-docs/reports/Caret \354\213\234\354\212\244\355\205\234 \355\224\204\353\241\254\355\224\204\355\212\270 \352\260\234\354\204\240 \353\266\204\354\204\235 \353\263\264\352\263\240\354\204\234/sections/TOOL_USE_GUIDELINES.md"
+"caret-docs/reports/Caret \354\213\234\354\212\244\355\205\234 \355\224\204\353\241\254\355\224\204\355\212\270 \352\260\234\354\204\240 \353\266\204\354\204\235 \353\263\264\352\263\240\354\204\234/sections/USER_INSTRUCTIONS_HEADER.json"
+"caret-docs/reports/Caret \354\213\234\354\212\244\355\205\234 \355\224\204\353\241\254\355\224\204\355\212\270 \352\260\234\354\204\240 \353\266\204\354\204\235 \353\263\264\352\263\240\354\204\234/sections/USER_INSTRUCTIONS_HEADER.md"
+"caret-docs/reports/Caret \354\213\234\354\212\244\355\205\234 \355\224\204\353\241\254\355\224\204\355\212\270 \352\260\234\354\204\240 \353\266\204\354\204\235 \353\263\264\352\263\240\354\204\234/system-prompt-loading-performance.md"
+"caret-docs/reports/Caret \354\213\234\354\212\244\355\205\234 \355\224\204\353\241\254\355\224\204\355\212\270 \352\260\234\354\204\240 \353\266\204\354\204\235 \353\263\264\352\263\240\354\204\234/system_prompt_analysis_full.md"
+"caret-docs/reports/Caret \355\224\204\353\241\234\354\240\235\355\212\270 \352\265\254\354\241\260 \352\260\234\354\204\240 \354\227\260\352\265\254 \353\263\264\352\263\240\354\204\234.md"
+"caret-docs/reports/Caret \355\224\204\353\241\234\354\240\235\355\212\270 \353\260\251\355\226\245\354\204\261 \352\262\260\354\240\225 \353\260\217 \352\265\254\355\230\204 \354\240\204\353\236\265 \354\210\230\353\246\275.md"
+"caret-docs/reports/\353\271\204\354\232\251\354\240\210\352\260\220/LLM \355\206\265\355\225\251 \353\266\204\354\204\235 \353\263\264\352\263\240\354\204\234 - \354\275\224\353\224\251 \354\236\220\353\217\231\355\231\224 \353\260\217 \354\213\244\353\254\264 \353\263\221\355\225\251 \354\236\221\354\227\205 \352\270\260\353\260\230 ToC \354\265\234\354\240\201\355\231\224 \354\240\204\353\236\265.md"
+"caret-docs/reports/\355\214\214\354\235\274\354\262\230\353\246\254/AI \352\270\260\353\260\230 TypeScript IDE \355\214\214\354\235\274 \354\210\230\354\240\225 \353\252\205\353\240\271 \354\265\234\354\240\201\355\231\224 \354\240\204\353\236\265 \354\227\260\352\265\254 \353\263\264\352\263\240\354\204\234.md"
+"caret-docs/reports/\355\224\204\353\241\234\354\240\235\355\212\270 \352\260\234\354\204\240/AI \353\271\204\354\232\251 \354\240\210\352\260\220 \354\240\204\353\236\265 \353\263\264\352\263\240\354\204\234 \352\265\254\353\217\205 \354\204\234\353\271\204\354\212\244 vs \355\206\240\355\201\260\353\263\204 \354\232\224\352\270\210 \353\260\217 \354\275\224\353\223\234 \353\246\254\355\214\251\355\206\240\353\247\201 \355\232\250\352\263\274.md"
+"caret-docs/reports/sLLM/HyperClovaX3b \353\252\250\353\215\270 MCP\354\204\261\353\212\245 \355\205\214\354\212\244\355\212\270.md"
+"caret-docs/reports/sLLM/\354\265\234\354\240\201\354\235\230 Cline sLLM\354\204\240\355\203\235 \353\263\264\352\263\240\354\204\234 (Qwen2.5 \353\252\250\353\215\270 \353\223\244 \353\260\217 Gemma \353\252\250\353\215\270).md"
+"caret-docs/reports/sLLM/\355\225\230\354\235\264\355\215\274\355\201\264\353\241\234\353\260\224-\352\270\260\353\212\245\353\260\217-\354\204\261\353\212\245\355\205\214\354\212\244\355\212\270\353\202\264\354\227\255.txt"
+"caret-docs/reports/sLLM/\355\225\230\354\235\264\355\215\274\355\201\264\353\241\234\353\260\224-sLLM-Caret\354\240\201\354\232\251\354\235\204\354\234\204\355\225\234\355\205\214\354\212\244\355\212\270\353\263\264\352\263\240\354\204\234.md"
+"caret-docs/rules-reference/caretrules\353\243\260-\355\214\214\354\235\274\352\260\200\354\235\264\353\223\234.md"
+"caret-docs/strategy-archive/Caret \354\230\244\355\224\210\354\206\214\354\212\244 AI \354\275\224\353\224\251 \353\217\204\352\265\254 \353\271\204\354\240\204 \353\260\217 \352\262\275\354\237\201\353\240\245 \353\266\204\354\204\235.docx"
+"caret-docs/strategy-archive/Caret \354\240\204\353\236\265 \353\254\270\354\204\234 Ver1.0.md"
+"caret-docs/tasks/014-2-persona-management-report-20250502-\354\225\214\355\214\214.md"
+"caret-docs/tasks/complete/018-03-01-persona-management-ux-improvement-20250501-\354\225\214\355\214\214.md"
+"caret-docs/testing/\354\213\234\354\212\244\355\205\234 \355\224\204\353\241\254\355\224\204\355\212\270 JSON \353\263\200\355\231\230 \355\205\214\354\212\244\355\212\270 \352\263\204\355\232\215.md"
+"docs/patent-materials/patent-md-json-ai-rules/[\353\213\244\353\236\214\355\212\271\355\227\210]\353\260\234\353\252\205\354\204\244\353\252\205\354\204\234_\354\226\221\354\213\235.docx"
+"sllm-servers/VLLM \354\204\244\354\240\225 \352\260\200\354\235\264\353\223\234.md"
+.clinerules
+.clinerules.bak
+.cursorrules
+.env.sample
+.vscode/caret/personas.json
+.windsurfrules
+029-01-plan-merge-cline-upstream.md
+LICENSE
+README.ko.md
+README.md
+agents-rules/alpha/global-rules.json
+agents-rules/alpha/project-rules.json
+agents-rules/alpha/versions/changelog.md
+agents-rules/alpha/versions/project-rules-v1.0.0.json
+agents-rules/alpha/versions/test-scenarios-v1.1.0.md
+analyze_token_usage.js
+assets/agent_profile.png
+assets/agent_thinking.png
+assets/alpha_thinking.png
+assets/icons/icon_w.svg
+assets/icons/stop_button.png
+assets/imgs/main_banner.webp
+assets/rules/default_modes.json
+assets/rules/modes.json
+assets/template_characters/cyan.png
+assets/template_characters/cyan_illust.png
+assets/template_characters/cyan_thinking.png
+assets/template_characters/ichika.png
+assets/template_characters/ichika_illust.png
+assets/template_characters/ichika_thinking.png
+assets/template_characters/sarang.png
+assets/template_characters/sarang_illust.png
+assets/template_characters/sarang_thinking.png
+assets/template_characters/template_characters.json
+assets/template_characters/ubuntu.png
+assets/template_characters/ubuntu_illust.png
+assets/template_characters/ubuntu_thinking.png
+backup/20250430-extension-step2.ts
+backup/20250430-state-step2.ts
+backup/20250430-types-step2.ts
+backup/20250430-types.ts
+caret-docs/.obsidian/app.json
+caret-docs/.obsidian/appearance.json
+caret-docs/.obsidian/core-plugins.json
+caret-docs/.obsidian/workspace.json
+caret-docs/caret_feature.png
+caret-docs/caretrules.ko.md
+caret-docs/development/cline-upstream-merging-guide.md
+caret-docs/development/documentation-guide.md
+caret-docs/development/index.md
+caret-docs/development/locale.md
+caret-docs/development/logging.md
+caret-docs/development/new-developer-onboarding-guide.md
+caret-docs/development/ui-to-storage-flow-core.md
+caret-docs/development/ui-to-storage-flow-image.md
+caret-docs/development/ui-to-storage-flow-storage-util.md
+caret-docs/development/ui-to-storage-flow.md
+caret-docs/development/utilities.md
+caret-docs/development/webview-extension-communication.md
+caret-docs/plan/Caret Project Vision and Development Roadmap.md
+caret-docs/plan/project-status-overview.md
+caret-docs/plan/roadmap.ko.md
+caret-docs/supported-models.ko.md
+caret-docs/supported-models.md
+caret-docs/tasks/001-caret-team-auth.md
+caret-docs/tasks/009-cline-multi-mode-core.md
+caret-docs/tasks/010-settings-ui-improvements.md
+caret-docs/tasks/011-cline-ui-localization.md
+caret-docs/tasks/012-multilingual-rule-support.md
+caret-docs/tasks/013-ai-assisted-rule-management.md
+caret-docs/tasks/014-1-chatview-refactoring.md
+caret-docs/tasks/014-2-persona-template-update-20250502-uc54cud30c.md
+caret-docs/tasks/014-persona_management_and_ui_improvements.md
+caret-docs/tasks/015-investigate-replace_in_file-bug-report.md
+caret-docs/tasks/015-investigate-replace_in_file-bug.md
+caret-docs/tasks/015-investigate_replace_in_file-bug.md
+caret-docs/tasks/0151-replace_in_file-bug-fixes-summary.md
+caret-docs/tasks/016-implement-common-logging-system-report.md
+caret-docs/tasks/016-implement-common-logging-system.md
+caret-docs/tasks/017-add-hyperclovax-seed-vision-model.md
+caret-docs/tasks/019-mode-settings-ui-fix.md
+caret-docs/tasks/020-enhance-logging-and-testing.md
+caret-docs/tasks/022-chat-stop-button.md
+caret-docs/tasks/024-ai-agent-profile-customization.md
+caret-docs/tasks/025-reasoning-ui-improvement.md
+caret-docs/tasks/026-gemini-api-error-handling.md
+caret-docs/tasks/027-caret-team-auth.md
+caret-docs/tasks/028-refactor-api-configuration.md
+caret-docs/tasks/029-01-plan-merge-cline-upstream.md
+caret-docs/tasks/029-02-action-checklist-merge-cline-upstream.md
+caret-docs/tasks/029-03-report-merge-cline-upstream.md
+caret-docs/tasks/029-chat-view-ui-bugs.md
+caret-docs/tasks/backup/20250501-PersonaSettingsView.tsx
+caret-docs/tasks/backup/20250501/persona-controller.ts.bak
+caret-docs/tasks/complete/001-cline-rule-syste-modify.md
+caret-docs/tasks/complete/002-cline-alpha-setup-and-planning.md
+caret-docs/tasks/complete/003-sllm-performance-test.md
+caret-docs/tasks/complete/004-vllm-setup-and-test.md
+caret-docs/tasks/complete/005-vllm-qwen2.5-4bit-cline-test.md
+caret-docs/tasks/complete/006-cline-project-roadmap-planning.md
+caret-docs/tasks/complete/007-cline-mode-improvement.md
+caret-docs/tasks/complete/008-tool-execution-instability-fix.md
+caret-docs/tasks/complete/018-01-01-plan-persona-management.md
+caret-docs/tasks/complete/018-01-02-plan-template-character-policy-and-design-latest.md
+caret-docs/tasks/complete/018-02-01-action-checklist-persona-management.md
+caret-docs/tasks/complete/018-02-01-persona-saving-bugfix-report.md
+caret-docs/tasks/complete/021-merge-upstream-v3.10.1.md
+caret-docs/tasks/complete/023-model-list-sync.md
+caret-docs/tasks/tasks-status.md
+caret-docs/work-logs/luke-and-alpha/2024-05-18.md
+caret-docs/work-logs/luke-and-alpha/2025-03-25.md
+caret-docs/work-logs/luke-and-alpha/2025-03-27.md
+caret-docs/work-logs/luke-and-alpha/2025-03-28.md
+caret-docs/work-logs/luke-and-alpha/2025-03-29.md
+caret-docs/work-logs/luke-and-alpha/2025-03-30.md
+caret-docs/work-logs/luke-and-alpha/2025-04-01.md
+caret-docs/work-logs/luke-and-alpha/2025-04-02.md
+caret-docs/work-logs/luke-and-alpha/2025-04-04.md
+caret-docs/work-logs/luke-and-alpha/2025-04-05.md
+caret-docs/work-logs/luke-and-alpha/2025-04-06.md
+caret-docs/work-logs/luke-and-alpha/2025-04-07.md
+caret-docs/work-logs/luke-and-alpha/2025-04-09.md
+caret-docs/work-logs/luke-and-alpha/2025-04-10.md
+caret-docs/work-logs/luke-and-alpha/2025-04-11.md
+caret-docs/work-logs/luke-and-alpha/2025-04-12.md
+caret-docs/work-logs/luke-and-alpha/2025-04-13.md
+caret-docs/work-logs/luke-and-alpha/2025-04-14.md
+caret-docs/work-logs/luke-and-alpha/2025-04-24.md
+caret-docs/work-logs/luke-and-alpha/2025-04-25.md
+caret-docs/work-logs/luke-and-alpha/backup/20250501/controller-index-1479.ts.bak
+caret-docs/work-logs/luke-and-alpha/backup/20250501/controller-index.ts.bak
+caret-docs/work-logs/luke-and-alpha/backup/20250501/index.ts.bak
+caret_zero_changes.txt
+chatview_diff.patch
+clean-build-package.ps1
+cline-upstream
+cline-upstream-merging-guide.md
+debug-log.ps1
+docs/.obsidian/app.json
+docs/.obsidian/appearance.json
+docs/.obsidian/core-plugins.json
+docs/.obsidian/workspace.json
+docs/architecture/cline-internals-insights.md
+docs/architecture/system-prompt-analysis.ko.md
+docs/caret-customization/caretignore.md
+docs/development/upstream-merge-strategy.md
+docs/patent-materials/patent-md-json-ai-rules/README.md
+docs/patent-materials/patent-md-json-ai-rules/README.pdf
+docs/patent-materials/patent-md-json-ai-rules/comparison-example.md
+docs/patent-materials/patent-md-json-ai-rules/patent-application-draft.md
+docs/patent-materials/patent-md-json-ai-rules/patent-md-json-ai-rules.zip
+docs/patent-materials/patent-md-json-ai-rules/token-savings-analysis.md
+docs/project-vision.ko.md
+docs/project-vision.md
+docs/prompting/README.md
+docs/prompting/custom instructions library/caret-memory-bank.md
+docs/prompting/custom instructions library/raw-instructions/caret-memory-bank.md
+docs/prompting/custom instructions library/raw-instructions/cline-memory-bank.md
+docs/roadmap-next-gen.ko.md
+docs/roadmap.md
+docs/sLLM/benchmark.md
+docs/testing/system-prompt-json-test-plan.md
+docs/tools/caret-tools-guide.md
+docs/work-logs/luke-and-alpha/2025-03-27.md
+docs/work-logs/luke-and-alpha/reports/rules/act_mode_rules.json
+docs/work-logs/luke-and-alpha/reports/rules/act_mode_rules.md
+docs/work-logs/luke-and-alpha/reports/rules/common_rules.json
+docs/work-logs/luke-and-alpha/reports/rules/common_rules.md
+docs/work-logs/luke-and-alpha/reports/rules/final_rule_proposal_report.md
+docs/work-logs/luke-and-alpha/reports/rules/plan_mode_rules.json
+docs/work-logs/luke-and-alpha/reports/rules/plan_mode_rules.md
+docs/work-logs/luke-and-alpha/reports/sections/TOOL_DEFINITIONS.md
+docs/work-logs/luke-and-alpha/tasks/001-cline-rule-syste-modify.md
+docs/work-logs/luke-and-alpha/tasks/008-cline-multi-mode-core.md
+docs/work-logs/luke-and-alpha/tasks/009-prompt-loading-rule-referencing.md
+docs/work-logs/luke-and-alpha/tasks/010-prompt-rule-management-ui.md
+docs/work-logs/luke-and-alpha/tasks/014-ui_improvement_thinking_chat_separation.md
+docs/work-logs/luke-and-alpha/tasks/015-investigate-replace_in_file-bug-report.md
+docs/work-logs/luke-and-alpha/tasks/015-investigate-replace_in_file-bug.md
+docs/work-logs/luke-and-alpha/tasks/017-Caret-window-bug.md
+docs/work-logs/luke-and-alpha/tasks/018-debug-build-issues.md
+docs/work-logs/luke-and-alpha/tasks/019-review-merge-cline-original.md
+experiment/json_caret_performance_test/calculator-alpha.md
+experiment/json_caret_performance_test/calculator-caret.md
+experiment/json_caret_performance_test/calculator-cursor.md
+experiment/json_caret_performance_test/calculator/alpha/caret-comparison-test/calculator-core.js
+experiment/json_caret_performance_test/calculator/alpha/caret-comparison-test/calculator-spec.md
+experiment/json_caret_performance_test/calculator/alpha/caret-comparison-test/calculator-ui.js
+experiment/json_caret_performance_test/calculator/alpha/caret-comparison-test/calculator.test.js
+experiment/json_caret_performance_test/calculator/alpha/caret-comparison-test/index.html
+experiment/json_caret_performance_test/calculator/alpha/caret-comparison-test/project-report.md
+experiment/json_caret_performance_test/calculator/alpha/caret-comparison-test/style.css
+experiment/json_caret_performance_test/calculator/alpha/comparison-instructions.md
+experiment/json_caret_performance_test/calculator/caret/caret-comparison-test/calculator-spec.md
+experiment/json_caret_performance_test/calculator/caret/caret-comparison-test/calculator.js
+experiment/json_caret_performance_test/calculator/caret/caret-comparison-test/calculator.test.js
+experiment/json_caret_performance_test/calculator/caret/caret-comparison-test/index.html
+experiment/json_caret_performance_test/calculator/caret/caret-comparison-test/project-report.md
+experiment/json_caret_performance_test/calculator/caret/caret-comparison-test/script.js
+experiment/json_caret_performance_test/calculator/caret/caret-comparison-test/style.css
+experiment/json_caret_performance_test/calculator/caret/comparison-instructions.md
+experiment/json_caret_performance_test/calculator/cursor/caret-comparison-test/calculator-spec.md
+experiment/json_caret_performance_test/calculator/cursor/caret-comparison-test/calculator.js
+experiment/json_caret_performance_test/calculator/cursor/caret-comparison-test/calculator.test.js
+experiment/json_caret_performance_test/calculator/cursor/caret-comparison-test/index.html
+experiment/json_caret_performance_test/calculator/cursor/caret-comparison-test/run-tests.js
+experiment/json_caret_performance_test/calculator/cursor/caret-comparison-test/script.js
+experiment/json_caret_performance_test/calculator/cursor/caret-comparison-test/style.css
+experiment/json_caret_performance_test/calculator/cursor/comparison-instructions.md
+experiment/json_caret_performance_test/markdown-alpha.md
+experiment/json_caret_performance_test/markdown-caret.md
+experiment/json_caret_performance_test/markdown-cursor.md
+experiment/json_caret_performance_test/markdown/alpha/comparison-instructions.md
+experiment/json_caret_performance_test/markdown/alpha/index.html
+experiment/json_caret_performance_test/markdown/alpha/markdown-parser.js
+experiment/json_caret_performance_test/markdown/alpha/markdown-parser.test.js
+experiment/json_caret_performance_test/markdown/alpha/project-report.md
+experiment/json_caret_performance_test/markdown/alpha/script.js
+experiment/json_caret_performance_test/markdown/alpha/style.css
+experiment/json_caret_performance_test/markdown/alpha/test-runner.html
+experiment/json_caret_performance_test/markdown/alpha/viewer-spec.md
+experiment/json_caret_performance_test/markdown/caret/comparison-instructions.md
+experiment/json_caret_performance_test/markdown/caret/index.html
+experiment/json_caret_performance_test/markdown/caret/markdown-parser.js
+experiment/json_caret_performance_test/markdown/caret/markdown-parser.test.js
+experiment/json_caret_performance_test/markdown/caret/project-report.md
+experiment/json_caret_performance_test/markdown/caret/script.js
+experiment/json_caret_performance_test/markdown/caret/style.css
+experiment/json_caret_performance_test/markdown/caret/viewer-spec.md
+experiment/json_caret_performance_test/markdown/cursor/comparison-instructions.md
+experiment/json_caret_performance_test/markdown/cursor/index.html
+experiment/json_caret_performance_test/markdown/cursor/jest.config.js
+experiment/json_caret_performance_test/markdown/cursor/markdownParser.js
+experiment/json_caret_performance_test/markdown/cursor/markdownParser.test.js
+experiment/json_caret_performance_test/markdown/cursor/package.json
+experiment/json_caret_performance_test/markdown/cursor/project-report.md
+experiment/json_caret_performance_test/markdown/cursor/script.js
+experiment/json_caret_performance_test/markdown/cursor/style.css
+experiment/json_caret_performance_test/markdown/cursor/test.js
+experiment/json_caret_performance_test/markdown/cursor/viewer-spec.md
+experiment/json_caret_performance_test/todolist-alpha.md
+experiment/json_caret_performance_test/todolist-caret.md
+experiment/json_caret_performance_test/todolist-cursor.md
+experiment/json_caret_performance_test/todolist/alpha/comparison-instructions.md
+experiment/json_caret_performance_test/todolist/alpha/index.html
+experiment/json_caret_performance_test/todolist/alpha/project-report.md
+experiment/json_caret_performance_test/todolist/alpha/script.js
+experiment/json_caret_performance_test/todolist/alpha/script.test.js
+experiment/json_caret_performance_test/todolist/alpha/style.css
+experiment/json_caret_performance_test/todolist/alpha/todo-spec.md
+experiment/json_caret_performance_test/todolist/caret/comparison-instructions.md
+experiment/json_caret_performance_test/todolist/caret/index.html
+experiment/json_caret_performance_test/todolist/caret/project-report.md
+experiment/json_caret_performance_test/todolist/caret/script.js
+experiment/json_caret_performance_test/todolist/caret/style.css
+experiment/json_caret_performance_test/todolist/caret/todo-spec.md
+experiment/json_caret_performance_test/todolist/caret/todoLogic.js
+experiment/json_caret_performance_test/todolist/caret/todoLogic.test.js
+experiment/json_caret_performance_test/todolist/cursor/comparison-instructions.md
+experiment/json_caret_performance_test/todolist/cursor/index.html
+experiment/json_caret_performance_test/todolist/cursor/package.json
+experiment/json_caret_performance_test/todolist/cursor/project-report.md
+experiment/json_caret_performance_test/todolist/cursor/script.js
+experiment/json_caret_performance_test/todolist/cursor/style.css
+experiment/json_caret_performance_test/todolist/cursor/todo-spec.md
+experiment/json_caret_performance_test/todolist/cursor/todoManager.js
+experiment/json_caret_performance_test/todolist/cursor/todoManager.test.js
+experiment/json_cline_performance_test/todolist/cursor/package-lock.json
+experiment/sllm_test/run_batch_test.ps1
+experiment/sllm_test/run_batch_test.sh
+mock-api-server/package.json
+mock-api-server/server.js
+release/caret-dev-3.10.1-20250423-175246.vsix
+run-unit-tests.js
+scripts/doc-watcher.cjs
+sllm-servers/hyperclovax-server/.env.example
+sllm-servers/hyperclovax-server/Dockerfile
+sllm-servers/hyperclovax-server/README.md
+sllm-servers/hyperclovax-server/__pycache__/server.cpython-310.pyc
+sllm-servers/hyperclovax-server/build_and_run_windows.ps1
+sllm-servers/hyperclovax-server/caret_feature.png
+sllm-servers/hyperclovax-server/empty_img.png
+sllm-servers/hyperclovax-server/model_download.ps1
+sllm-servers/hyperclovax-server/requirements.txt
+sllm-servers/hyperclovax-server/run_windows.ps1
+sllm-servers/hyperclovax-server/server.py
+sllm-servers/hyperclovax-server/server_vision.log
+sllm-servers/hyperclovax-server/test_call_all_modes.py
+sllm-servers/llama4_local_test_report.md
+sllm-servers/start_vllm_llama4_maverick.bat
+sllm-servers/start_vllm_llama4_maverick_fp8.bat
+sllm-servers/start_vllm_llama4_scout.bat
+sllm-servers/start_vllm_qwen2.5_4bit.bat
+src/api/providers/caret.ts
+src/api/providers/hyperclovax.ts
+src/core/assistant-message/diff.ts.bak
+src/core/context-management/ContextManager.ts
+src/core/context-tracking/FileContextTracker.ts
+src/core/controller/base-controller.ts
+src/core/controller/index.ts.bak
+src/core/controller/message-types.ts
+src/core/controller/persona-controller.ts
+src/core/ignore/CaretIgnoreController.test.ts
+src/core/ignore/CaretIgnoreController.ts
+src/core/persona/PersonaManager.ts
+src/core/persona/templateCharacters.ts
+src/core/prompts/core_system_prompt.json
+src/core/prompts/responses.ts.bak
+src/core/prompts/rules/act_mode_rules.json
+src/core/prompts/rules/act_mode_rules.md
+src/core/prompts/rules/common_rules.json
+src/core/prompts/rules/common_rules.md
+src/core/prompts/rules/cost_consideration_rules.json
+src/core/prompts/rules/file_editing_rules.json
+src/core/prompts/rules/plan_mode_rules.json
+src/core/prompts/rules/plan_mode_rules.md
+src/core/prompts/rules/replace_in_file_rules.json
+src/core/prompts/sections/BASE_PROMPT_INTRO.json
+src/core/prompts/sections/BASE_PROMPT_INTRO.md
+src/core/prompts/sections/CAPABILITIES_SUMMARY.json
+src/core/prompts/sections/CAPABILITIES_SUMMARY.md
+src/core/prompts/sections/EDITING_FILES_GUIDE.json
+src/core/prompts/sections/EDITING_FILES_GUIDE.md
+src/core/prompts/sections/MCP_CONNECTED_SERVERS.json
+src/core/prompts/sections/MCP_CONNECTED_SERVERS.md
+src/core/prompts/sections/MCP_CREATION_GUIDE.json
+src/core/prompts/sections/MCP_CREATION_GUIDE.md
+src/core/prompts/sections/MCP_SERVERS_HEADER.json
+src/core/prompts/sections/MCP_SERVERS_HEADER.md
+src/core/prompts/sections/MODES_EXPLANATION.json
+src/core/prompts/sections/MODES_EXPLANATION.md
+src/core/prompts/sections/OBJECTIVE.json
+src/core/prompts/sections/OBJECTIVE.md
+src/core/prompts/sections/RULES_HEADER.md
+src/core/prompts/sections/SYSTEM_INFORMATION.md
+src/core/prompts/sections/TOOLS_HEADER.md
+src/core/prompts/sections/TOOL_DEFINITIONS.json
+src/core/prompts/sections/TOOL_USE_EXAMPLES.md
+src/core/prompts/sections/TOOL_USE_FORMAT.md
+src/core/prompts/sections/TOOL_USE_GUIDELINES.md
+src/core/prompts/sections/USER_INSTRUCTIONS_HEADER.md
+src/core/prompts/system.ts.bak
+src/core/prompts/system.ts.bak2
+src/core/task/index.ts.bak
+src/exports/caret.d.ts
+src/integrations/checkpoints/CheckpointUtils.ts
+src/integrations/editor/DiffViewProvider.ts.bak
+src/integrations/editor/detect-omission.ts
+src/integrations/misc/export-markdown.ts
+src/integrations/terminal/TerminalManager.ts.bak
+src/integrations/theme/getTheme.ts
+src/services/account/CaretAccountService.ts
+src/services/auth/config.ts
+src/services/logging/DiffLogger.ts
+src/services/logging/logging.test.ts
+src/services/telemetry/TelemetryService.ts
+src/services/telemetry/TelemetryService.ts.bak
+src/shared/CaretAccount.ts
+src/shared/combineApiRequests.ts
+src/shared/combineCommandSequences.ts
+src/shared/getApiMetrics.ts
+src/shared/models/anthropic.json
+src/shared/models/asksage.json
+src/shared/models/bedrock.json
+src/shared/models/deepseek.json
+src/shared/models/doubao.json
+src/shared/models/gemini.json
+src/shared/models/hyperclovax-local.json
+src/shared/models/litellm.json
+src/shared/models/lmstudio.json
+src/shared/models/mistral.json
+src/shared/models/ollama.json
+src/shared/models/openai-native.json
+src/shared/models/openai.json
+src/shared/models/openrouter.json
+src/shared/models/qwen-international.json
+src/shared/models/qwen-mainland.json
+src/shared/models/qwen.json
+src/shared/models/requesty.json
+src/shared/models/sambanova.json
+src/shared/models/together.json
+src/shared/models/vertex.json
+src/shared/models/vscode-lm.json
+src/shared/models/xai.json
+src/shared/providers/anthropic.json
+src/shared/providers/asksage.json
+src/shared/providers/bedrock.json
+src/shared/providers/caret.json
+src/shared/providers/deepseek.json
+src/shared/providers/gemini.json
+src/shared/providers/hyperclovax.json
+src/shared/providers/litellm.json
+src/shared/providers/lmstudio.json
+src/shared/providers/mistral.json
+src/shared/providers/ollama.json
+src/shared/providers/openai-native.json
+src/shared/providers/openai.json
+src/shared/providers/openrouter.json
+src/shared/providers/qwen.json
+src/shared/providers/sambanova.json
+src/shared/providers/together.json
+src/shared/providers/types.ts
+src/shared/providers/vertex.json
+src/shared/providers/vscode-lm.json
+src/shared/providers/xai.json
+src/shared/types.ts
+src/test/extension.test.ts
+src/utils/i18n.ts
+src/utils/string.ts
+task_plan.md
+temp_write_limit_test.txt
+test/advanced-retry-test.js
+test/api-retry-test.js
+test/diff-logger-test.js
+test/eol-preservation-test.js
+test/file-replace-test.js
+test/midline-break-test.js
+test/replace-in-file-bug-test.js
+test/replace-in-file-bug-test.md
+test/replace-in-file-bug-tester.ts
+test/replace-in-file-simple-test.js
+test/replace-in-file-test.ts
+webview-ui/.env.example
+webview-ui/build_errors.txt
+webview-ui/index.html
+webview-ui/src/assets/ClineLogoWhite.tsx
+webview-ui/src/components/VisionInferencePanel.tsx
+webview-ui/src/components/account/CreditsHistoryTable.tsx
+webview-ui/src/components/chat/ChatRowContent.tsx
+webview-ui/src/components/chat/ChatViewRefactored.tsx
+webview-ui/src/components/chat/CreditLimitError.tsx
+webview-ui/src/components/chat/chat_hooks/index.ts
+webview-ui/src/components/chat/chat_hooks/useBrowserSessionState.ts
+webview-ui/src/components/chat/chat_hooks/useCaretAskState.ts
+webview-ui/src/components/chat/chat_hooks/useChatInputState.ts
+webview-ui/src/components/chat/chat_hooks/useMessageState.ts
+webview-ui/src/components/chat/chat_hooks/useModeShortcuts.ts
+webview-ui/src/components/chat/chat_hooks/useScrollControl.ts
+webview-ui/src/components/chat/chat_renderers/BaseRenderer.tsx
+webview-ui/src/components/chat/chat_renderers/CommandRenderer.tsx
+webview-ui/src/components/chat/chat_renderers/CompletionRenderer.tsx
+webview-ui/src/components/chat/chat_renderers/McpRenderer.tsx
+webview-ui/src/components/chat/chat_renderers/ToolRenderer.tsx
+webview-ui/src/components/chat/chat_renderers/UserInteractionRenderer.tsx
+webview-ui/src/components/chat/chat_ui/ChatAvatar.tsx
+webview-ui/src/components/chat/chat_ui/ChatButtons.tsx
+webview-ui/src/components/chat/chat_ui/ChatHeader.tsx
+webview-ui/src/components/chat/chat_ui/MessageContainer.tsx
+webview-ui/src/components/chat/chat_ui/ModeSelector.tsx
+webview-ui/src/components/chat/chat_ui/ProgressIndicator.tsx
+webview-ui/src/components/chat/chat_ui/ScrollControls.tsx
+webview-ui/src/components/chat/chat_ui/TaskHeader.tsx
+webview-ui/src/components/chat/chat_ui/index.ts
+webview-ui/src/components/chat/chat_utils/chatRowTypes.ts
+webview-ui/src/components/chat/chat_utils/iconUtils.tsx
+webview-ui/src/components/chat/chat_utils/messageParser.ts
+webview-ui/src/components/common/Modal.tsx
+webview-ui/src/components/mcp/McpView.tsx
+webview-ui/src/components/mcp/marketplace/McpSubmitCard.tsx
+webview-ui/src/components/mcp/tabs/AddLocalServerForm.tsx
+webview-ui/src/components/settings/CaretAccountInfoCard.tsx
+webview-ui/src/components/settings/FeaturedModelCard.tsx
+webview-ui/src/components/settings/ModeSettingsView.tsx
+webview-ui/src/components/settings/PersonaSettingsView.tsx
+webview-ui/src/components/settings/TemplateCharacterSelectModal.tsx
+webview-ui/src/components/settings/api_options/AnthropicOptions.tsx
+webview-ui/src/components/settings/api_options/AskSageOptions.tsx
+webview-ui/src/components/settings/api_options/BedrockOptions.tsx
+webview-ui/src/components/settings/api_options/CaretOptions.tsx
+webview-ui/src/components/settings/api_options/DeepSeekOptions.tsx
+webview-ui/src/components/settings/api_options/GeminiOptions.tsx
+webview-ui/src/components/settings/api_options/HyperClovaXOptions.tsx
+webview-ui/src/components/settings/api_options/LiteLLMOptions.tsx
+webview-ui/src/components/settings/api_options/LmStudioOptions.tsx
+webview-ui/src/components/settings/api_options/MistralOptions.tsx
+webview-ui/src/components/settings/api_options/OllamaOptions.tsx
+webview-ui/src/components/settings/api_options/OpenAiCompatOptions.tsx
+webview-ui/src/components/settings/api_options/OpenAiNativeOptions.tsx
+webview-ui/src/components/settings/api_options/OpenRouterOptions.tsx
+webview-ui/src/components/settings/api_options/QwenOptions.tsx
+webview-ui/src/components/settings/api_options/RequestyOptions.tsx
+webview-ui/src/components/settings/api_options/SambanovaOptions.tsx
+webview-ui/src/components/settings/api_options/TogetherOptions.tsx
+webview-ui/src/components/settings/api_options/VSCodeLmOptions.tsx
+webview-ui/src/components/settings/api_options/VertexOptions.tsx
+webview-ui/src/components/settings/api_options/XAIOptions.tsx
+webview-ui/src/components/settings/hooks/useModeSettingsManagement.ts
+webview-ui/src/components/settings/mode_settings_ui/ModeTabContent.tsx
+webview-ui/src/components/settings/settings_ui/CustomInstructionsSettings.tsx
+webview-ui/src/components/settings/settings_ui/ProfileImageSettings.tsx
+webview-ui/src/components/settings/settings_ui/StateResetSettings.tsx
+webview-ui/src/components/settings/settings_ui/TelemetrySettings.tsx
+webview-ui/src/constants.ts
+webview-ui/src/context/FirebaseAuthContext.tsx
+webview-ui/src/utils/configLoader.ts.bk
+webview-ui/src/utils/i18n.ts
+webview-ui/src/utils/logger.ts
+webview-ui/src/vscode-webview.d.ts
+﻿.caretrules
