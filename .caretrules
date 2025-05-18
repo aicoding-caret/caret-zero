@@ -40,23 +40,24 @@
     "diagram_reference": "caret-docs/architecture/extension-architecture.mmd"
   },
   "development_process": {
-    "state_management_guideline": "Core Extension (CaretProvider) is the source of truth. Sync state via messages. 자세한 개발/설계/구현 가이드는 caret-docs/development/ 디렉토리와 그 하위 문서(index.md, logging.md 등)를 반드시 참고하세요.",
-    "tool_integration": "Follow patterns in src/integrations/, respect .caretignore. 구현 및 설계 기준은 caret-docs/development/ 참고.",
+    "state_management_guideline": "Core Extension (CaretProvider) is the source of truth. Sync state via messages. For detailed development/design/implementation guidelines, please refer to the caret-docs/development/ directory and its sub-documents (e.g., index.md, logging.md).",
+    "tool_integration": "Follow patterns in src/integrations/, respect .caretignore. For implementation and design standards, refer to caret-docs/development/.",
     "api_providers": "Implementations in src/api/providers/.",
-    "testing": "Refer to caret-docs/testing/ for plans. 테스트 및 품질 기준은 caret-docs/development/ 내 문서도 참고.",
-    "logging": "Use common logging system (see caret-docs/development/logging.md). 자세한 로깅 정책 및 예시는 caret-docs/development/ 문서 참고.",
+    "testing": "Refer to caret-docs/testing/ for plans. For testing and quality standards, also refer to documents in caret-docs/development/.",
+    "logging": "Use common logging system (see caret-docs/development/logging.md). For detailed logging policies and examples, refer to documents in caret-docs/development/.",
     "checkpoints": "Managed by src/integrations/checkpoints/CheckpointTracker.ts (Git-based).",
-    "documentation": "Update relevant docs in caret-docs/. 개발 표준, 설계, 구현 가이드는 caret-docs/development/에 문서화되어 있으니 참고.",
+    "documentation": "Update relevant docs in caret-docs/. For development standards, design, and implementation guidelines, refer to caret-docs/development/.",
     "contributing": "Refer to CONTRIBUTING.md for guidelines.",
+    "rules_update_guideline": "All project rule changes (for .caretrules, .windsurfrules, .cursorrules, etc.) must first be defined in Korean in the master template file: 'caret-docs/caretrules.ko.md'. After updating the template, request the AI assistant (Alpha) to reflect these changes into the relevant English JSON rule file(s). If direct modification of 'caretrules.ko.md' is not feasible due to IDE limitations, describe the desired changes in Korean to Alpha, and explicitly ask to update 'caretrules.ko.md' first, then the target JSON files.",
     "work_logs": {
-      "location": "caret-docs/work-logs/",
-      "daily_log_format": "{date}.md",
-      "task_log_format": [
-        "tasks/{task-number}-01-plan-{task-name}.md",
-        "tasks/{task-number}-02-action-checklist-{task-name}.md",
-        "tasks/{task-number}-03-report-{task-name}.md"
-      ],
-      "purpose": "Maintain context, track progress. 작업 상태는 caret-docs/work-logs/luke-and-alpha/tasks/tasks-status.md에서 관리합니다."
+      "user_daily_log_location_pattern": "caret-docs/work-logs/{username}/",
+      "user_daily_log_format": "{date}.md",
+      "task_docs_location": "caret-docs/tasks/",
+      "task_doc_format_plan": "{task-number}-01-plan-{task-name}.md",
+      "task_doc_format_checklist": "{task-number}-02-action-checklist-{task-name}.md",
+      "task_doc_format_report": "{task-number}-03-report-{task-name}.md",
+      "task_status_file_path": "caret-docs/tasks/task-status.md",
+      "purpose": "Defines locations and formats for user-specific daily work logs and centralized task documents (plan, checklist, report). It is crucial to check 'tasks-status.md' for the next available task number before creating a new task and update it accordingly. Daily logs are for individual progress tracking, while task documents and status are managed centrally per task."
     },
     "git_rules": {
       "commit_format": "[type]: [description]",
@@ -74,6 +75,5 @@
     "src/core/webview/CaretProvider.ts",
     "webview-ui/src/App.tsx",
     "webview-ui/src/context/ExtensionStateContext.tsx",
-    "agents-rules/alpha/"
   ]
 }

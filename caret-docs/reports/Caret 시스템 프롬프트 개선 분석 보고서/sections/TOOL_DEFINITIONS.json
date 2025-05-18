@@ -1,0 +1,209 @@
+{
+	"tools": {
+		"execute_command": {
+			"description": "Execute CLI commands on the system",
+			"params": {
+				"command": {
+					"type": "string",
+					"required": true,
+					"desc": "CLI command to execute"
+				},
+				"requires_approval": {
+					"type": "boolean",
+					"required": true,
+					"desc": "True for potentially impactful operations"
+				}
+			}
+		},
+		"read_file": {
+			"description": "Read file contents",
+			"params": {
+				"path": {
+					"type": "string",
+					"required": true,
+					"desc": "Path to file to read"
+				}
+			}
+		},
+		"write_to_file": {
+			"description": "Create or overwrite file",
+			"params": {
+				"path": {
+					"type": "string",
+					"required": true,
+					"desc": "Path to write file"
+				},
+				"content": {
+					"type": "string",
+					"required": true,
+					"desc": "Complete file content"
+				}
+			}
+		},
+		"replace_in_file": {
+			"description": "Make targeted changes to file",
+			"params": {
+				"path": {
+					"type": "string",
+					"required": true,
+					"desc": "Path to file to modify"
+				},
+				"diff": {
+					"type": "string",
+					"required": true,
+					"desc": "SEARCH/REPLACE blocks"
+				}
+			}
+		},
+		"search_files": {
+			"description": "Perform regex search across files",
+			"params": {
+				"path": {
+					"type": "string",
+					"required": true,
+					"desc": "Directory path to search in"
+				},
+				"regex": {
+					"type": "string",
+					"required": true,
+					"desc": "Regex pattern to search for"
+				},
+				"file_pattern": {
+					"type": "string",
+					"required": false,
+					"desc": "Glob pattern to filter files (optional)"
+				}
+			}
+		},
+		"list_files": {
+			"description": "List files and directories",
+			"params": {
+				"path": {
+					"type": "string",
+					"required": true,
+					"desc": "Directory path to list contents for"
+				},
+				"recursive": {
+					"type": "boolean",
+					"required": false,
+					"desc": "List recursively (optional)"
+				}
+			}
+		},
+		"list_code_definition_names": {
+			"description": "List top-level code definition names",
+			"params": {
+				"path": {
+					"type": "string",
+					"required": true,
+					"desc": "Directory path to list definitions for"
+				}
+			}
+		},
+		"browser_action": {
+			"description": "Interact with a Puppeteer-controlled browser",
+			"params": {
+				"action": {
+					"type": "string",
+					"required": true,
+					"desc": "Action to perform (launch, click, type, scroll_down, scroll_up, close)"
+				},
+				"url": {
+					"type": "string",
+					"required": false,
+					"desc": "URL for launch action (optional)"
+				},
+				"coordinate": {
+					"type": "string",
+					"required": false,
+					"desc": "x,y coordinates for click action (optional)"
+				},
+				"text": {
+					"type": "string",
+					"required": false,
+					"desc": "Text for type action (optional)"
+				}
+			}
+		},
+		"use_mcp_tool": {
+			"description": "Use a tool provided by an MCP server",
+			"params": {
+				"server_name": {
+					"type": "string",
+					"required": true,
+					"desc": "Name of the MCP server"
+				},
+				"tool_name": {
+					"type": "string",
+					"required": true,
+					"desc": "Name of the tool to execute"
+				},
+				"arguments": {
+					"type": "string",
+					"required": true,
+					"desc": "JSON object of tool arguments"
+				}
+			}
+		},
+		"access_mcp_resource": {
+			"description": "Access a resource provided by an MCP server",
+			"params": {
+				"server_name": {
+					"type": "string",
+					"required": true,
+					"desc": "Name of the MCP server"
+				},
+				"uri": {
+					"type": "string",
+					"required": true,
+					"desc": "URI of the resource to access"
+				}
+			}
+		},
+		"ask_followup_question": {
+			"description": "Ask the user a followup question",
+			"params": {
+				"question": {
+					"type": "string",
+					"required": true,
+					"desc": "The question to ask the user"
+				},
+				"options": {
+					"type": "string",
+					"required": false,
+					"desc": "Array of options for the user (optional)"
+				}
+			}
+		},
+		"attempt_completion": {
+			"description": "Attempt to complete the task",
+			"params": {
+				"result": {
+					"type": "string",
+					"required": true,
+					"desc": "Final result description"
+				},
+				"command": {
+					"type": "string",
+					"required": false,
+					"desc": "Command to demonstrate result (optional)"
+				}
+			}
+		},
+		"plan_mode_respond": {
+			"description": "Respond to the user in PLAN MODE",
+			"params": {
+				"response": {
+					"type": "string",
+					"required": true,
+					"desc": "The response to provide"
+				},
+				"options": {
+					"type": "string",
+					"required": false,
+					"desc": "Array of options for the user (optional)"
+				}
+			}
+		}
+	}
+}

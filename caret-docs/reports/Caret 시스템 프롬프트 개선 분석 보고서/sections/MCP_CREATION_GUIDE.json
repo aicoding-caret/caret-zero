@@ -1,0 +1,36 @@
+{
+	"description": "Guide for creating MCP servers.",
+	"steps": [
+		{
+			"step": 1,
+			"description": "Create a new MCP server project.",
+			"command": "npx @modelcontextprotocol/create-server weather-server"
+		},
+		{
+			"step": 2,
+			"description": "Implement the MCP server logic.",
+			"example_code": "// Example code for a weather server\nimport { Server } from '@modelcontextprotocol/sdk/server/index.js';\n// ... (rest of the code)"
+		},
+		{
+			"step": 3,
+			"description": "Build and compile the MCP server.",
+			"command": "npm run build"
+		},
+		{
+			"step": 4,
+			"description": "Configure the MCP server.",
+			"details": "Add the MCP server configuration to the settings file located at '{{mcp_settings_path}}'."
+		},
+		{
+			"step": 5,
+			"description": "Test the MCP server.",
+			"details": "After you have edited the MCP settings configuration file, the system will automatically run all the servers and expose the available tools and resources in the 'Connected MCP Servers' section."
+		}
+	],
+	"important_considerations": [
+		"MCP servers operate in a non-interactive environment.",
+		"All credentials and authentication tokens must be provided upfront through environment variables."
+	],
+	"editing_mcp_servers": "The user may ask to add tools or resources that may make sense to add to an existing MCP server (listed under 'Connected MCP Servers' below: {{mcp_connected_server_names}}, e.g. if it would use the same API.",
+	"mcp_servers_are_not_always_necessary": "The user may not always request the use or creation of MCP servers. Instead, they might provide tasks that can be completed with existing tools."
+}

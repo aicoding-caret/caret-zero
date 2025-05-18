@@ -156,6 +156,7 @@ The Caret project welcomes your contributions! Whether it's bug reports, feature
 For more detailed information, please refer to the documents in the [`caret-docs`](./caret-docs/) directory.
 
 * [Architecture Overview](./caret-docs/architecture/extension-architecture.mmd)
+* [New Developer Onboarding Guide](./caret-docs/development/new-developer-onboarding-guide.md)
 * [Work Logs](./caret-docs/work-logs/)
 * ... (additional important document links to be added)
 
