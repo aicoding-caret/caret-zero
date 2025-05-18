@@ -63,8 +63,21 @@
       "commit_format": "[type]: [description]",
       "branching_strategy": "Standard Gitflow/feature branching (TBD)."
     },
+    "script_management": {
+      "guideline": "For repetitive tasks, proactively consider creating scripts to improve efficiency.",
+      "location": "Store scripts in subdirectories under the project root's 'scripts/' folder, organized by task or feature (e.g., 'scripts/merging/', 'scripts/deployment/').",
+      "documentation": "Document the script's purpose, usage, and any required environment variables using comments or a separate README file for clarity and ease of use by other team members."
+    },
     "ai_agent_skills": {
       "vscode_plugin_support": "The AI agent has specific skills and knowledge related to VSCode plugin development, which should be utilized when relevant."
+    },
+    "documentation_references": {
+      "index.md": "Overview and index of all development documents.",
+      "new-developer-onboarding-guide.md": "Essential guide for new developers joining the project.",
+      "logging.md": "Guidelines for backend and frontend logging.",
+      "webview-extension-communication.md": "How to handle messages between webview and extension.",
+      "ui-to-storage-flow.md": "Detailed guide on UI to Storage data flow, including security.",
+      "cline-upstream-merging-guide.md": "Strategy for merging with Cline upstream, including AI collaboration tips."
     }
   },
   "key_files_reference": [
@@ -74,6 +87,6 @@
     "src/core/task/index.ts",
     "src/core/webview/CaretProvider.ts",
     "webview-ui/src/App.tsx",
-    "webview-ui/src/context/ExtensionStateContext.tsx",
+    "webview-ui/src/context/ExtensionStateContext.tsx"
   ]
 }
