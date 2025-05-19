@@ -589,7 +589,7 @@ export class McpHub {
 			{
 				timeout,
 			},
-		)
+		) as McpToolCallResponse
 	}
 
 	async toggleToolAutoApprove(serverName: string, toolNames: string[], shouldAllow: boolean): Promise<void> {
