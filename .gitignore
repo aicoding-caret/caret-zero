@@ -1,5 +1,6 @@
 out
 dist
+dist-standalone
 node_modules
 tmp
 .vscode-test/
@@ -11,6 +12,7 @@ pnpm-lock.yaml
 
 .caretignore
 
+<<<<<<< HEAD
 # Model Cache (e.g., downloaded by TGI)
 models/
 
@@ -23,3 +25,11 @@ package-lock.json
 webview-ui/package-lock.json
 webview-ui/package-lock.json
 !src/shared/models/
+=======
+# Ignore coverage directories and files
+coverage
+# But don't ignore the coverage scripts in .github/scripts/
+!.github/scripts/coverage/
+
+*evals.env
+>>>>>>> upstream/main

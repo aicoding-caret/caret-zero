@@ -2,10 +2,18 @@ import { VSCodeButton } from "@vscode/webview-ui-toolkit/react"
 import { useCallback, useRef, useState } from "react"
 import { useClickAway, useEvent } from "react-use"
 import styled from "styled-components"
+<<<<<<< HEAD
 import { ExtensionMessage } from "../../../../src/shared/ExtensionMessage"
 import { vscode } from "../../utils/vscode"
 import { CODE_BLOCK_BG_COLOR } from "./CodeBlock"
 import { CaretCheckpointRestore } from "../../../../src/shared/WebviewMessage"
+=======
+import { ExtensionMessage } from "@shared/ExtensionMessage"
+import { CheckpointsServiceClient } from "@/services/grpc-client"
+import { vscode } from "@/utils/vscode"
+import { CODE_BLOCK_BG_COLOR } from "@/components/common/CodeBlock"
+import { ClineCheckpointRestore } from "@shared/WebviewMessage"
+>>>>>>> upstream/main
 
 interface CheckpointOverlayProps {
 	messageTs?: number
@@ -49,31 +57,67 @@ export const CheckpointOverlay = ({ messageTs }: CheckpointOverlayProps) => {
 
 	useEvent("message", handleMessage)
 
-	const handleRestoreTask = () => {
+	const handleRestoreTask = async () => {
 		setRestoreTaskDisabled(true)
+<<<<<<< HEAD
 		vscode.postMessage({
 			type: "checkpointRestore",
 			number: messageTs,
 			text: "task" satisfies CaretCheckpointRestore,
 		})
+=======
+		try {
+			await CheckpointsServiceClient.checkpointRestore({
+				number: messageTs,
+				restoreType: "task",
+			})
+		} catch (err) {
+			console.error("Checkpoint restore task error:", err)
+			setRestoreTaskDisabled(false)
+		}
+>>>>>>> upstream/main
 	}
 
-	const handleRestoreWorkspace = () => {
+	const handleRestoreWorkspace = async () => {
 		setRestoreWorkspaceDisabled(true)
+<<<<<<< HEAD
 		vscode.postMessage({
 			type: "checkpointRestore",
 			number: messageTs,
 			text: "workspace" satisfies CaretCheckpointRestore,
 		})
+=======
+		try {
+			await CheckpointsServiceClient.checkpointRestore({
+				number: messageTs,
+				restoreType: "workspace",
+			})
+		} catch (err) {
+			console.error("Checkpoint restore workspace error:", err)
+			setRestoreWorkspaceDisabled(false)
+		}
+>>>>>>> upstream/main
 	}
 
-	const handleRestoreBoth = () => {
+	const handleRestoreBoth = async () => {
 		setRestoreBothDisabled(true)
+<<<<<<< HEAD
 		vscode.postMessage({
 			type: "checkpointRestore",
 			number: messageTs,
 			text: "taskAndWorkspace" satisfies CaretCheckpointRestore,
 		})
+=======
+		try {
+			await CheckpointsServiceClient.checkpointRestore({
+				number: messageTs,
+				restoreType: "taskAndWorkspace",
+			})
+		} catch (err) {
+			console.error("Checkpoint restore both error:", err)
+			setRestoreBothDisabled(false)
+		}
+>>>>>>> upstream/main
 	}
 
 	const handleMouseEnter = () => {
@@ -115,12 +159,17 @@ export const CheckpointOverlay = ({ messageTs }: CheckpointOverlayProps) => {
 				appearance="secondary"
 				disabled={compareDisabled}
 				style={{ cursor: compareDisabled ? "wait" : "pointer" }}
-				onClick={() => {
+				onClick={async () => {
 					setCompareDisabled(true)
-					vscode.postMessage({
-						type: "checkpointDiff",
-						number: messageTs,
-					})
+					try {
+						await CheckpointsServiceClient.checkpointDiff({
+							value: messageTs,
+						})
+					} catch (err) {
+						console.error("CheckpointDiff error:", err)
+					} finally {
+						setCompareDisabled(false)
+					}
 				}}>
 				<i className="codicon codicon-diff-multiple" style={{ position: "absolute" }} />
 			</VSCodeButton>

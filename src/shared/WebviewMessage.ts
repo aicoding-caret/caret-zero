@@ -5,36 +5,27 @@ import { ChatSettings } from "./ChatSettings"
 import { UserInfo } from "./UserInfo"
 import { ChatContent } from "./ChatContent"
 import { TelemetrySetting } from "./TelemetrySetting"
+<<<<<<< HEAD
 import { Persona } from "./types"
+=======
+import { McpViewTab } from "./mcp"
+>>>>>>> upstream/main
 
 export interface WebviewMessage {
 	type:
-		| "addRemoteServer"
 		| "apiConfiguration"
 		| "webviewDidLaunch"
 		| "newTask"
-		| "askResponse"
-		| "clearTask"
+		| "condense"
+		| "reportBug"
 		| "didShowAnnouncement"
-		| "selectImages"
-		| "exportCurrentTask"
-		| "showTaskWithId"
-		| "deleteTaskWithId"
-		| "exportTaskWithId"
-		| "resetState"
-		| "requestOllamaModels"
-		| "requestLmStudioModels"
-		| "openImage"
 		| "openInBrowser"
-		| "openFile"
 		| "openMention"
-		| "cancelTask"
-		| "refreshOpenRouterModels"
-		| "refreshOpenAiModels"
+		| "showChatView"
+		| "refreshClineRules"
 		| "openMcpSettings"
-		| "restartMcpServer"
-		| "deleteMcpServer"
 		| "autoApprovalSettings"
+<<<<<<< HEAD
 		| "browserSettings"
 		| "discoverBrowser"
 		| "testBrowserConnection"
@@ -44,27 +35,21 @@ export interface WebviewMessage {
 		| "checkpointDiff"
 		| "checkpointRestore"
 		| "taskCompletionViewChanges"
+=======
+		| "browserRelaunchResult"
+>>>>>>> upstream/main
 		| "openExtensionSettings"
 		| "requestVsCodeLmModels"
 		| "toggleToolAutoApprove"
-		| "toggleMcpServer"
-		| "getLatestState"
-		| "accountLoginClicked"
-		| "accountLogoutClicked"
 		| "showAccountViewClicked"
 		| "authStateChanged"
 		| "authCallback"
 		| "fetchMcpMarketplace"
-		| "downloadMcp"
 		| "silentlyRefreshMcpMarketplace"
 		| "searchCommits"
-		| "showMcpView"
 		| "fetchLatestMcpServersFromHub"
 		| "telemetrySetting"
 		| "openSettings"
-		| "updateMcpTimeout"
-		| "fetchOpenGraphData"
-		| "checkIsImageUrl"
 		| "invoke"
 		| "updateSettings"
 		| "clearAllTaskHistory"
@@ -72,6 +57,7 @@ export interface WebviewMessage {
 		| "optionsResponse"
 		| "requestTotalTasksSize"
 		| "relaunchChromeDebugMode"
+<<<<<<< HEAD
 		| "taskFeedback"
 		| "getBrowserConnectionInfo"
 		| "getDetectedChromePath"
@@ -99,11 +85,28 @@ export interface WebviewMessage {
 		| "deletePersona"
 		| "selectLanguage"
 		| "addOrUpdatePersona"
+=======
+		| "scrollToSettings"
+		| "searchFiles"
+		| "grpc_request"
+		| "grpc_request_cancel"
+		| "toggleClineRule"
+		| "toggleCursorRule"
+		| "toggleWindsurfRule"
+		| "toggleWorkflow"
+		| "deleteClineRule"
+		| "updateTerminalConnectionTimeout"
+		| "setActiveQuote"
+
+>>>>>>> upstream/main
 	// | "relaunchChromeDebugMode"
 	text?: string
 	uris?: string[] // Used for getRelativePaths
 	disabled?: boolean
+<<<<<<< HEAD
 	askResponse?: CaretAskResponse
+=======
+>>>>>>> upstream/main
 	apiConfiguration?: ApiConfiguration
 	images?: string[]
 	bool?: boolean
@@ -114,6 +117,7 @@ export interface WebviewMessage {
 	chatContent?: ChatContent
 	mcpId?: string
 	timeout?: number
+	tab?: McpViewTab
 	// For toggleToolAutoApprove
 	serverName?: string
 	serverUrl?: string
@@ -126,8 +130,11 @@ export interface WebviewMessage {
 	// For openInBrowser
 	url?: string
 	planActSeparateModelsSetting?: boolean
+	enableCheckpointsSetting?: boolean
+	mcpMarketplaceEnabled?: boolean
 	telemetrySetting?: TelemetrySetting
 	customInstructionsSetting?: string
+<<<<<<< HEAD
 	profileImage?: string
 	// 프로필 이미지 타입 (기본/생각 중)
 	// imagePath ud544ub4dcub97c uc81cuac70ud558uace0 uae30uc874 ud544ub4dcub97c uc0acuc6a9ud558ub3c4ub85d uc218uc815ud569ub2c8ub2e4.
@@ -141,6 +148,31 @@ export interface WebviewMessage {
 	persona?: Persona
 	personaId?: string
 	imagePath?: string;
+=======
+	mentionsRequestId?: string
+	query?: string
+	// For toggleFavoriteModel
+	modelId?: string
+	grpc_request?: {
+		service: string
+		method: string
+		message: any // JSON serialized protobuf message
+		request_id: string // For correlating requests and responses
+		is_streaming?: boolean // Whether this is a streaming request
+	}
+	grpc_request_cancel?: {
+		request_id: string // ID of the request to cancel
+	}
+	// For cline rules and workflows
+	isGlobal?: boolean
+	rulePath?: string
+	workflowPath?: string
+	enabled?: boolean
+	filename?: string
+
+	offset?: number
+	shellIntegrationTimeout?: number
+>>>>>>> upstream/main
 }
 
 export type CaretAskResponse = "yesButtonClicked" | "noButtonClicked" | "messageResponse"

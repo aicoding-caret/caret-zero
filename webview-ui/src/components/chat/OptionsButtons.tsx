@@ -1,6 +1,6 @@
 import styled from "styled-components"
-import { CODE_BLOCK_BG_COLOR } from "../common/CodeBlock"
-import { vscode } from "../../utils/vscode"
+import { CODE_BLOCK_BG_COLOR } from "@/components/common/CodeBlock"
+import { vscode } from "@/utils/vscode"
 
 const OptionButton = styled.button<{ isSelected?: boolean; isNotSelectable?: boolean }>`
 	padding: 8px 12px;
@@ -82,11 +82,27 @@ export const OptionsButtons = ({
 			</OptionsHeader>
 			{options.map((option, index) => (
 				<OptionButton
+					id={`options-button-${index}`}
+					className="options-button"
 					key={index}
 					isSelected={option === selected}
+<<<<<<< HEAD
 					isNotSelectable={hasSelected}
 					onClick={() => handleOptionSelect(option)}>
 					{option}
+=======
+					isNotSelectable={hasSelected || !isActive}
+					onClick={() => {
+						if (hasSelected || !isActive) {
+							return
+						}
+						vscode.postMessage({
+							type: "optionsResponse",
+							text: option + (inputValue ? `: ${inputValue?.trim()}` : ""),
+						})
+					}}>
+					<span className="ph-no-capture">{option}</span>
+>>>>>>> upstream/main
 				</OptionButton>
 			))}
 		</OptionsContainer>

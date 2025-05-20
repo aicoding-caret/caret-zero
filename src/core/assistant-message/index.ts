@@ -1,6 +1,6 @@
 export type AssistantMessageContent = TextContent | ToolUse
 
-export { parseAssistantMessage } from "./parse-assistant-message"
+export { parseAssistantMessageV1, parseAssistantMessageV2 } from "./parse-assistant-message"
 
 export interface TextContent {
 	type: "text"
@@ -22,8 +22,15 @@ export const toolUseNames = [
 	"access_mcp_resource",
 	"ask_followup_question",
 	"plan_mode_respond",
+	"load_mcp_documentation",
 	"attempt_completion",
 	"new_task",
+<<<<<<< HEAD
+=======
+	"condense",
+	"report_bug",
+	"new_rule",
+>>>>>>> upstream/main
 ] as const
 
 // Converts array of tool call names into a union type ("execute_command" | "read_file" | ...)
@@ -50,6 +57,12 @@ export const toolParamNames = [
 	"options",
 	"response",
 	"result",
+	"context",
+	"title",
+	"what_happened",
+	"steps_to_reproduce",
+	"api_request_output",
+	"additional_context",
 ] as const
 
 export type ToolParamName = (typeof toolParamNames)[number]

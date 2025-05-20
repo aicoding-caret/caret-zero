@@ -53,6 +53,7 @@ describe("Extension Tests", function () {
 		await vscode.commands.executeCommand("caret.historyButtonClicked")
 		// Success if no error thrown
 	})
+<<<<<<< HEAD
 
 	it("should handle advanced settings configuration", async () => {
 		// Test browser session setting
@@ -63,4 +64,6 @@ describe("Extension Tests", function () {
 		// Reset settings
 		await vscode.workspace.getConfiguration().update("caret.disableBrowserTool", undefined, true)
 	})
+=======
+>>>>>>> upstream/main
 })

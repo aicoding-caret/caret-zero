@@ -1,13 +1,12 @@
 import { Anthropic } from "@anthropic-ai/sdk"
 import axios from "axios"
-import crypto from "crypto"
-import { execa } from "execa"
+
 import fs from "fs/promises"
 import { setTimeout as setTimeoutPromise } from "node:timers/promises"
-import os from "os"
 import pWaitFor from "p-wait-for"
 import * as path from "path"
 import * as vscode from "vscode"
+<<<<<<< HEAD
 import { buildApiHandler } from "../../api"
 import { cleanupLegacyCheckpoints } from "../../integrations/checkpoints/CheckpointMigration"
 import { downloadTask } from "../../integrations/misc/export-markdown"
@@ -33,16 +32,48 @@ import { searchCommits } from "../../utils/git"
 import { getWorkspacePath } from "../../utils/path"
 import { getTotalTasksSize } from "../../utils/storage"
 import { Task } from "../task"
+=======
+import { handleGrpcRequest, handleGrpcRequestCancel } from "./grpc-handler"
+import { handleModelsServiceRequest } from "./models"
+import { EmptyRequest } from "@shared/proto/common"
+import { buildApiHandler } from "@api/index"
+import { cleanupLegacyCheckpoints } from "@integrations/checkpoints/CheckpointMigration"
+import { downloadTask } from "@integrations/misc/export-markdown"
+import { fetchOpenGraphData } from "@integrations/misc/link-preview"
+import { handleFileServiceRequest } from "./file"
+import { getTheme } from "@integrations/theme/getTheme"
+import WorkspaceTracker from "@integrations/workspace/WorkspaceTracker"
+import { ClineAccountService } from "@services/account/ClineAccountService"
+import { BrowserSession } from "@services/browser/BrowserSession"
+import { McpHub } from "@services/mcp/McpHub"
+import { telemetryService } from "@/services/posthog/telemetry/TelemetryService"
+import { ApiProvider, ModelInfo } from "@shared/api"
+import { ChatContent } from "@shared/ChatContent"
+import { ChatSettings } from "@shared/ChatSettings"
+import { ExtensionMessage, ExtensionState, Invoke, Platform } from "@shared/ExtensionMessage"
+import { HistoryItem } from "@shared/HistoryItem"
+import { McpDownloadResponse, McpMarketplaceCatalog, McpServer } from "@shared/mcp"
+import { TelemetrySetting } from "@shared/TelemetrySetting"
+import { WebviewMessage } from "@shared/WebviewMessage"
+import { fileExistsAtPath } from "@utils/fs"
+import { getWorkingState } from "@utils/git"
+import { extractCommitMessage } from "@integrations/git/commit-message-generator"
+import { getTotalTasksSize } from "@utils/storage"
+>>>>>>> upstream/main
 import { openMention } from "../mentions"
+import { ensureMcpServersDirectoryExists, ensureSettingsDirectoryExists, GlobalFileNames } from "../storage/disk"
 import {
 	getAllExtensionState,
 	getGlobalState,
 	getSecret,
+	getWorkspaceState,
 	resetExtensionState,
 	storeSecret,
 	updateApiConfiguration,
 	updateGlobalState,
+	updateWorkspaceState,
 } from "../storage/state"
+<<<<<<< HEAD
 import { WebviewProvider } from "../webview"
 import { BrowserSession } from "../../services/browser/BrowserSession"
 import { GlobalFileNames } from "../storage/disk"
@@ -53,6 +84,14 @@ import { TemplateCharacterManager } from '../persona/templateCharacters';
 import { PersonaController } from './persona-controller';
 import { MessageType, PersonaMessages } from './message-types';
 import { PersonaManager } from '../persona/PersonaManager';
+=======
+import { Task, cwd } from "../task"
+import { ClineRulesToggles } from "@shared/cline-rules"
+import { sendStateUpdate } from "./state/subscribeToState"
+import { refreshClineRulesToggles } from "@core/context/instructions/user-instructions/cline-rules"
+import { refreshExternalRulesToggles } from "@core/context/instructions/user-instructions/external-rules"
+import { refreshWorkflowToggles } from "@core/context/instructions/user-instructions/workflows"
+>>>>>>> upstream/main
 
 /*
 https://github.com/microsoft/vscode-webview-ui-toolkit-samples/blob/main/default/weather-webview/src/providers/WeatherViewProvider.ts
@@ -61,7 +100,10 @@ https://github.com/KumarVariable/vscode-extension-sidebar-html/blob/master/src/c
 */
 
 export class Controller {
+	private postMessage: (message: ExtensionMessage) => Thenable<boolean> | undefined
+
 	private disposables: vscode.Disposable[] = []
+<<<<<<< HEAD
 	private task?: Task
 	workspaceTracker?: WorkspaceTracker
 	mcpHub?: McpHub
@@ -115,6 +157,36 @@ export class Controller {
 		this.loadAvailableModes().catch((error) => {
 			this.logger.error("Failed to load initial modes:", error)
 		})
+=======
+	task?: Task
+	workspaceTracker: WorkspaceTracker
+	mcpHub: McpHub
+	accountService: ClineAccountService
+	private latestAnnouncementId = "may-16-2025_16:11:00" // update to some unique identifier when we add a new announcement
+
+	constructor(
+		readonly context: vscode.ExtensionContext,
+		private readonly outputChannel: vscode.OutputChannel,
+		postMessage: (message: ExtensionMessage) => Thenable<boolean> | undefined,
+	) {
+		this.outputChannel.appendLine("ClineProvider instantiated")
+		this.postMessage = postMessage
+
+		this.workspaceTracker = new WorkspaceTracker((msg) => this.postMessageToWebview(msg))
+		this.mcpHub = new McpHub(
+			() => ensureMcpServersDirectoryExists(),
+			() => ensureSettingsDirectoryExists(this.context),
+			(msg) => this.postMessageToWebview(msg),
+			this.context.extension?.packageJSON?.version ?? "1.0.0",
+		)
+		this.accountService = new ClineAccountService(
+			(msg) => this.postMessageToWebview(msg),
+			async () => {
+				const { apiConfiguration } = await this.getStateToPostToWebview()
+				return apiConfiguration?.clineApiKey
+			},
+		)
+>>>>>>> upstream/main
 
 		// Clean up legacy checkpoints
 		cleanupLegacyCheckpoints(this.context.globalStorageUri.fsPath, this.outputChannel).catch((error) => {
@@ -232,11 +304,8 @@ export class Controller {
 				x.dispose()
 			}
 		}
-		this.workspaceTracker?.dispose()
-		this.workspaceTracker = undefined
-		this.mcpHub?.dispose()
-		this.mcpHub = undefined
-		this.accountService = undefined
+		this.workspaceTracker.dispose()
+		this.mcpHub.dispose()
 		this.outputChannel.appendLine("Disposed all disposables")
 
 		console.error("Controller disposed")
@@ -259,19 +328,58 @@ export class Controller {
 		await updateGlobalState(this.context, "userInfo", info)
 	}
 
+<<<<<<< HEAD
 	async initCaretWithTask(task?: string, images?: string[]) {
+=======
+	async initTask(task?: string, images?: string[], historyItem?: HistoryItem) {
+>>>>>>> upstream/main
 		await this.clearTask() // ensures that an existing task doesn't exist before starting a new one, although this shouldn't be possible since user must clear task before starting a new one
-		const { apiConfiguration, customInstructions, autoApprovalSettings, browserSettings, chatSettings } =
-			await getAllExtensionState(this.context)
+		const {
+			apiConfiguration,
+			customInstructions,
+			autoApprovalSettings,
+			browserSettings,
+			chatSettings,
+			shellIntegrationTimeout,
+			enableCheckpointsSetting,
+			isNewUser,
+			taskHistory,
+		} = await getAllExtensionState(this.context)
+
+		const NEW_USER_TASK_COUNT_THRESHOLD = 10
+
+		// Check if the user has completed enough tasks to no longer be considered a "new user"
+		if (isNewUser && !historyItem && taskHistory && taskHistory.length >= NEW_USER_TASK_COUNT_THRESHOLD) {
+			await updateGlobalState(this.context, "isNewUser", false)
+			await this.postStateToWebview()
+		}
+
+		if (autoApprovalSettings) {
+			const updatedAutoApprovalSettings = {
+				...autoApprovalSettings,
+				version: (autoApprovalSettings.version ?? 1) + 1,
+			}
+			await updateGlobalState(this.context, "autoApprovalSettings", updatedAutoApprovalSettings)
+		}
 		this.task = new Task(
-			this,
+			this.context,
+			this.mcpHub,
+			this.workspaceTracker,
+			(historyItem) => this.updateTaskHistory(historyItem),
+			() => this.postStateToWebview(),
+			(message) => this.postMessageToWebview(message),
+			(taskId) => this.reinitExistingTaskFromId(taskId),
+			() => this.cancelTask(),
 			apiConfiguration,
 			autoApprovalSettings,
 			browserSettings,
 			chatSettings,
+			shellIntegrationTimeout,
+			enableCheckpointsSetting ?? true,
 			customInstructions,
 			task,
 			images,
+<<<<<<< HEAD
 		)
 	}
 
@@ -288,12 +396,22 @@ export class Controller {
 			customInstructions,
 			undefined,
 			undefined,
+=======
+>>>>>>> upstream/main
 			historyItem,
 		)
 	}
 
+	async reinitExistingTaskFromId(taskId: string) {
+		const history = await this.getTaskWithId(taskId)
+		if (history) {
+			await this.initTask(undefined, undefined, history.historyItem)
+		}
+	}
+
 	// Send any JSON serializable data to the react app
 	async postMessageToWebview(message: ExtensionMessage) {
+<<<<<<< HEAD
 		console.log("[Controller:postMessageToWebview] Sending message to webview:", message.type)
 		try {
 			const webviewProvider = this.webviewProviderRef.deref()
@@ -314,6 +432,9 @@ export class Controller {
 		} catch (error) {
 			console.error("[Controller:postMessageToWebview] Failed to send message to webview:", error)
 		}
+=======
+		await this.postMessage(message)
+>>>>>>> upstream/main
 	}
 
 	/**
@@ -333,6 +454,7 @@ export class Controller {
 		}
 
 		switch (message.type) {
+<<<<<<< HEAD
 			case "webviewDidLaunch": {
 				this.logger.log("Webview launched - loading modes")
 				// 모드 목록 로드
@@ -791,6 +913,8 @@ export class Controller {
 				}
 				break
 			}
+=======
+>>>>>>> upstream/main
 			case "authStateChanged":
 				await this.setUserInfo(message.user || undefined)
 				await this.postStateToWebview()
@@ -832,10 +956,11 @@ export class Controller {
 					}
 				})
 				this.silentlyRefreshMcpMarketplace()
-				this.refreshOpenRouterModels().then(async (openRouterModels) => {
-					if (openRouterModels) {
+				handleModelsServiceRequest(this, "refreshOpenRouterModels", EmptyRequest.create()).then(async (response) => {
+					if (response && response.models) {
 						// update model info in state (this needs to be done here since we don't want to update state while settings is open, and we may refresh models there)
 						const { apiConfiguration } = await getAllExtensionState(this.context)
+<<<<<<< HEAD
 						if (apiConfiguration.openRouterModelId) {
 							// Ensure openRouterModels is treated as Record<string, ModelInfo>
 							const modelsRecord = openRouterModels as Record<string, ModelInfo>
@@ -843,6 +968,13 @@ export class Controller {
 								this.context,
 								"openRouterModelInfo",
 								modelsRecord[apiConfiguration.openRouterModelId], // Corrected indexing
+=======
+						if (apiConfiguration.openRouterModelId && response.models[apiConfiguration.openRouterModelId]) {
+							await updateGlobalState(
+								this.context,
+								"openRouterModelInfo",
+								response.models[apiConfiguration.openRouterModelId],
+>>>>>>> upstream/main
 							)
 							await this.postStateToWebview()
 						}
@@ -852,10 +984,17 @@ export class Controller {
 				// If user already opted in to telemetry, enable telemetry service
 				this.getStateToPostToWebview().then((state) => {
 					const { telemetrySetting } = state
-					const isOptedIn = telemetrySetting === "enabled"
+					const isOptedIn = telemetrySetting !== "disabled"
 					telemetryService.updateTelemetryState(isOptedIn)
 				})
 				break
+			case "showChatView": {
+				this.postMessageToWebview({
+					type: "action",
+					action: "chatButtonClicked",
+				})
+				break
+			}
 			case "newTask":
 				// Code that should run in response to the hello message command
 				//vscode.window.showInformationMessage(message.text!)
@@ -864,8 +1003,13 @@ export class Controller {
 				// You can send any JSON serializable data.
 				// Could also do this in extension .ts
 				//this.postMessageToWebview({ type: "text", text: `Extension: ${Date.now()}` })
+<<<<<<< HEAD
 				// initializing new instance of Caret will make sure that any agentically running promises in old instance don't affect our new task. this essentially creates a fresh slate for the new task
 				await this.initCaretWithTask(message.text, message.images)
+=======
+				// initializing new instance of Cline will make sure that any agentically running promises in old instance don't affect our new task. this essentially creates a fresh slate for the new task
+				await this.initTask(message.text, message.images)
+>>>>>>> upstream/main
 				break
 			case "apiConfiguration":
 				if (message.apiConfiguration) {
@@ -882,10 +1026,17 @@ export class Controller {
 				break
 			case "autoApprovalSettings":
 				if (message.autoApprovalSettings) {
-					await updateGlobalState(this.context, "autoApprovalSettings", message.autoApprovalSettings)
-					if (this.task) {
-						this.task.autoApprovalSettings = message.autoApprovalSettings
+					const currentSettings = (await getAllExtensionState(this.context)).autoApprovalSettings
+					const incomingVersion = message.autoApprovalSettings.version ?? 1
+					const currentVersion = currentSettings?.version ?? 1
+					if (incomingVersion > currentVersion) {
+						await updateGlobalState(this.context, "autoApprovalSettings", message.autoApprovalSettings)
+						if (this.task) {
+							this.task.autoApprovalSettings = message.autoApprovalSettings
+						}
+						await this.postStateToWebview()
 					}
+<<<<<<< HEAD
 					await this.postStateToWebview()
 				}
 				break
@@ -1025,6 +1176,8 @@ export class Controller {
 			case "toggleMode":
 				if (message.chatSettings) {
 					await this.toggleModeWithChatSettings(message.chatSettings, message.chatContent)
+=======
+>>>>>>> upstream/main
 				}
 				break
 			case "optionsResponse":
@@ -1038,6 +1191,7 @@ export class Controller {
 				const { browserSettings } = await getAllExtensionState(this.context)
 				const browserSession = new BrowserSession(this.context, browserSettings)
 				await browserSession.relaunchChromeDebugMode(this)
+<<<<<<< HEAD
 				break
 			case "askResponse":
 				this.task?.handleWebviewAskResponse(message.askResponse!, message.text, message.images)
@@ -1046,11 +1200,14 @@ export class Controller {
 				// newTask will start a new task with a given task text, while clear task resets the current session and allows for a new task to be started
 				await this.clearTask()
 				await this.postStateToWebview()
+=======
+>>>>>>> upstream/main
 				break
 			case "didShowAnnouncement":
 				await updateGlobalState(this.context, "lastShownAnnouncementId", this.latestAnnouncementId)
 				await this.postStateToWebview()
 				break
+<<<<<<< HEAD
 			case "selectImages":
 				const images = await selectImages()
 				await this.postMessageToWebview({
@@ -1101,24 +1258,23 @@ export class Controller {
 				break
 			case "openImage":
 				openImage(message.text!)
+=======
+			case "refreshClineRules":
+				await refreshClineRulesToggles(this.context, cwd)
+				await refreshExternalRulesToggles(this.context, cwd)
+				await refreshWorkflowToggles(this.context, cwd)
+				await this.postStateToWebview()
+>>>>>>> upstream/main
 				break
 			case "openInBrowser":
 				if (message.url) {
 					vscode.env.openExternal(vscode.Uri.parse(message.url))
 				}
 				break
-			case "fetchOpenGraphData":
-				this.fetchOpenGraphData(message.text!)
-				break
-			case "checkIsImageUrl":
-				this.checkIsImageUrl(message.text!)
-				break
-			case "openFile":
-				openFile(message.text!)
-				break
 			case "openMention":
 				openMention(message.text)
 				break
+<<<<<<< HEAD
 			case "checkpointDiff": {
 				if (message.number) {
 					await this.task?.presentMultifileDiff(message.number, false)
@@ -1173,6 +1329,8 @@ export class Controller {
 				await this.handleSignOut()
 				break
 			}
+=======
+>>>>>>> upstream/main
 			case "showAccountViewClicked": {
 				await this.postMessageToWebview({ type: "action", action: "accountButtonClicked" })
 				break
@@ -1181,14 +1339,10 @@ export class Controller {
 				await this.fetchUserCreditsData()
 				break
 			}
-			case "showMcpView": {
-				await this.postMessageToWebview({ type: "action", action: "mcpButtonClicked" })
-				break
-			}
 			case "openMcpSettings": {
 				const mcpSettingsFilePath = await this.mcpHub?.getMcpSettingsFilePath()
 				if (mcpSettingsFilePath) {
-					openFile(mcpSettingsFilePath)
+					await handleFileServiceRequest(this, "openFile", { value: mcpSettingsFilePath })
 				}
 				break
 			}
@@ -1196,6 +1350,7 @@ export class Controller {
 				await this.fetchMcpMarketplace(message.bool)
 				break
 			}
+<<<<<<< HEAD
 			case "downloadMcp": {
 				if (message.mcpId) {
 					// 1. Toggle to act mode if we are in plan mode (modetype === "plan")
@@ -1235,15 +1390,12 @@ export class Controller {
 				}
 				break
 			}
+=======
+>>>>>>> upstream/main
 			case "silentlyRefreshMcpMarketplace": {
 				await this.silentlyRefreshMcpMarketplace()
 				break
 			}
-			case "taskFeedback":
-				if (message.feedbackType && this.task?.taskId) {
-					telemetryService.captureTaskFeedback(this.task.taskId, message.feedbackType)
-				}
-				break
 			// case "openMcpMarketplaceServerDetails": {
 			// 	if (message.text) {
 			// 		const response = await fetch(`https://api.caret.bot/v1/mcp/marketplace/item?mcpId=${message.mcpId}`)
@@ -1279,14 +1431,6 @@ export class Controller {
 
 			// 	break
 			// }
-			case "toggleMcpServer": {
-				try {
-					await this.mcpHub?.toggleServerDisabled(message.serverName!, message.disabled!)
-				} catch (error) {
-					console.error(`Failed to toggle MCP server ${message.serverName}:`, error)
-				}
-				break
-			}
 			case "toggleToolAutoApprove": {
 				try {
 					await this.mcpHub?.toggleToolAutoApprove(message.serverName!, message.toolNames!, message.autoApprove!)
@@ -1302,51 +1446,73 @@ export class Controller {
 				}
 				break
 			}
+			case "toggleClineRule": {
+				const { isGlobal, rulePath, enabled } = message
+				if (rulePath && typeof enabled === "boolean" && typeof isGlobal === "boolean") {
+					if (isGlobal) {
+						const toggles =
+							((await getGlobalState(this.context, "globalClineRulesToggles")) as ClineRulesToggles) || {}
+						toggles[rulePath] = enabled
+						await updateGlobalState(this.context, "globalClineRulesToggles", toggles)
+					} else {
+						const toggles =
+							((await getWorkspaceState(this.context, "localClineRulesToggles")) as ClineRulesToggles) || {}
+						toggles[rulePath] = enabled
+						await updateWorkspaceState(this.context, "localClineRulesToggles", toggles)
+					}
+					await this.postStateToWebview()
+				} else {
+					console.error("toggleClineRule: Missing or invalid parameters", {
+						rulePath,
+						isGlobal: typeof isGlobal === "boolean" ? isGlobal : `Invalid: ${typeof isGlobal}`,
+						enabled: typeof enabled === "boolean" ? enabled : `Invalid: ${typeof enabled}`,
+					})
+				}
+				break
+			}
+			case "toggleWindsurfRule": {
+				const { rulePath, enabled } = message
+				if (rulePath && typeof enabled === "boolean") {
+					const toggles =
+						((await getWorkspaceState(this.context, "localWindsurfRulesToggles")) as ClineRulesToggles) || {}
+					toggles[rulePath] = enabled
+					await updateWorkspaceState(this.context, "localWindsurfRulesToggles", toggles)
+					await this.postStateToWebview()
+				} else {
+					console.error("toggleWindsurfRule: Missing or invalid parameters")
+				}
+				break
+			}
+			case "toggleCursorRule": {
+				const { rulePath, enabled } = message
+				if (rulePath && typeof enabled === "boolean") {
+					const toggles =
+						((await getWorkspaceState(this.context, "localCursorRulesToggles")) as ClineRulesToggles) || {}
+					toggles[rulePath] = enabled
+					await updateWorkspaceState(this.context, "localCursorRulesToggles", toggles)
+					await this.postStateToWebview()
+				} else {
+					console.error("toggleCursorRule: Missing or invalid parameters")
+				}
+				break
+			}
+			case "toggleWorkflow": {
+				const { workflowPath, enabled } = message
+				if (workflowPath && typeof enabled === "boolean") {
+					const toggles = ((await getWorkspaceState(this.context, "workflowToggles")) as ClineRulesToggles) || {}
+					toggles[workflowPath] = enabled
+					await updateWorkspaceState(this.context, "workflowToggles", toggles)
+					await this.postStateToWebview()
+				}
+				break
+			}
 			case "requestTotalTasksSize": {
 				this.refreshTotalTasksSize()
 				break
 			}
-			case "restartMcpServer": {
-				try {
-					await this.mcpHub?.restartConnection(message.text!)
-				} catch (error) {
-					console.error(`Failed to retry connection for ${message.text}:`, error)
-				}
-				break
-			}
-			case "deleteMcpServer": {
-				if (message.serverName) {
-					this.mcpHub?.deleteServer(message.serverName)
-				}
-				break
-			}
+
 			case "fetchLatestMcpServersFromHub": {
 				this.mcpHub?.sendLatestMcpServers()
-				break
-			}
-			case "searchCommits": {
-				const cwd = vscode.workspace.workspaceFolders?.map((folder) => folder.uri.fsPath).at(0)
-				if (cwd) {
-					try {
-						const commits = await searchCommits(message.text || "", cwd)
-						await this.postMessageToWebview({
-							type: "commitSearchResults",
-							commits,
-						})
-					} catch (error) {
-						console.error(`Error searching commits: ${JSON.stringify(error)}`)
-					}
-				}
-				break
-			}
-			case "updateMcpTimeout": {
-				try {
-					if (message.serverName && message.timeout) {
-						await this.mcpHub?.updateServerTimeout(message.serverName, message.timeout)
-					}
-				} catch (error) {
-					console.error(`Failed to update timeout for server ${message.serverName}:`, error)
-				}
 				break
 			}
 			case "openExtensionSettings": {
@@ -1414,9 +1580,26 @@ export class Controller {
 				// plan act setting
 				await updateGlobalState(this.context, "planActSeparateModelsSetting", message.planActSeparateModelsSetting)
 
+<<<<<<< HEAD
 				// chatSettings (모드 설정) 처리
 				if (message.chatSettings) {
 					await this.toggleModeWithChatSettings(message.chatSettings)
+=======
+				if (typeof message.enableCheckpointsSetting === "boolean") {
+					await updateGlobalState(this.context, "enableCheckpointsSetting", message.enableCheckpointsSetting)
+				}
+
+				if (typeof message.mcpMarketplaceEnabled === "boolean") {
+					await updateGlobalState(this.context, "mcpMarketplaceEnabled", message.mcpMarketplaceEnabled)
+				}
+
+				// chat settings (including preferredLanguage and openAIReasoningEffort)
+				if (message.chatSettings) {
+					await updateGlobalState(this.context, "chatSettings", message.chatSettings)
+					if (this.task) {
+						this.task.chatSettings = message.chatSettings
+					}
+>>>>>>> upstream/main
 				}
 
 				// after settings are updated, post state to webview
@@ -1473,12 +1656,27 @@ export class Controller {
 				break
 			}
 			case "clearAllTaskHistory": {
-				await this.deleteAllTaskHistory()
-				await this.postStateToWebview()
-				this.refreshTotalTasksSize()
+				const answer = await vscode.window.showWarningMessage(
+					"What would you like to delete?",
+					{ modal: true },
+					"Delete All Except Favorites",
+					"Delete Everything",
+					"Cancel",
+				)
+
+				if (answer === "Delete All Except Favorites") {
+					await this.deleteNonFavoriteTaskHistory()
+					await this.postStateToWebview()
+					this.refreshTotalTasksSize()
+				} else if (answer === "Delete Everything") {
+					await this.deleteAllTaskHistory()
+					await this.postStateToWebview()
+					this.refreshTotalTasksSize()
+				}
 				this.postMessageToWebview({ type: "relinquishControl" })
 				break
 			}
+<<<<<<< HEAD
 			case "getDetectedChromePath": {
 				try {
 					const { browserSettings } = await getAllExtensionState(this.context)
@@ -1620,6 +1818,33 @@ export class Controller {
 						text: "[]",
 						error: String(err)
 					} as import("../../shared/ExtensionMessage").ExtensionMessage);
+=======
+			case "grpc_request": {
+				if (message.grpc_request) {
+					await handleGrpcRequest(this, message.grpc_request)
+				}
+				break
+			}
+			case "grpc_request_cancel": {
+				if (message.grpc_request_cancel) {
+					await handleGrpcRequestCancel(this, message.grpc_request_cancel)
+				}
+				break
+			}
+
+			case "updateTerminalConnectionTimeout": {
+				if (message.shellIntegrationTimeout !== undefined) {
+					const timeout = message.shellIntegrationTimeout
+
+					if (typeof timeout === "number" && !isNaN(timeout) && timeout > 0) {
+						await updateGlobalState(this.context, "shellIntegrationTimeout", timeout)
+						await this.postStateToWebview()
+					} else {
+						console.warn(
+							`Invalid shell integration timeout value received: ${timeout}. ` + `Expected a positive number.`,
+						)
+					}
+>>>>>>> upstream/main
 				}
 				break
 			}
@@ -1634,7 +1859,7 @@ export class Controller {
 
 	async updateTelemetrySetting(telemetrySetting: TelemetrySetting) {
 		await updateGlobalState(this.context, "telemetrySetting", telemetrySetting)
-		const isOptedIn = telemetrySetting === "enabled"
+		const isOptedIn = telemetrySetting !== "disabled"
 		telemetryService.updateTelemetryState(isOptedIn)
 	}
 
@@ -1758,6 +1983,9 @@ export class Controller {
 			previousModeModelInfo: newModelInfo,
 			previousModeVsCodeLmModelSelector: newVsCodeLmModelSelector,
 			previousModeThinkingBudgetTokens: newThinkingBudgetTokens,
+			previousModeReasoningEffort: newReasoningEffort,
+			previousModeAwsBedrockCustomSelected: newAwsBedrockCustomSelected,
+			previousModeAwsBedrockCustomModelBaseId: newAwsBedrockCustomModelBaseId,
 			planActSeparateModelsSetting,
 		} = await getAllExtensionState(this.context)
 
@@ -1767,16 +1995,30 @@ export class Controller {
 			// Save the last model used in this mode
 			await updateGlobalState(this.context, "previousModeApiProvider", apiConfiguration.apiProvider)
 			await updateGlobalState(this.context, "previousModeThinkingBudgetTokens", apiConfiguration.thinkingBudgetTokens)
+			await updateGlobalState(this.context, "previousModeReasoningEffort", apiConfiguration.reasoningEffort)
 			switch (apiConfiguration.apiProvider) {
 				case "anthropic":
-				case "bedrock":
 				case "vertex":
 				case "gemini":
 				case "asksage":
 				case "openai-native":
 				case "qwen":
 				case "deepseek":
+				case "xai":
 					await updateGlobalState(this.context, "previousModeModelId", apiConfiguration.apiModelId)
+					break
+				case "bedrock":
+					await updateGlobalState(this.context, "previousModeModelId", apiConfiguration.apiModelId)
+					await updateGlobalState(
+						this.context,
+						"previousModeAwsBedrockCustomSelected",
+						apiConfiguration.awsBedrockCustomSelected,
+					)
+					await updateGlobalState(
+						this.context,
+						"previousModeAwsBedrockCustomModelBaseId",
+						apiConfiguration.awsBedrockCustomModelBaseId,
+					)
 					break
 				case "openrouter":
 				case "caret":
@@ -1803,26 +2045,40 @@ export class Controller {
 					break
 				case "litellm":
 					await updateGlobalState(this.context, "previousModeModelId", apiConfiguration.liteLlmModelId)
+					await updateGlobalState(this.context, "previousModeModelInfo", apiConfiguration.liteLlmModelInfo)
 					break
 				case "requesty":
 					await updateGlobalState(this.context, "previousModeModelId", apiConfiguration.requestyModelId)
+					await updateGlobalState(this.context, "previousModeModelInfo", apiConfiguration.requestyModelInfo)
 					break
 			}
 
 			// Restore the model used in previous mode
-			if (newApiProvider || newModelId || newThinkingBudgetTokens !== undefined || newVsCodeLmModelSelector) {
+			if (
+				newApiProvider ||
+				newModelId ||
+				newThinkingBudgetTokens !== undefined ||
+				newReasoningEffort ||
+				newVsCodeLmModelSelector
+			) {
 				await updateGlobalState(this.context, "apiProvider", newApiProvider)
 				await updateGlobalState(this.context, "thinkingBudgetTokens", newThinkingBudgetTokens)
+				await updateGlobalState(this.context, "reasoningEffort", newReasoningEffort)
 				switch (newApiProvider) {
 					case "anthropic":
-					case "bedrock":
 					case "vertex":
 					case "gemini":
 					case "asksage":
 					case "openai-native":
 					case "qwen":
 					case "deepseek":
+					case "xai":
 						await updateGlobalState(this.context, "apiModelId", newModelId)
+						break
+					case "bedrock":
+						await updateGlobalState(this.context, "apiModelId", newModelId)
+						await updateGlobalState(this.context, "awsBedrockCustomSelected", newAwsBedrockCustomSelected)
+						await updateGlobalState(this.context, "awsBedrockCustomModelBaseId", newAwsBedrockCustomModelBaseId)
 						break
 					case "openrouter":
 					case "caret":
@@ -1843,10 +2099,12 @@ export class Controller {
 						await updateGlobalState(this.context, "lmStudioModelId", newModelId)
 						break
 					case "litellm":
-						await updateGlobalState(this.context, "liteLlmModelId", newModelId)
+						await updateGlobalState(this.context, "previousModeModelId", apiConfiguration.liteLlmModelId)
+						await updateGlobalState(this.context, "previousModeModelInfo", apiConfiguration.liteLlmModelInfo)
 						break
 					case "requesty":
 						await updateGlobalState(this.context, "requestyModelId", newModelId)
+						await updateGlobalState(this.context, "requestyModelInfo", newModelInfo)
 						break
 				}
 
@@ -1907,8 +2165,13 @@ export class Controller {
 				// 'abandoned' will prevent this caret instance from affecting future caret instance gui. this may happen if its hanging on a streaming request
 				this.task.abandoned = true
 			}
+<<<<<<< HEAD
 			await this.initCaretWithHistoryItem(historyItem) // clears task again, so we need to abortTask manually above
 			// await this.postStateToWebview() // new Caret instance will post state when it's ready. having this here sent an empty messages array to webview leading to virtuoso having to reload the entire list
+=======
+			await this.initTask(undefined, undefined, historyItem) // clears task again, so we need to abortTask manually above
+			// await this.postStateToWebview() // new Cline instance will post state when it's ready. having this here sent an empty messages array to webview leading to virtuoso having to reload the entire list
+>>>>>>> upstream/main
 		}
 	}
 
@@ -1920,6 +2183,7 @@ export class Controller {
 		}
 	}
 
+<<<<<<< HEAD
 	// MCP
 
 	async getDocumentsPath(): Promise<string> {
@@ -2024,6 +2288,8 @@ export class Controller {
 		}
 	}
 
+=======
+>>>>>>> upstream/main
 	// Account
 
 	async fetchUserCreditsData() {
@@ -2174,6 +2440,7 @@ export class Controller {
 		}
 	}
 
+<<<<<<< HEAD
 	private async downloadMcp(mcpId: string) {
 		try {
 			// First check if we already have this MCP server installed
@@ -2281,6 +2548,8 @@ Here is the project's README to help you get started:\n\n${mcpDetails.readmeCont
 		}
 	}
 
+=======
+>>>>>>> upstream/main
 	// OpenRouter
 
 	async handleOpenRouterCallback(code: string) {
@@ -2320,6 +2589,20 @@ Here is the project's README to help you get started:\n\n${mcpDetails.readmeCont
 		return cacheDir
 	}
 
+<<<<<<< HEAD
+=======
+	// Read OpenRouter models from disk cache
+	async readOpenRouterModels(): Promise<Record<string, ModelInfo> | undefined> {
+		const openRouterModelsFilePath = path.join(await this.ensureCacheDirectoryExists(), GlobalFileNames.openRouterModels)
+		const fileExists = await fileExistsAtPath(openRouterModelsFilePath)
+		if (fileExists) {
+			const fileContents = await fs.readFile(openRouterModelsFilePath, "utf8")
+			return JSON.parse(fileContents)
+		}
+		return undefined
+	}
+
+>>>>>>> upstream/main
 	// Context menus and code actions
 
 	getFileMentionFromPath(filePath: string) {
@@ -2383,9 +2666,13 @@ Here is the project's README to help you get started:\n\n${mcpDetails.readmeCont
 
 		const fileMention = this.getFileMentionFromPath(filePath)
 		const problemsString = this.convertDiagnosticsToProblemsString(diagnostics)
+<<<<<<< HEAD
 		await this.initCaretWithTask(
 			`Fix the following code in ${fileMention}\n\`\`\`\n${code}\n\`\`\`\n\nProblems:\n${problemsString}`,
 		)
+=======
+		await this.initTask(`Fix the following code in ${fileMention}\n\`\`\`\n${code}\n\`\`\`\n\nProblems:\n${problemsString}`)
+>>>>>>> upstream/main
 
 		console.log("fixWithCaret", code, filePath, languageId, diagnostics, problemsString)
 	}
@@ -2425,6 +2712,8 @@ Here is the project's README to help you get started:\n\n${mcpDetails.readmeCont
 		taskDirPath: string
 		apiConversationHistoryFilePath: string
 		uiMessagesFilePath: string
+		contextHistoryFilePath: string
+		taskMetadataFilePath: string
 		apiConversationHistory: Anthropic.MessageParam[]
 	}> {
 		const history = ((await getGlobalState(this.context, "taskHistory")) as HistoryItem[] | undefined) || []
@@ -2433,6 +2722,8 @@ Here is the project's README to help you get started:\n\n${mcpDetails.readmeCont
 			const taskDirPath = path.join(this.context.globalStorageUri.fsPath, "tasks", id)
 			const apiConversationHistoryFilePath = path.join(taskDirPath, GlobalFileNames.apiConversationHistory)
 			const uiMessagesFilePath = path.join(taskDirPath, GlobalFileNames.uiMessages)
+			const contextHistoryFilePath = path.join(taskDirPath, GlobalFileNames.contextHistory)
+			const taskMetadataFilePath = path.join(taskDirPath, GlobalFileNames.taskMetadata)
 			const fileExists = await fileExistsAtPath(apiConversationHistoryFilePath)
 			if (fileExists) {
 				const apiConversationHistory = JSON.parse(await fs.readFile(apiConversationHistoryFilePath, "utf8"))
@@ -2441,12 +2732,14 @@ Here is the project's README to help you get started:\n\n${mcpDetails.readmeCont
 					taskDirPath,
 					apiConversationHistoryFilePath,
 					uiMessagesFilePath,
+					contextHistoryFilePath,
+					taskMetadataFilePath,
 					apiConversationHistory,
 				}
 			}
 		}
 		// if we tried to get a task that doesn't exist, remove it from state
-		// FIXME: this seems to happen sometimes when the json file doesnt save to disk for some reason
+		// FIXME: this seems to happen sometimes when the json file doesn't save to disk for some reason
 		await this.deleteTaskFromState(id)
 		throw new Error("Task not found")
 	}
@@ -2455,7 +2748,11 @@ Here is the project's README to help you get started:\n\n${mcpDetails.readmeCont
 		if (id !== this.task?.taskId) {
 			// non-current task
 			const { historyItem } = await this.getTaskWithId(id)
+<<<<<<< HEAD
 			await this.initCaretWithHistoryItem(historyItem) // clears existing task
+=======
+			await this.initTask(undefined, undefined, historyItem) // clears existing task
+>>>>>>> upstream/main
 		}
 		await this.postMessageToWebview({
 			type: "action",
@@ -2490,6 +2787,43 @@ Here is the project's README to help you get started:\n\n${mcpDetails.readmeCont
 		// await this.postStateToWebview()
 	}
 
+	async deleteNonFavoriteTaskHistory() {
+		await this.clearTask()
+
+		const taskHistory = ((await getGlobalState(this.context, "taskHistory")) as HistoryItem[]) || []
+		const favoritedTasks = taskHistory.filter((task) => task.isFavorited === true)
+
+		// If user has no favorited tasks, show a warning message
+		if (favoritedTasks.length === 0) {
+			vscode.window.showWarningMessage("No favorited tasks found. Please favorite tasks before using this option.")
+			await this.postStateToWebview()
+			return
+		}
+
+		await updateGlobalState(this.context, "taskHistory", favoritedTasks)
+
+		// Delete non-favorited task directories
+		try {
+			const preserveTaskIds = favoritedTasks.map((task) => task.id)
+			const taskDirPath = path.join(this.context.globalStorageUri.fsPath, "tasks")
+
+			if (await fileExistsAtPath(taskDirPath)) {
+				const taskDirs = await fs.readdir(taskDirPath)
+				for (const taskDir of taskDirs) {
+					if (!preserveTaskIds.includes(taskDir)) {
+						await fs.rm(path.join(taskDirPath, taskDir), { recursive: true, force: true })
+					}
+				}
+			}
+		} catch (error) {
+			vscode.window.showErrorMessage(
+				`Error deleting task history: ${error instanceof Error ? error.message : String(error)}`,
+			)
+		}
+
+		await this.postStateToWebview()
+	}
+
 	async refreshTotalTasksSize() {
 		getTotalTasksSize(this.context.globalStorageUri.fsPath)
 			.then((newTotalSize) => {
@@ -2512,22 +2846,28 @@ Here is the project's README to help you get started:\n\n${mcpDetails.readmeCont
 				console.debug("cleared task")
 			}
 
-			const { taskDirPath, apiConversationHistoryFilePath, uiMessagesFilePath } = await this.getTaskWithId(id)
-
+			const {
+				taskDirPath,
+				apiConversationHistoryFilePath,
+				uiMessagesFilePath,
+				contextHistoryFilePath,
+				taskMetadataFilePath,
+			} = await this.getTaskWithId(id)
+			const legacyMessagesFilePath = path.join(taskDirPath, "claude_messages.json")
 			const updatedTaskHistory = await this.deleteTaskFromState(id)
 
 			// Delete the task files
-			const apiConversationHistoryFileExists = await fileExistsAtPath(apiConversationHistoryFilePath)
-			if (apiConversationHistoryFileExists) {
-				await fs.unlink(apiConversationHistoryFilePath)
-			}
-			const uiMessagesFileExists = await fileExistsAtPath(uiMessagesFilePath)
-			if (uiMessagesFileExists) {
-				await fs.unlink(uiMessagesFilePath)
-			}
-			const legacyMessagesFilePath = path.join(taskDirPath, "claude_messages.json")
-			if (await fileExistsAtPath(legacyMessagesFilePath)) {
-				await fs.unlink(legacyMessagesFilePath)
+			for (const filePath of [
+				apiConversationHistoryFilePath,
+				uiMessagesFilePath,
+				contextHistoryFilePath,
+				taskMetadataFilePath,
+				legacyMessagesFilePath,
+			]) {
+				const fileExists = await fileExistsAtPath(filePath)
+				if (fileExists) {
+					await fs.unlink(filePath)
+				}
 			}
 
 			await fs.rmdir(taskDirPath) // succeeds if the dir is empty
@@ -2556,7 +2896,10 @@ Here is the project's README to help you get started:\n\n${mcpDetails.readmeCont
 
 	async postStateToWebview() {
 		const state = await this.getStateToPostToWebview()
-		this.postMessageToWebview({ type: "state", state })
+		// For testing: Bypass gRPC stream and send state directly
+		console.log("[Controller Test Revert] Posting full state via direct 'state' message.")
+		await this.postMessageToWebview({ type: "state", state: state })
+		// await sendStateUpdate(state) // Original line for the GrPC stream
 	}
 
 	async getStateToPostToWebview(): Promise<ExtensionState> {
@@ -2572,6 +2915,7 @@ Here is the project's README to help you get started:\n\n${mcpDetails.readmeCont
 			mcpMarketplaceEnabled,
 			telemetrySetting,
 			planActSeparateModelsSetting,
+<<<<<<< HEAD
 			persona, // personaList 대신 persona 사용
 			selectedLanguage,
 			supportedLanguages,
@@ -2605,6 +2949,24 @@ Here is the project's README to help you get started:\n\n${mcpDetails.readmeCont
 		// 배너 이미지 URI 생성
 		const caretBannerFileUri = vscode.Uri.joinPath(this.context.extensionUri, "assets", "imgs","main_banner.webp")
 		const caretBannerWebviewUri = webview ? webview.asWebviewUri(caretBannerFileUri).toString() + `?d=${dailyCacheBuster}` : undefined
+=======
+			enableCheckpointsSetting,
+			globalClineRulesToggles,
+			shellIntegrationTimeout,
+			isNewUser,
+		} = await getAllExtensionState(this.context)
+
+		const localClineRulesToggles =
+			((await getWorkspaceState(this.context, "localClineRulesToggles")) as ClineRulesToggles) || {}
+
+		const localWindsurfRulesToggles =
+			((await getWorkspaceState(this.context, "localWindsurfRulesToggles")) as ClineRulesToggles) || {}
+
+		const localCursorRulesToggles =
+			((await getWorkspaceState(this.context, "localCursorRulesToggles")) as ClineRulesToggles) || {}
+
+		const workflowToggles = ((await getWorkspaceState(this.context, "workflowToggles")) as ClineRulesToggles) || {}
+>>>>>>> upstream/main
 
 		return {
 			version: this.context.extension?.packageJSON?.version ?? "",
@@ -2627,7 +2989,9 @@ Here is the project's README to help you get started:\n\n${mcpDetails.readmeCont
 			mcpMarketplaceEnabled,
 			telemetrySetting,
 			planActSeparateModelsSetting,
+			enableCheckpointsSetting: enableCheckpointsSetting ?? true,
 			vscMachineId: vscode.env.machineId,
+<<<<<<< HEAD
 			alphaAvatarUri: alphaAvatarWebviewUri, // 기본 프로필 이미지
 			alphaThinkingAvatarUri: alphaThinkingAvatarWebviewUri, // 생각 중 이미지 추가
 			caretBanner: caretBannerWebviewUri, // 배너 이미지
@@ -2642,10 +3006,22 @@ Here is the project's README to help you get started:\n\n${mcpDetails.readmeCont
 			theme: vscode.window.activeColorTheme.kind === vscode.ColorThemeKind.Dark ? "dark" : "light",
 			historyItems: [],
 			modelInfo: undefined,
+=======
+			globalClineRulesToggles: globalClineRulesToggles || {},
+			localClineRulesToggles: localClineRulesToggles || {},
+			localWindsurfRulesToggles: localWindsurfRulesToggles || {},
+			localCursorRulesToggles: localCursorRulesToggles || {},
+			workflowToggles: workflowToggles || {},
+			shellIntegrationTimeout,
+			isNewUser,
+>>>>>>> upstream/main
 		}
 	}
 
 	async clearTask() {
+		if (this.task) {
+			await telemetryService.sendCollectedEvents(this.task.taskId)
+		}
 		this.task?.abortTask()
 		this.task = undefined // removes reference to it, so once promises end it will be garbage collected
 	}
@@ -2663,7 +3039,7 @@ Here is the project's README to help you get started:\n\n${mcpDetails.readmeCont
 	// conversation history to send in API requests
 
 	/*
-	It seems that some API messages do not comply with vscode state requirements. Either the Anthropic library is manipulating these values somehow in the backend in a way thats creating cyclic references, or the API returns a function or a Symbol as part of the message content.
+	It seems that some API messages do not comply with vscode state requirements. Either the Anthropic library is manipulating these values somehow in the backend in a way that's creating cyclic references, or the API returns a function or a Symbol as part of the message content.
 	VSCode docs about state: "The value must be JSON-stringifyable ... value — A value. MUST not contain cyclic references."
 	For now we'll store the conversation history in memory, and if we need to store in state directly we'd need to do a manual conversion to ensure proper json stringification.
 	*/
@@ -2714,54 +3090,111 @@ Here is the project's README to help you get started:\n\n${mcpDetails.readmeCont
 
 	// secrets
 
-	// Open Graph Data
+	// Git commit message generation
 
-	async fetchOpenGraphData(url: string) {
+	async generateGitCommitMessage() {
 		try {
-			// Use the fetchOpenGraphData function from link-preview.ts
-			const ogData = await fetchOpenGraphData(url)
+			// Check if there's a workspace folder open
+			const cwd = vscode.workspace.workspaceFolders?.[0]?.uri.fsPath
+			if (!cwd) {
+				vscode.window.showErrorMessage("No workspace folder open")
+				return
+			}
 
-			// Send the data back to the webview
-			await this.postMessageToWebview({
-				type: "openGraphData",
-				openGraphData: ogData,
-				url: url,
-			})
+			// Get the git diff
+			const gitDiff = await getWorkingState(cwd)
+			if (gitDiff === "No changes in working directory") {
+				vscode.window.showInformationMessage("No changes in workspace for commit message")
+				return
+			}
+
+			// Show a progress notification
+			await vscode.window.withProgress(
+				{
+					location: vscode.ProgressLocation.Notification,
+					title: "Generating commit message...",
+					cancellable: false,
+				},
+				async (progress, token) => {
+					try {
+						// Format the git diff into a prompt
+						const prompt = `Based on the following git diff, generate a concise and descriptive commit message:
+
+${gitDiff.length > 5000 ? gitDiff.substring(0, 5000) + "\n\n[Diff truncated due to size]" : gitDiff}
+
+The commit message should:
+1. Start with a short summary (50-72 characters)
+2. Use the imperative mood (e.g., "Add feature" not "Added feature")
+3. Describe what was changed and why
+4. Be clear and descriptive
+
+Commit message:`
+
+						// Get the current API configuration
+						const { apiConfiguration } = await getAllExtensionState(this.context)
+
+						// Build the API handler
+						const apiHandler = buildApiHandler(apiConfiguration)
+
+						// Create a system prompt
+						const systemPrompt =
+							"You are a helpful assistant that generates concise and descriptive git commit messages based on git diffs."
+
+						// Create a message for the API
+						const messages = [
+							{
+								role: "user" as const,
+								content: prompt,
+							},
+						]
+
+						// Call the API directly
+						const stream = apiHandler.createMessage(systemPrompt, messages)
+
+						// Collect the response
+						let response = ""
+						for await (const chunk of stream) {
+							if (chunk.type === "text") {
+								response += chunk.text
+							}
+						}
+
+						// Extract the commit message
+						const commitMessage = extractCommitMessage(response)
+
+						// Apply the commit message to the Git input box
+						if (commitMessage) {
+							// Get the Git extension API
+							const gitExtension = vscode.extensions.getExtension("vscode.git")?.exports
+							if (gitExtension) {
+								const api = gitExtension.getAPI(1)
+								if (api && api.repositories.length > 0) {
+									const repo = api.repositories[0]
+									repo.inputBox.value = commitMessage
+									vscode.window.showInformationMessage("Commit message generated and applied")
+								} else {
+									vscode.window.showErrorMessage("No Git repositories found")
+								}
+							} else {
+								vscode.window.showErrorMessage("Git extension not found")
+							}
+						} else {
+							vscode.window.showErrorMessage("Failed to generate commit message")
+						}
+					} catch (innerError) {
+						const innerErrorMessage = innerError instanceof Error ? innerError.message : String(innerError)
+						vscode.window.showErrorMessage(`Failed to generate commit message: ${innerErrorMessage}`)
+					}
+				},
+			)
 		} catch (error) {
-			console.error(`Error fetching Open Graph data for ${url}:`, error)
-			// Send an error response
-			await this.postMessageToWebview({
-				type: "openGraphData",
-				error: `Failed to fetch Open Graph data: ${error}`,
-				url: url,
-			})
-		}
-	}
-
-	// Check if a URL is an image
-	async checkIsImageUrl(url: string) {
-		try {
-			// Check if the URL is an image
-			const isImage = await isImageUrl(url)
-
-			// Send the result back to the webview
-			await this.postMessageToWebview({
-				type: "isImageUrlResult",
-				isImage,
-				url,
-			})
-		} catch (error) {
-			console.error(`Error checking if URL is an image: ${url}`, error)
-			// Send an error response
-			await this.postMessageToWebview({
-				type: "isImageUrlResult",
-				isImage: false,
-				url,
-			})
+			const errorMessage = error instanceof Error ? error.message : String(error)
+			vscode.window.showErrorMessage(`Failed to generate commit message: ${errorMessage}`)
 		}
 	}
 
 	// dev
+<<<<<<< HEAD
 
 	async resetState() {
 		vscode.window.showInformationMessage("Resetting state...")
@@ -2919,4 +3352,6 @@ Here is the project's README to help you get started:\n\n${mcpDetails.readmeCont
 		})
 		return models
 	}
+=======
+>>>>>>> upstream/main
 }

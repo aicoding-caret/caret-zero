@@ -1,12 +1,13 @@
 import { render, screen, fireEvent } from "@testing-library/react"
 import { describe, it, expect, vi } from "vitest"
 import ApiOptions from "../ApiOptions"
-import { ExtensionStateContextProvider } from "../../../context/ExtensionStateContext"
+import { ExtensionStateContextProvider, useExtensionState } from "@/context/ExtensionStateContext"
+import { ApiConfiguration } from "@shared/api"
 
 vi.mock("../../../context/ExtensionStateContext", async (importOriginal) => {
 	const actual = await importOriginal()
 	return {
-		...actual,
+		...(actual || {}),
 		// your mocked methods
 		useExtensionState: vi.fn(() => ({
 			apiConfiguration: {
@@ -16,16 +17,30 @@ vi.mock("../../../context/ExtensionStateContext", async (importOriginal) => {
 			},
 			setApiConfiguration: vi.fn(),
 			uriScheme: "vscode",
+			requestyModels: {},
 		})),
 	}
 })
+
+const mockExtensionState = (apiConfiguration: Partial<ApiConfiguration>) => {
+	vi.mocked(useExtensionState).mockReturnValue({
+		apiConfiguration,
+		setApiConfiguration: vi.fn(),
+		uriScheme: "vscode",
+		requestyModels: {},
+	} as any)
+}
 
 describe("ApiOptions Component", () => {
 	vi.clearAllMocks()
 	const mockPostMessage = vi.fn()
 
 	beforeEach(() => {
-		global.vscode = { postMessage: mockPostMessage } as any
+		//@ts-expect-error - vscode is not defined in the global namespace in test environment
+		global.vscode = { postMessage: mockPostMessage }
+		mockExtensionState({
+			apiProvider: "requesty",
+		})
 	})
 
 	it("renders Requesty API Key input", () => {
@@ -44,26 +59,9 @@ describe("ApiOptions Component", () => {
 				<ApiOptions showModelOptions={true} />
 			</ExtensionStateContextProvider>,
 		)
-		const modelIdInput = screen.getByPlaceholderText("Enter Model ID...")
+		const modelIdInput = screen.getByPlaceholderText("Search and select a model...")
 		expect(modelIdInput).toBeInTheDocument()
 	})
-})
-
-vi.mock("../../../context/ExtensionStateContext", async (importOriginal) => {
-	const actual = await importOriginal()
-	return {
-		...actual,
-		// your mocked methods
-		useExtensionState: vi.fn(() => ({
-			apiConfiguration: {
-				apiProvider: "together",
-				requestyApiKey: "",
-				requestyModelId: "",
-			},
-			setApiConfiguration: vi.fn(),
-			uriScheme: "vscode",
-		})),
-	}
 })
 
 describe("ApiOptions Component", () => {
@@ -71,7 +69,11 @@ describe("ApiOptions Component", () => {
 	const mockPostMessage = vi.fn()
 
 	beforeEach(() => {
-		global.vscode = { postMessage: mockPostMessage } as any
+		//@ts-expect-error - vscode is not defined in the global namespace in test environment
+		global.vscode = { postMessage: mockPostMessage }
+		mockExtensionState({
+			apiProvider: "together",
+		})
 	})
 
 	it("renders Together API Key input", () => {
@@ -95,6 +97,7 @@ describe("ApiOptions Component", () => {
 	})
 })
 
+<<<<<<< HEAD
 vi.mock("../../../context/ExtensionStateContext", async (importOriginal) => {
 	const actual = await importOriginal()
 	return {
@@ -111,6 +114,64 @@ vi.mock("../../../context/ExtensionStateContext", async (importOriginal) => {
 			uriScheme: "vscode",
 		})),
 	}
+=======
+describe("ApiOptions Component", () => {
+	vi.clearAllMocks()
+	const mockPostMessage = vi.fn()
+
+	beforeEach(() => {
+		//@ts-expect-error - vscode is not defined in the global namespace in test environment
+		global.vscode = { postMessage: mockPostMessage }
+
+		mockExtensionState({
+			apiProvider: "fireworks",
+			fireworksApiKey: "",
+			fireworksModelId: "",
+			fireworksModelMaxCompletionTokens: 2000,
+			fireworksModelMaxTokens: 4000,
+		})
+	})
+
+	it("renders Fireworks API Key input", () => {
+		render(
+			<ExtensionStateContextProvider>
+				<ApiOptions showModelOptions={true} />
+			</ExtensionStateContextProvider>,
+		)
+		const apiKeyInput = screen.getByPlaceholderText("Enter API Key...")
+		expect(apiKeyInput).toBeInTheDocument()
+	})
+
+	it("renders Fireworks Model ID input", () => {
+		render(
+			<ExtensionStateContextProvider>
+				<ApiOptions showModelOptions={true} />
+			</ExtensionStateContextProvider>,
+		)
+		const modelIdInput = screen.getByPlaceholderText("Enter Model ID...")
+		expect(modelIdInput).toBeInTheDocument()
+	})
+
+	it("renders Fireworks Max Completion Tokens input", () => {
+		render(
+			<ExtensionStateContextProvider>
+				<ApiOptions showModelOptions={true} />
+			</ExtensionStateContextProvider>,
+		)
+		const maxCompletionTokensInput = screen.getByPlaceholderText("2000")
+		expect(maxCompletionTokensInput).toBeInTheDocument()
+	})
+
+	it("renders Fireworks Max Tokens input", () => {
+		render(
+			<ExtensionStateContextProvider>
+				<ApiOptions showModelOptions={true} />
+			</ExtensionStateContextProvider>,
+		)
+		const maxTokensInput = screen.getByPlaceholderText("4000")
+		expect(maxTokensInput).toBeInTheDocument()
+	})
+>>>>>>> upstream/main
 })
 
 describe("OpenApiInfoOptions", () => {
@@ -118,7 +179,11 @@ describe("OpenApiInfoOptions", () => {
 
 	beforeEach(() => {
 		vi.clearAllMocks()
+		//@ts-expect-error - vscode is not defined in the global namespace in test environment
 		global.vscode = { postMessage: mockPostMessage }
+		mockExtensionState({
+			apiProvider: "openai",
+		})
 	})
 
 	it("renders OpenAI Supports Images input", () => {

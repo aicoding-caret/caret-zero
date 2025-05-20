@@ -5,7 +5,31 @@
 
 Caret is a VS Code extension that aims to create a next-generation development environment where developers and AI agents grow together to build software. Through close collaboration with AI, it helps increase development productivity and solve complex problems. ｡•ᴗ•｡💕
 
+<<<<<<< HEAD
 > **Note:** This project is a fork of the [Cline](https://github.com/cline/cline) project. Building on the excellent foundation of the original project, we are exploring deeper interactions with AI agents and intelligent development support features. 🌿
+=======
+<div align="center">
+<table>
+<tbody>
+<td align="center">
+<a href="https://marketplace.visualstudio.com/items?itemName=saoudrizwan.claude-dev" target="_blank"><strong>Download on VS Marketplace</strong></a>
+</td>
+<td align="center">
+<a href="https://discord.gg/cline" target="_blank"><strong>Discord</strong></a>
+</td>
+<td align="center">
+<a href="https://www.reddit.com/r/cline/" target="_blank"><strong>r/cline</strong></a>
+</td>
+<td align="center">
+<a href="https://github.com/cline/cline/discussions/categories/feature-requests?discussions_q=is%3Aopen+category%3A%22Feature+Requests%22+sort%3Atop" target="_blank"><strong>Feature Requests</strong></a>
+</td>
+<td align="center">
+<a href="https://docs.cline.bot/getting-started/for-new-coders" target="_blank"><strong>Getting Started</strong></a>
+</td>
+</tbody>
+</table>
+</div>
+>>>>>>> upstream/main
 
 ## Key Goals and Features
 

@@ -8,6 +8,11 @@ export interface BrowserSettings {
 	// chromeType: "chromium" | "system"
 	remoteBrowserHost?: string
 	remoteBrowserEnabled?: boolean
+<<<<<<< HEAD
+=======
+	chromeExecutablePath?: string
+	disableToolUse?: boolean
+>>>>>>> upstream/main
 }
 
 export const DEFAULT_BROWSER_SETTINGS: BrowserSettings = {
@@ -17,7 +22,12 @@ export const DEFAULT_BROWSER_SETTINGS: BrowserSettings = {
 	},
 	remoteBrowserEnabled: false,
 	remoteBrowserHost: "http://localhost:9222",
+<<<<<<< HEAD
+=======
+	chromeExecutablePath: "", // Changed from undefined to empty string
+>>>>>>> upstream/main
 	// chromeType: "chromium",
+	disableToolUse: false,
 }
 
 export const BROWSER_VIEWPORT_PRESETS = {

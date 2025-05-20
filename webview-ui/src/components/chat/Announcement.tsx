@@ -1,6 +1,7 @@
 import { VSCodeButton, VSCodeLink } from "@vscode/webview-ui-toolkit/react"
 import { CSSProperties, memo } from "react"
-import { getAsVar, VSC_DESCRIPTION_FOREGROUND, VSC_INACTIVE_SELECTION_BACKGROUND } from "../../utils/vscStyles"
+import { getAsVar, VSC_DESCRIPTION_FOREGROUND, VSC_INACTIVE_SELECTION_BACKGROUND } from "@/utils/vscStyles"
+import { Accordion, AccordionItem } from "@heroui/react"
 
 interface AnnouncementProps {
 	version: string
@@ -29,13 +30,17 @@ const linkContainerStyle: CSSProperties = { margin: "0" }
 const linkStyle: CSSProperties = { display: "inline" }
 
 /*
+<<<<<<< HEAD
 You must update the latestAnnouncementId in CaretProvider for new announcements to show to users. This new id will be compared with whats in state for the 'last announcement shown', and if it's different then the announcement will render. As soon as an announcement is shown, the id will be updated in state. This ensures that announcements are not shown more than once, even if the user doesn't close it themselves.
+=======
+You must update the latestAnnouncementId in ClineProvider for new announcements to show to users. This new id will be compared with what's in state for the 'last announcement shown', and if it's different then the announcement will render. As soon as an announcement is shown, the id will be updated in state. This ensures that announcements are not shown more than once, even if the user doesn't close it themselves.
+>>>>>>> upstream/main
 */
 const Announcement = ({ version, hideAnnouncement }: AnnouncementProps) => {
 	const minorVersion = version.split(".").slice(0, 2).join(".") // 2.0.0 -> 2.0
 	return (
 		<div style={containerStyle}>
-			<VSCodeButton appearance="icon" onClick={hideAnnouncement} style={closeIconStyle}>
+			<VSCodeButton data-testid="close-button" appearance="icon" onClick={hideAnnouncement} style={closeIconStyle}>
 				<span className="codicon codicon-close"></span>
 			</VSCodeButton>
 			<h3 style={h3TitleStyle}>
@@ -43,6 +48,7 @@ const Announcement = ({ version, hideAnnouncement }: AnnouncementProps) => {
 			</h3>
 			<ul style={ulStyle}>
 				<li>
+<<<<<<< HEAD
 					<b>Add to Caret:</b> Right-click selected text in any file or terminal to quickly add context to your current
 					task! Plus, when you see a lightbulb icon, select 'Fix with Caret' to have Caret fix errors in your code.
 				</li>
@@ -53,12 +59,26 @@ const Announcement = ({ version, hideAnnouncement }: AnnouncementProps) => {
 				<li>
 					<b>Faster Inference:</b> Caret/OpenRouter users can sort underlying providers used by throughput, price, and
 					latency. Sorting by throughput will output faster generations (at a higher cost).
+=======
+					<b>Workflows:</b> Create and manage workflow files that can be injected into conversations via slash commands,
+					making it easy to automate repetitive tasks.
 				</li>
 				<li>
-					<b>Enhanced MCP Support:</b> Dynamic image loading with GIF support, and a new delete button to clean up
-					failed servers.
+					<b>Collapsible Task List:</b> Hide your recent tasks when sharing your screen to keep your prompts private.
+				</li>
+				<li>
+					<b>Global Endpoint for Vertex AI:</b> Improved availability and reduced rate limiting errors for Vertex AI
+					users.
+>>>>>>> upstream/main
+				</li>
+				<li>
+					<b>New User Experience:</b> Special components and guidance for new users to help them get started with Cline.
+				</li>
+				<li>
+					<b>UI Improvements:</b> Fixed loading states and improved settings organization for a smoother experience.
 				</li>
 			</ul>
+<<<<<<< HEAD
 			{/*<ul style={{ margin: "0 0 8px", paddingLeft: "12px" }}>
 				 <li>
 					OpenRouter now supports prompt caching! They also have much higher rate limits than other providers,
@@ -106,6 +126,38 @@ const Announcement = ({ version, hideAnnouncement }: AnnouncementProps) => {
 					environments)
 				</li>
 			</ul>*/}
+=======
+			<Accordion isCompact className="pl-0">
+				<AccordionItem
+					key="1"
+					aria-label="Previous Updates"
+					title="Previous Updates:"
+					classNames={{
+						trigger: "bg-transparent border-0 pl-0 pb-0 w-fit",
+						title: "font-bold text-[var(--vscode-foreground)]",
+						indicator:
+							"text-[var(--vscode-foreground)] mb-0.5 -rotate-180 data-[open=true]:-rotate-90 rtl:rotate-0 rtl:data-[open=true]:-rotate-90",
+					}}>
+					<ul style={ulStyle}>
+						<li>
+							<b>Task Timeline:</b> See the history of your coding journey with a visual timeline of checkpoints.
+						</li>
+						<li>
+							<b>UX Improvements:</b> Type while Cline works, smarter auto-scrolling, and copy buttons for task
+							headers and messages.
+						</li>
+						<li>
+							<b>Gemini prompt caching:</b> Gemini and Vertex providers now support prompt caching and price
+							tracking.
+						</li>
+						<li>
+							<b>Global Cline Rules:</b> Store multiple rules files in Documents/Cline/Rules to share between
+							projects.
+						</li>
+					</ul>
+				</AccordionItem>
+			</Accordion>
+>>>>>>> upstream/main
 			<div style={hrStyle} />
 			<p style={linkContainerStyle}>
 				Join us on{" "}

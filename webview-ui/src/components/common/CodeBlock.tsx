@@ -3,8 +3,12 @@ import { useRemark } from "react-remark"
 import rehypeHighlight, { Options } from "rehype-highlight"
 import styled from "styled-components"
 import { visit } from "unist-util-visit"
+<<<<<<< HEAD
 import { useExtensionState } from "../../context/ExtensionStateContext"
 import ErrorBoundary from "./ErrorBoundary" // Import ErrorBoundary
+=======
+import { useExtensionState } from "@/context/ExtensionStateContext"
+>>>>>>> upstream/main
 
 export const CODE_BLOCK_BG_COLOR = "var(--vscode-editor-background, --vscode-sideBar-background, rgb(30 30 30))"
 
@@ -155,10 +159,16 @@ const CodeBlock = memo(({ source, forceWrap = false }: CodeBlockProps) => {
 				color: "var(--vscode-editorWarning-foreground)",
 				backgroundColor: CODE_BLOCK_BG_COLOR,
 			}}>
+<<<<<<< HEAD
 			<p>⚠️ 코드를 표시하는 중 문제가 발생했어요. 원본 코드를 표시합니다.</p>
 			<pre style={{ whiteSpace: "pre-wrap", wordBreak: "break-all", overflowWrap: "anywhere" }}>
 				<code>{source?.replace(/^```.*\n?/, "").replace(/\n?```$/, "") || ""}</code>
 			</pre>
+=======
+			<StyledMarkdown className="ph-no-capture" forceWrap={forceWrap}>
+				{reactContent}
+			</StyledMarkdown>
+>>>>>>> upstream/main
 		</div>
 	)
 

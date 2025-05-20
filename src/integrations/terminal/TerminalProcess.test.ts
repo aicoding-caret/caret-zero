@@ -4,7 +4,6 @@ import * as sinon from "sinon"
 import { TerminalProcess } from "./TerminalProcess"
 import * as vscode from "vscode"
 import { TerminalRegistry } from "./TerminalRegistry"
-import { EventEmitter } from "events"
 
 // Create a mock stream for simulating terminal output - this is only used for tests
 // that need controlled output which can't be guaranteed with real terminals

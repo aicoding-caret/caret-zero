@@ -58,7 +58,11 @@ export type McpToolCallResponse = {
 				mimeType: string
 		  }
 		| {
+<<<<<<< HEAD
 				type: "audio" // Added audio type based on McpHub.ts error
+=======
+				type: "audio"
+>>>>>>> upstream/main
 				data: string
 				mimeType: string
 		  }
@@ -110,3 +114,5 @@ export interface McpDownloadResponse {
 	llmsInstallationContent: string
 	requiresApiKey: boolean
 }
+
+export type McpViewTab = "marketplace" | "addRemote" | "installed"

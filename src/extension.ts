@@ -2,16 +2,26 @@
 // Import the module and reference it with the alias vscode in your code below
 import { setTimeout as setTimeoutPromise } from "node:timers/promises"
 import * as vscode from "vscode"
+<<<<<<< HEAD
 // import { Logger } from "./services/logging/Logger" // Removed static Logger import
 import { createCaretAPI } from "./exports"
 import { getAllExtensionState, updateGlobalState } from "./core/storage/state"
 import { PersonaManager } from "./core/persona/PersonaManager"
 import * as path from "path"
+=======
+import pWaitFor from "p-wait-for"
+import { Logger } from "./services/logging/Logger"
+import { createClineAPI } from "./exports"
+>>>>>>> upstream/main
 import "./utils/path" // necessary to have access to String.prototype.toPosix
 import { DIFF_VIEW_URI_SCHEME } from "./integrations/editor/DiffViewProvider"
 import assert from "node:assert"
-import { telemetryService } from "./services/telemetry/TelemetryService"
+import { posthogClientProvider } from "./services/posthog/PostHogClientProvider"
 import { WebviewProvider } from "./core/webview"
+import { Controller } from "./core/controller"
+import { ErrorService } from "./services/error/ErrorService"
+import { initializeTestMode, cleanupTestMode } from "./services/test/TestMode"
+import { telemetryService } from "./services/posthog/telemetry/TelemetryService"
 
 /*
 Built using https://github.com/microsoft/vscode-webview-ui-toolkit
@@ -30,12 +40,19 @@ export async function activate(context: vscode.ExtensionContext) {
 	outputChannel = vscode.window.createOutputChannel("Caret")
 	context.subscriptions.push(outputChannel)
 
+<<<<<<< HEAD
 	// Logger.initialize(outputChannel) // Removed static initialization
 	// Logger.log("Caret extension activated") // Removed static log call
+=======
+	ErrorService.initialize()
+	Logger.initialize(outputChannel)
+	Logger.log("Cline extension activated")
+>>>>>>> upstream/main
 
 	const sidebarWebview = new WebviewProvider(context, outputChannel)
 	sidebarWebview.controller.logger.log("Caret extension activated") // Use logger from controller
 
+<<<<<<< HEAD
 	// --- Persona Management: uc0c1ud0dc ub3d9uae30ud654 ubc0f ucd08uae30ud654 ---
 	const workspaceRoot = vscode.workspace.workspaceFolders?.[0]?.uri.fsPath || process.cwd()
 	let extensionState = await getAllExtensionState(context)
@@ -55,6 +72,12 @@ export async function activate(context: vscode.ExtensionContext) {
 	sidebarWebview.controller.postStateToWebview()
 
 	vscode.commands.executeCommand("setContext", "caret.isDevMode", IS_DEV && IS_DEV === "true")
+=======
+	// Initialize test mode and add disposables to context
+	context.subscriptions.push(...initializeTestMode(context, sidebarWebview))
+
+	vscode.commands.executeCommand("setContext", "cline.isDevMode", IS_DEV && IS_DEV === "true")
+>>>>>>> upstream/main
 
 	context.subscriptions.push(
 		vscode.window.registerWebviewViewProvider(WebviewProvider.sideBarId, sidebarWebview, {
@@ -399,7 +422,15 @@ export async function activate(context: vscode.ExtensionContext) {
 
 	// Register the command handler
 	context.subscriptions.push(
+<<<<<<< HEAD
 		vscode.commands.registerCommand("caret.fixWithCaret", async (range: vscode.Range, diagnostics: any[]) => {
+=======
+		vscode.commands.registerCommand("cline.fixWithCline", async (range: vscode.Range, diagnostics: vscode.Diagnostic[]) => {
+			// Add this line to focus the chat input first
+			await vscode.commands.executeCommand("cline.focusChatInput")
+			// Wait for a webview instance to become visible after focusing
+			await pWaitFor(() => !!WebviewProvider.getVisibleInstance())
+>>>>>>> upstream/main
 			const editor = vscode.window.activeTextEditor
 			if (!editor) {
 				return
@@ -415,6 +446,7 @@ export async function activate(context: vscode.ExtensionContext) {
 		}),
 	)
 
+<<<<<<< HEAD
 	return createCaretAPI(outputChannel, sidebarWebview.controller)
 }
 
@@ -422,6 +454,47 @@ export async function activate(context: vscode.ExtensionContext) {
 export function deactivate() {
 	telemetryService.shutdown()
 	// Logger.log("Caret extension deactivated") // Cannot log here as controller might be disposed
+=======
+	// Register the focusChatInput command handler
+	context.subscriptions.push(
+		vscode.commands.registerCommand("cline.focusChatInput", () => {
+			let visibleWebview = WebviewProvider.getVisibleInstance()
+			if (!visibleWebview) {
+				vscode.commands.executeCommand("claude-dev.SidebarProvider.focus")
+				visibleWebview = WebviewProvider.getSidebarInstance()
+				// showing the extension will call didBecomeVisible which focuses it already
+				// but it doesn't focus if a tab is selected which focusChatInput accounts for
+			}
+
+			visibleWebview?.controller.postMessageToWebview({
+				type: "action",
+				action: "focusChatInput",
+			})
+		}),
+	)
+
+	// Register the generateGitCommitMessage command handler
+	context.subscriptions.push(
+		vscode.commands.registerCommand("cline.generateGitCommitMessage", async () => {
+			// Get the controller from any instance, without activating the view
+			const controller = WebviewProvider.getAllInstances()[0]?.controller
+
+			if (controller) {
+				// Call the controller method to generate commit message
+				await controller.generateGitCommitMessage()
+			} else {
+				// Create a temporary controller just for this operation
+				const outputChannel = vscode.window.createOutputChannel("Cline Commit Generator")
+				const tempController = new Controller(context, outputChannel, () => Promise.resolve(true))
+
+				await tempController.generateGitCommitMessage()
+				outputChannel.dispose()
+			}
+		}),
+	)
+
+	return createClineAPI(outputChannel, sidebarWebview.controller)
+>>>>>>> upstream/main
 }
 
 // TODO: Find a solution for automatically removing DEV related content from production builds.
@@ -432,6 +505,17 @@ export function deactivate() {
 // since vscode doesn't support hot reload for extensions
 const { IS_DEV, DEV_WORKSPACE_FOLDER } = process.env
 
+// This method is called when your extension is deactivated
+export async function deactivate() {
+	await telemetryService.sendCollectedEvents()
+
+	// Clean up test mode
+	cleanupTestMode()
+	await posthogClientProvider.shutdown()
+	Logger.log("Cline extension deactivated")
+}
+
+// Set up development mode file watcher
 if (IS_DEV && IS_DEV !== "false") {
 	assert(DEV_WORKSPACE_FOLDER, "DEV_WORKSPACE_FOLDER must be set in development")
 	const watcher = vscode.workspace.createFileSystemWatcher(new vscode.RelativePattern(DEV_WORKSPACE_FOLDER, "src/**/*"))

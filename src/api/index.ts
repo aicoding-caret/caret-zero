@@ -19,6 +19,7 @@ import { DoubaoHandler } from "./providers/doubao"
 import { VsCodeLmHandler } from "./providers/vscode-lm"
 import { CaretHandler } from "./providers/caret"
 import { LiteLlmHandler } from "./providers/litellm"
+import { FireworksHandler } from "./providers/fireworks"
 import { AskSageHandler } from "./providers/asksage"
 import { XAIHandler } from "./providers/xai"
 import { SambanovaHandler } from "./providers/sambanova"
@@ -67,13 +68,25 @@ export function buildApiHandler(
 		case "deepseek":
 			return new DeepSeekHandler(optionsWithoutProvider)
 		case "requesty":
+<<<<<<< HEAD
 			return new RequestyHandler(optionsWithoutProvider)
+=======
+			return new RequestyHandler(options)
+		case "fireworks":
+			return new FireworksHandler(options)
+>>>>>>> upstream/main
 		case "together":
 			return new TogetherHandler(optionsWithoutProvider)
 		case "qwen":
+<<<<<<< HEAD
 			return new QwenHandler(optionsWithoutProvider)
 		case "doubao":
 			return new DoubaoHandler(optionsWithoutProvider)
+=======
+			return new QwenHandler(options)
+		case "doubao":
+			return new DoubaoHandler(options)
+>>>>>>> upstream/main
 		case "mistral":
 			return new MistralHandler(optionsWithoutProvider)
 		case "vscode-lm":

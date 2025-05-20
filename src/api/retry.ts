@@ -196,6 +196,7 @@ export function withRetry(options: RetryOptions = {}) {
 						errorType = "서비스 사용 불가"
 					}
 
+<<<<<<< HEAD
 					// Try to get delay from RetryInfo in error body
 					if (retryInfo?.retryDelay) {
 						console.debug(
@@ -362,6 +363,17 @@ export function withRetry(options: RetryOptions = {}) {
 
 					// API에서 권장하는 시간만큼 정확히 대기
 					console.log(`[Retry] ${waitSeconds}초 동안 대기 중...`)
+=======
+					const handlerInstance = this as any
+					if (handlerInstance.options?.onRetryAttempt) {
+						try {
+							handlerInstance.options.onRetryAttempt(attempt + 1, maxRetries, delay, error)
+						} catch (e) {
+							console.error("Error in onRetryAttempt callback:", e)
+						}
+					}
+
+>>>>>>> upstream/main
 					await new Promise((resolve) => setTimeout(resolve, delay))
 				}
 			}

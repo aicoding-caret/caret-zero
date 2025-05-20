@@ -5,8 +5,9 @@ import { AutoApprovalSettings } from "./AutoApprovalSettings"
 import { BrowserSettings } from "./BrowserSettings"
 import { ChatSettings } from "./ChatSettings"
 import { HistoryItem } from "./HistoryItem"
-import { McpServer, McpMarketplaceCatalog, McpMarketplaceItem, McpDownloadResponse } from "./mcp"
+import { McpServer, McpMarketplaceCatalog, McpDownloadResponse, McpViewTab } from "./mcp"
 import { TelemetrySetting } from "./TelemetrySetting"
+<<<<<<< HEAD
 import { Persona } from "./types"
 import { UserInfo } from "./UserInfo"
 import { GitCommit } from "../utils/git"
@@ -23,6 +24,10 @@ export interface ModeInfo {
 	apiProvider?: string // API 제공자 (e.g. 'anthropic', 'openai', 'openrouter')
 	apiKey?: string // 모드별 API 키 (선택사항)
 }
+=======
+import type { BalanceResponse, UsageTransaction, PaymentTransaction } from "../shared/ClineAccount"
+import { ClineRulesToggles } from "./cline-rules"
+>>>>>>> upstream/main
 
 // webview will hold state
 /**
@@ -64,6 +69,7 @@ export interface ExtensionMessage {
 		| "partialMessage"
 		| "openRouterModels"
 		| "openAiModels"
+<<<<<<< HEAD
 		| "anthropicModels"
 		| "azureOpenAiModels"
 		| "googleAiModels"
@@ -89,24 +95,24 @@ export interface ExtensionMessage {
 		| "templateCharactersLoaded"
 		| "requestTemplateCharacters"
 		| "personaUpdated"
+=======
+		| "requestyModels"
+>>>>>>> upstream/main
 		| "mcpServers"
 		| "relinquishControl"
-		| "vsCodeLmModels"
-		| "requestVsCodeLmModels"
 		| "authCallback"
 		| "mcpMarketplaceCatalog"
 		| "mcpDownloadDetails"
 		| "commitSearchResults"
 		| "openGraphData"
-		| "isImageUrlResult"
 		| "didUpdateSettings"
-		| "addRemoteServerResult"
 		| "userCreditsBalance"
 		| "userCreditsUsage"
 		| "userCreditsPayments"
 		| "totalTasksSize"
 		| "addToInput"
 		| "browserConnectionResult"
+<<<<<<< HEAD
 		| "browserConnectionInfo"
 		| "detectedChromePath"
 		| "scrollToSettings"
@@ -119,6 +125,13 @@ export interface ExtensionMessage {
 		| "personaUpdated" // [ALPHA] Persona updated notification
 		| "personaLoaded" // [ALPHA] Persona loaded notification
 		| "agentProfileImageUpdated" // [ALPHA] Agent profile image updated notification
+=======
+		| "scrollToSettings"
+		| "browserRelaunchResult"
+		| "fileSearchResults"
+		| "grpc_response" // New type for gRPC responses
+		| "setActiveQuote"
+>>>>>>> upstream/main
 	text?: string
 	uri?: string // [ALPHA] Added for persona/character support
 	paths?: (string | null)[] // Used for relativePathsResponse
@@ -128,9 +141,9 @@ export interface ExtensionMessage {
 		| "settingsButtonClicked"
 		| "historyButtonClicked"
 		| "didBecomeVisible"
-		| "accountLoginClicked"
 		| "accountLogoutClicked"
 		| "accountButtonClicked"
+		| "focusChatInput"
 	invoke?: Invoke
 	state?: ExtensionState
 	images?: string[]
@@ -141,6 +154,7 @@ export interface ExtensionMessage {
 	partialMessage?: CaretMessage
 	openRouterModels?: Record<string, ModelInfo>
 	openAiModels?: string[]
+	requestyModels?: Record<string, ModelInfo>
 	mcpServers?: McpServer[]
 	customToken?: string
 	mcpMarketplaceCatalog?: McpMarketplaceCatalog
@@ -174,10 +188,25 @@ export interface ExtensionMessage {
 	userCreditsUsage?: UsageTransaction[]
 	userCreditsPayments?: PaymentTransaction[]
 	totalTasksSize?: number | null
-	addRemoteServerResult?: {
-		success: boolean
-		serverName: string
-		error?: string
+	success?: boolean
+	endpoint?: string
+	isBundled?: boolean
+	isConnected?: boolean
+	isRemote?: boolean
+	host?: string
+	mentionsRequestId?: string
+	results?: Array<{
+		path: string
+		type: "file" | "folder"
+		label?: string
+	}>
+	tab?: McpViewTab
+	grpc_response?: {
+		message?: any // JSON serialized protobuf message
+		request_id: string // Same ID as the request
+		error?: string // Optional error message
+		is_streaming?: boolean // Whether this is part of a streaming response
+		sequence_number?: number // For ordering chunks in streaming responses
 	}
 	// [ALPHA] ud398ub974uc18cub098 uad00ub828 ud544ub4dc ucd94uac00
 	personaId?: string
@@ -195,9 +224,13 @@ export type Platform = "aix" | "darwin" | "freebsd" | "linux" | "openbsd" | "sun
 export const DEFAULT_PLATFORM = "unknown"
 
 export interface ExtensionState {
+<<<<<<< HEAD
 	version: string
 	theme: string
 	mode: string
+=======
+	isNewUser: boolean
+>>>>>>> upstream/main
 	apiConfiguration?: ApiConfiguration
 	customInstructions?: string
 	telemetrySetting: TelemetrySetting
@@ -214,11 +247,22 @@ export interface ExtensionState {
 	browserSettings: BrowserSettings
 	remoteBrowserHost?: string
 	chatSettings: ChatSettings
+<<<<<<< HEAD
 	historyItems: HistoryItem[]
 	modelInfo?: ModelInfo
+=======
+	checkpointTrackerErrorMessage?: string
+	clineMessages: ClineMessage[]
+	currentTaskItem?: HistoryItem
+	customInstructions?: string
+	mcpMarketplaceEnabled?: boolean
+	planActSeparateModelsSetting: boolean
+	enableCheckpointsSetting?: boolean
+>>>>>>> upstream/main
 	platform: Platform
 	retryStatus?: RetryStatusMessage
 	taskHistory: HistoryItem[]
+<<<<<<< HEAD
 	userInfo?: UserInfo
 	vscMachineId?: string
 	currentTaskItem?: any
@@ -227,6 +271,23 @@ export interface ExtensionState {
 	caretBanner?: string
 	mcpMarketplaceEnabled?: boolean
 	retryStatusMessage?: any
+=======
+	telemetrySetting: TelemetrySetting
+	shellIntegrationTimeout: number
+	uriScheme?: string
+	userInfo?: {
+		displayName: string | null
+		email: string | null
+		photoURL: string | null
+	}
+	version: string
+	vscMachineId: string
+	globalClineRulesToggles: ClineRulesToggles
+	localClineRulesToggles: ClineRulesToggles
+	workflowToggles: ClineRulesToggles
+	localCursorRulesToggles: ClineRulesToggles
+	localWindsurfRulesToggles: ClineRulesToggles
+>>>>>>> upstream/main
 }
 
 export interface CaretMessage {
@@ -240,6 +301,7 @@ export interface CaretMessage {
 	partial?: boolean
 	lastCheckpointHash?: string
 	isCheckpointCheckedOut?: boolean
+	isOperationOutsideWorkspace?: boolean
 	conversationHistoryIndex?: number
 	conversationHistoryDeletedRange?: [number, number] // for when conversation history is truncated for API requests
 }
@@ -258,7 +320,13 @@ export type CaretAsk =
 	| "auto_approval_max_req_reached"
 	| "browser_action_launch"
 	| "use_mcp_server"
+<<<<<<< HEAD
 	| "new_task" // Added
+=======
+	| "new_task"
+	| "condense"
+	| "report_bug"
+>>>>>>> upstream/main
 
 export type CaretSay =
 	| "task"
@@ -285,6 +353,8 @@ export type CaretSay =
 	| "deleted_api_reqs"
 	| "caretignore_error"
 	| "checkpoint_created"
+	| "load_mcp_documentation"
+	| "info" // Added for general informational messages like retry status
 
 export interface CaretSayTool {
 	tool:
@@ -300,6 +370,7 @@ export interface CaretSayTool {
 	content?: string
 	regex?: string
 	filePattern?: string
+	operationIsLocatedInWorkspace?: boolean
 }
 
 // must keep in sync with system prompt
@@ -346,6 +417,7 @@ export interface CaretAskQuestion {
 	selected?: string
 }
 
+<<<<<<< HEAD
 export interface CaretAskNewTask {
 	// Added
 	context: string
@@ -355,6 +427,13 @@ export interface CaretAskNewTask {
  * API 요청 정보 인터페이스 - 재시도 관련 필드 추가
  */
 export interface CaretApiReqInfo {
+=======
+export interface ClineAskNewTask {
+	context: string
+}
+
+export interface ClineApiReqInfo {
+>>>>>>> upstream/main
 	request?: string
 	tokensIn?: number
 	tokensOut?: number
@@ -363,6 +442,7 @@ export interface CaretApiReqInfo {
 	cost?: number
 	cancelReason?: CaretApiReqCancelReason
 	streamingFailedMessage?: string
+<<<<<<< HEAD
 	// 재시도 관련 필드 추가
 	retryAttempt?: number // 현재 재시도 횟수
 	maxRetries?: number // 최대 재시도 횟수
@@ -373,6 +453,17 @@ export interface CaretApiReqInfo {
 }
 
 export type CaretApiReqCancelReason = "streaming_failed" | "user_cancelled"
+=======
+	retryStatus?: {
+		attempt: number
+		maxAttempts: number
+		delaySec: number
+		errorSnippet?: string
+	}
+}
+
+export type ClineApiReqCancelReason = "streaming_failed" | "user_cancelled" | "retries_exhausted"
+>>>>>>> upstream/main
 
 export const COMPLETION_RESULT_CHANGES_FLAG = "HAS_CHANGES"
 

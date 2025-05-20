@@ -5,6 +5,8 @@ const { execSync } = require("child_process")
 
 const production = process.argv.includes("--production")
 const watch = process.argv.includes("--watch")
+const standalone = process.argv.includes("--standalone")
+const destDir = standalone ? "dist-standalone" : "dist"
 
 // 의존성 검사 함수
 async function checkDependencies() {
@@ -113,10 +115,16 @@ const copyWasmFiles = {
 	name: "copy-wasm-files",
 	setup(build) {
 		build.onEnd(() => {
+<<<<<<< HEAD
 			try {
 				// tree sitter
 				const sourceDir = path.join(__dirname, "node_modules", "web-tree-sitter")
 				const targetDir = path.join(__dirname, "dist")
+=======
+			// tree sitter
+			const sourceDir = path.join(__dirname, "node_modules", "web-tree-sitter")
+			const targetDir = path.join(__dirname, destDir)
+>>>>>>> upstream/main
 
 				// Ensure target directory exists
 				if (!fs.existsSync(targetDir)) {
@@ -198,7 +206,8 @@ const copyAssets = {
 	},
 }
 
-const extensionConfig = {
+// Base configuration shared between extension and standalone builds
+const baseConfig = {
 	bundle: true,
 	minify: production,
 	sourcemap: !production,
@@ -209,7 +218,10 @@ const extensionConfig = {
 	tsconfig: path.resolve(__dirname, "tsconfig.json"),
 	plugins: [
 		copyWasmFiles,
+<<<<<<< HEAD
 		copyAssets,
+=======
+>>>>>>> upstream/main
 		aliasResolverPlugin,
 		/* add to the end of plugins array */
 		esbuildProblemMatcherPlugin,
@@ -222,15 +234,31 @@ const extensionConfig = {
 			},
 		},
 	],
-	entryPoints: ["src/extension.ts"],
 	format: "cjs",
 	sourcesContent: true,
 	platform: "node",
-	outfile: "dist/extension.js",
+}
+
+// Extension-specific configuration
+const extensionConfig = {
+	...baseConfig,
+	entryPoints: ["src/extension.ts"],
+	outfile: `${destDir}/extension.js`,
 	external: ["vscode"],
 }
 
+// Standalone-specific configuration
+const standaloneConfig = {
+	...baseConfig,
+	entryPoints: ["src/standalone/standalone.ts"],
+	outfile: `${destDir}/standalone.js`,
+	// These gRPC protos need to load files from the module directory at runtime,
+	// so they cannot be bundled.
+	external: ["vscode", "@grpc/reflection", "grpc-health-check"],
+}
+
 async function main() {
+<<<<<<< HEAD
 	try {
 		// 빌드 전 검사 실행
 		await preBuildChecks()
@@ -245,6 +273,15 @@ async function main() {
 	} catch (error) {
 		console.error("Build failed:", error)
 		process.exit(1)
+=======
+	const config = standalone ? standaloneConfig : extensionConfig
+	const extensionCtx = await esbuild.context(config)
+	if (watch) {
+		await extensionCtx.watch()
+	} else {
+		await extensionCtx.rebuild()
+		await extensionCtx.dispose()
+>>>>>>> upstream/main
 	}
 }
 

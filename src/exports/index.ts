@@ -1,7 +1,13 @@
 import * as vscode from "vscode"
+<<<<<<< HEAD
 import { Controller } from "../core/controller"
 import { CaretAPI } from "./caret"
 import { getGlobalState } from "../core/storage/state"
+=======
+import { Controller } from "@core/controller"
+import { ClineAPI } from "./cline"
+import { getGlobalState } from "@core/storage/state"
+>>>>>>> upstream/main
 
 export function createCaretAPI(outputChannel: vscode.OutputChannel, sidebarController: Controller): CaretAPI {
 	const api: CaretAPI = {
