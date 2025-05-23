@@ -4,7 +4,6 @@ import React, { KeyboardEvent, memo, useEffect, useMemo, useRef, useState } from
 import { useRemark } from "react-remark"
 import { useMount } from "react-use"
 import styled from "styled-components"
-<<<<<<< HEAD
 import { openRouterDefaultModelId } from "@shared/api" // Updated import path
 import { useExtensionState } from "@/context/ExtensionStateContext" // Updated import path
 import { vscode } from "@/utils/vscode" // Updated import path
@@ -13,16 +12,7 @@ import { ModelInfoView, normalizeApiConfiguration } from "./ApiOptions"
 import { CODE_BLOCK_BG_COLOR } from "@/components/common/CodeBlock" // Updated import path
 import ThinkingBudgetSlider from "./ThinkingBudgetSlider"
 import FeaturedModelCard from "./FeaturedModelCard" // Added import
-=======
-import { openRouterDefaultModelId } from "@shared/api"
-import { useExtensionState } from "@/context/ExtensionStateContext"
 import { ModelsServiceClient, StateServiceClient } from "@/services/grpc-client"
-import { vscode } from "@/utils/vscode"
-import { highlight } from "../history/HistoryView"
-import { ModelInfoView, normalizeApiConfiguration } from "./ApiOptions"
-import { CODE_BLOCK_BG_COLOR } from "@/components/common/CodeBlock"
-import ThinkingBudgetSlider from "./ThinkingBudgetSlider"
-import FeaturedModelCard from "./FeaturedModelCard"
 
 // Star icon for favorites
 const StarIcon = ({ isFavorite, onClick }: { isFavorite: boolean; onClick: (e: React.MouseEvent) => void }) => {
@@ -44,42 +34,26 @@ const StarIcon = ({ isFavorite, onClick }: { isFavorite: boolean; onClick: (e: R
 		</div>
 	)
 }
->>>>>>> upstream/main
 
 export interface OpenRouterModelPickerProps {
 	isPopup?: boolean
 }
 
-<<<<<<< HEAD
 // Featured models for Caret provider
 const featuredModels = [
-	// Added featured models array
-=======
-// Featured models for Cline provider
-const featuredModels = [
->>>>>>> upstream/main
 	{
 		id: "anthropic/claude-3.7-sonnet",
 		description: "Leading model for agentic coding",
 		label: "Best",
 	},
 	{
-<<<<<<< HEAD
-		id: "google/gemini-2.5-pro-preview-03-25",
-=======
 		id: "google/gemini-2.5-pro-preview",
->>>>>>> upstream/main
 		description: "Large 1M context window, great value",
 		label: "Trending",
 	},
 	{
-<<<<<<< HEAD
-		id: "meta-llama/llama-4-maverick",
-		description: "Efficient performance at lower cost",
-=======
 		id: "openai/gpt-4.1",
 		description: "1M context window, blazing fast",
->>>>>>> upstream/main
 		label: "New",
 	},
 ]
@@ -247,11 +221,7 @@ const OpenRouterModelPicker: React.FC<OpenRouterModelPickerProps> = ({ isPopup }
 					<span style={{ fontWeight: 500 }}>Model</span>
 				</label>
 
-<<<<<<< HEAD
-				{apiConfiguration?.apiProvider === "caret" && ( // Added featured models rendering
-=======
-				{apiConfiguration?.apiProvider === "cline" && (
->>>>>>> upstream/main
+				{apiConfiguration?.apiProvider === "caret" && (
 					<div style={{ marginBottom: "6px", marginTop: 4 }}>
 						{featuredModels.map((model) => (
 							<FeaturedModelCard

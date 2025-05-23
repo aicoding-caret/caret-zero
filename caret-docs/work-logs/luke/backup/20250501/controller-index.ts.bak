@@ -87,7 +87,7 @@ export class Controller {
 		}
 
 		this.workspaceTracker = new WorkspaceTracker(this)
-		// MCP: cline 스타일로 의존성 주입
+		// MCP: caret 스타일로 의존성 주입
 		this.mcpHub = new McpHub(
 			async () => {
 				return path.join(this.context.globalStorageUri.fsPath, "mcp-servers")

@@ -10,7 +10,7 @@ import {
 	getRuleFilesTotalContent,
 	readDirectoryRecursive,
 } from "@core/context/instructions/user-instructions/rule-helpers"
-import { ClineRulesToggles } from "@shared/cline-rules"
+import { CaretRulesToggles } from "@shared/caret-rules"
 import * as vscode from "vscode"
 
 /**
@@ -20,17 +20,17 @@ export async function refreshExternalRulesToggles(
 	context: vscode.ExtensionContext,
 	workingDirectory: string,
 ): Promise<{
-	windsurfLocalToggles: ClineRulesToggles
-	cursorLocalToggles: ClineRulesToggles
+	windsurfLocalToggles: CaretRulesToggles
+	cursorLocalToggles: CaretRulesToggles
 }> {
 	// local windsurf toggles
-	const localWindsurfRulesToggles = ((await getWorkspaceState(context, "localWindsurfRulesToggles")) as ClineRulesToggles) || {}
+	const localWindsurfRulesToggles = ((await getWorkspaceState(context, "localWindsurfRulesToggles")) as CaretRulesToggles) || {}
 	const localWindsurfRulesFilePath = path.resolve(workingDirectory, GlobalFileNames.windsurfRules)
 	const updatedLocalWindsurfToggles = await synchronizeRuleToggles(localWindsurfRulesFilePath, localWindsurfRulesToggles)
 	await updateWorkspaceState(context, "localWindsurfRulesToggles", updatedLocalWindsurfToggles)
 
 	// local cursor toggles
-	const localCursorRulesToggles = ((await getWorkspaceState(context, "localCursorRulesToggles")) as ClineRulesToggles) || {}
+	const localCursorRulesToggles = ((await getWorkspaceState(context, "localCursorRulesToggles")) as CaretRulesToggles) || {}
 
 	// cursor has two valid locations for rules files, so we need to check both and combine
 	// synchronizeRuleToggles will drop whichever rules files are not in each given path, but combining the results will result in no data loss
@@ -52,7 +52,7 @@ export async function refreshExternalRulesToggles(
 /**
  * Gather formatted windsurf rules
  */
-export const getLocalWindsurfRules = async (cwd: string, toggles: ClineRulesToggles) => {
+export const getLocalWindsurfRules = async (cwd: string, toggles: CaretRulesToggles) => {
 	const windsurfRulesFilePath = path.resolve(cwd, GlobalFileNames.windsurfRules)
 
 	let windsurfRulesFileInstructions: string | undefined
@@ -78,7 +78,7 @@ export const getLocalWindsurfRules = async (cwd: string, toggles: ClineRulesTogg
 /**
  * Gather formatted cursor rules, which can come from two sources
  */
-export const getLocalCursorRules = async (cwd: string, toggles: ClineRulesToggles) => {
+export const getLocalCursorRules = async (cwd: string, toggles: CaretRulesToggles) => {
 	// we first check for the .cursorrules file
 	const cursorRulesFilePath = path.resolve(cwd, GlobalFileNames.cursorRulesFile)
 	let cursorRulesFileInstructions: string | undefined

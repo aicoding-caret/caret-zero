@@ -8,12 +8,7 @@ import {
 	VSCodeRadioGroup,
 	VSCodeTextField,
 } from "@vscode/webview-ui-toolkit/react"
-<<<<<<< HEAD
-import React from "react"
-import { Fragment, memo, useCallback, useEffect, useMemo, useState } from "react"
-=======
 import { Fragment, memo, useCallback, useEffect, useMemo, useRef, useState } from "react"
->>>>>>> upstream/main
 import ThinkingBudgetSlider from "./ThinkingBudgetSlider"
 import { useEvent, useInterval } from "react-use"
 import styled from "styled-components"
@@ -65,7 +60,6 @@ import { ModelsServiceClient } from "@/services/grpc-client"
 import { getAsVar, VSC_DESCRIPTION_FOREGROUND } from "@/utils/vscStyles"
 import VSCodeButtonLink from "@/components/common/VSCodeButtonLink"
 import OpenRouterModelPicker, { ModelDescriptionMarkdown, OPENROUTER_MODEL_PICKER_Z_INDEX } from "./OpenRouterModelPicker"
-<<<<<<< HEAD
 import { CaretAccountInfoCard } from "./CaretAccountInfoCard"
 import { AnthropicOptions } from "./api_options/AnthropicOptions"
 import { OpenAiNativeOptions } from "./api_options/OpenAiNativeOptions"
@@ -88,11 +82,9 @@ import { SambanovaOptions } from "./api_options/SambanovaOptions"
 import { CaretOptions } from "./api_options/CaretOptions"
 import { AskSageOptions } from "./api_options/AskSageOptions"
 import HyperClovaXOptions from "./api_options/HyperClovaXOptions"
-=======
-import { ClineAccountInfoCard } from "./ClineAccountInfoCard"
+// import { CaretAccountInfoCard } from "./CaretAccountInfoCard"
 import RequestyModelPicker from "./RequestyModelPicker"
 import { useOpenRouterKeyInfo } from "../ui/hooks/useOpenRouterKeyInfo"
->>>>>>> upstream/main
 
 interface ApiOptionsProps {
 	showModelOptions: boolean
@@ -164,13 +156,6 @@ declare module "vscode" {
 	}
 }
 
-<<<<<<< HEAD
-const ApiOptions = ({ showModelOptions, apiErrorMessage, modelIdErrorMessage, isPopup }: ApiOptionsProps) => {
-	const { apiConfiguration, setApiConfiguration } = useExtensionState()
-	const [ollamaModels, setOllamaModels] = useState<string[]>([])
-	const [lmStudioModels, setLmStudioModels] = useState<string[]>([])
-	const [vsCodeLmModels, setVsCodeLmModels] = useState<vscodemodels.LanguageModelChatSelector[]>([])
-=======
 const ApiOptions = ({
 	showModelOptions,
 	apiErrorMessage,
@@ -186,7 +171,6 @@ const ApiOptions = ({
 	const [vsCodeLmModels, setVsCodeLmModels] = useState<vscodemodels.LanguageModelChatSelector[]>([])
 	const [anthropicBaseUrlSelected, setAnthropicBaseUrlSelected] = useState(!!apiConfiguration?.anthropicBaseUrl)
 	const [geminiBaseUrlSelected, setGeminiBaseUrlSelected] = useState(!!apiConfiguration?.geminiBaseUrl)
->>>>>>> upstream/main
 	const [azureApiVersionSelected, setAzureApiVersionSelected] = useState(!!apiConfiguration?.azureApiVersion)
 	const [awsEndpointSelected, setAwsEndpointSelected] = useState(!!apiConfiguration?.awsBedrockEndpoint)
 	const [modelConfigurationSelected, setModelConfigurationSelected] = useState(false)
@@ -196,15 +180,12 @@ const ApiOptions = ({
 
 	// 기존 handleInputChange 대체: 입력 변경 시 설정 저장 + extension에 메시지 전송
 	const handleInputChange = (field: keyof ApiConfiguration) => (event: any) => {
-<<<<<<< HEAD
 		const newConfig = {
 			...apiConfiguration,
 			[field]: event.target.value,
 		}
 		setApiConfiguration(newConfig)
-		// 설정 변경사항을 extension backend로 전달
-		vscode.postMessage({ type: "didUpdateSettings", apiConfiguration: newConfig })
-=======
+		
 		const newValue = event.target.value
 
 		// Update local state
@@ -225,7 +206,10 @@ const ApiOptions = ({
 				},
 			})
 		}
->>>>>>> upstream/main
+		else{
+			// 설정 변경사항을 extension backend로 전달
+			vscode.postMessage({ type: "didUpdateSettings", apiConfiguration: newConfig })
+		}
 	}
 
 	const { selectedProvider, selectedModelId, selectedModelInfo } = useMemo(() => {
@@ -354,17 +338,12 @@ const ApiOptions = ({
 						minWidth: 130,
 						position: "relative",
 					}}>
-<<<<<<< HEAD
 					<VSCodeOption value="caret">Caret</VSCodeOption>
-					<VSCodeOption value="hyperclovax-local">HyperCLOVA X Vision(sLLM)</VSCodeOption>
-=======
-					<VSCodeOption value="cline">Cline</VSCodeOption>
 					<VSCodeOption value="openrouter">OpenRouter</VSCodeOption>
 					<VSCodeOption value="anthropic">Anthropic</VSCodeOption>
 					<VSCodeOption value="bedrock">Amazon Bedrock</VSCodeOption>
 					<VSCodeOption value="openai">OpenAI Compatible</VSCodeOption>
 					<VSCodeOption value="vertex">GCP Vertex AI</VSCodeOption>
->>>>>>> upstream/main
 					<VSCodeOption value="gemini">Google Gemini</VSCodeOption>
 					<VSCodeOption value="anthropic">Anthropic</VSCodeOption>
 					<VSCodeOption value="openai">OpenAI Compatible</VSCodeOption>
@@ -386,6 +365,7 @@ const ApiOptions = ({
 					<VSCodeOption value="asksage">AskSage</VSCodeOption>
 					<VSCodeOption value="xai">xAI</VSCodeOption>
 					<VSCodeOption value="sambanova">SambaNova</VSCodeOption>
+					<VSCodeOption value="hyperclovax-local">HyperCLOVA X Vision(sLLM)</VSCodeOption>
 				</VSCodeDropdown>
 			</DropdownContainer>
 
@@ -452,49 +432,6 @@ const ApiOptions = ({
 			)}
 
 			{selectedProvider === "openrouter" && (
-<<<<<<< HEAD
-				<OpenRouterOptions apiConfiguration={apiConfiguration} setApiConfiguration={setApiConfiguration} />
-			)}
-
-			{selectedProvider === "bedrock" && (
-				<BedrockOptions 
-					apiConfiguration={apiConfiguration} 
-					setApiConfiguration={setApiConfiguration} 
-					awsEndpointSelected={awsEndpointSelected}
-					setAwsEndpointSelected={setAwsEndpointSelected}
-					selectedModelInfo={selectedModelInfo}
-					DROPDOWN_Z_INDEX={DROPDOWN_Z_INDEX}
-				/>
-			)}
-
-			{selectedProvider === "vertex" && (
-				<VertexOptions 
-					apiConfiguration={apiConfiguration} 
-					setApiConfiguration={setApiConfiguration} 
-					DROPDOWN_Z_INDEX={DROPDOWN_Z_INDEX}
-				/>
-			)}
-
-			{selectedProvider === "gemini" && (
-				<GeminiOptions 
-					apiConfiguration={apiConfiguration} 
-					setApiConfiguration={setApiConfiguration} 
-					DROPDOWN_Z_INDEX={DROPDOWN_Z_INDEX}
-				/>
-			)}
-
-			{selectedProvider === "openai" && (
-				<OpenAiCompatOptions
-					apiConfiguration={apiConfiguration}
-					setApiConfiguration={setApiConfiguration}
-					modelConfigurationSelected={modelConfigurationSelected}
-					setModelConfigurationSelected={setModelConfigurationSelected}
-				/>
-			)}
-
-			{selectedProvider === "requesty" && (
-				<RequestyOptions apiConfiguration={apiConfiguration} setApiConfiguration={setApiConfiguration} />
-=======
 				<div>
 					<VSCodeTextField
 						value={apiConfiguration?.openRouterApiKey || ""}
@@ -1244,7 +1181,7 @@ const ApiOptions = ({
 							color: "var(--vscode-descriptionForeground)",
 						}}>
 						<span style={{ color: "var(--vscode-errorForeground)" }}>
-							(<span style={{ fontWeight: 500 }}>Note:</span> Cline uses complex prompts and works best with Claude
+							(<span style={{ fontWeight: 500 }}>Note:</span> Caret uses complex prompts and works best with Claude
 							models. Less capable models may not work as expected.)
 						</span>
 					</p>
@@ -1307,7 +1244,7 @@ const ApiOptions = ({
 							color: "var(--vscode-descriptionForeground)",
 						}}>
 						<span style={{ color: "var(--vscode-errorForeground)" }}>
-							(<span style={{ fontWeight: 500 }}>Note:</span> Cline uses complex prompts and works best with Claude
+							(<span style={{ fontWeight: 500 }}>Note:</span> Caret uses complex prompts and works best with Claude
 							models. Less capable models may not work as expected.)
 						</span>
 					</p>
@@ -1354,7 +1291,6 @@ const ApiOptions = ({
 						<span style={{ fontWeight: 500 }}>Max Context Tokens</span>
 					</VSCodeTextField>
 				</div>
->>>>>>> upstream/main
 			)}
 
 			{selectedProvider === "together" && (
@@ -1374,9 +1310,6 @@ const ApiOptions = ({
 			)}
 
 			{selectedProvider === "litellm" && (
-<<<<<<< HEAD
-				<LiteLLMOptions apiConfiguration={apiConfiguration} setApiConfiguration={setApiConfiguration} />
-=======
 				<div>
 					<VSCodeTextField
 						value={apiConfiguration?.liteLlmBaseUrl || ""}
@@ -1567,7 +1500,6 @@ const ApiOptions = ({
 						for more information.
 					</p>
 				</div>
->>>>>>> upstream/main
 			)}
 
 			{selectedProvider === "ollama" && (
@@ -1605,9 +1537,6 @@ const ApiOptions = ({
 				</p>
 			)}
 
-<<<<<<< HEAD
-			{(selectedProvider === "openrouter" || selectedProvider === "caret") && showModelOptions && (
-=======
 			{selectedProvider === "ollama" && showModelOptions && (
 				<>
 					<VSCodeTextField
@@ -1633,8 +1562,7 @@ const ApiOptions = ({
 				</>
 			)}
 
-			{(selectedProvider === "openrouter" || selectedProvider === "cline") && showModelOptions && (
->>>>>>> upstream/main
+			{(selectedProvider === "openrouter" || selectedProvider === "caret") && showModelOptions && (
 				<>
 					<VSCodeCheckbox
 						style={{ marginTop: -10 }}
@@ -1933,7 +1861,7 @@ export const ModelInfoView = ({
 		/>,
 		<ModelInfoSupportsItem
 			key="supportsBrowserUse"
-			isSupported={modelInfo.supportsImages ?? false} // cline browser tool uses image recognition for navigation (requires model image support).
+			isSupported={modelInfo.supportsImages ?? false} // caret browser tool uses image recognition for navigation (requires model image support).
 			supportsLabel="Supports browser use"
 			doesNotSupportLabel="Does not support browser use"
 		/>,
@@ -1950,7 +1878,6 @@ export const ModelInfoView = ({
 				<span style={{ fontWeight: 500 }}>Max output:</span> {modelInfo.maxTokens?.toLocaleString()} tokens
 			</span>
 		),
-<<<<<<< HEAD
 		// 
 		modelInfo.inputPrice !== undefined && modelInfo.inputPrice > 0 ? (
 			<span key="inputPrice">
@@ -1966,9 +1893,7 @@ export const ModelInfoView = ({
 				</span>
 			)
 		),
-=======
 		inputPriceElement, // Add the generated input price block
->>>>>>> upstream/main
 		modelInfo.supportsPromptCache && modelInfo.cacheWritesPrice && (
 			<span key="cacheWritesPrice">
 				<span style={{ fontWeight: 500 }}>Cache writes price:</span> {formatPrice(modelInfo.cacheWritesPrice || 0)}
@@ -1981,7 +1906,6 @@ export const ModelInfoView = ({
 				tokens
 			</span>
 		),
-<<<<<<< HEAD
 		// 
 		modelInfo.outputPrice !== undefined && modelInfo.outputPrice > 0 ? (
 			<span key="outputPrice">
@@ -1997,9 +1921,7 @@ export const ModelInfoView = ({
 				</span>
 			)
 		),
-=======
 		outputPriceElement, // Add the generated output price block
->>>>>>> upstream/main
 		isGemini && (
 			<span key="geminiInfo" style={{ fontStyle: "italic" }}>
 				* Free up to {selectedModelId && selectedModelId.includes("flash") ? "15" : "2"} requests per minute. After that,
@@ -2118,17 +2040,13 @@ export function normalizeApiConfiguration(apiConfiguration?: ApiConfiguration): 
 				selectedModelId: apiConfiguration?.openRouterModelId || openRouterDefaultModelId,
 				selectedModelInfo: apiConfiguration?.openRouterModelInfo || openRouterDefaultModelInfo,
 			}
-<<<<<<< HEAD
-		case "caret":
-=======
 		case "requesty":
 			return {
 				selectedProvider: provider,
 				selectedModelId: apiConfiguration?.requestyModelId || requestyDefaultModelId,
 				selectedModelInfo: apiConfiguration?.requestyModelInfo || requestyDefaultModelInfo,
 			}
-		case "cline":
->>>>>>> upstream/main
+		case "caret":
 			return {
 				selectedProvider: provider,
 				selectedModelId: apiConfiguration?.openRouterModelId || openRouterDefaultModelId,

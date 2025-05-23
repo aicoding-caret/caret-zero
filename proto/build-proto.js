@@ -20,16 +20,16 @@ const ROOT_DIR = path.resolve(SCRIPT_DIR, "..")
 // To add a new service, simply add it to this map and run this script
 // The service handler will be automatically discovered and used by grpc-handler.ts
 const serviceNameMap = {
-	account: "cline.AccountService",
-	browser: "cline.BrowserService",
-	checkpoints: "cline.CheckpointsService",
-	file: "cline.FileService",
-	mcp: "cline.McpService",
-	state: "cline.StateService",
-	task: "cline.TaskService",
-	web: "cline.WebService",
-	models: "cline.ModelsService",
-	slash: "cline.SlashService",
+	account: "caret.AccountService",
+	browser: "caret.BrowserService",
+	checkpoints: "caret.CheckpointsService",
+	file: "caret.FileService",
+	mcp: "caret.McpService",
+	state: "caret.StateService",
+	task: "caret.TaskService",
+	web: "caret.WebService",
+	models: "caret.ModelsService",
+	slash: "caret.SlashService",
 	// Add new services here - no other code changes needed!
 }
 const serviceDirs = Object.keys(serviceNameMap).map((serviceKey) => path.join(ROOT_DIR, "src", "core", "controller", serviceKey))
@@ -379,14 +379,14 @@ async function ensureProtoFilesExist() {
 		if (!existingProtoServices.includes(serviceName)) {
 			console.log(chalk.yellow(`Creating template proto file for ${serviceName}...`))
 
-			// Extract service class name from full name (e.g., "cline.ModelsService" -> "ModelsService")
+			// Extract service class name from full name (e.g., "caret.ModelsService" -> "ModelsService")
 			const serviceClassName = fullServiceName.split(".").pop()
 
 			// Create template proto file
 			const protoContent = `syntax = "proto3";
 
-package cline;
-option java_package = "bot.cline.proto";
+package caret;
+option java_package = "bot.caret.proto";
 option java_multiple_files = true;
 
 import "common.proto";

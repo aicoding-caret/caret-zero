@@ -195,13 +195,11 @@ function blockAnchorFallbackMatch(originalContent: string, searchContent: string
 	return false;
 }
 
-<<<<<<< HEAD
 enum ProcessingState {
 	Idle = 0,
 	StateSearch = 1 << 0,
 	StateReplace = 1 << 1,
 }
-=======
 /**
  * This function reconstructs the file content by applying a streamed diff (in a
  * specialized SEARCH/REPLACE block format) to the original file content. It is designed
@@ -282,12 +280,82 @@ const constructNewFileContentVersionMapping: Record<
 } as const
 
 /**
+ export async function constructNewFileContent(
+	diffContent: string,
+	originalContent: string,
+	isFinal: boolean,
+	logger?: ILogger,
+): Promise<string> {
+	// ILogger가 없는 경우 콘솔에만 출력
+	const log = logger || console;
+	
+	// 초기 입력 로깅
+	log.debug(`[constructNewFileContent] 초기 입력 상태`, {
+		diffContentLength: diffContent.length,
+		originalContentLength: originalContent.length,
+		isFinal,
+		diffContentHash: generateContentHash(diffContent),
+		originalContentHash: generateContentHash(originalContent)
+	});
+	
+	// 내용 정규화
+	diffContent = normalizeContent(diffContent);
+	originalContent = normalizeContent(originalContent);
+	
+	// EOL 형식 감지
+	const detectedEOL = originalContent.includes("\r\n") ? "\r\n" : "\n";
+	log.debug(`[constructNewFileContent] EOL 형식 감지`, {
+		eolType: detectedEOL === "\r\n" ? "CRLF (Windows)" : "LF (Unix)"
+	});
+
+	// 파일 내용 생성기 초기화
+	const constructor = new NewFileContentConstructor(originalContent, isFinal, logger);
+	
+	// 라인 분할 및 처리
+	const lines = diffContent.split("\n");
+	
+	// 부분 마커 검사
+	const lastLine = lines[lines.length - 1];
+	if (lines.length > 0 &&
+		(lastLine.startsWith("<") || lastLine.startsWith("=") || lastLine.startsWith(">")) &&
+		lastLine !== "^SEARCH^" &&
+		lastLine !== "^=====^" &&
+		lastLine !== "^REPLACE^") {
+		lines.pop();
+		log.debug(`[constructNewFileContent] 부분 마커 제거`, {
+			removedLine: lastLine
+		});
+	}
+
+	// 각 라인 처리
+	for (const line of lines) {
+		constructor.processLine(line);
+	}
+
+	// 결과 반환
+	const result = constructor.getResult();
+	
+	// EOL 형식 변환
+	const finalResult = result.replace(/\n/g, detectedEOL);
+	
+	// 최종 결과 로깅
+	log.debug(`[constructNewFileContent] 최종 결과`, {
+		originalLength: originalContent.length,
+		resultLength: finalResult.length,
+		originalHash: generateContentHash(originalContent),
+		resultHash: generateContentHash(finalResult),
+		hasChanges: finalResult !== originalContent
+	});
+
+	return finalResult;
+}   
+ */
+/**
  * @deprecated
  */
 async function constructNewFileContentV1(diffContent: string, originalContent: string, isFinal: boolean): Promise<string> {
 	let result = ""
 	let lastProcessedIndex = 0
->>>>>>> upstream/main
 
 class NewFileContentConstructor {
 	private originalContent: string;
@@ -479,13 +547,8 @@ class NewFileContentConstructor {
 							[this.searchMatchIndex, this.searchEndIndex] = blockMatch;
 						} else {
 							throw new Error(
-<<<<<<< HEAD
 								`검색 블록이 파일의 어느 부분과도 일치하지 않습니다:\n${this.currentSearchContent.trimEnd()}`
 							);
-=======
-								`The SEARCH block:\n${currentSearchContent.trimEnd()}\n...does not match anything in the file or was searched out of order in the provided blocks.`,
-							)
->>>>>>> upstream/main
 						}
 					}
 				}
@@ -593,77 +656,6 @@ class NewFileContentConstructor {
 	}
 }
 
-<<<<<<< HEAD
-export async function constructNewFileContent(
-	diffContent: string,
-	originalContent: string,
-	isFinal: boolean,
-	logger?: ILogger,
-): Promise<string> {
-	// ILogger가 없는 경우 콘솔에만 출력
-	const log = logger || console;
-	
-	// 초기 입력 로깅
-	log.debug(`[constructNewFileContent] 초기 입력 상태`, {
-		diffContentLength: diffContent.length,
-		originalContentLength: originalContent.length,
-		isFinal,
-		diffContentHash: generateContentHash(diffContent),
-		originalContentHash: generateContentHash(originalContent)
-	});
-	
-	// 내용 정규화
-	diffContent = normalizeContent(diffContent);
-	originalContent = normalizeContent(originalContent);
-	
-	// EOL 형식 감지
-	const detectedEOL = originalContent.includes("\r\n") ? "\r\n" : "\n";
-	log.debug(`[constructNewFileContent] EOL 형식 감지`, {
-		eolType: detectedEOL === "\r\n" ? "CRLF (Windows)" : "LF (Unix)"
-	});
-
-	// 파일 내용 생성기 초기화
-	const constructor = new NewFileContentConstructor(originalContent, isFinal, logger);
-	
-	// 라인 분할 및 처리
-	const lines = diffContent.split("\n");
-	
-	// 부분 마커 검사
-	const lastLine = lines[lines.length - 1];
-	if (lines.length > 0 &&
-		(lastLine.startsWith("<") || lastLine.startsWith("=") || lastLine.startsWith(">")) &&
-		lastLine !== "^SEARCH^" &&
-		lastLine !== "^=====^" &&
-		lastLine !== "^REPLACE^") {
-		lines.pop();
-		log.debug(`[constructNewFileContent] 부분 마커 제거`, {
-			removedLine: lastLine
-		});
-	}
-
-	// 각 라인 처리
-	for (const line of lines) {
-		constructor.processLine(line);
-	}
-
-	// 결과 반환
-	const result = constructor.getResult();
-	
-	// EOL 형식 변환
-	const finalResult = result.replace(/\n/g, detectedEOL);
-	
-	// 최종 결과 로깅
-	log.debug(`[constructNewFileContent] 최종 결과`, {
-		originalLength: originalContent.length,
-		resultLength: finalResult.length,
-		originalHash: generateContentHash(originalContent),
-		resultHash: generateContentHash(finalResult),
-		hasChanges: finalResult !== originalContent
-	});
-
-	return finalResult;
-} 
-=======
 enum ProcessingState {
 	Idle = 0,
 	StateSearch = 1 << 0,
@@ -1019,4 +1011,3 @@ export async function constructNewFileContentV2(diffContent: string, originalCon
 	let result = newFileContentConstructor.getResult()
 	return result
 }
->>>>>>> upstream/main

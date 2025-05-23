@@ -7,7 +7,6 @@ import { ChatSettings } from "./ChatSettings"
 import { HistoryItem } from "./HistoryItem"
 import { McpServer, McpMarketplaceCatalog, McpDownloadResponse, McpViewTab } from "./mcp"
 import { TelemetrySetting } from "./TelemetrySetting"
-<<<<<<< HEAD
 import { Persona } from "./types"
 import { UserInfo } from "./UserInfo"
 import { GitCommit } from "../utils/git"
@@ -24,10 +23,7 @@ export interface ModeInfo {
 	apiProvider?: string // API 제공자 (e.g. 'anthropic', 'openai', 'openrouter')
 	apiKey?: string // 모드별 API 키 (선택사항)
 }
-=======
-import type { BalanceResponse, UsageTransaction, PaymentTransaction } from "../shared/ClineAccount"
-import { ClineRulesToggles } from "./cline-rules"
->>>>>>> upstream/main
+import { CaretRulesToggles } from "./caret-rules"
 
 // webview will hold state
 /**
@@ -69,7 +65,6 @@ export interface ExtensionMessage {
 		| "partialMessage"
 		| "openRouterModels"
 		| "openAiModels"
-<<<<<<< HEAD
 		| "anthropicModels"
 		| "azureOpenAiModels"
 		| "googleAiModels"
@@ -95,9 +90,7 @@ export interface ExtensionMessage {
 		| "templateCharactersLoaded"
 		| "requestTemplateCharacters"
 		| "personaUpdated"
-=======
 		| "requestyModels"
->>>>>>> upstream/main
 		| "mcpServers"
 		| "relinquishControl"
 		| "authCallback"
@@ -112,7 +105,6 @@ export interface ExtensionMessage {
 		| "totalTasksSize"
 		| "addToInput"
 		| "browserConnectionResult"
-<<<<<<< HEAD
 		| "browserConnectionInfo"
 		| "detectedChromePath"
 		| "scrollToSettings"
@@ -125,13 +117,11 @@ export interface ExtensionMessage {
 		| "personaUpdated" // [ALPHA] Persona updated notification
 		| "personaLoaded" // [ALPHA] Persona loaded notification
 		| "agentProfileImageUpdated" // [ALPHA] Agent profile image updated notification
-=======
 		| "scrollToSettings"
 		| "browserRelaunchResult"
 		| "fileSearchResults"
 		| "grpc_response" // New type for gRPC responses
 		| "setActiveQuote"
->>>>>>> upstream/main
 	text?: string
 	uri?: string // [ALPHA] Added for persona/character support
 	paths?: (string | null)[] // Used for relativePathsResponse
@@ -224,13 +214,10 @@ export type Platform = "aix" | "darwin" | "freebsd" | "linux" | "openbsd" | "sun
 export const DEFAULT_PLATFORM = "unknown"
 
 export interface ExtensionState {
-<<<<<<< HEAD
 	version: string
 	theme: string
 	mode: string
-=======
 	isNewUser: boolean
->>>>>>> upstream/main
 	apiConfiguration?: ApiConfiguration
 	customInstructions?: string
 	telemetrySetting: TelemetrySetting
@@ -247,31 +234,20 @@ export interface ExtensionState {
 	browserSettings: BrowserSettings
 	remoteBrowserHost?: string
 	chatSettings: ChatSettings
-<<<<<<< HEAD
 	historyItems: HistoryItem[]
 	modelInfo?: ModelInfo
-=======
 	checkpointTrackerErrorMessage?: string
-	clineMessages: ClineMessage[]
+	caretMessages: CaretMessage[]
 	currentTaskItem?: HistoryItem
 	customInstructions?: string
 	mcpMarketplaceEnabled?: boolean
 	planActSeparateModelsSetting: boolean
 	enableCheckpointsSetting?: boolean
->>>>>>> upstream/main
 	platform: Platform
 	retryStatus?: RetryStatusMessage
 	taskHistory: HistoryItem[]
-<<<<<<< HEAD
-	userInfo?: UserInfo
-	vscMachineId?: string
-	currentTaskItem?: any
-	checkpointTrackerErrorMessage?: string
-	caretMessages?: CaretMessage[]
 	caretBanner?: string
-	mcpMarketplaceEnabled?: boolean
 	retryStatusMessage?: any
-=======
 	telemetrySetting: TelemetrySetting
 	shellIntegrationTimeout: number
 	uriScheme?: string
@@ -282,12 +258,11 @@ export interface ExtensionState {
 	}
 	version: string
 	vscMachineId: string
-	globalClineRulesToggles: ClineRulesToggles
-	localClineRulesToggles: ClineRulesToggles
-	workflowToggles: ClineRulesToggles
-	localCursorRulesToggles: ClineRulesToggles
-	localWindsurfRulesToggles: ClineRulesToggles
->>>>>>> upstream/main
+	globalCaretRulesToggles: CaretRulesToggles
+	localCaretRulesToggles: CaretRulesToggles
+	workflowToggles: CaretRulesToggles
+	localCursorRulesToggles: CaretRulesToggles
+	localWindsurfRulesToggles: CaretRulesToggles
 }
 
 export interface CaretMessage {
@@ -320,13 +295,9 @@ export type CaretAsk =
 	| "auto_approval_max_req_reached"
 	| "browser_action_launch"
 	| "use_mcp_server"
-<<<<<<< HEAD
-	| "new_task" // Added
-=======
 	| "new_task"
 	| "condense"
 	| "report_bug"
->>>>>>> upstream/main
 
 export type CaretSay =
 	| "task"
@@ -417,7 +388,6 @@ export interface CaretAskQuestion {
 	selected?: string
 }
 
-<<<<<<< HEAD
 export interface CaretAskNewTask {
 	// Added
 	context: string
@@ -427,13 +397,6 @@ export interface CaretAskNewTask {
  * API 요청 정보 인터페이스 - 재시도 관련 필드 추가
  */
 export interface CaretApiReqInfo {
-=======
-export interface ClineAskNewTask {
-	context: string
-}
-
-export interface ClineApiReqInfo {
->>>>>>> upstream/main
 	request?: string
 	tokensIn?: number
 	tokensOut?: number
@@ -442,7 +405,6 @@ export interface ClineApiReqInfo {
 	cost?: number
 	cancelReason?: CaretApiReqCancelReason
 	streamingFailedMessage?: string
-<<<<<<< HEAD
 	// 재시도 관련 필드 추가
 	retryAttempt?: number // 현재 재시도 횟수
 	maxRetries?: number // 최대 재시도 횟수
@@ -450,10 +412,7 @@ export interface ClineApiReqInfo {
 	quotaViolation?: string // 할당량 위반 정보
 	index?: number // API 요청 인덱스
 	model?: string // 사용된 모델
-}
-
-export type CaretApiReqCancelReason = "streaming_failed" | "user_cancelled"
-=======
+	
 	retryStatus?: {
 		attempt: number
 		maxAttempts: number
@@ -462,8 +421,7 @@ export type CaretApiReqCancelReason = "streaming_failed" | "user_cancelled"
 	}
 }
 
-export type ClineApiReqCancelReason = "streaming_failed" | "user_cancelled" | "retries_exhausted"
->>>>>>> upstream/main
+export type CaretApiReqCancelReason = "streaming_failed" | "user_cancelled" | "retries_exhausted"
 
 export const COMPLETION_RESULT_CHANGES_FLAG = "HAS_CHANGES"
 

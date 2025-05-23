@@ -101,7 +101,6 @@ export const BrowserSettingsMenu = () => {
 		}
 	}
 
-<<<<<<< HEAD
 	// const updateChromeType = (chromeType: BrowserSettings["chromeType"]) => {
 	// 	vscode.postMessage({
 	// 		type: "browserSettings",
@@ -111,7 +110,6 @@ export const BrowserSettingsMenu = () => {
 	// 		},
 	// 	})
 	// }
-=======
 	// Determine icon based on connection state
 	const getIconClass = () => {
 		if (connectionInfo.isRemote) {
@@ -131,7 +129,6 @@ export const BrowserSettingsMenu = () => {
 			return "var(--vscode-foreground)"
 		}
 	}
->>>>>>> upstream/main
 
 	// Check connection status every second to keep icon in sync using gRPC
 	useEffect(() => {
@@ -207,7 +204,6 @@ export const BrowserSettingsMenu = () => {
 			<VSCodeButton appearance="icon" onClick={openBrowserSettings}>
 				<i className="codicon codicon-settings-gear" style={{ fontSize: "14.5px" }} />
 			</VSCodeButton>
-<<<<<<< HEAD
 			{showMenu && (
 				<SettingsMenu ref={menuRef} maxWidth={maxWidth} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
 					{/* Headless mode settings removed */}
@@ -265,8 +261,6 @@ export const BrowserSettingsMenu = () => {
 					</SettingsGroup>
 				</SettingsMenu>
 			)}
-=======
->>>>>>> upstream/main
 		</div>
 	)
 }

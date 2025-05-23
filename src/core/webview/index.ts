@@ -215,26 +215,6 @@ export class WebviewProvider implements vscode.WebviewViewProvider {
 
 		// Tip: Install the es6-string-html VS Code extension to enable code highlighting below
 		return /*html*/ `
-<<<<<<< HEAD
-        <!DOCTYPE html>
-        <html lang="en">
-          <head>
-            <meta charset="utf-8">
-            <meta name="viewport" content="width=device-width,initial-scale=1,shrink-to-fit=no">
-            <meta name="theme-color" content="#000000">
-            <link rel="stylesheet" type="text/css" href="${stylesUri}">
-            <link href="${codiconsUri}" rel="stylesheet" />
-						<meta http-equiv="Content-Security-Policy" content="default-src 'none'; connect-src https://*.posthog.com https://*.firebaseauth.com https://*.firebaseio.com https://*.googleapis.com https://*.firebase.com; font-src ${webview.cspSource}; style-src ${webview.cspSource} 'unsafe-inline'; img-src ${webview.cspSource} https: data:; script-src 'nonce-${nonce}' 'unsafe-eval';">
-            <title>Caret</title>
-          </head>
-          <body>
-            <noscript>You need to enable JavaScript to run this app.</noscript>
-            <div id="root"></div>
-            <script type="module" nonce="${nonce}" src="${scriptUri}"></script>
-          </body>
-        </html>
-      `
-=======
 			<!DOCTYPE html>
 			<html lang="en">
 				<head>
@@ -245,7 +225,7 @@ export class WebviewProvider implements vscode.WebviewViewProvider {
 				<link href="${codiconsUri}" rel="stylesheet" />
 				<link href="${katexCssUri}" rel="stylesheet" />
 				<meta http-equiv="Content-Security-Policy" content="default-src 'none'; connect-src https://*.posthog.com https://*.firebaseauth.com https://*.firebaseio.com https://*.googleapis.com https://*.firebase.com; font-src ${webview.cspSource} data:; style-src ${webview.cspSource} 'unsafe-inline'; img-src ${webview.cspSource} https: data:; script-src 'nonce-${nonce}' 'unsafe-eval';">
-				<title>Cline</title>
+				<title>Caret</title>
 			</head>
 			<body>
 				<noscript>You need to enable JavaScript to run this app.</noscript>
@@ -279,7 +259,6 @@ export class WebviewProvider implements vscode.WebviewViewProvider {
 				)
 				return DEFAULT_PORT
 			})
->>>>>>> upstream/main
 	}
 
 	/**
@@ -355,12 +334,8 @@ export class WebviewProvider implements vscode.WebviewViewProvider {
 					<meta http-equiv="Content-Security-Policy" content="${csp.join("; ")}">
 					<link rel="stylesheet" type="text/css" href="${stylesUri}">
 					<link href="${codiconsUri}" rel="stylesheet" />
-<<<<<<< HEAD
-					<title>Caret</title>
-=======
 					<link href="${katexCssUri}" rel="stylesheet" />
-					<title>Cline</title>
->>>>>>> upstream/main
+					<title>Caret</title>
 				</head>
 				<body>
 					<div id="root"></div>

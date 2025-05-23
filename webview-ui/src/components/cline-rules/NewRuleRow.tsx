@@ -65,7 +65,7 @@ const NewRuleRow: React.FC<NewRuleRowProps> = ({ isGlobal, ruleType }) => {
 					CreateRuleFileRequest.create({
 						isGlobal,
 						filename: finalFilename,
-						type: ruleType || "cline",
+						type: ruleType || "caret",
 					}),
 				)
 			} catch (err) {

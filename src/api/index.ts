@@ -68,25 +68,15 @@ export function buildApiHandler(
 		case "deepseek":
 			return new DeepSeekHandler(optionsWithoutProvider)
 		case "requesty":
-<<<<<<< HEAD
 			return new RequestyHandler(optionsWithoutProvider)
-=======
-			return new RequestyHandler(options)
 		case "fireworks":
-			return new FireworksHandler(options)
->>>>>>> upstream/main
+			return new FireworksHandler(optionsWithoutProvider)
 		case "together":
 			return new TogetherHandler(optionsWithoutProvider)
 		case "qwen":
-<<<<<<< HEAD
 			return new QwenHandler(optionsWithoutProvider)
 		case "doubao":
 			return new DoubaoHandler(optionsWithoutProvider)
-=======
-			return new QwenHandler(options)
-		case "doubao":
-			return new DoubaoHandler(options)
->>>>>>> upstream/main
 		case "mistral":
 			return new MistralHandler(optionsWithoutProvider)
 		case "vscode-lm":

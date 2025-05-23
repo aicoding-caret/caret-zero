@@ -1,10 +1,5 @@
-<<<<<<< HEAD:src/core/context-management/context-window-utils.ts
 import { ApiHandler } from "../../api"
 import { OpenAiHandler } from "../../api/providers/openai"
-=======
-import { ApiHandler } from "@api/index"
-import { OpenAiHandler } from "@api/providers/openai"
->>>>>>> upstream/main:src/core/context/context-management/context-window-utils.ts
 
 /**
  * Gets context window information for the given API handler

@@ -19,11 +19,11 @@ const InstalledServersView = () => {
 					Model Context Protocol
 				</VSCodeLink>{" "}
 				enables communication with locally running MCP servers that provide additional tools and resources to extend
-				Cline's capabilities. You can use{" "}
+				Caret's capabilities. You can use{" "}
 				<VSCodeLink href="https://github.com/modelcontextprotocol/servers" style={{ display: "inline" }}>
 					community-made servers
 				</VSCodeLink>{" "}
-				or ask Cline to create new tools specific to your workflow (e.g., "add a tool that gets the latest npm docs").{" "}
+				or ask Caret to create new tools specific to your workflow (e.g., "add a tool that gets the latest npm docs").{" "}
 				<VSCodeLink href="https://x.com/sdrzn/status/1867271665086074969" style={{ display: "inline" }}>
 					See a demo here.
 				</VSCodeLink>
@@ -48,7 +48,7 @@ const InstalledServersView = () => {
 						onClick={() => {
 							vscode.postMessage({
 								type: "openExtensionSettings",
-								text: "cline.mcp",
+								text: "caret.mcp",
 							})
 						}}
 						style={{ fontSize: "12px" }}>

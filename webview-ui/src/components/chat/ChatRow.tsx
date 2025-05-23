@@ -1,32 +1,26 @@
-<<<<<<< HEAD
-import React, { memo, useEffect, useRef } from "react"
-import { CaretMessage } from "../../../../src/shared/ExtensionMessage"
+// import React, { memo, useEffect, useRef } from "react"
+// import { CaretMessage } from "../../../../src/shared/ExtensionMessage"
 import deepEqual from "fast-deep-equal"
 import ChatRowContent from "./ChatRowContent"
-import { VSCodeButton } from "@vscode/webview-ui-toolkit/react"
+// import { VSCodeButton } from "@vscode/webview-ui-toolkit/react"
 import { vscode } from "../../utils/vscode"
 import styled from "styled-components"
-=======
 import { VSCodeBadge, VSCodeProgressRing, VSCodeButton } from "@vscode/webview-ui-toolkit/react"
-import deepEqual from "fast-deep-equal"
 import React, { memo, useCallback, useEffect, useMemo, useRef, useState, MouseEvent } from "react"
-
 import { useEvent, useSize } from "react-use"
-import styled from "styled-components"
 import {
-	ClineApiReqInfo,
-	ClineAskQuestion,
-	ClineAskUseMcpServer,
-	ClineMessage,
-	ClinePlanModeResponse,
-	ClineSayTool,
+	CaretApiReqInfo,
+	CaretAskQuestion,
+	CaretAskUseMcpServer,
+	CaretMessage,
+	CaretPlanModeResponse,
+	CaretSayTool,
 	COMPLETION_RESULT_CHANGES_FLAG,
 	ExtensionMessage,
 } from "@shared/ExtensionMessage"
 import { COMMAND_OUTPUT_STRING, COMMAND_REQ_APP_STRING } from "@shared/combineCommandSequences"
 import { useExtensionState } from "@/context/ExtensionStateContext"
 import { findMatchingResourceOrTemplate, getMcpServerDisplayName } from "@/utils/mcp"
-import { vscode } from "@/utils/vscode"
 import { FileServiceClient, TaskServiceClient } from "@/services/grpc-client"
 import { CheckmarkControl } from "@/components/common/CheckmarkControl"
 
@@ -102,7 +96,6 @@ import ReportBugPreview from "./ReportBugPreview"
 import McpResourceRow from "@/components/mcp/configuration/tabs/installed/server-row/McpResourceRow"
 import UserMessage from "./UserMessage"
 import QuoteButton from "./QuoteButton"
->>>>>>> upstream/main
 
 // 채팅 행 컨테이너
 const ChatRowContainer = styled.div`
@@ -134,75 +127,6 @@ interface QuoteButtonState {
 	selectedText: string
 }
 
-<<<<<<< HEAD
-const ChatRow = memo(
-	({ message, isLast, isExpanded, onToggleExpand, lastModifiedMessage, onHeightChange }: ChatRowProps) => {
-		const heightRef = useRef<HTMLDivElement>(null);
-		const prevHeightRef = useRef(0);
-
-		// 높이 변화 감지
-		useEffect(() => {
-			if (heightRef.current && isLast) {
-				const safeHeight = heightRef.current.getBoundingClientRect().height;
-				const isInitialRender = prevHeightRef.current === 0;
-
-				if (safeHeight > 0 && safeHeight !== Infinity && safeHeight !== prevHeightRef.current) {
-					if (!isInitialRender) {
-						onHeightChange(safeHeight > prevHeightRef.current);
-					}
-					prevHeightRef.current = safeHeight;
-				}
-			}
-		}, [isLast, message, onHeightChange]);
-
-		// 체크포인트 표시 여부 검사
-		const shouldAddCheckpointControls =
-			message.type === "ask" &&
-			(message.ask === "command" ||
-				message.ask === "command_output" ||
-				message.ask === "tool" ||
-				message.ask === "browser_action_launch" ||
-				message.ask === "use_mcp_server")
-
-		// 메인 렌더링 내용
-		return (
-			<div ref={heightRef} data-testid="chat-row">
-				<ChatRowContainer>
-					{shouldAddCheckpointControls && (
-						<div
-							style={{
-								position: "absolute",
-								top: 0,
-								right: "10px",
-								display: "flex",
-								flexDirection: "row",
-								gap: "5px",
-								zIndex: 100,
-							}}>
-							<VSCodeButton
-								appearance="icon"
-								onClick={() => {
-									vscode.postMessage({
-										type: "takeCheckpoint",
-										messageTs: message.ts,
-									})
-								}}>
-								<span className="codicon codicon-symbol-field"></span>
-							</VSCodeButton>
-						</div>
-					)}
-					<ChatRowContent
-						message={message}
-						isExpanded={isExpanded}
-						onToggleExpand={onToggleExpand}
-						lastModifiedMessage={lastModifiedMessage}
-						isLast={isLast}
-					/>
-				</ChatRowContainer>
-			</div>
-=======
-interface ChatRowContentProps extends Omit<ChatRowProps, "onHeightChange"> {}
-
 export const ProgressIndicator = () => (
 	<div
 		style={{
@@ -226,33 +150,84 @@ const Markdown = memo(({ markdown }: { markdown?: string }) => {
 				overflowWrap: "anywhere",
 				marginBottom: -15,
 				marginTop: -15,
-				overflow: "hidden", // contain child margins so that parent diff matches height of children
+				overflow: "hidden",
 			}}>
 			<MarkdownBlock markdown={markdown} />
 		</div>
 	)
 })
 
-const ChatRow = memo(
-	(props: ChatRowProps) => {
-		const { isLast, onHeightChange, message, lastModifiedMessage, inputValue } = props
-		// Store the previous height to compare with the current height
-		// This allows us to detect changes without causing re-renders
-		const prevHeightRef = useRef(0)
+const ChatRow = memo((props: ChatRowProps) => {
+	const {
+		message,
+		isLast,
+		isExpanded,
+		onToggleExpand,
+		lastModifiedMessage,
+		onHeightChange,
+		inputValue,
+	} = props
 
-		const [chatrow, { height }] = useSize(
-			<ChatRowContainer>
-				<ChatRowContent {...props} />
-			</ChatRowContainer>,
->>>>>>> upstream/main
+	const prevHeightRef = useRef(0)
+
+	// height 감지용: JSX 반환값과 측정값
+	const [chatRowElement, { height = 0 }] = useSize(
+		<ChatRowContainer>
+			<ChatRowContent {...props} />
+		</ChatRowContainer>
+	)
+
+	// 높이 변화 감지
+	useEffect(() => {
+		if (isLast && height > 0 && height !== Infinity && height !== prevHeightRef.current) {
+			if (prevHeightRef.current !== 0) {
+				onHeightChange(height > prevHeightRef.current)
+			}
+			prevHeightRef.current = height
+		}
+	}, [height, isLast, onHeightChange])
+
+	// 체크포인트 조건
+	const shouldAddCheckpointControls =
+		message.type === "ask" &&
+		["command", "command_output", "tool", "browser_action_launch", "use_mcp_server"].includes(
+			message.ask ?? ""
 		)
-	},
-	deepEqual
-)
+
+	return (
+		<div data-testid="chat-row">
+			<div style={{ position: "relative" }}>
+				{shouldAddCheckpointControls && (
+					<div
+						style={{
+							position: "absolute",
+							top: 0,
+							right: "10px",
+							display: "flex",
+							flexDirection: "row",
+							gap: "5px",
+							zIndex: 100,
+						}}>
+						<VSCodeButton
+							appearance="icon"
+							onClick={() => {
+								vscode.postMessage({
+									type: "takeCheckpoint",
+									messageTs: message.ts,
+								})
+							}}>
+							<span className="codicon codicon-symbol-field"></span>
+						</VSCodeButton>
+					</div>
+				)}
+
+				{chatRowElement}
+			</div>
+		</div>
+	)
+}, deepEqual)
 
 export default ChatRow
-<<<<<<< HEAD
-=======
 
 export const ChatRowContent = ({
 	message,
@@ -275,7 +250,7 @@ export const ChatRowContent = ({
 	const contentRef = useRef<HTMLDivElement>(null)
 	const [cost, apiReqCancelReason, apiReqStreamingFailedMessage, retryStatus] = useMemo(() => {
 		if (message.text != null && message.say === "api_req_started") {
-			const info: ClineApiReqInfo = JSON.parse(message.text)
+			const info: CaretApiReqInfo = JSON.parse(message.text)
 			return [info.cost, info.cancelReason, info.streamingFailedMessage, info.retryStatus]
 		}
 		return [undefined, undefined, undefined, undefined]
@@ -404,7 +379,7 @@ export const ChatRowContent = ({
 							color: errorColor,
 							marginBottom: "-1.5px",
 						}}></span>,
-					<span style={{ color: errorColor, fontWeight: "bold" }}>Cline is having trouble...</span>,
+					<span style={{ color: errorColor, fontWeight: "bold" }}>Caret is having trouble...</span>,
 				]
 			case "auto_approval_max_req_reached":
 				return [
@@ -428,10 +403,10 @@ export const ChatRowContent = ({
 								marginBottom: "-1.5px",
 							}}></span>
 					),
-					<span style={{ color: normalColor, fontWeight: "bold" }}>Cline wants to execute this command:</span>,
+					<span style={{ color: normalColor, fontWeight: "bold" }}>Caret wants to execute this command:</span>,
 				]
 			case "use_mcp_server":
-				const mcpServerUse = JSON.parse(message.text || "{}") as ClineAskUseMcpServer
+				const mcpServerUse = JSON.parse(message.text || "{}") as CaretAskUseMcpServer
 				return [
 					isMcpServerResponding ? (
 						<ProgressIndicator />
@@ -444,7 +419,7 @@ export const ChatRowContent = ({
 							}}></span>
 					),
 					<span className="ph-no-capture" style={{ color: normalColor, fontWeight: "bold", wordBreak: "break-word" }}>
-						Cline wants to {mcpServerUse.type === "use_mcp_tool" ? "use a tool" : "access a resource"} on the{" "}
+						Caret wants to {mcpServerUse.type === "use_mcp_tool" ? "use a tool" : "access a resource"} on the{" "}
 						<code style={{ wordBreak: "break-all" }}>
 							{getMcpServerDisplayName(mcpServerUse.serverName, mcpMarketplaceCatalog)}
 						</code>{" "}
@@ -533,7 +508,7 @@ export const ChatRowContent = ({
 							color: normalColor,
 							marginBottom: "-1.5px",
 						}}></span>,
-					<span style={{ color: normalColor, fontWeight: "bold" }}>Cline has a question:</span>,
+					<span style={{ color: normalColor, fontWeight: "bold" }}>Caret has a question:</span>,
 				]
 			default:
 				return [null, null]
@@ -556,7 +531,7 @@ export const ChatRowContent = ({
 
 	const tool = useMemo(() => {
 		if (message.ask === "tool" || message.say === "tool") {
-			return JSON.parse(message.text || "{}") as ClineSayTool
+			return JSON.parse(message.text || "{}") as CaretSayTool
 		}
 		return null
 	}, [message.ask, message.say, message.text])
@@ -586,7 +561,7 @@ export const ChatRowContent = ({
 							{toolIcon("edit")}
 							{tool.operationIsLocatedInWorkspace === false &&
 								toolIcon("sign-out", "yellow", -90, "This file is outside of your workspace")}
-							<span style={{ fontWeight: "bold" }}>Cline wants to edit this file:</span>
+							<span style={{ fontWeight: "bold" }}>Caret wants to edit this file:</span>
 						</div>
 						<CodeAccordian
 							// isLoading={message.partial}
@@ -604,7 +579,7 @@ export const ChatRowContent = ({
 							{toolIcon("new-file")}
 							{tool.operationIsLocatedInWorkspace === false &&
 								toolIcon("sign-out", "yellow", -90, "This file is outside of your workspace")}
-							<span style={{ fontWeight: "bold" }}>Cline wants to create a new file:</span>
+							<span style={{ fontWeight: "bold" }}>Caret wants to create a new file:</span>
 						</div>
 						<CodeAccordian
 							isLoading={message.partial}
@@ -623,8 +598,8 @@ export const ChatRowContent = ({
 							{tool.operationIsLocatedInWorkspace === false &&
 								toolIcon("sign-out", "yellow", -90, "This file is outside of your workspace")}
 							<span style={{ fontWeight: "bold" }}>
-								{/* {message.type === "ask" ? "" : "Cline read this file:"} */}
-								Cline wants to read this file:
+								{/* {message.type === "ask" ? "" : "Caret read this file:"} */}
+								Caret wants to read this file:
 							</span>
 						</div>
 						<div
@@ -684,8 +659,8 @@ export const ChatRowContent = ({
 								toolIcon("sign-out", "yellow", -90, "This is outside of your workspace")}
 							<span style={{ fontWeight: "bold" }}>
 								{message.type === "ask"
-									? "Cline wants to view the top level files in this directory:"
-									: "Cline viewed the top level files in this directory:"}
+									? "Caret wants to view the top level files in this directory:"
+									: "Caret viewed the top level files in this directory:"}
 							</span>
 						</div>
 						<CodeAccordian
@@ -706,8 +681,8 @@ export const ChatRowContent = ({
 								toolIcon("sign-out", "yellow", -90, "This is outside of your workspace")}
 							<span style={{ fontWeight: "bold" }}>
 								{message.type === "ask"
-									? "Cline wants to recursively view all files in this directory:"
-									: "Cline recursively viewed all files in this directory:"}
+									? "Caret wants to recursively view all files in this directory:"
+									: "Caret recursively viewed all files in this directory:"}
 							</span>
 						</div>
 						<CodeAccordian
@@ -728,8 +703,8 @@ export const ChatRowContent = ({
 								toolIcon("sign-out", "yellow", -90, "This file is outside of your workspace")}
 							<span style={{ fontWeight: "bold" }}>
 								{message.type === "ask"
-									? "Cline wants to view source code definition names used in this directory:"
-									: "Cline viewed source code definition names used in this directory:"}
+									? "Caret wants to view source code definition names used in this directory:"
+									: "Caret viewed source code definition names used in this directory:"}
 							</span>
 						</div>
 						<CodeAccordian
@@ -748,7 +723,7 @@ export const ChatRowContent = ({
 							{tool.operationIsLocatedInWorkspace === false &&
 								toolIcon("sign-out", "yellow", -90, "This is outside of your workspace")}
 							<span style={{ fontWeight: "bold" }}>
-								Cline wants to search this directory for <code>{tool.regex}</code>:
+								Caret wants to search this directory for <code>{tool.regex}</code>:
 							</span>
 						</div>
 						<CodeAccordian
@@ -853,7 +828,7 @@ export const ChatRowContent = ({
 	}
 
 	if (message.ask === "use_mcp_server" || message.say === "use_mcp_server") {
-		const useMcpServer = JSON.parse(message.text || "{}") as ClineAskUseMcpServer
+		const useMcpServer = JSON.parse(message.text || "{}") as CaretAskUseMcpServer
 		const server = mcpServers.find((server) => server.name === useMcpServer.serverName)
 		return (
 			<>
@@ -1002,7 +977,7 @@ export const ChatRowContent = ({
 														<br />
 														It seems like you're having Windows PowerShell issues, please see this{" "}
 														<a
-															href="https://github.com/cline/cline/wiki/TroubleShooting-%E2%80%90-%22PowerShell-is-not-recognized-as-an-internal-or-external-command%22"
+															href="https://github.com/caret/caret/wiki/TroubleShooting-%E2%80%90-%22PowerShell-is-not-recognized-as-an-internal-or-external-command%22"
 															style={{
 																color: "inherit",
 																textDecoration: "underline",
@@ -1116,7 +1091,7 @@ export const ChatRowContent = ({
 						/>
 					)
 				case "user_feedback_diff":
-					const tool = JSON.parse(message.text || "{}") as ClineSayTool
+					const tool = JSON.parse(message.text || "{}") as CaretSayTool
 					return (
 						<div
 							style={{
@@ -1182,7 +1157,7 @@ export const ChatRowContent = ({
 							</div>
 						</>
 					)
-				case "clineignore_error":
+				case "caretignore_error":
 					return (
 						<>
 							<div
@@ -1216,8 +1191,8 @@ export const ChatRowContent = ({
 									</span>
 								</div>
 								<div>
-									Cline tried to access <code>{message.text}</code> which is blocked by the{" "}
-									<code>.clineignore</code>
+									Caret tried to access <code>{message.text}</code> which is blocked by the{" "}
+									<code>.caretignore</code>
 									file.
 								</div>
 							</div>
@@ -1340,12 +1315,12 @@ export const ChatRowContent = ({
 									</span>
 								</div>
 								<div>
-									Cline won't be able to view the command's output. Please update VSCode (
+									Caret won't be able to view the command's output. Please update VSCode (
 									<code>CMD/CTRL + Shift + P</code> → "Update") and make sure you're using a supported shell:
 									zsh, bash, fish, or PowerShell (<code>CMD/CTRL + Shift + P</code> → "Terminal: Select Default
 									Profile").{" "}
 									<a
-										href="https://github.com/cline/cline/wiki/Troubleshooting-%E2%80%90-Shell-Integration-Unavailable"
+										href="https://github.com/caret/caret/wiki/Troubleshooting-%E2%80%90-Shell-Integration-Unavailable"
 										style={{
 											color: "inherit",
 											textDecoration: "underline",
@@ -1481,7 +1456,7 @@ export const ChatRowContent = ({
 					let options: string[] | undefined
 					let selected: string | undefined
 					try {
-						const parsedMessage = JSON.parse(message.text || "{}") as ClineAskQuestion
+						const parsedMessage = JSON.parse(message.text || "{}") as CaretAskQuestion
 						question = parsedMessage.question
 						options = parsedMessage.options
 						selected = parsedMessage.selected
@@ -1532,7 +1507,7 @@ export const ChatRowContent = ({
 										color: normalColor,
 										marginBottom: "-1.5px",
 									}}></span>
-								<span style={{ color: normalColor, fontWeight: "bold" }}>Cline wants to start a new task:</span>
+								<span style={{ color: normalColor, fontWeight: "bold" }}>Caret wants to start a new task:</span>
 							</div>
 							<NewTaskPreview context={message.text || ""} />
 						</>
@@ -1548,7 +1523,7 @@ export const ChatRowContent = ({
 										marginBottom: "-1.5px",
 									}}></span>
 								<span style={{ color: normalColor, fontWeight: "bold" }}>
-									Cline wants to condense your conversation:
+									Caret wants to condense your conversation:
 								</span>
 							</div>
 							<NewTaskPreview context={message.text || ""} />
@@ -1565,7 +1540,7 @@ export const ChatRowContent = ({
 										marginBottom: "-1.5px",
 									}}></span>
 								<span style={{ color: normalColor, fontWeight: "bold" }}>
-									Cline wants to create a Github issue:
+									Caret wants to create a Github issue:
 								</span>
 							</div>
 							<ReportBugPreview data={message.text || ""} />
@@ -1576,7 +1551,7 @@ export const ChatRowContent = ({
 					let options: string[] | undefined
 					let selected: string | undefined
 					try {
-						const parsedMessage = JSON.parse(message.text || "{}") as ClinePlanModeResponse
+						const parsedMessage = JSON.parse(message.text || "{}") as CaretPlanModeResponse
 						response = parsedMessage.response
 						options = parsedMessage.options
 						selected = parsedMessage.selected
@@ -1627,4 +1602,3 @@ function parseErrorText(text: string | undefined) {
 		// Not JSON or missing required fields
 	}
 }
->>>>>>> upstream/main

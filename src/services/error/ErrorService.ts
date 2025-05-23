@@ -24,7 +24,7 @@ export class ErrorService {
 		Sentry.init({
 			dsn: "https://7936780e3f0f0290fcf8d4a395c249b7@o4509028819664896.ingest.us.sentry.io/4509052955983872",
 			environment: process.env.NODE_ENV,
-			release: `cline@${pkg.version}`,
+			release: `caret@${pkg.version}`,
 			integrations: [Sentry.browserTracingIntegration(), Sentry.replayIntegration()],
 			beforeSend(event) {
 				// TelemetryService keeps track of whether the user has opted in to telemetry/error reporting

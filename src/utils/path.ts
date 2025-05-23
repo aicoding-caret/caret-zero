@@ -110,8 +110,6 @@ export const getWorkspacePath = (defaultCwdPath = "") => {
 	}
 	return cwdPath
 }
-<<<<<<< HEAD
-=======
 
 export const isLocatedInWorkspace = (pathToCheck: string = ""): boolean => {
 	const workspacePath = getWorkspacePath()
@@ -130,4 +128,3 @@ export const isLocatedInWorkspace = (pathToCheck: string = ""): boolean => {
 
 	return !relativePath.startsWith("..") && !path.isAbsolute(relativePath)
 }
->>>>>>> upstream/main

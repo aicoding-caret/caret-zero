@@ -60,17 +60,13 @@ const TelemetryBanner = () => {
 				✕
 			</CloseButton>
 			<div>
-<<<<<<< HEAD
 				<strong>Help Improve Caret</strong>
-=======
-				<strong>Help Improve Cline</strong>
 				<i>
 					<br />
 					(and access experimental features)
 				</i>
->>>>>>> upstream/main
 				<div style={{ marginTop: 4 }}>
-					Cline collects anonymous error and usage data to help us fix bugs and improve the extension. No code, prompts,
+					Caret collects anonymous error and usage data to help us fix bugs and improve the extension. No code, prompts,
 					or personal information is ever sent.
 					<div style={{ marginTop: 4 }}>
 						You can turn this setting off in{" "}

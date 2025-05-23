@@ -8,9 +8,9 @@ import WelcomeView from "./components/welcome/WelcomeView"
 import AccountView from "./components/account/AccountView"
 import { useExtensionState } from "./context/ExtensionStateContext"
 import { vscode } from "./utils/vscode"
-<<<<<<< HEAD
 import McpView from "./components/mcp/McpView"
 import VisionInferencePanel from "./components/VisionInferencePanel"
+import { Providers } from "./Providers"
 
 // [ALPHA] VSCode API 브릿지 전역 할당 (VSCode Webview 환경에서만 1회)
 const isVSCodeWebview = typeof window !== "undefined"
@@ -22,14 +22,7 @@ if (isVSCodeWebview && !window.vscode) {
 }
 
 const AppContent = () => {
-	const { didHydrateState, showWelcome, shouldShowAnnouncement, telemetrySetting, vscMachineId, alphaAvatarUri, alphaThinkingAvatarUri } = useExtensionState()
-=======
-import McpView from "./components/mcp/configuration/McpConfigurationView"
-import { Providers } from "./Providers"
-
-const AppContent = () => {
-	const { didHydrateState, showWelcome, shouldShowAnnouncement, showMcp, mcpTab } = useExtensionState()
->>>>>>> upstream/main
+	const { didHydrateState, showWelcome, shouldShowAnnouncement, telemetrySetting, vscMachineId, alphaAvatarUri, alphaThinkingAvatarUri , showMcp, mcpTab} = useExtensionState()
 	const [showSettings, setShowSettings] = useState(false)
 	const hideSettings = useCallback(() => setShowSettings(false), [])
 	const [showHistory, setShowHistory] = useState(false)
@@ -53,7 +46,6 @@ const AppContent = () => {
 		setShowAccount(false)
 	}, [])
 
-<<<<<<< HEAD
 	const handleMessage = useCallback((e: MessageEvent) => {
 		const message: ExtensionMessage = e.data
 		switch (message.type) {
@@ -126,7 +118,6 @@ const AppContent = () => {
 		}
 	}, [didHydrateState, alphaAvatarUri, alphaThinkingAvatarUri]);
 
-=======
 	const { setShowMcp, setMcpTab } = useExtensionState()
 
 	const closeMcpView = useCallback(() => {
@@ -182,7 +173,6 @@ const AppContent = () => {
 
 	useEvent("message", handleMessage)
 
->>>>>>> upstream/main
 	useEffect(() => {
 		if (shouldShowAnnouncement) {
 			setShowAnnouncement(true)

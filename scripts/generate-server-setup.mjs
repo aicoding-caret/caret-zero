@@ -9,9 +9,9 @@ const OUT_FILE = path.resolve("src/standalone/server-setup.ts")
 const DESCRIPTOR_SET = path.resolve("dist-standalone/proto/descriptor_set.pb")
 
 // Load service definitions.
-const clineDef = protoLoader.loadFileDescriptorSetFromBuffer(fs.readFileSync(DESCRIPTOR_SET))
+const caretDef = protoLoader.loadFileDescriptorSetFromBuffer(fs.readFileSync(DESCRIPTOR_SET))
 const healthDef = protoLoader.loadSync(health.protoPath)
-const packageDefinition = { ...clineDef, ...healthDef }
+const packageDefinition = { ...caretDef, ...healthDef }
 const proto = grpc.loadPackageDefinition(packageDefinition)
 
 /**
@@ -21,7 +21,7 @@ function generateHandlersAndExports() {
 	let imports = []
 	let handlerSetup = []
 
-	for (const [name, def] of Object.entries(proto.cline)) {
+	for (const [name, def] of Object.entries(proto.caret)) {
 		if (!def || !("service" in def)) {
 			continue
 		}
@@ -29,7 +29,7 @@ function generateHandlersAndExports() {
 		const dir = domain.charAt(0).toLowerCase() + domain.slice(1)
 		imports.push(`// ${domain} Service`)
 		handlerSetup.push(`    // ${domain} Service`)
-		handlerSetup.push(`    server.addService(proto.cline.${name}.service, {`)
+		handlerSetup.push(`    server.addService(proto.caret.${name}.service, {`)
 		for (const [rpcName, rpc] of Object.entries(def.service)) {
 			imports.push(`import { ${rpcName} } from "../core/controller/${dir}/${rpcName}"`)
 			if (rpc.requestStream) {

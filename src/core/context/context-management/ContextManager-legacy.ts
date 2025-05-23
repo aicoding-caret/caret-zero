@@ -1,5 +1,4 @@
 import { Anthropic } from "@anthropic-ai/sdk"
-<<<<<<< HEAD:src/core/context-management/ContextManager.ts
 import { CaretApiReqInfo, CaretMessage } from "../../shared/ExtensionMessage"
 import { ApiHandler } from "../../api"
 import { getContextWindowInfo } from "./context-window-utils"
@@ -109,15 +108,7 @@ export class ContextManager {
 	/**
 	 * primary entry point for getting up to date context & truncating when required
 	 */
-	async getNewContextMessagesAndMetadata(
-=======
-import { ClineApiReqInfo, ClineMessage } from "@shared/ExtensionMessage"
-import { ApiHandler } from "@api/index"
-import { getContextWindowInfo } from "./context-window-utils"
-
-class ContextManager {
-	getNewContextMessagesAndMetadata(
->>>>>>> upstream/main:src/core/context/context-management/ContextManager-legacy.ts
+	 getNewContextMessagesAndMetadata(
 		apiConversationHistory: Anthropic.Messages.MessageParam[],
 		caretMessages: CaretMessage[],
 		api: ApiHandler,

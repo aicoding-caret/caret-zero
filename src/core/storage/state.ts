@@ -3,8 +3,7 @@ import { DEFAULT_CHAT_SETTINGS, OpenAIReasoningEffort } from "@shared/ChatSettin
 import { DEFAULT_BROWSER_SETTINGS } from "@shared/BrowserSettings"
 import { DEFAULT_AUTO_APPROVAL_SETTINGS } from "@shared/AutoApprovalSettings"
 import { GlobalStateKey, SecretKey } from "./state-keys"
-<<<<<<< HEAD
-import { ApiConfiguration, ApiProvider, ModelInfo } from "../../shared/api"
+import { ApiConfiguration, ApiProvider, BedrockModelId, ModelInfo } from "../../shared/api"
 import { HistoryItem } from "../../shared/HistoryItem"
 import { AutoApprovalSettings } from "../../shared/AutoApprovalSettings"
 import { BrowserSettings } from "../../shared/BrowserSettings"
@@ -12,16 +11,7 @@ import { ChatSettings } from "../../shared/ChatSettings"
 import { TelemetrySetting } from "../../shared/TelemetrySetting"
 import { UserInfo } from "../../shared/UserInfo"
 import { Persona } from "../../shared/types"
-=======
-import { ApiConfiguration, ApiProvider, BedrockModelId, ModelInfo } from "@shared/api"
-import { HistoryItem } from "@shared/HistoryItem"
-import { AutoApprovalSettings } from "@shared/AutoApprovalSettings"
-import { BrowserSettings } from "@shared/BrowserSettings"
-import { ChatSettings } from "@shared/ChatSettings"
-import { TelemetrySetting } from "@shared/TelemetrySetting"
-import { UserInfo } from "@shared/UserInfo"
-import { ClineRulesToggles } from "@shared/cline-rules"
->>>>>>> upstream/main
+import { CaretRulesToggles } from "../../shared/caret-rules"
 /*
 	Storage
 	https://dev.to/kompotkot/how-to-use-secretstorage-in-your-vscode-extensions-2hco
@@ -63,7 +53,7 @@ export async function getWorkspaceState(context: vscode.ExtensionContext, key: s
 }
 
 async function migrateMcpMarketplaceEnableSetting(mcpMarketplaceEnabledRaw: boolean | undefined): Promise<boolean> {
-	const config = vscode.workspace.getConfiguration("cline")
+	const config = vscode.workspace.getConfiguration("caret")
 	const mcpMarketplaceEnabled = config.get<boolean>("mcpMarketplace.enabled")
 	if (mcpMarketplaceEnabled !== undefined) {
 		// Remove from VSCode configuration
@@ -75,7 +65,7 @@ async function migrateMcpMarketplaceEnableSetting(mcpMarketplaceEnabledRaw: bool
 }
 
 async function migrateEnableCheckpointsSetting(enableCheckpointsSettingRaw: boolean | undefined): Promise<boolean> {
-	const config = vscode.workspace.getConfiguration("cline")
+	const config = vscode.workspace.getConfiguration("caret")
 	const enableCheckpoints = config.get<boolean>("enableCheckpoints")
 	if (enableCheckpoints !== undefined) {
 		// Remove from VSCode configuration
@@ -171,16 +161,13 @@ export async function getAllExtensionState(context: vscode.ExtensionContext) {
 		reasoningEffort,
 		sambanovaApiKey,
 		planActSeparateModelsSettingRaw,
-<<<<<<< HEAD
-		hyperclovaxUrlRaw
-=======
+		hyperclovaxUrlRaw,
 		favoritedModelIds,
-		globalClineRulesToggles,
+		globalCaretRulesToggles,
 		requestTimeoutMs,
 		shellIntegrationTimeout,
 		enableCheckpointsSettingRaw,
 		mcpMarketplaceEnabledRaw,
->>>>>>> upstream/main
 	] = await Promise.all([
 		getGlobalState(context, "isNewUser") as Promise<boolean | undefined>,
 		getGlobalState(context, "apiProvider") as Promise<ApiProvider | undefined>,
@@ -262,17 +249,14 @@ export async function getAllExtensionState(context: vscode.ExtensionContext) {
 		getGlobalState(context, "reasoningEffort") as Promise<string | undefined>,
 		getSecret(context, "sambanovaApiKey") as Promise<string | undefined>,
 		getGlobalState(context, "planActSeparateModelsSetting") as Promise<boolean | undefined>,
-<<<<<<< HEAD
-		getGlobalState(context, "hyperclovaxUrl") as Promise<string | undefined>
-=======
+		getGlobalState(context, "hyperclovaxUrl") as Promise<string | undefined>,
 		getGlobalState(context, "favoritedModelIds") as Promise<string[] | undefined>,
-		getGlobalState(context, "globalClineRulesToggles") as Promise<ClineRulesToggles | undefined>,
+		getGlobalState(context, "globalCaretRulesToggles") as Promise<CaretRulesToggles | undefined>,
 		getGlobalState(context, "requestTimeoutMs") as Promise<number | undefined>,
 		getGlobalState(context, "shellIntegrationTimeout") as Promise<number | undefined>,
 		getGlobalState(context, "enableCheckpointsSetting") as Promise<boolean | undefined>,
 		getGlobalState(context, "mcpMarketplaceEnabled") as Promise<boolean | undefined>,
 		fetch,
->>>>>>> upstream/main
 	])
 
 	// Patch: Fix legacy boolean bug for hyperclovaxUrl only
@@ -297,16 +281,13 @@ export async function getAllExtensionState(context: vscode.ExtensionContext) {
 		}
 	}
 
-<<<<<<< HEAD
 	const o3MiniReasoningEffort = vscode.workspace.getConfiguration("caret.modelSettings.o3Mini").get("reasoningEffort", "medium")
 
 	const mcpMarketplaceEnabled = vscode.workspace.getConfiguration("caret").get<boolean>("mcpMarketplace.enabled", true)
-=======
-	const localClineRulesToggles = (await getWorkspaceState(context, "localClineRulesToggles")) as ClineRulesToggles
+	const localCaretRulesToggles = (await getWorkspaceState(context, "localCaretRulesToggles")) as CaretRulesToggles
 
-	const mcpMarketplaceEnabled = await migrateMcpMarketplaceEnableSetting(mcpMarketplaceEnabledRaw)
+	// const mcpMarketplaceEnabled = await migrateMcpMarketplaceEnableSetting(mcpMarketplaceEnabledRaw)
 	const enableCheckpointsSetting = await migrateEnableCheckpointsSetting(enableCheckpointsSettingRaw)
->>>>>>> upstream/main
 
 	// Plan/Act separate models setting is a boolean indicating whether the user wants to use different models for plan and act. Existing users expect this to be enabled, while we want new users to opt in to this being disabled by default.
 	// On win11 state sometimes initializes as empty string instead of undefined
@@ -390,20 +371,17 @@ export async function getAllExtensionState(context: vscode.ExtensionContext) {
 			asksageApiUrl,
 			xaiApiKey,
 			sambanovaApiKey,
-<<<<<<< HEAD
 			hyperclovaxUrl,
-=======
 			favoritedModelIds,
 			requestTimeoutMs,
->>>>>>> upstream/main
 		},
 		isNewUser: isNewUser ?? true,
 		lastShownAnnouncementId,
 		customInstructions,
 		taskHistory,
 		autoApprovalSettings: autoApprovalSettings || DEFAULT_AUTO_APPROVAL_SETTINGS, // default value can be 0 or empty string
-		globalClineRulesToggles: globalClineRulesToggles || {},
-		localClineRulesToggles: localClineRulesToggles || {},
+		globalCaretRulesToggles: globalCaretRulesToggles || {},
+		localCaretRulesToggles: localCaretRulesToggles || {},
 		browserSettings: { ...DEFAULT_BROWSER_SETTINGS, ...browserSettings }, // this will ensure that older versions of browserSettings (e.g. before remoteBrowserEnabled was added) are merged with the default values (false for remoteBrowserEnabled)
 		chatSettings: {
 			...DEFAULT_CHAT_SETTINGS, // Apply defaults first
@@ -421,14 +399,11 @@ export async function getAllExtensionState(context: vscode.ExtensionContext) {
 		mcpMarketplaceEnabled: mcpMarketplaceEnabled,
 		telemetrySetting: telemetrySetting || "unset",
 		planActSeparateModelsSetting,
-<<<<<<< HEAD
 		persona,
 		selectedLanguage,
 		supportedLanguages,
-=======
 		enableCheckpointsSetting: enableCheckpointsSetting,
 		shellIntegrationTimeout: shellIntegrationTimeout || 4000,
->>>>>>> upstream/main
 	}
 }
 
@@ -471,12 +446,8 @@ export async function updateApiConfiguration(context: vscode.ExtensionContext, a
 		requestyModelInfo,
 		togetherApiKey,
 		togetherModelId,
-<<<<<<< HEAD
-		qwenApiKey,		
-=======
 		qwenApiKey,
 		doubaoApiKey,
->>>>>>> upstream/main
 		mistralApiKey,
 		azureApiVersion,
 		openRouterModelId,
@@ -493,16 +464,11 @@ export async function updateApiConfiguration(context: vscode.ExtensionContext, a
 		asksageApiUrl,
 		xaiApiKey,
 		thinkingBudgetTokens,
-<<<<<<< HEAD
+		hyperclovaxUrl,
+		reasoningEffort,
 		caretApiKey,
 		sambanovaApiKey,
-		hyperclovaxUrl,
-=======
-		reasoningEffort,
-		clineApiKey,
-		sambanovaApiKey,
 		favoritedModelIds,
->>>>>>> upstream/main
 	} = apiConfiguration
 	await updateGlobalState(context, "apiProvider", apiProvider)
 	await updateGlobalState(context, "apiModelId", apiModelId)
@@ -559,7 +525,6 @@ export async function updateApiConfiguration(context: vscode.ExtensionContext, a
 	await storeSecret(context, "asksageApiKey", asksageApiKey)
 	await updateGlobalState(context, "asksageApiUrl", asksageApiUrl)
 	await updateGlobalState(context, "thinkingBudgetTokens", thinkingBudgetTokens)
-<<<<<<< HEAD
 	await storeSecret(context, "caretApiKey", caretApiKey)
 	await storeSecret(context, "sambanovaApiKey", sambanovaApiKey)
     // 다른 프로바이더(openAiApiKey 등)와 동일하게 빈 문자열/undefined/null은 저장하지 않음
@@ -570,13 +535,11 @@ export async function updateApiConfiguration(context: vscode.ExtensionContext, a
         console.log("[Caret] [updateApiConfiguration] Removing hyperclovaxUrl (globalState):", hyperclovaxUrl)
         await updateGlobalState(context, "hyperclovaxUrl", undefined)
     }
-=======
 	await updateGlobalState(context, "reasoningEffort", reasoningEffort)
-	await storeSecret(context, "clineApiKey", clineApiKey)
+	await storeSecret(context, "caretApiKey", caretApiKey)
 	await storeSecret(context, "sambanovaApiKey", sambanovaApiKey)
 	await updateGlobalState(context, "favoritedModelIds", favoritedModelIds)
 	await updateGlobalState(context, "requestTimeoutMs", apiConfiguration.requestTimeoutMs)
->>>>>>> upstream/main
 }
 
 export async function resetExtensionState(context: vscode.ExtensionContext) {

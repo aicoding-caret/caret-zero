@@ -14,9 +14,9 @@ $global:caretZeroDir = Split-Path $global:scriptsDir # This should be the worksp
 # Write-Output "Scripts Dir: $global:scriptsDir"
 # Write-Output "Workspace Root: $global:caretZeroDir"
 
-$global:clineUpstreamDir = Join-Path $global:caretZeroDir "cline-upstream"
+$global:caretUpstreamDir = Join-Path $global:caretZeroDir "caret-upstream"
 
-$global:clineUpstreamChangesFile = Join-Path $global:caretZeroDir "caret-docs/tasks/029-02-action-git-cline-upstream-changes.txt"
+$global:caretUpstreamChangesFile = Join-Path $global:caretZeroDir "caret-docs/tasks/029-02-action-git-caret-upstream-changes.txt"
 $global:caretZeroChangesFile = Join-Path $global:caretZeroDir "caret-docs/tasks/029-02-action-git-caret-zero-changes.txt"
 # Updated path for the Python script
 $global:compareScriptPath = Join-Path $global:caretZeroDir "scripts/merging-job/compare_diff_files.py"
@@ -25,19 +25,19 @@ Write-Output "==================================================================
 Write-Output "Starting Automated Diff Comparison Process..."
 Write-Output "=================================================================="
 
-# --- 1. Extract cline-upstream changes ---
+# --- 1. Extract caret-upstream changes ---
 Write-Output "
->>> 1. Extracting cline-upstream changes (v3.10.1 vs v3.16.1)..."
-if (Test-Path $global:clineUpstreamDir) {
+>>> 1. Extracting caret-upstream changes (v3.10.1 vs v3.16.1)..."
+if (Test-Path $global:caretUpstreamDir) {
     try {
-        git -C $global:clineUpstreamDir diff --name-only v3.10.1 v3.16.1 > $global:clineUpstreamChangesFile
-        Write-Output "SUCCESS: cline-upstream changes written to $global:clineUpstreamChangesFile"
+        git -C $global:caretUpstreamDir diff --name-only v3.10.1 v3.16.1 > $global:caretUpstreamChangesFile
+        Write-Output "SUCCESS: caret-upstream changes written to $global:caretUpstreamChangesFile"
     } catch {
-        Write-Error "ERROR in step 1: Failed to run git diff for cline-upstream. Details: $($_.Exception.Message)"
+        Write-Error "ERROR in step 1: Failed to run git diff for caret-upstream. Details: $($_.Exception.Message)"
         exit 1
     }
 } else {
-    Write-Error "ERROR in step 1: cline-upstream directory not found at $($global:clineUpstreamDir)"
+    Write-Error "ERROR in step 1: caret-upstream directory not found at $($global:caretUpstreamDir)"
     exit 1
 }
 

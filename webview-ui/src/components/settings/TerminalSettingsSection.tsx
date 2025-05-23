@@ -65,7 +65,7 @@ export const TerminalSettingsSection: React.FC = () => {
 					)}
 				</div>
 				<p style={{ fontSize: "12px", color: "var(--vscode-descriptionForeground)", margin: 0 }}>
-					Set how long Cline waits for shell integration to activate before executing commands. Increase this value if
+					Set how long Caret waits for shell integration to activate before executing commands. Increase this value if
 					you experience terminal connection timeouts.
 				</p>
 			</div>

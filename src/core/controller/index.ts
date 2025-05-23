@@ -6,7 +6,6 @@ import { setTimeout as setTimeoutPromise } from "node:timers/promises"
 import pWaitFor from "p-wait-for"
 import * as path from "path"
 import * as vscode from "vscode"
-<<<<<<< HEAD
 import { buildApiHandler } from "../../api"
 import { cleanupLegacyCheckpoints } from "../../integrations/checkpoints/CheckpointMigration"
 import { downloadTask } from "../../integrations/misc/export-markdown"
@@ -31,35 +30,13 @@ import { fileExistsAtPath } from "../../utils/fs"
 import { searchCommits } from "../../utils/git"
 import { getWorkspacePath } from "../../utils/path"
 import { getTotalTasksSize } from "../../utils/storage"
-import { Task } from "../task"
-=======
+// import { Task } from "../task"
 import { handleGrpcRequest, handleGrpcRequestCancel } from "./grpc-handler"
 import { handleModelsServiceRequest } from "./models"
 import { EmptyRequest } from "@shared/proto/common"
-import { buildApiHandler } from "@api/index"
-import { cleanupLegacyCheckpoints } from "@integrations/checkpoints/CheckpointMigration"
-import { downloadTask } from "@integrations/misc/export-markdown"
-import { fetchOpenGraphData } from "@integrations/misc/link-preview"
 import { handleFileServiceRequest } from "./file"
-import { getTheme } from "@integrations/theme/getTheme"
-import WorkspaceTracker from "@integrations/workspace/WorkspaceTracker"
-import { ClineAccountService } from "@services/account/ClineAccountService"
-import { BrowserSession } from "@services/browser/BrowserSession"
-import { McpHub } from "@services/mcp/McpHub"
-import { telemetryService } from "@/services/posthog/telemetry/TelemetryService"
-import { ApiProvider, ModelInfo } from "@shared/api"
-import { ChatContent } from "@shared/ChatContent"
-import { ChatSettings } from "@shared/ChatSettings"
-import { ExtensionMessage, ExtensionState, Invoke, Platform } from "@shared/ExtensionMessage"
-import { HistoryItem } from "@shared/HistoryItem"
-import { McpDownloadResponse, McpMarketplaceCatalog, McpServer } from "@shared/mcp"
-import { TelemetrySetting } from "@shared/TelemetrySetting"
-import { WebviewMessage } from "@shared/WebviewMessage"
-import { fileExistsAtPath } from "@utils/fs"
 import { getWorkingState } from "@utils/git"
 import { extractCommitMessage } from "@integrations/git/commit-message-generator"
-import { getTotalTasksSize } from "@utils/storage"
->>>>>>> upstream/main
 import { openMention } from "../mentions"
 import { ensureMcpServersDirectoryExists, ensureSettingsDirectoryExists, GlobalFileNames } from "../storage/disk"
 import {
@@ -73,7 +50,6 @@ import {
 	updateGlobalState,
 	updateWorkspaceState,
 } from "../storage/state"
-<<<<<<< HEAD
 import { WebviewProvider } from "../webview"
 import { BrowserSession } from "../../services/browser/BrowserSession"
 import { GlobalFileNames } from "../storage/disk"
@@ -84,14 +60,12 @@ import { TemplateCharacterManager } from '../persona/templateCharacters';
 import { PersonaController } from './persona-controller';
 import { MessageType, PersonaMessages } from './message-types';
 import { PersonaManager } from '../persona/PersonaManager';
-=======
 import { Task, cwd } from "../task"
-import { ClineRulesToggles } from "@shared/cline-rules"
+import { CaretRulesToggles } from "@shared/caret-rules"
 import { sendStateUpdate } from "./state/subscribeToState"
-import { refreshClineRulesToggles } from "@core/context/instructions/user-instructions/cline-rules"
+import { refreshCaretRulesToggles } from "@core/context/instructions/user-instructions/caret-rules"
 import { refreshExternalRulesToggles } from "@core/context/instructions/user-instructions/external-rules"
 import { refreshWorkflowToggles } from "@core/context/instructions/user-instructions/workflows"
->>>>>>> upstream/main
 
 /*
 https://github.com/microsoft/vscode-webview-ui-toolkit-samples/blob/main/default/weather-webview/src/providers/WeatherViewProvider.ts
@@ -100,93 +74,66 @@ https://github.com/KumarVariable/vscode-extension-sidebar-html/blob/master/src/c
 */
 
 export class Controller {
-	private postMessage: (message: ExtensionMessage) => Thenable<boolean> | undefined
-
 	private disposables: vscode.Disposable[] = []
-<<<<<<< HEAD
 	private task?: Task
-	workspaceTracker?: WorkspaceTracker
-	mcpHub?: McpHub
-	accountService?: CaretAccountService
-	private latestAnnouncementId = "april-7-2025" // update to some unique identifier when we add a new announcement
-	private webviewProviderRef: WeakRef<WebviewProvider>
-	logger: ILogger // Add logger property
-	private availableModes: ModeInfo[] = [] // Store available modes
+	public workspaceTracker: WorkspaceTracker
+	public mcpHub: McpHub
+	public accountService: CaretAccountService
+
+	private latestAnnouncementId = "may-16-2025_16:11:00"
+	private logger: ILogger
+	private availableModes: ModeInfo[] = []
 	private personaController: PersonaController
+	private webviewProviderRef?: WeakRef<WebviewProvider>
+	private postMessage?: (msg: ExtensionMessage) => Thenable<boolean> | undefined
 
 	constructor(
-		readonly context: vscode.ExtensionContext,
-		readonly outputChannel: vscode.OutputChannel, // Make outputChannel readonly
-		webviewProvider: WebviewProvider,
+		public readonly context: vscode.ExtensionContext,
+		private readonly outputChannel: vscode.OutputChannel,
+		webviewProvider?: WebviewProvider,
+		postMessage?: (message: ExtensionMessage) => Thenable<boolean> | undefined,
 	) {
-		this.outputChannel.appendLine("CaretProvider instantiated")
-		this.webviewProviderRef = new WeakRef(webviewProvider)
-		// Simple console logger implementation for ILogger
 		this.logger = {
-			log: (message: string, ...meta: any[]) =>
-				this.outputChannel.appendLine(`[INFO] ${message} ${meta.length > 0 ? JSON.stringify(meta) : ""}`),
-			error: (message: string, ...meta: any[]) =>
-				this.outputChannel.appendLine(`[ERROR] ${message} ${meta.length > 0 ? JSON.stringify(meta) : ""}`),
-			warn: (message: string, ...meta: any[]) =>
-				this.outputChannel.appendLine(`[WARN] ${message} ${meta.length > 0 ? JSON.stringify(meta) : ""}`),
-			debug: (message: string, ...meta: any[]) =>
-				this.outputChannel.appendLine(`[DEBUG] ${message} ${meta.length > 0 ? JSON.stringify(meta) : ""}`),
+			log: (msg, ...meta) => this.outputChannel.appendLine(`[INFO] ${msg} ${meta.length ? JSON.stringify(meta) : ""}`),
+			error: (msg, ...meta) => this.outputChannel.appendLine(`[ERROR] ${msg} ${meta.length ? JSON.stringify(meta) : ""}`),
+			warn: (msg, ...meta) => this.outputChannel.appendLine(`[WARN] ${msg} ${meta.length ? JSON.stringify(meta) : ""}`),
+			debug: (msg, ...meta) => this.outputChannel.appendLine(`[DEBUG] ${msg} ${meta.length ? JSON.stringify(meta) : ""}`),
 		}
 
-		this.workspaceTracker = new WorkspaceTracker(this)
-		// MCP: cline 스타일로 의존성 주입
-		this.mcpHub = new McpHub(
-			async () => {
-				return path.join(this.context.globalStorageUri.fsPath, "mcp-servers")
-			},
-			async () => {
-				return path.join(this.context.globalStorageUri.fsPath, "settings")
-			},
-			async (message: any) => {
-				// webviewProvider가 있으면 메시지 전달
-				const provider = this.webviewProviderRef.deref()
-				if (provider) {
-					await provider.postMessage(message)
-				}
-			},
-			this.context.extension.packageJSON?.version ?? "1.0.0"
-		)
-		this.accountService = new CaretAccountService(this)
+		if (webviewProvider) this.webviewProviderRef = new WeakRef(webviewProvider)
+		if (postMessage) this.postMessage = postMessage
 
-		// 모드 목록 초기 로드 (웹뷰에서도 다시 로드됨)
-		this.loadAvailableModes().catch((error) => {
-			this.logger.error("Failed to load initial modes:", error)
-		})
-=======
-	task?: Task
-	workspaceTracker: WorkspaceTracker
-	mcpHub: McpHub
-	accountService: ClineAccountService
-	private latestAnnouncementId = "may-16-2025_16:11:00" // update to some unique identifier when we add a new announcement
-
-	constructor(
-		readonly context: vscode.ExtensionContext,
-		private readonly outputChannel: vscode.OutputChannel,
-		postMessage: (message: ExtensionMessage) => Thenable<boolean> | undefined,
-	) {
-		this.outputChannel.appendLine("ClineProvider instantiated")
-		this.postMessage = postMessage
+		this.outputChannel.appendLine("CaretProvider instantiated")
 
 		this.workspaceTracker = new WorkspaceTracker((msg) => this.postMessageToWebview(msg))
+
 		this.mcpHub = new McpHub(
 			() => ensureMcpServersDirectoryExists(),
 			() => ensureSettingsDirectoryExists(this.context),
 			(msg) => this.postMessageToWebview(msg),
 			this.context.extension?.packageJSON?.version ?? "1.0.0",
 		)
-		this.accountService = new ClineAccountService(
+
+		this.accountService = new CaretAccountService(
 			(msg) => this.postMessageToWebview(msg),
 			async () => {
 				const { apiConfiguration } = await this.getStateToPostToWebview()
-				return apiConfiguration?.clineApiKey
+				return apiConfiguration?.caretApiKey
 			},
 		)
->>>>>>> upstream/main
+
+		this.loadAvailableModes().catch(err => this.logger.error("Failed to load initial modes", err))
+	}
+
+	private postMessageToWebview(msg: ExtensionMessage) {
+		const provider = this.webviewProviderRef?.deref()
+		if (provider) {
+			return provider.postMessage(msg)
+		} else if (this.postMessage) {
+			return this.postMessage(msg)
+		}
+		this.logger.warn("No WebviewProvider or postMessage available")
+	}
 
 		// Clean up legacy checkpoints
 		cleanupLegacyCheckpoints(this.context.globalStorageUri.fsPath, this.outputChannel).catch((error) => {
@@ -328,11 +275,7 @@ export class Controller {
 		await updateGlobalState(this.context, "userInfo", info)
 	}
 
-<<<<<<< HEAD
-	async initCaretWithTask(task?: string, images?: string[]) {
-=======
-	async initTask(task?: string, images?: string[], historyItem?: HistoryItem) {
->>>>>>> upstream/main
+	async initCaretWithTask(task?: string, images?: string[], historyItem?: HistoryItem) {
 		await this.clearTask() // ensures that an existing task doesn't exist before starting a new one, although this shouldn't be possible since user must clear task before starting a new one
 		const {
 			apiConfiguration,
@@ -379,7 +322,6 @@ export class Controller {
 			customInstructions,
 			task,
 			images,
-<<<<<<< HEAD
 		)
 	}
 
@@ -396,8 +338,6 @@ export class Controller {
 			customInstructions,
 			undefined,
 			undefined,
-=======
->>>>>>> upstream/main
 			historyItem,
 		)
 	}
@@ -411,7 +351,6 @@ export class Controller {
 
 	// Send any JSON serializable data to the react app
 	async postMessageToWebview(message: ExtensionMessage) {
-<<<<<<< HEAD
 		console.log("[Controller:postMessageToWebview] Sending message to webview:", message.type)
 		try {
 			const webviewProvider = this.webviewProviderRef.deref()
@@ -432,9 +371,7 @@ export class Controller {
 		} catch (error) {
 			console.error("[Controller:postMessageToWebview] Failed to send message to webview:", error)
 		}
-=======
 		await this.postMessage(message)
->>>>>>> upstream/main
 	}
 
 	/**
@@ -454,7 +391,6 @@ export class Controller {
 		}
 
 		switch (message.type) {
-<<<<<<< HEAD
 			case "webviewDidLaunch": {
 				this.logger.log("Webview launched - loading modes")
 				// 모드 목록 로드
@@ -913,8 +849,6 @@ export class Controller {
 				}
 				break
 			}
-=======
->>>>>>> upstream/main
 			case "authStateChanged":
 				await this.setUserInfo(message.user || undefined)
 				await this.postStateToWebview()
@@ -960,21 +894,11 @@ export class Controller {
 					if (response && response.models) {
 						// update model info in state (this needs to be done here since we don't want to update state while settings is open, and we may refresh models there)
 						const { apiConfiguration } = await getAllExtensionState(this.context)
-<<<<<<< HEAD
-						if (apiConfiguration.openRouterModelId) {
-							// Ensure openRouterModels is treated as Record<string, ModelInfo>
-							const modelsRecord = openRouterModels as Record<string, ModelInfo>
-							await updateGlobalState(
-								this.context,
-								"openRouterModelInfo",
-								modelsRecord[apiConfiguration.openRouterModelId], // Corrected indexing
-=======
 						if (apiConfiguration.openRouterModelId && response.models[apiConfiguration.openRouterModelId]) {
 							await updateGlobalState(
 								this.context,
 								"openRouterModelInfo",
 								response.models[apiConfiguration.openRouterModelId],
->>>>>>> upstream/main
 							)
 							await this.postStateToWebview()
 						}
@@ -1003,13 +927,8 @@ export class Controller {
 				// You can send any JSON serializable data.
 				// Could also do this in extension .ts
 				//this.postMessageToWebview({ type: "text", text: `Extension: ${Date.now()}` })
-<<<<<<< HEAD
 				// initializing new instance of Caret will make sure that any agentically running promises in old instance don't affect our new task. this essentially creates a fresh slate for the new task
 				await this.initCaretWithTask(message.text, message.images)
-=======
-				// initializing new instance of Cline will make sure that any agentically running promises in old instance don't affect our new task. this essentially creates a fresh slate for the new task
-				await this.initTask(message.text, message.images)
->>>>>>> upstream/main
 				break
 			case "apiConfiguration":
 				if (message.apiConfiguration) {
@@ -1036,7 +955,6 @@ export class Controller {
 						}
 						await this.postStateToWebview()
 					}
-<<<<<<< HEAD
 					await this.postStateToWebview()
 				}
 				break
@@ -1176,8 +1094,6 @@ export class Controller {
 			case "toggleMode":
 				if (message.chatSettings) {
 					await this.toggleModeWithChatSettings(message.chatSettings, message.chatContent)
-=======
->>>>>>> upstream/main
 				}
 				break
 			case "optionsResponse":
@@ -1191,7 +1107,6 @@ export class Controller {
 				const { browserSettings } = await getAllExtensionState(this.context)
 				const browserSession = new BrowserSession(this.context, browserSettings)
 				await browserSession.relaunchChromeDebugMode(this)
-<<<<<<< HEAD
 				break
 			case "askResponse":
 				this.task?.handleWebviewAskResponse(message.askResponse!, message.text, message.images)
@@ -1200,14 +1115,11 @@ export class Controller {
 				// newTask will start a new task with a given task text, while clear task resets the current session and allows for a new task to be started
 				await this.clearTask()
 				await this.postStateToWebview()
-=======
->>>>>>> upstream/main
 				break
 			case "didShowAnnouncement":
 				await updateGlobalState(this.context, "lastShownAnnouncementId", this.latestAnnouncementId)
 				await this.postStateToWebview()
 				break
-<<<<<<< HEAD
 			case "selectImages":
 				const images = await selectImages()
 				await this.postMessageToWebview({
@@ -1258,13 +1170,11 @@ export class Controller {
 				break
 			case "openImage":
 				openImage(message.text!)
-=======
-			case "refreshClineRules":
-				await refreshClineRulesToggles(this.context, cwd)
+			case "refreshCaretRules":
+				await refreshCaretRulesToggles(this.context, cwd)
 				await refreshExternalRulesToggles(this.context, cwd)
 				await refreshWorkflowToggles(this.context, cwd)
 				await this.postStateToWebview()
->>>>>>> upstream/main
 				break
 			case "openInBrowser":
 				if (message.url) {
@@ -1274,7 +1184,6 @@ export class Controller {
 			case "openMention":
 				openMention(message.text)
 				break
-<<<<<<< HEAD
 			case "checkpointDiff": {
 				if (message.number) {
 					await this.task?.presentMultifileDiff(message.number, false)
@@ -1329,8 +1238,6 @@ export class Controller {
 				await this.handleSignOut()
 				break
 			}
-=======
->>>>>>> upstream/main
 			case "showAccountViewClicked": {
 				await this.postMessageToWebview({ type: "action", action: "accountButtonClicked" })
 				break
@@ -1350,7 +1257,6 @@ export class Controller {
 				await this.fetchMcpMarketplace(message.bool)
 				break
 			}
-<<<<<<< HEAD
 			case "downloadMcp": {
 				if (message.mcpId) {
 					// 1. Toggle to act mode if we are in plan mode (modetype === "plan")
@@ -1390,8 +1296,6 @@ export class Controller {
 				}
 				break
 			}
-=======
->>>>>>> upstream/main
 			case "silentlyRefreshMcpMarketplace": {
 				await this.silentlyRefreshMcpMarketplace()
 				break
@@ -1446,23 +1350,23 @@ export class Controller {
 				}
 				break
 			}
-			case "toggleClineRule": {
+			case "toggleCaretRule": {
 				const { isGlobal, rulePath, enabled } = message
 				if (rulePath && typeof enabled === "boolean" && typeof isGlobal === "boolean") {
 					if (isGlobal) {
 						const toggles =
-							((await getGlobalState(this.context, "globalClineRulesToggles")) as ClineRulesToggles) || {}
+							((await getGlobalState(this.context, "globalCaretRulesToggles")) as CaretRulesToggles) || {}
 						toggles[rulePath] = enabled
-						await updateGlobalState(this.context, "globalClineRulesToggles", toggles)
+						await updateGlobalState(this.context, "globalCaretRulesToggles", toggles)
 					} else {
 						const toggles =
-							((await getWorkspaceState(this.context, "localClineRulesToggles")) as ClineRulesToggles) || {}
+							((await getWorkspaceState(this.context, "localCaretRulesToggles")) as CaretRulesToggles) || {}
 						toggles[rulePath] = enabled
-						await updateWorkspaceState(this.context, "localClineRulesToggles", toggles)
+						await updateWorkspaceState(this.context, "localCaretRulesToggles", toggles)
 					}
 					await this.postStateToWebview()
 				} else {
-					console.error("toggleClineRule: Missing or invalid parameters", {
+					console.error("toggleCaretRule: Missing or invalid parameters", {
 						rulePath,
 						isGlobal: typeof isGlobal === "boolean" ? isGlobal : `Invalid: ${typeof isGlobal}`,
 						enabled: typeof enabled === "boolean" ? enabled : `Invalid: ${typeof enabled}`,
@@ -1474,7 +1378,7 @@ export class Controller {
 				const { rulePath, enabled } = message
 				if (rulePath && typeof enabled === "boolean") {
 					const toggles =
-						((await getWorkspaceState(this.context, "localWindsurfRulesToggles")) as ClineRulesToggles) || {}
+						((await getWorkspaceState(this.context, "localWindsurfRulesToggles")) as CaretRulesToggles) || {}
 					toggles[rulePath] = enabled
 					await updateWorkspaceState(this.context, "localWindsurfRulesToggles", toggles)
 					await this.postStateToWebview()
@@ -1487,7 +1391,7 @@ export class Controller {
 				const { rulePath, enabled } = message
 				if (rulePath && typeof enabled === "boolean") {
 					const toggles =
-						((await getWorkspaceState(this.context, "localCursorRulesToggles")) as ClineRulesToggles) || {}
+						((await getWorkspaceState(this.context, "localCursorRulesToggles")) as CaretRulesToggles) || {}
 					toggles[rulePath] = enabled
 					await updateWorkspaceState(this.context, "localCursorRulesToggles", toggles)
 					await this.postStateToWebview()
@@ -1499,7 +1403,7 @@ export class Controller {
 			case "toggleWorkflow": {
 				const { workflowPath, enabled } = message
 				if (workflowPath && typeof enabled === "boolean") {
-					const toggles = ((await getWorkspaceState(this.context, "workflowToggles")) as ClineRulesToggles) || {}
+					const toggles = ((await getWorkspaceState(this.context, "workflowToggles")) as CaretRulesToggles) || {}
 					toggles[workflowPath] = enabled
 					await updateWorkspaceState(this.context, "workflowToggles", toggles)
 					await this.postStateToWebview()
@@ -1580,11 +1484,6 @@ export class Controller {
 				// plan act setting
 				await updateGlobalState(this.context, "planActSeparateModelsSetting", message.planActSeparateModelsSetting)
 
-<<<<<<< HEAD
-				// chatSettings (모드 설정) 처리
-				if (message.chatSettings) {
-					await this.toggleModeWithChatSettings(message.chatSettings)
-=======
 				if (typeof message.enableCheckpointsSetting === "boolean") {
 					await updateGlobalState(this.context, "enableCheckpointsSetting", message.enableCheckpointsSetting)
 				}
@@ -1599,7 +1498,7 @@ export class Controller {
 					if (this.task) {
 						this.task.chatSettings = message.chatSettings
 					}
->>>>>>> upstream/main
+					await this.toggleModeWithChatSettings(message.chatSettings)
 				}
 
 				// after settings are updated, post state to webview
@@ -1676,7 +1575,6 @@ export class Controller {
 				this.postMessageToWebview({ type: "relinquishControl" })
 				break
 			}
-<<<<<<< HEAD
 			case "getDetectedChromePath": {
 				try {
 					const { browserSettings } = await getAllExtensionState(this.context)
@@ -1818,7 +1716,6 @@ export class Controller {
 						text: "[]",
 						error: String(err)
 					} as import("../../shared/ExtensionMessage").ExtensionMessage);
-=======
 			case "grpc_request": {
 				if (message.grpc_request) {
 					await handleGrpcRequest(this, message.grpc_request)
@@ -1844,7 +1741,6 @@ export class Controller {
 							`Invalid shell integration timeout value received: ${timeout}. ` + `Expected a positive number.`,
 						)
 					}
->>>>>>> upstream/main
 				}
 				break
 			}
@@ -2165,13 +2061,10 @@ export class Controller {
 				// 'abandoned' will prevent this caret instance from affecting future caret instance gui. this may happen if its hanging on a streaming request
 				this.task.abandoned = true
 			}
-<<<<<<< HEAD
 			await this.initCaretWithHistoryItem(historyItem) // clears task again, so we need to abortTask manually above
 			// await this.postStateToWebview() // new Caret instance will post state when it's ready. having this here sent an empty messages array to webview leading to virtuoso having to reload the entire list
-=======
 			await this.initTask(undefined, undefined, historyItem) // clears task again, so we need to abortTask manually above
-			// await this.postStateToWebview() // new Cline instance will post state when it's ready. having this here sent an empty messages array to webview leading to virtuoso having to reload the entire list
->>>>>>> upstream/main
+			// await this.postStateToWebview() // new Caret instance will post state when it's ready. having this here sent an empty messages array to webview leading to virtuoso having to reload the entire list
 		}
 	}
 
@@ -2183,7 +2076,6 @@ export class Controller {
 		}
 	}
 
-<<<<<<< HEAD
 	// MCP
 
 	async getDocumentsPath(): Promise<string> {
@@ -2288,8 +2180,6 @@ export class Controller {
 		}
 	}
 
-=======
->>>>>>> upstream/main
 	// Account
 
 	async fetchUserCreditsData() {
@@ -2440,116 +2330,6 @@ export class Controller {
 		}
 	}
 
-<<<<<<< HEAD
-	private async downloadMcp(mcpId: string) {
-		try {
-			// First check if we already have this MCP server installed
-			const servers = this.mcpHub?.getServers() || []
-			const isInstalled = servers.some((server: McpServer) => server.name === mcpId)
-
-			if (isInstalled) {
-				throw new Error("This MCP server is already installed")
-			}
-
-			// Fetch server details from marketplace
-			const response = await axios.post<McpDownloadResponse>(
-				"https://api.caret.bot/v1/mcp/download",
-				{ mcpId },
-				{
-					headers: { "Content-Type": "application/json" },
-					timeout: 10000,
-				},
-			)
-
-			if (!response.data) {
-				throw new Error("Invalid response from MCP marketplace API")
-			}
-
-			const mcpDetails = response.data
-
-			// Validate required fields
-			if (!mcpDetails.githubUrl) {
-				throw new Error("Missing GitHub URL in MCP download response")
-			}
-			if (!mcpDetails.readmeContent) {
-				throw new Error("Missing README content in MCP download response")
-			}
-
-			// Send details to webview
-			await this.postMessageToWebview({
-				type: "mcpDownloadDetails",
-				mcpDownloadDetails: mcpDetails,
-			})
-
-			// Create task with context from README and added guidelines for MCP server installation
-			const task = `Set up the MCP server from ${mcpDetails.githubUrl} while adhering to these MCP server installation rules:
-- Use "${mcpDetails.mcpId}" as the server name in caret_mcp_settings.json.
-- Create the directory for the new MCP server before starting installation.
-- Use commands aligned with the user's shell and operating system best practices.
-- The following README may contain instructions that conflict with the user's OS, in which case proceed thoughtfully.
-- Once installed, demonstrate the server's capabilities by using one of its tools.
-Here is the project's README to help you get started:\n\n${mcpDetails.readmeContent}\n${mcpDetails.llmsInstallationContent}`
-
-			// Initialize task and show chat view
-			await this.initCaretWithTask(task)
-			await this.postMessageToWebview({
-				type: "action",
-				action: "chatButtonClicked",
-			})
-		} catch (error) {
-			console.error("Failed to download MCP:", error)
-			let errorMessage = "Failed to download MCP"
-
-			if (axios.isAxiosError(error)) {
-				if (error.code === "ECONNABORTED") {
-					errorMessage = "Request timed out. Please try again."
-				} else if (error.response?.status === 404) {
-					errorMessage = "MCP server not found in marketplace."
-				} else if (error.response?.status === 500) {
-					errorMessage = "Internal server error. Please try again later."
-				} else if (!error.response && error.request) {
-					errorMessage = "Network error. Please check your internet connection."
-				}
-			} else if (error instanceof Error) {
-				errorMessage = error.message
-			}
-
-			// Show error in both notification and marketplace UI
-			vscode.window.showErrorMessage(errorMessage)
-			await this.postMessageToWebview({
-				type: "mcpDownloadDetails",
-				error: errorMessage,
-			})
-		}
-	}
-
-	// OpenAi
-
-	async getOpenAiModels(baseUrl?: string, apiKey?: string) {
-		try {
-			if (!baseUrl) {
-				return []
-			}
-
-			if (!URL.canParse(baseUrl)) {
-				return []
-			}
-			const config: Record<string, any> = {}
-			if (apiKey) {
-				config["headers"] = { Authorization: `Bearer ${apiKey}` }
-			}
-
-			const response = await axios.get(`${baseUrl}/models`, config)
-			const modelsArray = response.data?.data?.map((model: any) => model.id) || []
-			const models = [...new Set<string>(modelsArray)]
-			return models
-		} catch (error) {
-			return []
-		}
-	}
-
-=======
->>>>>>> upstream/main
 	// OpenRouter
 
 	async handleOpenRouterCallback(code: string) {
@@ -2589,8 +2369,6 @@ Here is the project's README to help you get started:\n\n${mcpDetails.readmeCont
 		return cacheDir
 	}
 
-<<<<<<< HEAD
-=======
 	// Read OpenRouter models from disk cache
 	async readOpenRouterModels(): Promise<Record<string, ModelInfo> | undefined> {
 		const openRouterModelsFilePath = path.join(await this.ensureCacheDirectoryExists(), GlobalFileNames.openRouterModels)
@@ -2602,7 +2380,6 @@ Here is the project's README to help you get started:\n\n${mcpDetails.readmeCont
 		return undefined
 	}
 
->>>>>>> upstream/main
 	// Context menus and code actions
 
 	getFileMentionFromPath(filePath: string) {
@@ -2666,13 +2443,10 @@ Here is the project's README to help you get started:\n\n${mcpDetails.readmeCont
 
 		const fileMention = this.getFileMentionFromPath(filePath)
 		const problemsString = this.convertDiagnosticsToProblemsString(diagnostics)
-<<<<<<< HEAD
 		await this.initCaretWithTask(
 			`Fix the following code in ${fileMention}\n\`\`\`\n${code}\n\`\`\`\n\nProblems:\n${problemsString}`,
 		)
-=======
 		await this.initTask(`Fix the following code in ${fileMention}\n\`\`\`\n${code}\n\`\`\`\n\nProblems:\n${problemsString}`)
->>>>>>> upstream/main
 
 		console.log("fixWithCaret", code, filePath, languageId, diagnostics, problemsString)
 	}
@@ -2748,11 +2522,8 @@ Here is the project's README to help you get started:\n\n${mcpDetails.readmeCont
 		if (id !== this.task?.taskId) {
 			// non-current task
 			const { historyItem } = await this.getTaskWithId(id)
-<<<<<<< HEAD
 			await this.initCaretWithHistoryItem(historyItem) // clears existing task
-=======
 			await this.initTask(undefined, undefined, historyItem) // clears existing task
->>>>>>> upstream/main
 		}
 		await this.postMessageToWebview({
 			type: "action",
@@ -2915,10 +2686,13 @@ Here is the project's README to help you get started:\n\n${mcpDetails.readmeCont
 			mcpMarketplaceEnabled,
 			telemetrySetting,
 			planActSeparateModelsSetting,
-<<<<<<< HEAD
 			persona, // personaList 대신 persona 사용
 			selectedLanguage,
 			supportedLanguages,
+			enableCheckpointsSetting,
+			globalCaretRulesToggles,
+			shellIntegrationTimeout,
+			isNewUser,
 		} = await getAllExtensionState(this.context)
 
 		const retryStatus = (await getGlobalState(this.context, "retryStatus")) as RetryStatusMessage | undefined
@@ -2949,24 +2723,17 @@ Here is the project's README to help you get started:\n\n${mcpDetails.readmeCont
 		// 배너 이미지 URI 생성
 		const caretBannerFileUri = vscode.Uri.joinPath(this.context.extensionUri, "assets", "imgs","main_banner.webp")
 		const caretBannerWebviewUri = webview ? webview.asWebviewUri(caretBannerFileUri).toString() + `?d=${dailyCacheBuster}` : undefined
-=======
-			enableCheckpointsSetting,
-			globalClineRulesToggles,
-			shellIntegrationTimeout,
-			isNewUser,
-		} = await getAllExtensionState(this.context)
-
-		const localClineRulesToggles =
-			((await getWorkspaceState(this.context, "localClineRulesToggles")) as ClineRulesToggles) || {}
+			
+		const localCaretRulesToggles =
+			((await getWorkspaceState(this.context, "localCaretRulesToggles")) as CaretRulesToggles) || {}
 
 		const localWindsurfRulesToggles =
-			((await getWorkspaceState(this.context, "localWindsurfRulesToggles")) as ClineRulesToggles) || {}
+			((await getWorkspaceState(this.context, "localWindsurfRulesToggles")) as CaretRulesToggles) || {}
 
 		const localCursorRulesToggles =
-			((await getWorkspaceState(this.context, "localCursorRulesToggles")) as ClineRulesToggles) || {}
+			((await getWorkspaceState(this.context, "localCursorRulesToggles")) as CaretRulesToggles) || {}
 
-		const workflowToggles = ((await getWorkspaceState(this.context, "workflowToggles")) as ClineRulesToggles) || {}
->>>>>>> upstream/main
+		const workflowToggles = ((await getWorkspaceState(this.context, "workflowToggles")) as CaretRulesToggles) || {}
 
 		return {
 			version: this.context.extension?.packageJSON?.version ?? "",
@@ -2991,7 +2758,6 @@ Here is the project's README to help you get started:\n\n${mcpDetails.readmeCont
 			planActSeparateModelsSetting,
 			enableCheckpointsSetting: enableCheckpointsSetting ?? true,
 			vscMachineId: vscode.env.machineId,
-<<<<<<< HEAD
 			alphaAvatarUri: alphaAvatarWebviewUri, // 기본 프로필 이미지
 			alphaThinkingAvatarUri: alphaThinkingAvatarWebviewUri, // 생각 중 이미지 추가
 			caretBanner: caretBannerWebviewUri, // 배너 이미지
@@ -3006,15 +2772,13 @@ Here is the project's README to help you get started:\n\n${mcpDetails.readmeCont
 			theme: vscode.window.activeColorTheme.kind === vscode.ColorThemeKind.Dark ? "dark" : "light",
 			historyItems: [],
 			modelInfo: undefined,
-=======
-			globalClineRulesToggles: globalClineRulesToggles || {},
-			localClineRulesToggles: localClineRulesToggles || {},
+			globalCaretRulesToggles: globalCaretRulesToggles || {},
+			localCaretRulesToggles: localCaretRulesToggles || {},
 			localWindsurfRulesToggles: localWindsurfRulesToggles || {},
 			localCursorRulesToggles: localCursorRulesToggles || {},
 			workflowToggles: workflowToggles || {},
 			shellIntegrationTimeout,
 			isNewUser,
->>>>>>> upstream/main
 		}
 	}
 
@@ -3194,7 +2958,6 @@ Commit message:`
 	}
 
 	// dev
-<<<<<<< HEAD
 
 	async resetState() {
 		vscode.window.showInformationMessage("Resetting state...")
@@ -3352,6 +3115,4 @@ Commit message:`
 		})
 		return models
 	}
-=======
->>>>>>> upstream/main
 }

@@ -77,7 +77,7 @@
       "logging.md": "Guidelines for backend and frontend logging.",
       "webview-extension-communication.md": "How to handle messages between webview and extension.",
       "ui-to-storage-flow.md": "Detailed guide on UI to Storage data flow, including security.",
-      "cline-upstream-merging-guide.md": "Strategy for merging with Cline upstream, including AI collaboration tips."
+      "caret-upstream-merging-guide.md": "Strategy for merging with Caret upstream, including AI collaboration tips."
     }
   },
   "key_files_reference": [

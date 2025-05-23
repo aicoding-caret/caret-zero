@@ -1,7 +1,7 @@
 {
 	"$schema": "https://mintlify.com/docs.json",
 	"theme": "linden",
-	"name": "Cline",
+	"name": "Caret",
 	"description": "AI-powered coding assistant for VSCode",
 	"colors": {
 		"primary": "#9D4EDD",
@@ -39,17 +39,17 @@
 		"links": [
 			{
 				"label": "GitHub",
-				"href": "https://github.com/cline/cline"
+				"href": "https://github.com/caret/caret"
 			},
 			{
 				"label": "Discord",
-				"href": "https://discord.gg/cline"
+				"href": "https://discord.gg/caret"
 			}
 		],
 		"primary": {
 			"type": "button",
-			"label": "Install Cline",
-			"href": "https://cline.bot/install?utm_source=website&utm_medium=header"
+			"label": "Install Caret",
+			"href": "https://caret.bot/install?utm_source=website&utm_medium=header"
 		}
 	},
 	"navigation": {
@@ -58,28 +58,28 @@
 				"group": "Getting Started",
 				"pages": [
 					"getting-started/for-new-coders",
-					"getting-started/installing-cline",
+					"getting-started/installing-caret",
 					"getting-started/installing-dev-essentials",
 					"getting-started/model-selection-guide",
 					"getting-started/our-favorite-tech-stack",
 					"getting-started/task-management",
 					"getting-started/understanding-context-management",
-					"getting-started/what-is-cline"
+					"getting-started/what-is-caret"
 				]
 			},
 			{
 				"group": "Improving Your Prompting Skills",
-				"pages": ["prompting/prompt-engineering-guide", "prompting/cline-memory-bank"]
+				"pages": ["prompting/prompt-engineering-guide", "prompting/caret-memory-bank"]
 			},
 			{
-				"group": "Exploring Cline's Tools",
+				"group": "Exploring Caret's Tools",
 				"pages": [
-					"exploring-clines-tools/cline-tools-guide",
-					"exploring-clines-tools/plan-and-act-modes-a-guide-to-effective-ai-development",
-					"exploring-clines-tools/checkpoints",
-					"exploring-clines-tools/new-task-tool",
-					"exploring-clines-tools/remote-browser-support",
-					"exploring-clines-tools/slash-commands"
+					"exploring-carets-tools/caret-tools-guide",
+					"exploring-carets-tools/plan-and-act-modes-a-guide-to-effective-ai-development",
+					"exploring-carets-tools/checkpoints",
+					"exploring-carets-tools/new-task-tool",
+					"exploring-carets-tools/remote-browser-support",
+					"exploring-carets-tools/slash-commands"
 				]
 			},
 			{
@@ -109,7 +109,7 @@
 					"custom-model-configs/aws-bedrock-with-credentials-authentication",
 					"custom-model-configs/aws-bedrock-with-profile-authentication",
 					"custom-model-configs/gcp-vertex-ai",
-					"custom-model-configs/litellm-and-cline-using-codestral"
+					"custom-model-configs/litellm-and-caret-using-codestral"
 				]
 			},
 			{
@@ -128,13 +128,13 @@
 	},
 	"footer": {
 		"socials": {
-			"x": "https://x.com/cline",
-			"github": "https://github.com/cline/cline",
-			"discord": "https://discord.gg/cline"
+			"x": "https://x.com/caret",
+			"github": "https://github.com/caret/caret",
+			"discord": "https://discord.gg/caret"
 		}
 	},
 	"search": {
-		"prompt": "Search Cline documentation..."
+		"prompt": "Search Caret documentation..."
 	},
 	"contextual": {
 		"options": ["copy"]

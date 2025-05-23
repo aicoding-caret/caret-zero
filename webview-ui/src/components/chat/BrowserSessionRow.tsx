@@ -3,7 +3,6 @@ import deepEqual from "fast-deep-equal"
 import React, { CSSProperties, memo, useEffect, useMemo, useRef, useState } from "react"
 import { useSize } from "react-use"
 import styled from "styled-components"
-<<<<<<< HEAD
 import { BROWSER_VIEWPORT_PRESETS } from "../../../../src/shared/BrowserSettings"
 import { BrowserAction, BrowserActionResult, CaretMessage, CaretSayBrowserAction } from "../../../../src/shared/ExtensionMessage"
 import { useExtensionState } from "../../context/ExtensionStateContext"
@@ -11,18 +10,8 @@ import { vscode } from "../../utils/vscode"
 import { BrowserSettingsMenu } from "../browser/BrowserSettingsMenu"
 import { CheckpointControls } from "../common/CheckpointControls"
 import CodeBlock, { CODE_BLOCK_BG_COLOR } from "../common/CodeBlock"
-import ChatRowContent from "./ChatRowContent"
-import ProgressIndicator from "./chat_ui/ProgressIndicator"
-=======
-import { BROWSER_VIEWPORT_PRESETS } from "@shared/BrowserSettings"
-import { BrowserAction, BrowserActionResult, ClineMessage, ClineSayBrowserAction } from "@shared/ExtensionMessage"
-import { useExtensionState } from "@/context/ExtensionStateContext"
 import { FileServiceClient } from "@/services/grpc-client"
-import { BrowserSettingsMenu } from "@/components/browser/BrowserSettingsMenu"
-import { CheckpointControls } from "@/components/common/CheckpointControls"
-import CodeBlock, { CODE_BLOCK_BG_COLOR } from "@/components/common/CodeBlock"
 import { ChatRowContent, ProgressIndicator } from "@/components/chat/ChatRow"
->>>>>>> upstream/main
 
 interface BrowserSessionRowProps {
 	messages: CaretMessage[]
@@ -503,13 +492,8 @@ const BrowserSessionRow = memo((props: BrowserSessionRowProps) => {
 	return browserSessionRow
 }, deepEqual)
 
-<<<<<<< HEAD
-interface BrowserSessionRowContentProps extends Omit<BrowserSessionRowProps, "messages"> {
-	message: CaretMessage
-=======
 interface BrowserSessionRowContentProps extends Omit<BrowserSessionRowProps, "messages" | "onHeightChange"> {
-	message: ClineMessage
->>>>>>> upstream/main
+	message: CaretMessage
 	setMaxActionHeight: (height: number) => void
 	onSetQuote: (text: string) => void
 }

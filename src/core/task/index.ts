@@ -9,7 +9,6 @@ import pWaitFor from "p-wait-for"
 import * as path from "path"
 import { serializeError } from "serialize-error"
 import * as vscode from "vscode"
-<<<<<<< HEAD
 import { ApiHandler, buildApiHandler } from "../../api"
 import { AnthropicHandler } from "../../api/providers/anthropic"
 import { CaretHandler } from "../../api/providers/caret"
@@ -37,33 +36,7 @@ import { combineApiRequests } from "../../shared/combineApiRequests"
 import { combineCommandSequences, COMMAND_REQ_APP_STRING } from "../../shared/combineCommandSequences"
 import { ExtensionState } from "../../shared/ExtensionMessage"
 
-=======
 import { Logger } from "@services/logging/Logger"
-import { ApiHandler, buildApiHandler } from "@api/index"
-import { AnthropicHandler } from "@api/providers/anthropic"
-import { ClineHandler } from "@api/providers/cline"
-import { OpenRouterHandler } from "@api/providers/openrouter"
-import { ApiStream } from "@api/transform/stream"
-import CheckpointTracker from "@integrations/checkpoints/CheckpointTracker"
-import { DIFF_VIEW_URI_SCHEME, DiffViewProvider } from "@integrations/editor/DiffViewProvider"
-import { formatContentBlockToMarkdown } from "@integrations/misc/export-markdown"
-import { extractTextFromFile } from "@integrations/misc/extract-text"
-import { showSystemNotification } from "@integrations/notifications"
-import { TerminalManager } from "@integrations/terminal/TerminalManager"
-import { BrowserSession } from "@services/browser/BrowserSession"
-import { UrlContentFetcher } from "@services/browser/UrlContentFetcher"
-import { listFiles } from "@services/glob/list-files"
-import { regexSearchFiles } from "@services/ripgrep"
-import { telemetryService } from "@/services/posthog/telemetry/TelemetryService"
-import { parseSourceCodeForDefinitionsTopLevel } from "@services/tree-sitter"
-import { ApiConfiguration } from "@shared/api"
-import { findLast, findLastIndex, parsePartialArrayString } from "@shared/array"
-import { AutoApprovalSettings } from "@shared/AutoApprovalSettings"
-import { BrowserSettings } from "@shared/BrowserSettings"
-import { ChatSettings } from "@shared/ChatSettings"
-import { combineApiRequests } from "@shared/combineApiRequests"
-import { combineCommandSequences, COMMAND_REQ_APP_STRING } from "@shared/combineCommandSequences"
->>>>>>> upstream/main
 import {
 	BrowserAction,
 	BrowserActionResult,
@@ -79,7 +52,7 @@ import {
 	CaretSayBrowserAction,
 	CaretSayTool,
 	COMPLETION_RESULT_CHANGES_FLAG,
-<<<<<<< HEAD
+	ExtensionMessage,
 } from "../../shared/ExtensionMessage"
 import { getApiMetrics } from "../../shared/getApiMetrics"
 import { HistoryItem } from "../../shared/HistoryItem"
@@ -87,9 +60,9 @@ import { DEFAULT_LANGUAGE_SETTINGS, getLanguageKey, LanguageDisplay } from "../.
 import { CaretAskResponse, CaretCheckpointRestore } from "../../shared/WebviewMessage"
 import { calculateApiCostAnthropic } from "../../utils/cost"
 import { fileExistsAtPath, isDirectory } from "../../utils/fs"
-import { arePathsEqual, getReadablePath } from "../../utils/path"
+// import { arePathsEqual, getReadablePath } from "../../utils/path"
 import { fixModelHtmlEscaping, removeInvalidChars } from "../../utils/string"
-import { AssistantMessageContent, parseAssistantMessage, ToolParamName, ToolUseName } from ".././assistant-message"
+// import { AssistantMessageContent, parseAssistantMessage, ToolParamName, ToolUseName } from ".././assistant-message"
 import { constructNewFileContent } from ".././assistant-message/diff"
 import { ContextManager } from ".././context-management/ContextManager"
 import { CaretIgnoreController } from ".././ignore/CaretIgnoreController"
@@ -97,60 +70,31 @@ import { parseMentions } from ".././mentions"
 import { formatResponse } from ".././prompts/responses"
 import { addUserInstructions, SYSTEM_PROMPT } from ".././prompts/system"
 import { FileContextTracker } from "../context-tracking/FileContextTracker"
-=======
-	ExtensionMessage,
-} from "@shared/ExtensionMessage"
-import { getApiMetrics } from "@shared/getApiMetrics"
-import { HistoryItem } from "@shared/HistoryItem"
-import { DEFAULT_LANGUAGE_SETTINGS, getLanguageKey, LanguageDisplay } from "@shared/Languages"
-import { ClineAskResponse, ClineCheckpointRestore } from "@shared/WebviewMessage"
-import { calculateApiCostAnthropic } from "@utils/cost"
-import { fileExistsAtPath } from "@utils/fs"
+	
 import { createAndOpenGitHubIssue } from "@utils/github-url-utils"
 import { arePathsEqual, getReadablePath, isLocatedInWorkspace } from "@utils/path"
-import { fixModelHtmlEscaping, removeInvalidChars } from "@utils/string"
 import { AssistantMessageContent, parseAssistantMessageV2, ToolParamName, ToolUseName } from "@core/assistant-message"
-import { constructNewFileContent } from "@core/assistant-message/diff"
-import { ClineIgnoreController } from "@core/ignore/ClineIgnoreController"
-import { parseMentions } from "@core/mentions"
-import { formatResponse } from "@core/prompts/responses"
-import { addUserInstructions, SYSTEM_PROMPT } from "@core/prompts/system"
-import { getContextWindowInfo } from "@core/context/context-management/context-window-utils"
-import { FileContextTracker } from "@core/context/context-tracking/FileContextTracker"
 import { ModelContextTracker } from "@core/context/context-tracking/ModelContextTracker"
->>>>>>> upstream/main
 import {
 	checkIsAnthropicContextWindowError,
 	checkIsOpenRouterContextWindowError,
 } from "@core/context/context-management/context-error-handling"
-import { ContextManager } from "@core/context/context-management/ContextManager"
 import { loadMcpDocumentation } from "@core/prompts/loadMcpDocumentation"
 import {
 	ensureRulesDirectoryExists,
 	ensureTaskDirectoryExists,
 	getSavedApiConversationHistory,
-<<<<<<< HEAD
 	getSavedCaretMessages,
 	saveApiConversationHistory,
 	saveCaretMessages,
 	GlobalFileNames,
-} from "../storage/disk"
-
-const cwd =
-	vscode.workspace.workspaceFolders?.map((folder: vscode.WorkspaceFolder) => folder.uri.fsPath).at(0) ??
-	path.join(os.homedir(), "Desktop") // ... (나머지 주석)
-=======
-	getSavedClineMessages,
-	GlobalFileNames,
-	saveApiConversationHistory,
-	saveClineMessages,
 } from "@core/storage/disk"
 import {
-	getGlobalClineRules,
-	getLocalClineRules,
-	refreshClineRulesToggles,
-} from "@core/context/instructions/user-instructions/cline-rules"
-import { ensureLocalClineDirExists } from "../context/instructions/user-instructions/rule-helpers"
+	getGlobalCaretRules,
+	getLocalCaretRules,
+	refreshCaretRulesToggles,
+} from "@core/context/instructions/user-instructions/caret-rules"
+import { ensureLocalCaretDirExists } from "../context/instructions/user-instructions/rule-helpers"
 import {
 	refreshExternalRulesToggles,
 	getLocalWindsurfRules,
@@ -166,7 +110,6 @@ import { featureFlagsService } from "@/services/posthog/feature-flags/FeatureFla
 
 export const cwd =
 	vscode.workspace.workspaceFolders?.map((folder) => folder.uri.fsPath).at(0) ?? path.join(os.homedir(), "Desktop") // may or may not exist but fs checking existence would immediately ask for permission which would be bad UX, need to come up with a better solution
->>>>>>> upstream/main
 
 type ToolResponse = string | Array<Anthropic.TextBlockParam | Anthropic.ImageBlockParam>
 type UserContent = Array<Anthropic.ContentBlockParam>
@@ -214,14 +157,9 @@ export class Task {
 	isAwaitingPlanResponse = false
 	didRespondToPlanAskBySwitchingMode = false
 
-<<<<<<< HEAD
-	// File tracking
-	private fileContextTracker: FileContextTracker
-=======
 	// Metadata tracking
 	private fileContextTracker: FileContextTracker
 	private modelContextTracker: ModelContextTracker
->>>>>>> upstream/main
 
 	// streaming
 	isWaitingForFirstChunk = false
@@ -258,14 +196,12 @@ export class Task {
 		images?: string[],
 		historyItem?: HistoryItem,
 	) {
-<<<<<<< HEAD
 		this.caretIgnoreController = new CaretIgnoreController(cwd)
 		this.caretIgnoreController.initialize().catch((error) => {
 			console.error("Failed to initialize CaretIgnoreController:", error)
 		})
 		this.controllerRef = new WeakRef(controller)
 		this.apiProvider = apiConfiguration.apiProvider
-=======
 		this.context = context
 		this.mcpHub = mcpHub
 		this.workspaceTracker = workspaceTracker
@@ -274,9 +210,8 @@ export class Task {
 		this.postMessageToWebview = postMessageToWebview
 		this.reinitExistingTaskFromId = reinitExistingTaskFromId
 		this.cancelTask = cancelTask
-		this.clineIgnoreController = new ClineIgnoreController(cwd)
+		this.caretIgnoreController = new CaretIgnoreController(cwd)
 		// Initialization moved to startTask/resumeTaskFromHistory
->>>>>>> upstream/main
 		this.terminalManager = new TerminalManager()
 		this.terminalManager.setShellIntegrationTimeout(shellIntegrationTimeout)
 		this.urlContentFetcher = new UrlContentFetcher(context)
@@ -301,19 +236,6 @@ export class Task {
 		}
 
 		// Initialize file context tracker
-<<<<<<< HEAD
-		this.fileContextTracker = new FileContextTracker(controller, this.taskId)
-
-		// Now that taskId is initialized, we can build the API handler
-		// apiProvider가 있는지 확인하고, 있으면 provider로 사용
-		if (apiConfiguration.apiProvider) {
-			const provider = apiConfiguration.apiProvider as string // 명시적 타입 단언
-			this.api = buildApiHandler({ ...apiConfiguration, provider }, this.updateState.bind(this))
-		} else {
-			// apiProvider가 없는 경우 기본값 설정 (예: "anthropic")
-			this.api = buildApiHandler({ ...apiConfiguration, provider: "anthropic" }, this.updateState.bind(this))
-		}
-=======
 		this.fileContextTracker = new FileContextTracker(context, this.taskId)
 		this.modelContextTracker = new ModelContextTracker(context, this.taskId)
 
@@ -322,11 +244,11 @@ export class Task {
 			...apiConfiguration,
 			taskId: this.taskId,
 			onRetryAttempt: (attempt: number, maxRetries: number, delay: number, error: any) => {
-				const lastApiReqStartedIndex = findLastIndex(this.clineMessages, (m) => m.say === "api_req_started")
+				const lastApiReqStartedIndex = findLastIndex(this.caretMessages, (m) => m.say === "api_req_started")
 				if (lastApiReqStartedIndex !== -1) {
 					try {
-						const currentApiReqInfo: ClineApiReqInfo = JSON.parse(
-							this.clineMessages[lastApiReqStartedIndex].text || "{}",
+						const currentApiReqInfo: CaretApiReqInfo = JSON.parse(
+							this.caretMessages[lastApiReqStartedIndex].text || "{}",
 						)
 						currentApiReqInfo.retryStatus = {
 							attempt: attempt, // attempt is already 1-indexed from retry.ts
@@ -337,7 +259,7 @@ export class Task {
 						// Clear previous cancelReason and streamingFailedMessage if we are retrying
 						delete currentApiReqInfo.cancelReason
 						delete currentApiReqInfo.streamingFailedMessage
-						this.clineMessages[lastApiReqStartedIndex].text = JSON.stringify(currentApiReqInfo)
+						this.caretMessages[lastApiReqStartedIndex].text = JSON.stringify(currentApiReqInfo)
 
 						// Post the updated state to the webview so the UI reflects the retry attempt
 						this.postStateToWebview().catch((e) =>
@@ -361,7 +283,6 @@ export class Task {
 		// Now that taskId is initialized, we can build the API handler
 		this.api = buildApiHandler(effectiveApiConfiguration)
 
->>>>>>> upstream/main
 		// Set taskId on browserSession for telemetry tracking
 		this.browserSession.setTaskId(this.taskId)
 
@@ -457,7 +378,6 @@ export class Task {
 		}
 	}
 
-<<<<<<< HEAD
 	async updateState(partialState: Partial<ExtensionState>) {
 		if (partialState.retryStatus) {
 			await this.controllerRef.deref()?.context.globalState.update("retryStatus", partialState.retryStatus)
@@ -465,18 +385,13 @@ export class Task {
 		await this.controllerRef.deref()?.postStateToWebview()
 	}
 
-	async restoreCheckpoint(messageTs: number, restoreType: CaretCheckpointRestore) {
-		const messageIndex = this.caretMessages.findIndex((m) => m.ts === messageTs)
-		const message = this.caretMessages[messageIndex]
-=======
-	async restoreCheckpoint(messageTs: number, restoreType: ClineCheckpointRestore, offset?: number) {
-		const messageIndex = this.clineMessages.findIndex((m) => m.ts === messageTs) - (offset || 0)
+	async restoreCheckpoint(messageTs: number, restoreType: CaretCheckpointRestore, offset?: number) {
+		const messageIndex = this.caretMessages.findIndex((m) => m.ts === messageTs) - (offset || 0)
 		// Find the last message before messageIndex that has a lastCheckpointHash
-		const lastHashIndex = findLastIndex(this.clineMessages.slice(0, messageIndex), (m) => m.lastCheckpointHash !== undefined)
-		const message = this.clineMessages[messageIndex]
-		const lastMessageWithHash = this.clineMessages[lastHashIndex]
+		const lastHashIndex = findLastIndex(this.caretMessages.slice(0, messageIndex), (m) => m.lastCheckpointHash !== undefined)
+		const message = this.caretMessages[messageIndex]
+		const lastMessageWithHash = this.caretMessages[lastHashIndex]
 
->>>>>>> upstream/main
 		if (!message) {
 			console.error("Message not found", this.caretMessages)
 			return
@@ -734,17 +649,12 @@ export class Task {
 	}
 
 	async doesLatestTaskCompletionHaveNewChanges() {
-<<<<<<< HEAD
-		const messageIndex = findLastIndex(this.caretMessages, (m) => m.say === "completion_result")
-		const message = this.caretMessages[messageIndex]
-=======
 		if (!this.enableCheckpoints) {
 			return false
 		}
 
-		const messageIndex = findLastIndex(this.clineMessages, (m) => m.say === "completion_result")
-		const message = this.clineMessages[messageIndex]
->>>>>>> upstream/main
+		const messageIndex = findLastIndex(this.caretMessages, (m) => m.say === "completion_result")
+		const message = this.caretMessages[messageIndex]
 		if (!message) {
 			console.error("Completion message not found")
 			return false
@@ -831,15 +741,9 @@ export class Task {
 					lastMessage.text = text
 					lastMessage.partial = partial
 					// todo be more efficient about saving and posting only new data or one whole message at a time so ignore partial for saves, and only post parts of partial message instead of whole array in new listener
-<<<<<<< HEAD
 					// await this.saveCaretMessagesAndUpdateHistory()
-					// await this.controllerRef.deref()?.postStateToWebview()
-					await this.controllerRef.deref()?.postMessageToWebview({
-=======
-					// await this.saveClineMessagesAndUpdateHistory()
 					// await this.postStateToWebview()
 					await this.postMessageToWebview({
->>>>>>> upstream/main
 						type: "partialMessage",
 						partialMessage: lastMessage,
 					})
@@ -880,15 +784,9 @@ export class Task {
 					// lastMessage.ts = askTs
 					lastMessage.text = text
 					lastMessage.partial = false
-<<<<<<< HEAD
 					await this.saveCaretMessagesAndUpdateHistory()
-					// await this.controllerRef.deref()?.postStateToWebview()
-					await this.controllerRef.deref()?.postMessageToWebview({
-=======
-					await this.saveClineMessagesAndUpdateHistory()
 					// await this.postStateToWebview()
 					await this.postMessageToWebview({
->>>>>>> upstream/main
 						type: "partialMessage",
 						partialMessage: lastMessage,
 					})
@@ -990,15 +888,9 @@ export class Task {
 					lastMessage.partial = false
 
 					// instead of streaming partialMessage events, we do a save and post like normal to persist to disk
-<<<<<<< HEAD
 					await this.saveCaretMessagesAndUpdateHistory()
-					// await this.controllerRef.deref()?.postStateToWebview()
-					await this.controllerRef.deref()?.postMessageToWebview({
-=======
-					await this.saveClineMessagesAndUpdateHistory()
 					// await this.postStateToWebview()
 					await this.postMessageToWebview({
->>>>>>> upstream/main
 						type: "partialMessage",
 						partialMessage: lastMessage,
 					}) // more performant than an entire postStateToWebview
@@ -1044,36 +936,24 @@ export class Task {
 	async removeLastPartialMessageIfExistsWithType(type: "ask" | "say", askOrSay: CaretAsk | CaretSay) {
 		const lastMessage = this.caretMessages.at(-1)
 		if (lastMessage?.partial && lastMessage.type === type && (lastMessage.ask === askOrSay || lastMessage.say === askOrSay)) {
-<<<<<<< HEAD
 			this.caretMessages.pop()
 			await this.saveCaretMessagesAndUpdateHistory()
-			await this.controllerRef.deref()?.postStateToWebview()
-=======
-			this.clineMessages.pop()
-			await this.saveClineMessagesAndUpdateHistory()
 			await this.postStateToWebview()
->>>>>>> upstream/main
 		}
 	}
 
 	// Task lifecycle
 
 	private async startTask(task?: string, images?: string[]): Promise<void> {
-<<<<<<< HEAD
+		try {
+			await this.caretIgnoreController.initialize()
+		} catch (error) {
+			console.error("Failed to initialize CaretIgnoreController:", error)
+			// Optionally, inform the user or handle the error appropriately
+		}
 		// conversationHistory (for API) and caretMessages (for webview) need to be in sync
 		// if the extension process were killed, then on restart the caretMessages might not be empty, so we need to set it to [] when we create a new Caret client (otherwise webview would show stale messages from previous session)
 		this.caretMessages = []
-=======
-		try {
-			await this.clineIgnoreController.initialize()
-		} catch (error) {
-			console.error("Failed to initialize ClineIgnoreController:", error)
-			// Optionally, inform the user or handle the error appropriately
-		}
-		// conversationHistory (for API) and clineMessages (for webview) need to be in sync
-		// if the extension process were killed, then on restart the clineMessages might not be empty, so we need to set it to [] when we create a new Cline client (otherwise webview would show stale messages from previous session)
-		this.clineMessages = []
->>>>>>> upstream/main
 		this.apiConversationHistory = []
 
 		await this.postStateToWebview()
@@ -1094,9 +974,9 @@ export class Task {
 
 	private async resumeTaskFromHistory() {
 		try {
-			await this.clineIgnoreController.initialize()
+			await this.caretIgnoreController.initialize()
 		} catch (error) {
-			console.error("Failed to initialize ClineIgnoreController:", error)
+			console.error("Failed to initialize CaretIgnoreController:", error)
 			// Optionally, inform the user or handle the error appropriately
 		}
 		// UPDATE: we don't need this anymore since most tasks are now created with checkpoints enabled
@@ -1133,22 +1013,14 @@ export class Task {
 		await this.overwriteCaretMessages(modifiedCaretMessages)
 		this.caretMessages = await getSavedCaretMessages(this.getContext(), this.taskId)
 
-<<<<<<< HEAD
-		// Now present the caret messages to the user and ask if they want to resume (NOTE: we ran into a bug before where the apiconversationhistory wouldnt be initialized when opening a old task, and it was because we were waiting for resume)
-=======
-		// Now present the cline messages to the user and ask if they want to resume (NOTE: we ran into a bug before where the apiconversationhistory wouldn't be initialized when opening a old task, and it was because we were waiting for resume)
->>>>>>> upstream/main
+		// Now present the caret messages to the user and ask if they want to resume (NOTE: we ran into a bug before where the apiconversationhistory wouldn't be initialized when opening a old task, and it was because we were waiting for resume)
 		// This is important in case the user deletes messages without resuming the task first
 		this.apiConversationHistory = await getSavedApiConversationHistory(this.getContext(), this.taskId)
 
 		// load the context history state
 		await this.contextManager.initializeContextHistory(await ensureTaskDirectoryExists(this.getContext(), this.taskId))
 
-<<<<<<< HEAD
 		const lastCaretMessage = this.caretMessages
-=======
-		const lastClineMessage = this.clineMessages
->>>>>>> upstream/main
 			.slice()
 			.reverse()
 			.find((m) => !(m.ask === "resume_task" || m.ask === "resume_completed_task")) // could be multiple resume tasks
@@ -1224,7 +1096,6 @@ export class Task {
 
 		const wasRecent = lastCaretMessage?.ts && Date.now() - lastCaretMessage.ts < 30_000
 
-<<<<<<< HEAD
 		newUserContent.push({
 			type: "text",
 			text: formatResponse.taskResumption(
@@ -1255,7 +1126,6 @@ export class Task {
 				responseText,
 			),
 		})
-=======
 		const [taskResumptionMessage, userResponseMessage] = formatResponse.taskResumption(
 			this.chatSettings?.mode === "plan" ? "plan" : "act",
 			agoText,
@@ -1277,7 +1147,6 @@ export class Task {
 				text: userResponseMessage,
 			})
 		}
->>>>>>> upstream/main
 
 		if (responseImages && responseImages.length > 0) {
 			newUserContent.push(...formatResponse.imageBlocks(responseImages))
@@ -1323,11 +1192,7 @@ export class Task {
 		this.terminalManager.disposeAll()
 		this.urlContentFetcher.closeBrowser()
 		await this.browserSession.dispose()
-<<<<<<< HEAD
 		this.caretIgnoreController.dispose()
-=======
-		this.clineIgnoreController.dispose()
->>>>>>> upstream/main
 		this.fileContextTracker.dispose()
 		await this.diffViewProvider.revertChanges() // need to await for when we want to make sure directories/files are reverted before re-starting the task from a checkpoint
 	}
@@ -1348,7 +1213,7 @@ export class Task {
 
 		if (!isAttemptCompletionMessage) {
 			// ensure we aren't creating a duplicate checkpoint
-			const lastMessage = this.clineMessages.at(-1)
+			const lastMessage = this.caretMessages.at(-1)
 			if (lastMessage?.say === "checkpoint_created") {
 				return
 			}
@@ -1633,11 +1498,7 @@ export class Task {
 	}
 
 	// Check if the tool should be auto-approved based on the settings
-<<<<<<< HEAD
-	// Returns bool for most tools, tuple for execute_command (and future nested auto appoved settings)
-=======
 	// Returns bool for most tools, and tuple for tools with nested settings
->>>>>>> upstream/main
 	shouldAutoApproveTool(toolName: ToolUseName): boolean | [boolean, boolean] {
 		if (this.autoApprovalSettings.enabled) {
 			switch (toolName) {
@@ -1658,13 +1519,8 @@ export class Task {
 					]
 				case "execute_command":
 					return [
-<<<<<<< HEAD
-						this.autoApprovalSettings.actions.executeSafeCommands,
-						this.autoApprovalSettings.actions.executeAllCommands,
-=======
 						this.autoApprovalSettings.actions.executeSafeCommands ?? false,
 						this.autoApprovalSettings.actions.executeAllCommands ?? false,
->>>>>>> upstream/main
 					]
 				case "browser_action":
 					return this.autoApprovalSettings.actions.useBrowser
@@ -1714,7 +1570,7 @@ export class Task {
 	 * Migrates the disableBrowserTool setting from VSCode configuration to browserSettings
 	 */
 	private async migrateDisableBrowserToolSetting(): Promise<void> {
-		const config = vscode.workspace.getConfiguration("cline")
+		const config = vscode.workspace.getConfiguration("caret")
 		const disableBrowserTool = config.get<boolean>("disableBrowserTool")
 
 		if (disableBrowserTool !== undefined) {
@@ -1725,7 +1581,7 @@ export class Task {
 	}
 
 	private async migratePreferredLanguageToolSetting(): Promise<void> {
-		const config = vscode.workspace.getConfiguration("cline")
+		const config = vscode.workspace.getConfiguration("caret")
 		const preferredLanguage = config.get<LanguageDisplay>("preferredLanguage")
 		if (preferredLanguage !== undefined) {
 			this.chatSettings.preferredLanguage = preferredLanguage
@@ -1741,33 +1597,26 @@ export class Task {
 		})
 
 		await this.migrateDisableBrowserToolSetting()
-		const disableBrowserTool = this.browserSettings.disableToolUse ?? false
-		// cline browser tool uses image recognition for navigation (requires model image support).
-		const modelSupportsBrowserUse = this.api.getModel().info.supportsImages ?? false
-
-<<<<<<< HEAD
-		const disableBrowserTool = vscode.workspace.getConfiguration("caret").get<boolean>("disableBrowserTool") ?? false
-		const modelSupportsComputerUse = this.api.getModel().info.supportsComputerUse ?? false
-=======
+		const disableBrowserTool = this.browserSettings.disableToolUse ?? vscode.workspace.getConfiguration("caret").get<boolean>("disableBrowserTool") ?? false
+		// caret browser tool uses image recognition for navigation (requires model image support).
+		const modelSupportsComputerUse = this.api.getModel().info.supportsImages || this.api.getModel().info.supportsComputerUse ?? false
 		const supportsBrowserUse = modelSupportsBrowserUse && !disableBrowserTool // only enable browser use if the model supports it and the user hasn't disabled it
->>>>>>> upstream/main
+
+		
 
 		let systemPrompt = await SYSTEM_PROMPT(cwd, supportsBrowserUse, this.mcpHub, this.browserSettings)
 
-		let settingsCustomInstructions = this.customInstructions?.trim()
-<<<<<<< HEAD
-		const preferredLanguage = getLanguageKey(
-			vscode.workspace.getConfiguration("caret").get<LanguageDisplay>("preferredLanguage"),
-		)
-=======
-		await this.migratePreferredLanguageToolSetting()
-		const preferredLanguage = getLanguageKey(this.chatSettings.preferredLanguage as LanguageDisplay)
->>>>>>> upstream/main
+		let settingsCustomInstructions = this.customInstructions?.trim()await this.migratePreferredLanguageToolSetting()
+
+		const preferredLanguageConfig =
+			this.chatSettings?.preferredLanguage ??
+			vscode.workspace.getConfiguration("caret").get<LanguageDisplay>("preferredLanguage")
+
+		const preferredLanguage = getLanguageKey(preferredLanguageConfig)
 		const preferredLanguageInstructions =
 			preferredLanguage && preferredLanguage !== DEFAULT_LANGUAGE_SETTINGS
 				? `# Preferred Language\n\nSpeak in ${preferredLanguage}.`
 				: ""
-<<<<<<< HEAD
 		const caretRulesFilePath = path.resolve(cwd, process.env.CARET_RULES_FILE || ".caretrules")
 		let caretRulesFileInstructions: string | undefined
 		if (await fileExistsAtPath(caretRulesFilePath)) {
@@ -1800,21 +1649,19 @@ export class Task {
 				}
 			}
 		}
-=======
 
-		const { globalToggles, localToggles } = await refreshClineRulesToggles(this.getContext(), cwd)
+		const { globalToggles, localToggles } = await refreshCaretRulesToggles(this.getContext(), cwd)
 		const { windsurfLocalToggles, cursorLocalToggles } = await refreshExternalRulesToggles(this.getContext(), cwd)
 
-		const globalClineRulesFilePath = await ensureRulesDirectoryExists()
-		const globalClineRulesFileInstructions = await getGlobalClineRules(globalClineRulesFilePath, globalToggles)
+		const globalCaretRulesFilePath = await ensureRulesDirectoryExists()
+		const globalCaretRulesFileInstructions = await getGlobalCaretRules(globalCaretRulesFilePath, globalToggles)
 
-		const localClineRulesFileInstructions = await getLocalClineRules(cwd, localToggles)
+		const localCaretRulesFileInstructions = await getLocalCaretRules(cwd, localToggles)
 		const [localCursorRulesFileInstructions, localCursorRulesDirInstructions] = await getLocalCursorRules(
 			cwd,
 			cursorLocalToggles,
 		)
 		const localWindsurfRulesFileInstructions = await getLocalWindsurfRules(cwd, windsurfLocalToggles)
->>>>>>> upstream/main
 
 		const caretIgnoreContent = this.caretIgnoreController.caretIgnoreContent
 		let caretIgnoreInstructions: string | undefined
@@ -1824,33 +1671,25 @@ export class Task {
 
 		if (
 			settingsCustomInstructions ||
-<<<<<<< HEAD
 			caretRulesFileInstructions ||
 			caretIgnoreInstructions ||
-=======
-			globalClineRulesFileInstructions ||
-			localClineRulesFileInstructions ||
+			globalCaretRulesFileInstructions ||
+			localCaretRulesFileInstructions ||
 			localCursorRulesFileInstructions ||
 			localCursorRulesDirInstructions ||
 			localWindsurfRulesFileInstructions ||
-			clineIgnoreInstructions ||
->>>>>>> upstream/main
 			preferredLanguageInstructions
 		) {
 			// altering the system prompt mid-task will break the prompt cache, but in the grand scheme this will not change often so it's better to not pollute user messages with it the way we have to with <potentially relevant details>
 			const userInstructions = addUserInstructions(
 				settingsCustomInstructions,
-<<<<<<< HEAD
 				caretRulesFileInstructions,
 				caretIgnoreInstructions,
-=======
-				globalClineRulesFileInstructions,
-				localClineRulesFileInstructions,
+				globalCaretRulesFileInstructions,
+				localCaretRulesFileInstructions,
 				localCursorRulesFileInstructions,
 				localCursorRulesDirInstructions,
 				localWindsurfRulesFileInstructions,
-				clineIgnoreInstructions,
->>>>>>> upstream/main
 				preferredLanguageInstructions,
 			)
 			systemPrompt += userInstructions
@@ -1891,15 +1730,11 @@ export class Task {
 					this.conversationHistoryDeletedRange,
 					"quarter", // Force aggressive truncation
 				)
-<<<<<<< HEAD
 				await this.saveCaretMessagesAndUpdateHistory()
-=======
-				await this.saveClineMessagesAndUpdateHistory()
 				await this.contextManager.triggerApplyStandardContextTruncationNoticeChange(
 					Date.now(),
 					await ensureTaskDirectoryExists(this.getContext(), this.taskId),
 				)
->>>>>>> upstream/main
 
 				this.didAutomaticallyRetryFailedApiRequest = true
 			} else if (isOpenRouter && !this.didAutomaticallyRetryFailedApiRequest) {
@@ -1909,15 +1744,11 @@ export class Task {
 						this.conversationHistoryDeletedRange,
 						"quarter", // Force aggressive truncation
 					)
-<<<<<<< HEAD
 					await this.saveCaretMessagesAndUpdateHistory()
-=======
-					await this.saveClineMessagesAndUpdateHistory()
 					await this.contextManager.triggerApplyStandardContextTruncationNoticeChange(
 						Date.now(),
 						await ensureTaskDirectoryExists(this.getContext(), this.taskId),
 					)
->>>>>>> upstream/main
 				}
 
 				console.log("first chunk failed, waiting 1 second before retrying")
@@ -1944,16 +1775,16 @@ export class Task {
 				const errorMessage = this.formatErrorWithStatusCode(error)
 
 				// Update the 'api_req_started' message to reflect final failure before asking user to manually retry
-				const lastApiReqStartedIndex = findLastIndex(this.clineMessages, (m) => m.say === "api_req_started")
+				const lastApiReqStartedIndex = findLastIndex(this.caretMessages, (m) => m.say === "api_req_started")
 				if (lastApiReqStartedIndex !== -1) {
-					const currentApiReqInfo: ClineApiReqInfo = JSON.parse(this.clineMessages[lastApiReqStartedIndex].text || "{}")
+					const currentApiReqInfo: CaretApiReqInfo = JSON.parse(this.caretMessages[lastApiReqStartedIndex].text || "{}")
 					delete currentApiReqInfo.retryStatus
 
-					this.clineMessages[lastApiReqStartedIndex].text = JSON.stringify({
+					this.caretMessages[lastApiReqStartedIndex].text = JSON.stringify({
 						...currentApiReqInfo, // Spread the modified info (with retryStatus removed)
 						cancelReason: "retries_exhausted", // Indicate that automatic retries failed
 						streamingFailedMessage: errorMessage,
-					} satisfies ClineApiReqInfo)
+					} satisfies CaretApiReqInfo)
 					// this.ask will trigger postStateToWebview, so this change should be picked up.
 				}
 
@@ -2093,18 +1924,15 @@ export class Task {
 							return `[${block.name}]`
 						case "new_task":
 							return `[${block.name} for creating a new task]`
-<<<<<<< HEAD
-						default:
-							// Added default case to satisfy TS7030
-							return `[${block.name}]`
-=======
 						case "condense":
 							return `[${block.name}]`
 						case "report_bug":
 							return `[${block.name}]`
 						case "new_rule":
 							return `[${block.name} for '${block.params.path}']`
->>>>>>> upstream/main
+						default:
+							// Added default case to satisfy TS7030
+							return `[${block.name}]`
 					}
 				}
 
@@ -2260,15 +2088,9 @@ export class Task {
 
 						const accessAllowed = this.caretIgnoreController.validateAccess(relPath)
 						if (!accessAllowed) {
-<<<<<<< HEAD
 							await this.say("caretignore_error", relPath)
 							pushToolResult(formatResponse.toolError(formatResponse.caretIgnoreError(relPath)))
-
-=======
-							await this.say("clineignore_error", relPath)
-							pushToolResult(formatResponse.toolError(formatResponse.clineIgnoreError(relPath)))
 							await this.saveCheckpoint()
->>>>>>> upstream/main
 							break
 						}
 
@@ -2433,14 +2255,16 @@ export class Task {
 									// 		newContent,
 									// 	)
 									// : undefined,
-<<<<<<< HEAD
 								} satisfies CaretSayTool)
-
-								if (this.shouldAutoApproveTool(block.name)) {
-=======
-								} satisfies ClineSayTool)
 								if (this.shouldAutoApproveToolWithPath(block.name, relPath)) {
->>>>>>> upstream/main
+									this.removeLastPartialMessageIfExistsWithType("ask", "tool")
+									await this.say("tool", completeMessage, undefined, false)
+									this.consecutiveAutoApprovedRequestsCount++
+									telemetryService.captureToolUsage(this.taskId, block.name, true, true)
+
+									// we need an artificial delay to let the diagnostics catch up to the changes
+									await setTimeoutPromise(3_500)
+								} else if (this.shouldAutoApproveTool(block.name)) {
 									this.removeLastPartialMessageIfExistsWithType("ask", "tool")
 									await this.say("tool", completeMessage, undefined, false)
 									this.consecutiveAutoApprovedRequestsCount++
@@ -2490,24 +2314,15 @@ export class Task {
 									}
 								}
 
-<<<<<<< HEAD
 								// Mark the file as edited by Caret to prevent false "recently modified" warnings
 								this.fileContextTracker.markFileAsEditedByCaret(relPath)
-=======
-								// Mark the file as edited by Cline to prevent false "recently modified" warnings
-								this.fileContextTracker.markFileAsEditedByCline(relPath)
->>>>>>> upstream/main
 
 								const { newProblemsMessage, userEdits, autoFormattingEdits, finalContent } =
 									await this.diffViewProvider.saveChanges()
 								this.didEditFile = true // used to determine if we should wait for busy terminal to update before sending api request
 
 								// Track file edit operation
-<<<<<<< HEAD
 								await this.fileContextTracker.trackFileContext(relPath, "caret_edited")
-=======
-								await this.fileContextTracker.trackFileContext(relPath, "cline_edited")
->>>>>>> upstream/main
 
 								if (userEdits) {
 									// Track file edit operation
@@ -2570,14 +2385,12 @@ export class Task {
 								const partialMessage = JSON.stringify({
 									...sharedMessageProps,
 									content: undefined,
-<<<<<<< HEAD
-								} satisfies CaretSayTool)
-								if (this.shouldAutoApproveTool(block.name)) {
-=======
 									operationIsLocatedInWorkspace: isLocatedInWorkspace(relPath),
-								} satisfies ClineSayTool)
+								} satisfies CaretSayTool)
 								if (this.shouldAutoApproveToolWithPath(block.name, block.params.path)) {
->>>>>>> upstream/main
+									this.removeLastPartialMessageIfExistsWithType("ask", "tool")
+									await this.say("tool", partialMessage, undefined, block.partial)
+								} else if (this.shouldAutoApproveTool(block.name)) {
 									this.removeLastPartialMessageIfExistsWithType("ask", "tool")
 									await this.say("tool", partialMessage, undefined, block.partial)
 								} else {
@@ -2595,15 +2408,9 @@ export class Task {
 
 								const accessAllowed = this.caretIgnoreController.validateAccess(relPath)
 								if (!accessAllowed) {
-<<<<<<< HEAD
 									await this.say("caretignore_error", relPath)
 									pushToolResult(formatResponse.toolError(formatResponse.caretIgnoreError(relPath)))
-
-=======
-									await this.say("clineignore_error", relPath)
-									pushToolResult(formatResponse.toolError(formatResponse.clineIgnoreError(relPath)))
 									await this.saveCheckpoint()
->>>>>>> upstream/main
 									break
 								}
 
@@ -2612,14 +2419,14 @@ export class Task {
 								const completeMessage = JSON.stringify({
 									...sharedMessageProps,
 									content: absolutePath,
-<<<<<<< HEAD
-								} satisfies CaretSayTool)
-								if (this.shouldAutoApproveTool(block.name)) {
-=======
 									operationIsLocatedInWorkspace: isLocatedInWorkspace(relPath),
-								} satisfies ClineSayTool)
+								} satisfies CaretSayTool)
 								if (this.shouldAutoApproveToolWithPath(block.name, block.params.path)) {
->>>>>>> upstream/main
+									this.removeLastPartialMessageIfExistsWithType("ask", "tool")
+									await this.say("tool", completeMessage, undefined, false) // need to be sending partialValue bool, since undefined has its own purpose in that the message is treated neither as a partial or completion of a partial, but as a single complete message
+									this.consecutiveAutoApprovedRequestsCount++
+									telemetryService.captureToolUsage(this.taskId, block.name, true, true)
+								} else if (this.shouldAutoApproveTool(block.name)) {
 									this.removeLastPartialMessageIfExistsWithType("ask", "tool")
 									await this.say("tool", completeMessage, undefined, false) // need to be sending partialValue bool, since undefined has its own purpose in that the message is treated neither as a partial or completion of a partial, but as a single complete message
 									this.consecutiveAutoApprovedRequestsCount++
@@ -2639,14 +2446,6 @@ export class Task {
 								}
 								// now execute the tool like normal
 								const content = await extractTextFromFile(absolutePath)
-<<<<<<< HEAD
-
-								// Track file read operation
-								await this.fileContextTracker.trackFileContext(relPath, "read_tool")
-
-								pushToolResult(content)
-=======
->>>>>>> upstream/main
 
 								// Track file read operation
 								await this.fileContextTracker.trackFileContext(relPath, "read_tool")
@@ -2674,14 +2473,12 @@ export class Task {
 								const partialMessage = JSON.stringify({
 									...sharedMessageProps,
 									content: "",
-<<<<<<< HEAD
-								} satisfies CaretSayTool)
-								if (this.shouldAutoApproveTool(block.name)) {
-=======
 									operationIsLocatedInWorkspace: isLocatedInWorkspace(block.params.path),
-								} satisfies ClineSayTool)
+								} satisfies CaretSayTool)
 								if (this.shouldAutoApproveToolWithPath(block.name, block.params.path)) {
->>>>>>> upstream/main
+									this.removeLastPartialMessageIfExistsWithType("ask", "tool")
+									await this.say("tool", partialMessage, undefined, block.partial)
+								} else if (this.shouldAutoApproveTool(block.name)) {
 									this.removeLastPartialMessageIfExistsWithType("ask", "tool")
 									await this.say("tool", partialMessage, undefined, block.partial)
 								} else {
@@ -2711,14 +2508,14 @@ export class Task {
 								const completeMessage = JSON.stringify({
 									...sharedMessageProps,
 									content: result,
-<<<<<<< HEAD
-								} satisfies CaretSayTool)
-								if (this.shouldAutoApproveTool(block.name)) {
-=======
 									operationIsLocatedInWorkspace: isLocatedInWorkspace(block.params.path),
-								} satisfies ClineSayTool)
+								} satisfies CaretSayTool)
 								if (this.shouldAutoApproveToolWithPath(block.name, block.params.path)) {
->>>>>>> upstream/main
+									this.removeLastPartialMessageIfExistsWithType("ask", "tool")
+									await this.say("tool", completeMessage, undefined, false)
+									this.consecutiveAutoApprovedRequestsCount++
+									telemetryService.captureToolUsage(this.taskId, block.name, true, true)
+								} else if (this.shouldAutoApproveTool(block.name)) {
 									this.removeLastPartialMessageIfExistsWithType("ask", "tool")
 									await this.say("tool", completeMessage, undefined, false)
 									this.consecutiveAutoApprovedRequestsCount++
@@ -2757,14 +2554,12 @@ export class Task {
 								const partialMessage = JSON.stringify({
 									...sharedMessageProps,
 									content: "",
-<<<<<<< HEAD
-								} satisfies CaretSayTool)
-								if (this.shouldAutoApproveTool(block.name)) {
-=======
 									operationIsLocatedInWorkspace: isLocatedInWorkspace(block.params.path),
-								} satisfies ClineSayTool)
+								} satisfies CaretSayTool)
 								if (this.shouldAutoApproveToolWithPath(block.name, block.params.path)) {
->>>>>>> upstream/main
+									this.removeLastPartialMessageIfExistsWithType("ask", "tool")
+									await this.say("tool", partialMessage, undefined, block.partial)
+								} else if (this.shouldAutoApproveTool(block.name)) {
 									this.removeLastPartialMessageIfExistsWithType("ask", "tool")
 									await this.say("tool", partialMessage, undefined, block.partial)
 								} else {
@@ -2791,14 +2586,14 @@ export class Task {
 								const completeMessage = JSON.stringify({
 									...sharedMessageProps,
 									content: result,
-<<<<<<< HEAD
-								} satisfies CaretSayTool)
-								if (this.shouldAutoApproveTool(block.name)) {
-=======
 									operationIsLocatedInWorkspace: isLocatedInWorkspace(block.params.path),
-								} satisfies ClineSayTool)
+								} satisfies CaretSayTool)
 								if (this.shouldAutoApproveToolWithPath(block.name, block.params.path)) {
->>>>>>> upstream/main
+									this.removeLastPartialMessageIfExistsWithType("ask", "tool")
+									await this.say("tool", completeMessage, undefined, false)
+									this.consecutiveAutoApprovedRequestsCount++
+									telemetryService.captureToolUsage(this.taskId, block.name, true, true)
+								} else if (this.shouldAutoApproveTool(block.name)) {
 									this.removeLastPartialMessageIfExistsWithType("ask", "tool")
 									await this.say("tool", completeMessage, undefined, false)
 									this.consecutiveAutoApprovedRequestsCount++
@@ -2841,14 +2636,12 @@ export class Task {
 								const partialMessage = JSON.stringify({
 									...sharedMessageProps,
 									content: "",
-<<<<<<< HEAD
-								} satisfies CaretSayTool)
-								if (this.shouldAutoApproveTool(block.name)) {
-=======
 									operationIsLocatedInWorkspace: isLocatedInWorkspace(block.params.path),
-								} satisfies ClineSayTool)
+								} satisfies CaretSayTool)
 								if (this.shouldAutoApproveToolWithPath(block.name, block.params.path)) {
->>>>>>> upstream/main
+									this.removeLastPartialMessageIfExistsWithType("ask", "tool")
+									await this.say("tool", partialMessage, undefined, block.partial)
+								} else if (this.shouldAutoApproveTool(block.name)) {
 									this.removeLastPartialMessageIfExistsWithType("ask", "tool")
 									await this.say("tool", partialMessage, undefined, block.partial)
 								} else {
@@ -2883,14 +2676,14 @@ export class Task {
 								const completeMessage = JSON.stringify({
 									...sharedMessageProps,
 									content: results,
-<<<<<<< HEAD
-								} satisfies CaretSayTool)
-								if (this.shouldAutoApproveTool(block.name)) {
-=======
 									operationIsLocatedInWorkspace: isLocatedInWorkspace(block.params.path),
-								} satisfies ClineSayTool)
+								} satisfies CaretSayTool)
 								if (this.shouldAutoApproveToolWithPath(block.name, block.params.path)) {
->>>>>>> upstream/main
+									this.removeLastPartialMessageIfExistsWithType("ask", "tool")
+									await this.say("tool", completeMessage, undefined, false)
+									this.consecutiveAutoApprovedRequestsCount++
+									telemetryService.captureToolUsage(this.taskId, block.name, true, true)
+								} else if (this.shouldAutoApproveTool(block.name)) {
 									this.removeLastPartialMessageIfExistsWithType("ask", "tool")
 									await this.say("tool", completeMessage, undefined, false)
 									this.consecutiveAutoApprovedRequestsCount++
@@ -3000,17 +2793,11 @@ export class Task {
 									await this.say("browser_action_result", "") // starts loading spinner
 
 									// Re-make browserSession to make sure latest settings apply
-<<<<<<< HEAD
-									const localContext = this.controllerRef.deref()?.context
-									if (localContext) {
+									const contextToUse = this.controllerRef?.deref()?.context ?? this.context
+									if (contextToUse) {
 										await this.browserSession.dispose()
-										this.browserSession = new BrowserSession(localContext, this.browserSettings)
-=======
-									if (this.context) {
-										await this.browserSession.dispose()
-										this.browserSession = new BrowserSession(this.context, this.browserSettings)
->>>>>>> upstream/main
-									} else {
+										this.browserSession = new BrowserSession(contextToUse, this.browserSettings)
+									}else {
 										console.warn("no controller context available for browserSession")
 									}
 									await this.browserSession.launchBrowser()
@@ -3156,11 +2943,7 @@ export class Task {
 
 								let didAutoApprove = false
 
-<<<<<<< HEAD
-								// If the model says this command is safe and auto aproval for safe commands is true, execute the command
-=======
 								// If the model says this command is safe and auto approval for safe commands is true, execute the command
->>>>>>> upstream/main
 								// If the model says the command is risky, but *BOTH* auto approve settings are true, execute the command
 								const autoApproveResult = this.shouldAutoApproveTool(block.name)
 								const [autoApproveSafe, autoApproveAll] = Array.isArray(autoApproveResult)
@@ -3486,13 +3269,8 @@ export class Task {
 										lastFollowupMessage.text = JSON.stringify({
 											...sharedMessage,
 											selected: text,
-<<<<<<< HEAD
 										} satisfies CaretAskQuestion)
 										await this.saveCaretMessagesAndUpdateHistory()
-=======
-										} satisfies ClineAskQuestion)
-										await this.saveClineMessagesAndUpdateHistory()
->>>>>>> upstream/main
 										telemetryService.captureOptionSelected(this.taskId, options.length, "act")
 									}
 								} else {
@@ -3528,8 +3306,8 @@ export class Task {
 
 								if (this.autoApprovalSettings.enabled && this.autoApprovalSettings.enableNotifications) {
 									showSystemNotification({
-										subtitle: "Cline wants to start a new task...",
-										message: `Cline is suggesting to start a new task with: ${context}`,
+										subtitle: "Caret wants to start a new task...",
+										message: `Caret is suggesting to start a new task with: ${context}`,
 									})
 								}
 
@@ -3576,8 +3354,8 @@ export class Task {
 
 								if (this.autoApprovalSettings.enabled && this.autoApprovalSettings.enableNotifications) {
 									showSystemNotification({
-										subtitle: "Cline wants to condense the conversation...",
-										message: `Cline is suggesting to condense your conversation with: ${context}`,
+										subtitle: "Caret wants to condense the conversation...",
+										message: `Caret is suggesting to condense your conversation with: ${context}`,
 									})
 								}
 
@@ -3606,7 +3384,7 @@ export class Task {
 										this.conversationHistoryDeletedRange,
 										keepStrategy,
 									)
-									await this.saveClineMessagesAndUpdateHistory()
+									await this.saveCaretMessagesAndUpdateHistory()
 									await this.contextManager.triggerApplyStandardContextTruncationNoticeChange(
 										Date.now(),
 										await ensureTaskDirectoryExists(this.getContext(), this.taskId),
@@ -3678,14 +3456,14 @@ export class Task {
 
 								if (this.autoApprovalSettings.enabled && this.autoApprovalSettings.enableNotifications) {
 									showSystemNotification({
-										subtitle: "Cline wants to create a github issue...",
-										message: `Cline is suggesting to create a github issue with the title: ${title}`,
+										subtitle: "Caret wants to create a github issue...",
+										message: `Caret is suggesting to create a github issue with the title: ${title}`,
 									})
 								}
 
 								// Derive system information values algorithmically
 								const operatingSystem = os.platform() + " " + os.release()
-								const clineVersion =
+								const caretVersion =
 									vscode.extensions.getExtension("saoudrizwan.claude-dev")?.packageJSON.version || "Unknown"
 								const systemInfo = `VSCode: ${vscode.version}, Node.js: ${process.version}, Architecture: ${os.arch()}`
 								const providerAndModel = `${(await getGlobalState(this.getContext(), "apiProvider")) as string} / ${this.api.getModel().id}`
@@ -3701,7 +3479,7 @@ export class Task {
 									provider_and_model: providerAndModel,
 									operating_system: operatingSystem,
 									system_info: systemInfo,
-									cline_version: clineVersion,
+									caret_version: caretVersion,
 								})
 
 								const { text, images } = await this.ask("report_bug", bugReportData, false)
@@ -3726,7 +3504,7 @@ export class Task {
 										const params = new Map<string, string>()
 										params.set("title", title)
 										params.set("operating-system", operatingSystem)
-										params.set("cline-version", clineVersion)
+										params.set("caret-version", caretVersion)
 										params.set("system-info", systemInfo)
 										params.set("additional-context", additional_context)
 										params.set("what-happened", what_happened)
@@ -3736,7 +3514,7 @@ export class Task {
 
 										// Use our utility function to create and open the GitHub issue URL
 										// This bypasses VS Code's URI handling issues with special characters
-										await createAndOpenGitHubIssue("cline", "cline", "bug_report.yml", params)
+										await createAndOpenGitHubIssue("caret", "caret", "bug_report.yml", params)
 									} catch (error) {
 										console.error(`An error occurred while attempting to report the bug: ${error}`)
 									}
@@ -3844,13 +3622,8 @@ export class Task {
 										lastPlanMessage.text = JSON.stringify({
 											...sharedMessage,
 											selected: text,
-<<<<<<< HEAD
 										} satisfies CaretPlanModeResponse)
 										await this.saveCaretMessagesAndUpdateHistory()
-=======
-										} satisfies ClinePlanModeResponse)
-										await this.saveClineMessagesAndUpdateHistory()
->>>>>>> upstream/main
 										telemetryService.captureOptionSelected(this.taskId, options.length, "plan")
 									}
 								} else {
@@ -4161,14 +3934,7 @@ export class Task {
 		const previousApiReqIndex = findLastIndex(this.caretMessages, (m) => m.say === "api_req_started")
 
 		// Save checkpoint if this is the first API request
-<<<<<<< HEAD
 		const isFirstRequest = this.caretMessages.filter((m) => m.say === "api_req_started").length === 0
-		if (isFirstRequest) {
-			await this.say("checkpoint_created") // no hash since we need to wait for CheckpointTracker to be initialized
-		}
-=======
-		const isFirstRequest = this.clineMessages.filter((m) => m.say === "api_req_started").length === 0
->>>>>>> upstream/main
 
 		// getting verbose details is an expensive operation, it uses globby to top-down build file structure of project which for large projects can take a few seconds
 		// for the best UX we show a placeholder api_req_started message with a loading spinner as this happens
@@ -4197,27 +3963,17 @@ export class Task {
 			}
 		}
 
-<<<<<<< HEAD
-		// Now that checkpoint tracker is initialized, update the dummy checkpoint_created message with the commit hash. (This is necessary since we use the API request loading as an opportunity to initialize the checkpoint tracker, which can take some time)
-		if (isFirstRequest) {
-			const commitHash = await this.checkpointTracker?.commit()
-			const lastCheckpointMessage = findLast(this.caretMessages, (m) => m.say === "checkpoint_created")
-			if (lastCheckpointMessage) {
-				lastCheckpointMessage.lastCheckpointHash = commitHash
-				await this.saveCaretMessagesAndUpdateHistory()
-=======
 		// Now, if it's the first request AND checkpoints are enabled AND tracker was successfully initialized,
 		// then say "checkpoint_created" and perform the commit.
 		if (isFirstRequest && this.enableCheckpoints && this.checkpointTracker) {
 			await this.say("checkpoint_created") // Now this is conditional
 			const commitHash = await this.checkpointTracker.commit() // Actual commit
-			const lastCheckpointMessage = findLast(this.clineMessages, (m) => m.say === "checkpoint_created")
+			const lastCheckpointMessage = findLast(this.caretMessages, (m) => m.say === "checkpoint_created")
 			if (lastCheckpointMessage) {
 				lastCheckpointMessage.lastCheckpointHash = commitHash
-				// saveClineMessagesAndUpdateHistory will be called later after API response,
+				// saveCaretMessagesAndUpdateHistory will be called later after API response,
 				// so no need to call it here unless this is the only modification to this message.
 				// For now, assuming it's handled later.
->>>>>>> upstream/main
 			}
 		} else if (isFirstRequest && this.enableCheckpoints && !this.checkpointTracker && this.checkpointTrackerErrorMessage) {
 			// Checkpoints are enabled, but tracker failed to initialize.
@@ -4225,13 +3981,13 @@ export class Task {
 			// No explicit UI message here, error message will be in ExtensionState.
 		}
 
-		const [parsedUserContent, environmentDetails, clinerulesError] = await this.loadContext(userContent, includeFileDetails)
+		const [parsedUserContent, environmentDetails, caretrulesError] = await this.loadContext(userContent, includeFileDetails)
 
-		// error handling if the user uses the /newrule command & their .clinerules is a file, for file read operations didnt work properly
-		if (clinerulesError === true) {
+		// error handling if the user uses the /newrule command & their .caretrules is a file, for file read operations didnt work properly
+		if (caretrulesError === true) {
 			await this.say(
 				"error",
-				"Issue with processing the /newrule command. Double check that, if '.clinerules' already exists, it's a directory and not a file. Otherwise there was an issue referencing this file/directory.",
+				"Issue with processing the /newrule command. Double check that, if '.caretrules' already exists, it's a directory and not a file. Otherwise there was an issue referencing this file/directory.",
 			)
 		}
 
@@ -4250,15 +4006,9 @@ export class Task {
 		const lastApiReqIndex = findLastIndex(this.caretMessages, (m) => m.say === "api_req_started")
 		this.caretMessages[lastApiReqIndex].text = JSON.stringify({
 			request: userContent.map((block) => formatContentBlockToMarkdown(block)).join("\n\n"),
-<<<<<<< HEAD
 		} satisfies CaretApiReqInfo)
 		await this.saveCaretMessagesAndUpdateHistory()
-		await this.controllerRef.deref()?.postStateToWebview()
-=======
-		} satisfies ClineApiReqInfo)
-		await this.saveClineMessagesAndUpdateHistory()
 		await this.postStateToWebview()
->>>>>>> upstream/main
 
 		try {
 			let cacheWriteTokens = 0
@@ -4270,18 +4020,12 @@ export class Task {
 			// update api_req_started. we can't use api_req_finished anymore since it's a unique case where it could come after a streaming message (ie in the middle of being updated or executed)
 			// fortunately api_req_finished was always parsed out for the gui anyways, so it remains solely for legacy purposes to keep track of prices in tasks from history
 			// (it's worth removing a few months from now)
-<<<<<<< HEAD
 			const updateApiReqMsg = (cancelReason?: CaretApiReqCancelReason, streamingFailedMessage?: string) => {
-				this.caretMessages[lastApiReqIndex].text = JSON.stringify({
-					...JSON.parse(this.caretMessages[lastApiReqIndex].text || "{}"),
-=======
-			const updateApiReqMsg = (cancelReason?: ClineApiReqCancelReason, streamingFailedMessage?: string) => {
-				const currentApiReqInfo: ClineApiReqInfo = JSON.parse(this.clineMessages[lastApiReqIndex].text || "{}")
+				const currentApiReqInfo: CaretApiReqInfo = JSON.parse(this.caretMessages[lastApiReqIndex].text || "{}")
 				delete currentApiReqInfo.retryStatus // Clear retry status when request is finalized
 
-				this.clineMessages[lastApiReqIndex].text = JSON.stringify({
+				this.caretMessages[lastApiReqIndex].text = JSON.stringify({
 					...currentApiReqInfo, // Spread the modified info (with retryStatus removed)
->>>>>>> upstream/main
 					tokensIn: inputTokens,
 					tokensOut: outputTokens,
 					cacheWrites: cacheWriteTokens,
@@ -4436,15 +4180,12 @@ export class Task {
 					const errorMessage = this.formatErrorWithStatusCode(error)
 
 					await abortStream("streaming_failed", errorMessage)
-<<<<<<< HEAD
 					const history = await this.controllerRef.deref()?.getTaskWithId(this.taskId)
 					if (history) {
 						await this.controllerRef.deref()?.initCaretWithHistoryItem(history.historyItem)
 						// await this.controllerRef.deref()?.postStateToWebview()
 					}
-=======
 					await this.reinitExistingTaskFromId(this.taskId)
->>>>>>> upstream/main
 				}
 			} finally {
 				this.isStreaming = false
@@ -4462,13 +4203,8 @@ export class Task {
 						totalCost = apiStreamUsage.totalCost
 					}
 					updateApiReqMsg()
-<<<<<<< HEAD
 					await this.saveCaretMessagesAndUpdateHistory()
-					await this.controllerRef.deref()?.postStateToWebview()
-=======
-					await this.saveClineMessagesAndUpdateHistory()
 					await this.postStateToWebview()
->>>>>>> upstream/main
 				})
 			}
 
@@ -4491,13 +4227,8 @@ export class Task {
 			}
 
 			updateApiReqMsg()
-<<<<<<< HEAD
 			await this.saveCaretMessagesAndUpdateHistory()
-			await this.controllerRef.deref()?.postStateToWebview()
-=======
-			await this.saveClineMessagesAndUpdateHistory()
 			await this.postStateToWebview()
->>>>>>> upstream/main
 
 			// now add to apiconversationhistory
 			// need to save assistant responses to file before proceeding to tool use since user can exit at any moment and we wouldn't be able to save the assistant's response
@@ -4565,8 +4296,8 @@ export class Task {
 	}
 
 	async loadContext(userContent: UserContent, includeFileDetails: boolean = false): Promise<[UserContent, string, boolean]> {
-		// Track if we need to check clinerulesFile
-		let needsClinerulesFileCheck = false
+		// Track if we need to check caretrulesFile
+		let needsCaretrulesFileCheck = false
 
 		const workflowToggles = await refreshWorkflowToggles(this.getContext(), cwd)
 
@@ -4588,31 +4319,22 @@ export class Task {
 								block.text,
 								cwd,
 								this.urlContentFetcher,
-<<<<<<< HEAD
-								// this.fileContextTracker, // Removed 4th argument
-							)
-
-							return {
-								...block,
-								text: parsedText,
-=======
 								this.fileContextTracker,
 							)
 
 							// when parsing slash commands, we still want to allow the user to provide their desired context
-							const { processedText, needsClinerulesFileCheck: needsCheck } = await parseSlashCommands(
+							const { processedText, needsCaretrulesFileCheck: needsCheck } = await parseSlashCommands(
 								parsedText,
 								workflowToggles,
 							)
 
 							if (needsCheck) {
-								needsClinerulesFileCheck = true
+								needsCaretrulesFileCheck = true
 							}
 
 							return {
 								...block,
 								text: processedText,
->>>>>>> upstream/main
 							}
 						}
 					}
@@ -4627,14 +4349,14 @@ export class Task {
 			this.getEnvironmentDetails(includeFileDetails),
 		])
 
-		// After processing content, check clinerulesData if needed
-		let clinerulesError = false
-		if (needsClinerulesFileCheck) {
-			clinerulesError = await ensureLocalClineDirExists(cwd, GlobalFileNames.clineRules)
+		// After processing content, check caretrulesData if needed
+		let caretrulesError = false
+		if (needsCaretrulesFileCheck) {
+			caretrulesError = await ensureLocalCaretDirExists(cwd, GlobalFileNames.caretRules)
 		}
 
 		// Return all results
-		return [processedUserContent, environmentDetails, clinerulesError]
+		return [processedUserContent, environmentDetails, caretrulesError]
 	}
 
 	async getEnvironmentDetails(includeFileDetails: boolean = false) {
@@ -4806,11 +4528,7 @@ export class Task {
 		const { contextWindow, maxAllowedSize } = getContextWindowInfo(this.api)
 
 		// Get the token count from the most recent API request to accurately reflect context management
-<<<<<<< HEAD
 		const getTotalTokensFromApiReqMessage = (msg: CaretMessage) => {
-=======
-		const getTotalTokensFromApiReqMessage = (msg: ClineMessage) => {
->>>>>>> upstream/main
 			if (!msg.text) {
 				return 0
 			}
@@ -4822,11 +4540,7 @@ export class Task {
 			}
 		}
 
-<<<<<<< HEAD
 		const modifiedMessages = combineApiRequests(combineCommandSequences(this.caretMessages.slice(1)))
-=======
-		const modifiedMessages = combineApiRequests(combineCommandSequences(this.clineMessages.slice(1)))
->>>>>>> upstream/main
 		const lastApiReqMessage = findLast(modifiedMessages, (msg) => {
 			if (msg.say !== "api_req_started") {
 				return false
@@ -4837,11 +4551,7 @@ export class Task {
 		const lastApiReqTotalTokens = lastApiReqMessage ? getTotalTokensFromApiReqMessage(lastApiReqMessage) : 0
 		const usagePercentage = Math.round((lastApiReqTotalTokens / contextWindow) * 100)
 
-<<<<<<< HEAD
-		details += "\n# Context Window Usage"
-=======
 		details += "\n\n# Context Window Usage"
->>>>>>> upstream/main
 		details += `\n${lastApiReqTotalTokens.toLocaleString()} / ${(contextWindow / 1000).toLocaleString()}K tokens used (${usagePercentage}%)`
 
 		details += "\n\n# Current Mode"

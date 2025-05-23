@@ -1,10 +1,7 @@
 import { memo } from "react"
-<<<<<<< HEAD
 import { vscode } from "@/utils/vscode"
-=======
 import { AccountServiceClient } from "@/services/grpc-client"
 import { EmptyRequest } from "@shared/proto/common"
->>>>>>> upstream/main
 
 const AccountOptions = () => {
 	const handleAccountClick = () => {

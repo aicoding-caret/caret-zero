@@ -115,63 +115,53 @@ const copyWasmFiles = {
 	name: "copy-wasm-files",
 	setup(build) {
 		build.onEnd(() => {
-<<<<<<< HEAD
-			try {
-				// tree sitter
-				const sourceDir = path.join(__dirname, "node_modules", "web-tree-sitter")
-				const targetDir = path.join(__dirname, "dist")
-=======
 			// tree sitter
 			const sourceDir = path.join(__dirname, "node_modules", "web-tree-sitter")
 			const targetDir = path.join(__dirname, destDir)
->>>>>>> upstream/main
 
-				// Ensure target directory exists
-				if (!fs.existsSync(targetDir)) {
-					fs.mkdirSync(targetDir, { recursive: true })
-				}
-
-				// Copy tree-sitter.wasm
-				const treeSitterWasmPath = path.join(sourceDir, "tree-sitter.wasm")
-				if (fs.existsSync(treeSitterWasmPath)) {
-					fs.copyFileSync(treeSitterWasmPath, path.join(targetDir, "tree-sitter.wasm"))
-				} else {
-					console.warn("Warning: tree-sitter.wasm not found in source directory")
-				}
-
-				// Copy language-specific WASM files
-				const languageWasmDir = path.join(__dirname, "node_modules", "tree-sitter-wasms", "out")
-				const languages = [
-					"typescript",
-					"tsx",
-					"python",
-					"rust",
-					"javascript",
-					"go",
-					"cpp",
-					"c",
-					"c_sharp",
-					"ruby",
-					"java",
-					"php",
-					"swift",
-					"kotlin",
-				]
-
-				languages.forEach((lang) => {
-					const filename = `tree-sitter-${lang}.wasm`
-					const sourcePath = path.join(languageWasmDir, filename)
-					const targetPath = path.join(targetDir, filename)
-					
-					if (fs.existsSync(sourcePath)) {
-						fs.copyFileSync(sourcePath, targetPath)
-					} else {
-						console.warn(`Warning: ${filename} not found in source directory`)
-					}
-				})
-			} catch (error) {
-				console.error("Error copying WASM files:", error)
+			// Ensure target directory exists
+			if (!fs.existsSync(targetDir)) {
+				fs.mkdirSync(targetDir, { recursive: true })
 			}
+
+			// Copy tree-sitter.wasm
+			const treeSitterWasmPath = path.join(sourceDir, "tree-sitter.wasm")
+			if (fs.existsSync(treeSitterWasmPath)) {
+				fs.copyFileSync(treeSitterWasmPath, path.join(targetDir, "tree-sitter.wasm"))
+			} else {
+				console.warn("Warning: tree-sitter.wasm not found in source directory")
+			}
+
+			// Copy language-specific WASM files
+			const languageWasmDir = path.join(__dirname, "node_modules", "tree-sitter-wasms", "out")
+			const languages = [
+				"typescript",
+				"tsx",
+				"python",
+				"rust",
+				"javascript",
+				"go",
+				"cpp",
+				"c",
+				"c_sharp",
+				"ruby",
+				"java",
+				"php",
+				"swift",
+				"kotlin",
+			]
+
+			languages.forEach((lang) => {
+				const filename = `tree-sitter-${lang}.wasm`
+				const sourcePath = path.join(languageWasmDir, filename)
+				const targetPath = path.join(targetDir, filename)
+				
+				if (fs.existsSync(sourcePath)) {
+					fs.copyFileSync(sourcePath, targetPath)
+				} else {
+					console.warn(`Warning: ${filename} not found in source directory`)
+				}
+			})
 		})
 	},
 }
@@ -218,10 +208,7 @@ const baseConfig = {
 	tsconfig: path.resolve(__dirname, "tsconfig.json"),
 	plugins: [
 		copyWasmFiles,
-<<<<<<< HEAD
 		copyAssets,
-=======
->>>>>>> upstream/main
 		aliasResolverPlugin,
 		/* add to the end of plugins array */
 		esbuildProblemMatcherPlugin,
@@ -258,12 +245,9 @@ const standaloneConfig = {
 }
 
 async function main() {
-<<<<<<< HEAD
-	try {
-		// 빌드 전 검사 실행
-		await preBuildChecks()
-		
-		const extensionCtx = await esbuild.context(extensionConfig)
+	try{
+		const config = standalone ? standaloneConfig : extensionConfig
+		const extensionCtx = await esbuild.context(config)
 		if (watch) {
 			await extensionCtx.watch()
 		} else {
@@ -271,17 +255,8 @@ async function main() {
 			await extensionCtx.dispose()
 		}
 	} catch (error) {
-		console.error("Build failed:", error)
-		process.exit(1)
-=======
-	const config = standalone ? standaloneConfig : extensionConfig
-	const extensionCtx = await esbuild.context(config)
-	if (watch) {
-		await extensionCtx.watch()
-	} else {
-		await extensionCtx.rebuild()
-		await extensionCtx.dispose()
->>>>>>> upstream/main
+			console.error("Build failed:", error)		
+			process.exit(1)
 	}
 }
 

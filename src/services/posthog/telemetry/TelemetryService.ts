@@ -7,7 +7,7 @@ import type { BrowserSettings } from "@shared/BrowserSettings"
 import { posthogClientProvider } from "../PostHogClientProvider"
 
 /**
- * PostHogClient handles telemetry event tracking for the Cline extension
+ * PostHogClient handles telemetry event tracking for the Caret extension
  * Uses PostHog analytics to track user interactions and system events
  * Respects user privacy settings and VSCode's global telemetry configuration
  */
@@ -234,7 +234,7 @@ class PostHogClient {
 	}
 
 	/**
-	 * Records when cline calls the task completion_result tool signifying that cline is done with the task
+	 * Records when caret calls the task completion_result tool signifying that caret is done with the task
 	 * @param taskId Unique identifier for the task
 	 * @param collect If true, collect event instead of sending
 	 */

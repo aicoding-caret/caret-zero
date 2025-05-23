@@ -8,10 +8,10 @@ import RulesToggleList from "./RulesToggleList"
 import Tooltip from "@/components/common/Tooltip"
 import styled from "styled-components"
 
-const ClineRulesToggleModal: React.FC = () => {
+const CaretRulesToggleModal: React.FC = () => {
 	const {
-		globalClineRulesToggles = {},
-		localClineRulesToggles = {},
+		globalCaretRulesToggles = {},
+		localCaretRulesToggles = {},
 		localCursorRulesToggles = {},
 		localWindsurfRulesToggles = {},
 		workflowToggles = {},
@@ -26,17 +26,17 @@ const ClineRulesToggleModal: React.FC = () => {
 
 	useEffect(() => {
 		if (isVisible) {
-			vscode.postMessage({ type: "refreshClineRules" })
+			vscode.postMessage({ type: "refreshCaretRules" })
 		}
 	}, [isVisible])
 
 	// Format global rules for display with proper typing
-	const globalRules = Object.entries(globalClineRulesToggles || {})
+	const globalRules = Object.entries(globalCaretRulesToggles || {})
 		.map(([path, enabled]): [string, boolean] => [path, enabled as boolean])
 		.sort(([a], [b]) => a.localeCompare(b))
 
 	// Format local rules for display with proper typing
-	const localRules = Object.entries(localClineRulesToggles || {})
+	const localRules = Object.entries(localCaretRulesToggles || {})
 		.map(([path, enabled]): [string, boolean] => [path, enabled as boolean])
 		.sort(([a], [b]) => a.localeCompare(b))
 
@@ -55,7 +55,7 @@ const ClineRulesToggleModal: React.FC = () => {
 	// Handle toggle rule
 	const toggleRule = (isGlobal: boolean, rulePath: string, enabled: boolean) => {
 		vscode.postMessage({
-			type: "toggleClineRule",
+			type: "toggleCaretRule",
 			isGlobal,
 			rulePath,
 			enabled,
@@ -106,10 +106,10 @@ const ClineRulesToggleModal: React.FC = () => {
 	return (
 		<div ref={modalRef}>
 			<div ref={buttonRef} className="inline-flex min-w-0 max-w-full">
-				<Tooltip tipText="Manage Cline Rules & Workflows" visible={isVisible ? false : undefined}>
+				<Tooltip tipText="Manage Caret Rules & Workflows" visible={isVisible ? false : undefined}>
 					<VSCodeButton
 						appearance="icon"
-						aria-label="Cline Rules"
+						aria-label="Caret Rules"
 						onClick={() => setIsVisible(!isVisible)}
 						style={{ padding: "0px 0px", height: "20px" }}>
 						<div className="flex items-center gap-1 text-xs whitespace-nowrap min-w-0 w-full">
@@ -166,12 +166,12 @@ const ClineRulesToggleModal: React.FC = () => {
 					<div className="text-xs text-[var(--vscode-descriptionForeground)] mb-4">
 						{currentView === "rules" ? (
 							<p>
-								Rules allow you to provide Cline with system-level guidance. Think of them as a persistent way to
+								Rules allow you to provide Caret with system-level guidance. Think of them as a persistent way to
 								include context and preferences for your projects or globally for every conversation.
 							</p>
 						) : (
 							<p>
-								Workflows allow you to define a series of steps to guide Cline through a repetitive set of tasks,
+								Workflows allow you to define a series of steps to guide Caret through a repetitive set of tasks,
 								such as deploying a service or submitting a PR. To invoke a workflow, type{" "}
 								<span
 									className=" 
@@ -193,7 +193,7 @@ const ClineRulesToggleModal: React.FC = () => {
 									toggleRule={(rulePath, enabled) => toggleRule(true, rulePath, enabled)}
 									listGap="small"
 									isGlobal={true}
-									ruleType={"cline"}
+									ruleType={"caret"}
 									showNewRule={true}
 									showNoRules={false}
 								/>
@@ -207,7 +207,7 @@ const ClineRulesToggleModal: React.FC = () => {
 									toggleRule={(rulePath, enabled) => toggleRule(false, rulePath, enabled)}
 									listGap="small"
 									isGlobal={false}
-									ruleType={"cline"}
+									ruleType={"caret"}
 									showNewRule={false}
 									showNoRules={false}
 								/>
@@ -282,4 +282,4 @@ export const TabButton = ({
 	</StyledTabButton>
 )
 
-export default ClineRulesToggleModal
+export default CaretRulesToggleModal

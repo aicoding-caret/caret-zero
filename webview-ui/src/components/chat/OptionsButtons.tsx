@@ -86,11 +86,6 @@ export const OptionsButtons = ({
 					className="options-button"
 					key={index}
 					isSelected={option === selected}
-<<<<<<< HEAD
-					isNotSelectable={hasSelected}
-					onClick={() => handleOptionSelect(option)}>
-					{option}
-=======
 					isNotSelectable={hasSelected || !isActive}
 					onClick={() => {
 						if (hasSelected || !isActive) {
@@ -102,7 +97,6 @@ export const OptionsButtons = ({
 						})
 					}}>
 					<span className="ph-no-capture">{option}</span>
->>>>>>> upstream/main
 				</OptionButton>
 			))}
 		</OptionsContainer>

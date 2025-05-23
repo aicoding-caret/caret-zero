@@ -7,13 +7,10 @@ import { formatResponse } from "@core/prompts/responses"
 import { DecorationController } from "./DecorationController"
 import * as diff from "diff"
 import { diagnosticsToProblemsString, getNewDiagnostics } from "../diagnostics"
-<<<<<<< HEAD
 import { ILogger } from "../../services/logging/ILogger"
 import * as crypto from "crypto"
-=======
 import { detectEncoding } from "../misc/extract-text"
 import * as iconv from "iconv-lite"
->>>>>>> upstream/main
 
 export const DIFF_VIEW_URI_SCHEME = "caret-diff"
 
@@ -30,14 +27,11 @@ export class DiffViewProvider {
 	private activeLineController?: DecorationController
 	private streamedLines: string[] = []
 	private preDiagnostics: [vscode.Uri, vscode.Diagnostic[]][] = []
-<<<<<<< HEAD
 	private logger: ILogger = console
-=======
 	private fileEncoding: string = "utf8"
 	private lastFirstVisibleLine: number = 0
 	private shouldAutoScroll: boolean = true
 	private scrollListener?: vscode.Disposable
->>>>>>> upstream/main
 
 	constructor(
 		private cwd: string,
@@ -76,7 +70,6 @@ export class DiffViewProvider {
 		this.preDiagnostics = vscode.languages.getDiagnostics()
 
 		if (fileExists) {
-<<<<<<< HEAD
 			try {
 				// 파일 읽기 강화: 오류 처리 및 유효성 검사 개선
 				const fileContent = await fs.readFile(absolutePath, "utf-8")
@@ -100,11 +93,9 @@ export class DiffViewProvider {
 				this.logger.error(`파일 읽기 실패 (${absolutePath})`, { error })
 				this.originalContent = ""
 			}
-=======
 			const fileBuffer = await fs.readFile(absolutePath)
 			this.fileEncoding = await detectEncoding(fileBuffer)
 			this.originalContent = iconv.decode(fileBuffer, this.fileEncoding)
->>>>>>> upstream/main
 		} else {
 			this.originalContent = ""
 			this.fileEncoding = "utf8"
@@ -306,17 +297,14 @@ export class DiffViewProvider {
 
 		// get text after save in case there is any auto-formatting done by the editor
 		const postSaveContent = updatedDocument.getText()
-<<<<<<< HEAD
 		const postSaveHash = this.generateContentHash(postSaveContent)
 		this.logger.debug(`저장 후 내용 해시: ${postSaveHash}`, {
 			postSaveContentLength: postSaveContent.length,
 			hashChanged: preSaveHash !== postSaveHash,
-=======
-
+		})
 		await vscode.window.showTextDocument(vscode.Uri.file(absolutePath), {
 			preview: false,
 			preserveFocus: true,
->>>>>>> upstream/main
 		})
 
 		// 실제 파일의 내용도 확인
@@ -505,14 +493,10 @@ export class DiffViewProvider {
 					query: Buffer.from(this.originalContent ?? "").toString("base64"),
 				}),
 				uri,
-<<<<<<< HEAD
 				`${fileName}: ${fileExists ? "Original ↔ Caret's Changes" : "New File"} (Editable)`,
-=======
-				`${fileName}: ${fileExists ? "Original ↔ Cline's Changes" : "New File"} (Editable)`,
 				{
 					preserveFocus: true,
 				},
->>>>>>> upstream/main
 			)
 			// This may happen on very slow machines ie project idx
 			setTimeout(() => {

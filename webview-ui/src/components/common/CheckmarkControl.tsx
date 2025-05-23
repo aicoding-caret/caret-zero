@@ -1,18 +1,11 @@
 import { useCallback, useRef, useState, useEffect } from "react"
 import { useEvent } from "react-use"
 import styled from "styled-components"
-<<<<<<< HEAD
 import { ExtensionMessage } from "../../../../src/shared/ExtensionMessage"
 import { vscode } from "../../utils/vscode"
 import { CODE_BLOCK_BG_COLOR } from "./CodeBlock"
 import { CaretCheckpointRestore } from "../../../../src/shared/WebviewMessage"
-=======
-import { ExtensionMessage } from "@shared/ExtensionMessage"
-import { ClineCheckpointRestore } from "@shared/WebviewMessage"
 import { CheckpointsServiceClient } from "@/services/grpc-client"
-import { vscode } from "@/utils/vscode"
-import { CODE_BLOCK_BG_COLOR } from "@/components/common/CodeBlock"
->>>>>>> upstream/main
 import { VSCodeButton } from "@vscode/webview-ui-toolkit/react"
 import { createPortal } from "react-dom"
 import { useFloating, offset, flip, shift } from "@floating-ui/react"
@@ -72,7 +65,7 @@ export const CheckmarkControl = ({ messageTs, isCheckpointCheckedOut, small }: C
 	const handleRestoreTask = async () => {
 		setRestoreTaskDisabled(true)
 		try {
-			const restoreType: ClineCheckpointRestore = "task"
+			const restoreType: CaretCheckpointRestore = "task"
 			await CheckpointsServiceClient.checkpointRestore({
 				number: messageTs,
 				restoreType,
@@ -86,7 +79,7 @@ export const CheckmarkControl = ({ messageTs, isCheckpointCheckedOut, small }: C
 	const handleRestoreWorkspace = async () => {
 		setRestoreWorkspaceDisabled(true)
 		try {
-			const restoreType: ClineCheckpointRestore = "workspace"
+			const restoreType: CaretCheckpointRestore = "workspace"
 			await CheckpointsServiceClient.checkpointRestore({
 				number: messageTs,
 				restoreType,
@@ -100,7 +93,7 @@ export const CheckmarkControl = ({ messageTs, isCheckpointCheckedOut, small }: C
 	const handleRestoreBoth = async () => {
 		setRestoreBothDisabled(true)
 		try {
-			const restoreType: ClineCheckpointRestore = "taskAndWorkspace"
+			const restoreType: CaretCheckpointRestore = "taskAndWorkspace"
 			await CheckpointsServiceClient.checkpointRestore({
 				number: messageTs,
 				restoreType,

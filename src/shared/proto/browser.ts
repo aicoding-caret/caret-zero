@@ -8,7 +8,7 @@
 import { BinaryReader, BinaryWriter } from "@bufbuild/protobuf/wire"
 import { Boolean, EmptyRequest, Metadata, StringRequest } from "./common"
 
-export const protobufPackage = "cline"
+export const protobufPackage = "caret"
 
 export interface BrowserConnectionInfo {
 	isConnected: boolean
@@ -672,7 +672,7 @@ export const UpdateBrowserSettingsRequest: MessageFns<UpdateBrowserSettingsReque
 export type BrowserServiceDefinition = typeof BrowserServiceDefinition
 export const BrowserServiceDefinition = {
 	name: "BrowserService",
-	fullName: "cline.BrowserService",
+	fullName: "caret.BrowserService",
 	methods: {
 		getBrowserConnectionInfo: {
 			name: "getBrowserConnectionInfo",

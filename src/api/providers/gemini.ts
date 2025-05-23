@@ -1,20 +1,14 @@
-<<<<<<< HEAD
 import { GoogleGenerativeAI } from "@google/generative-ai"
-=======
 import type { Anthropic } from "@anthropic-ai/sdk"
 // Restore GenerateContentConfig import and add GenerateContentResponseUsageMetadata
 import { GoogleGenAI, type GenerateContentConfig, type GenerateContentResponseUsageMetadata } from "@google/genai"
->>>>>>> upstream/main
 import { withRetry } from "../retry"
 import { ApiHandler } from "../"
 import { ApiHandlerOptions, geminiDefaultModelId, GeminiModelId, geminiModels, ModelInfo } from "@shared/api"
 import { convertAnthropicMessageToGemini } from "../transform/gemini-format"
 import { ApiStream } from "../transform/stream"
-<<<<<<< HEAD
 import { ExtensionState } from "../../shared/ExtensionMessage"
-=======
 import { telemetryService } from "@services/posthog/telemetry/TelemetryService"
->>>>>>> upstream/main
 
 // Define a default TTL for the cache (e.g., 15 minutes in seconds)
 const DEFAULT_CACHE_TTL_SECONDS = 900
@@ -45,21 +39,47 @@ interface GeminiHandlerOptions extends ApiHandlerOptions {
  */
 export class GeminiHandler implements ApiHandler {
 	private options: ApiHandlerOptions
-<<<<<<< HEAD
-	private client: GoogleGenerativeAI
-	private _updateState?: (state: Partial<ExtensionState>) => void
+	private client: GoogleGenAI
 
-	constructor(options: ApiHandlerOptions, updateState?: (state: Partial<ExtensionState>) => void) {
-		if (!options.geminiApiKey) {
-			throw new Error("API key is required for Google Gemini")
-		}
+	constructor(options: GeminiHandlerOptions) {
+		// Store the options
 		this.options = options
-		this.client = new GoogleGenerativeAI(options.geminiApiKey)
-		this._updateState = updateState
+
+		if (options.isVertex) {
+			// Initialize with Vertex AI configuration
+			const project = this.options.vertexProjectId ?? "not-provided"
+			const location = this.options.vertexRegion ?? "not-provided"
+
+			this.client = new GoogleGenAI({
+				vertexai: true,
+				project,
+				location,
+			})
+		} else {
+			// Initialize with standard API key
+			if (!options.geminiApiKey) {
+				throw new Error("API key is required for Google Gemini when not using Vertex AI")
+			}
+
+			this.client = new GoogleGenAI({ apiKey: options.geminiApiKey })
+		}
 	}
 
+	/**
+	 * Creates a message using the Gemini API with implicit caching.
+	 *
+	 * Cost accounting:
+	 * - Immediate costs (returned in the usage object): Input tokens, output tokens, cache read costs
+	 *
+	 * @param systemPrompt The system prompt to use for the message
+	 * @param messages The conversation history to include in the message
+	 * @returns An async generator that yields chunks of the response with accurate immediate costs
+	 */
 	@withRetry({
-		baseDelay: 2_000, // 초기 대기 시간을 2초로 설정
+		maxRetries: 4,
+		baseDelay: 2000,// 초기 대기 시간을 2초로 설정
+		maxDelay: 15000,
+				
 		onRetry: (error: any, attempt: number, delay: number) => {
 			// 에러 본문 파싱
 			let errorBody
@@ -109,64 +129,9 @@ export class GeminiHandler implements ApiHandler {
 			console.warn(message)
 		},
 	})
-	async *createMessage(systemPrompt: string, messages: any[]): ApiStream {
-		const model = this.client.getGenerativeModel({
-			model: this.getModel().id,
-			systemInstruction: systemPrompt,
-		})
-		const result = await model.generateContentStream({
-			contents: messages.map(convertAnthropicMessageToGemini),
-			generationConfig: {
-				// maxOutputTokens: this.getModel().info.maxTokens,
-				temperature: 0,
-			},
-		})
-=======
-	private client: GoogleGenAI
-
-	constructor(options: GeminiHandlerOptions) {
-		// Store the options
-		this.options = options
-
-		if (options.isVertex) {
-			// Initialize with Vertex AI configuration
-			const project = this.options.vertexProjectId ?? "not-provided"
-			const location = this.options.vertexRegion ?? "not-provided"
-
-			this.client = new GoogleGenAI({
-				vertexai: true,
-				project,
-				location,
-			})
-		} else {
-			// Initialize with standard API key
-			if (!options.geminiApiKey) {
-				throw new Error("API key is required for Google Gemini when not using Vertex AI")
-			}
-
-			this.client = new GoogleGenAI({ apiKey: options.geminiApiKey })
-		}
-	}
-
-	/**
-	 * Creates a message using the Gemini API with implicit caching.
-	 *
-	 * Cost accounting:
-	 * - Immediate costs (returned in the usage object): Input tokens, output tokens, cache read costs
-	 *
-	 * @param systemPrompt The system prompt to use for the message
-	 * @param messages The conversation history to include in the message
-	 * @returns An async generator that yields chunks of the response with accurate immediate costs
-	 */
-	@withRetry({
-		maxRetries: 4,
-		baseDelay: 2000,
-		maxDelay: 15000,
-	})
 	async *createMessage(systemPrompt: string, messages: Anthropic.Messages.MessageParam[]): ApiStream {
 		const { id: modelId, info } = this.getModel()
 		const contents = messages.map(convertAnthropicMessageToGemini)
->>>>>>> upstream/main
 
 		// Configure thinking budget if supported
 		const thinkingBudget = this.options.thinkingBudgetTokens ?? 0

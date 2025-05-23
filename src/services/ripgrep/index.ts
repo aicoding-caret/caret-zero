@@ -2,13 +2,8 @@ import * as vscode from "vscode"
 import * as childProcess from "child_process"
 import * as path from "path"
 import * as readline from "readline"
-<<<<<<< HEAD
 import { fileExistsAtPath } from "../../utils/fs"
 import { CaretIgnoreController } from "../../core/ignore/CaretIgnoreController"
-=======
-import { fileExistsAtPath } from "@utils/fs"
-import { ClineIgnoreController } from "@core/ignore/ClineIgnoreController"
->>>>>>> upstream/main
 
 /*
 This file provides functionality to perform regex searches on files using ripgrep.

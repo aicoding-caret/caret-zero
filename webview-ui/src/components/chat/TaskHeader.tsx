@@ -1,7 +1,6 @@
 import { VSCodeButton } from "@vscode/webview-ui-toolkit/react"
 import React, { memo, useEffect, useMemo, useRef, useState } from "react"
 import { useWindowSize } from "react-use"
-<<<<<<< HEAD
 import { mentionRegexGlobal } from "../../../../src/shared/context-mentions"
 import { CaretMessage } from "../../../../src/shared/ExtensionMessage"
 import { useExtensionState } from "../../context/ExtensionStateContext"
@@ -10,20 +9,10 @@ import { formatSize } from "../../utils/format"
 import { vscode } from "../../utils/vscode"
 import Thumbnails from "../common/Thumbnails"
 import { normalizeApiConfiguration } from "../settings/ApiOptions"
-=======
-import { mentionRegexGlobal } from "@shared/context-mentions"
-import { ClineMessage } from "@shared/ExtensionMessage"
-import { useExtensionState } from "@/context/ExtensionStateContext"
-import { formatLargeNumber } from "@/utils/format"
-import { formatSize } from "@/utils/format"
-import { vscode } from "@/utils/vscode"
-import Thumbnails from "@/components/common/Thumbnails"
-import { normalizeApiConfiguration } from "@/components/settings/ApiOptions"
 import { validateSlashCommand } from "@/utils/slash-commands"
 import TaskTimeline from "./TaskTimeline"
 import { TaskServiceClient } from "@/services/grpc-client"
 import HeroTooltip from "@/components/common/HeroTooltip"
->>>>>>> upstream/main
 
 interface TaskHeaderProps {
 	task: CaretMessage
@@ -48,7 +37,7 @@ const TaskHeader: React.FC<TaskHeaderProps> = ({
 	lastApiReqTotalTokens,
 	onClose,
 }) => {
-	const { apiConfiguration, currentTaskItem, checkpointTrackerErrorMessage, clineMessages } = useExtensionState()
+	const { apiConfiguration, currentTaskItem, checkpointTrackerErrorMessage, caretMessages } = useExtensionState()
 	const [isTaskExpanded, setIsTaskExpanded] = useState(true)
 	const [isTextExpanded, setIsTextExpanded] = useState(false)
 	const [showSeeMore, setShowSeeMore] = useState(false)
@@ -166,17 +155,14 @@ const TaskHeader: React.FC<TaskHeaderProps> = ({
 		)
 	}, [apiConfiguration?.apiProvider, apiConfiguration?.openAiModelInfo])
 
-<<<<<<< HEAD
-	const shouldShowPromptCacheInfo =
-		doesModelSupportPromptCache && apiConfiguration?.apiProvider !== "openrouter" && apiConfiguration?.apiProvider !== "caret"
-=======
 	const shouldShowPromptCacheInfo = () => {
 		return (
-			doesModelSupportPromptCache &&
-			((cacheReads !== undefined && cacheReads > 0) || (cacheWrites !== undefined && cacheWrites > 0))
-		)
+		doesModelSupportPromptCache &&
+		apiConfiguration?.apiProvider !== "openrouter" &&
+		apiConfiguration?.apiProvider !== "caret" &&
+		((cacheReads !== undefined && cacheReads > 0) || (cacheWrites !== undefined && cacheWrites > 0))
+	);
 	}
->>>>>>> upstream/main
 
 	const ContextWindowComponent = (
 		<>
@@ -500,7 +486,7 @@ const TaskHeader: React.FC<TaskHeaderProps> = ({
 								</div>
 							)}
 							<div className="flex flex-col">
-								<TaskTimeline messages={clineMessages} />
+								<TaskTimeline messages={caretMessages} />
 								{ContextWindowComponent}
 							</div>
 							{checkpointTrackerErrorMessage && (

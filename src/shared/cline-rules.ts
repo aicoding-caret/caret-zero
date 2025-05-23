@@ -1,1 +1,1 @@
-export type ClineRulesToggles = Record<string, boolean> // filepath -> enabled/disabled
+export type CaretRulesToggles = Record<string, boolean> // filepath -> enabled/disabled

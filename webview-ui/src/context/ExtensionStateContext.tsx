@@ -1,22 +1,20 @@
 import React, { createContext, useCallback, useContext, useEffect, useState, useRef } from "react"
 import { useEvent } from "react-use"
-<<<<<<< HEAD
 import { DEFAULT_AUTO_APPROVAL_SETTINGS } from "../../../src/shared/AutoApprovalSettings"
 import { ExtensionMessage, ExtensionState, DEFAULT_PLATFORM, ModeInfo, ApiErrorInfo, CaretMessage } from "../../../src/shared/ExtensionMessage" // Import ModeInfo, ApiErrorInfo, CaretMessage
-import { ApiConfiguration, ModelInfo, openRouterDefaultModelId, openRouterDefaultModelInfo } from "../../../src/shared/api"
+// import { ApiConfiguration, ModelInfo, openRouterDefaultModelId, openRouterDefaultModelInfo } from "../../../src/shared/api"
 import { findLastIndex } from "../../../src/shared/array"
-import { McpMarketplaceCatalog, McpServer } from "../../../src/shared/mcp"
+// import { McpMarketplaceCatalog, McpServer } from "../../../src/shared/mcp"
 import { convertTextMateToHljs } from "../utils/textMateToHljs"
 import { vscode } from "../utils/vscode"
 import { DEFAULT_BROWSER_SETTINGS } from "../../../src/shared/BrowserSettings"
-import { DEFAULT_CHAT_SETTINGS } from "../../../src/shared/ChatSettings"
+// import { DEFAULT_CHAT_SETTINGS } from "../../../src/shared/ChatSettings"
 import { TelemetrySetting } from "../../../src/shared/TelemetrySetting"
 import { Persona } from "../../../src/shared/types"
-=======
 import { StateServiceClient } from "../services/grpc-client"
 import { EmptyRequest } from "@shared/proto/common"
-import { DEFAULT_AUTO_APPROVAL_SETTINGS } from "@shared/AutoApprovalSettings"
-import { ExtensionMessage, ExtensionState, DEFAULT_PLATFORM } from "@shared/ExtensionMessage"
+// import { DEFAULT_AUTO_APPROVAL_SETTINGS } from "@shared/AutoApprovalSettings"
+// import { ExtensionMessage, ExtensionState, DEFAULT_PLATFORM } from "@shared/ExtensionMessage"
 import {
 	ApiConfiguration,
 	ModelInfo,
@@ -25,14 +23,13 @@ import {
 	requestyDefaultModelId,
 	requestyDefaultModelInfo,
 } from "../../../src/shared/api"
-import { findLastIndex } from "@shared/array"
+// import { findLastIndex } from "@shared/array"
 import { McpMarketplaceCatalog, McpServer, McpViewTab } from "../../../src/shared/mcp"
-import { convertTextMateToHljs } from "../utils/textMateToHljs"
-import { vscode } from "../utils/vscode"
-import { DEFAULT_BROWSER_SETTINGS } from "@shared/BrowserSettings"
+// import { convertTextMateToHljs } from "../utils/textMateToHljs"
+// import { vscode } from "../utils/vscode"
+// import { DEFAULT_BROWSER_SETTINGS } from "@shared/BrowserSettings"
 import { ChatSettings, DEFAULT_CHAT_SETTINGS } from "@shared/ChatSettings"
-import { TelemetrySetting } from "@shared/TelemetrySetting"
->>>>>>> upstream/main
+// import { TelemetrySetting } from "@shared/TelemetrySetting"
 
 interface ExtensionStateContextType extends ExtensionState {
 	didHydrateState: boolean
@@ -45,21 +42,17 @@ interface ExtensionStateContextType extends ExtensionState {
 	mcpMarketplaceCatalog: McpMarketplaceCatalog
 	filePaths: string[]
 	totalTasksSize: number | null
-<<<<<<< HEAD
 	apiError: ApiErrorInfo | null
-=======
 	// View state
 	showMcp: boolean
 	mcpTab?: McpViewTab
 
 	// Setters
->>>>>>> upstream/main
 	setApiConfiguration: (config: ApiConfiguration) => void
 	setCustomInstructions: (value?: string) => void
 	setTelemetrySetting: (value: TelemetrySetting) => void
 	setShowAnnouncement: (value: boolean) => void
 	setPlanActSeparateModelsSetting: (value: boolean) => void
-<<<<<<< HEAD
 	availableModes: ModeInfo[] // Add availableModes
 	// 프로필 이미지 관련 상태 및 처리기
 	alphaAvatarUri: string
@@ -72,7 +65,6 @@ interface ExtensionStateContextType extends ExtensionState {
 	persona?: Persona
 	selectedLanguage?: string
 	supportedLanguages?: string[]
-=======
 	setEnableCheckpointsSetting: (value: boolean) => void
 	setMcpMarketplaceEnabled: (value: boolean) => void
 	setShellIntegrationTimeout: (value: number) => void
@@ -82,7 +74,6 @@ interface ExtensionStateContextType extends ExtensionState {
 	// Navigation
 	setShowMcp: (value: boolean) => void
 	setMcpTab: (tab?: McpViewTab) => void
->>>>>>> upstream/main
 }
 
 const ExtensionStateContext = createContext<ExtensionStateContextType | undefined>(undefined)
@@ -106,7 +97,6 @@ export const ExtensionStateContextProvider: React.FC<{
 		telemetrySetting: "unset",
 		vscMachineId: "",
 		planActSeparateModelsSetting: true,
-<<<<<<< HEAD
 		availableModes: [], // Initialize availableModes
 		alphaAvatarUri: "https://raw.githubusercontent.com/fstory97/caret-avatar/main/alpha-maid.png", // 기본 프로필 이미지
 		alphaThinkingAvatarUri: "https://raw.githubusercontent.com/fstory97/caret-avatar/main/alpha-maid-thinking.png",
@@ -118,16 +108,14 @@ export const ExtensionStateContextProvider: React.FC<{
 		persona: undefined,
 		selectedLanguage: "ko",
 		supportedLanguages: ["ko", "en"],
-=======
 		enableCheckpointsSetting: true,
-		globalClineRulesToggles: {},
-		localClineRulesToggles: {},
+		globalCaretRulesToggles: {},
+		localCaretRulesToggles: {},
 		localCursorRulesToggles: {},
 		localWindsurfRulesToggles: {},
 		workflowToggles: {},
 		shellIntegrationTimeout: 4000, // default timeout for shell integration
 		isNewUser: false,
->>>>>>> upstream/main
 	})
 	const [didHydrateState, setDidHydrateState] = useState(false)
 	const [showWelcome, setShowWelcome] = useState(false)
@@ -149,7 +137,6 @@ export const ExtensionStateContextProvider: React.FC<{
 		const message: ExtensionMessage = event.data
 		switch (message.type) {
 			case "state": {
-<<<<<<< HEAD
 				setState(message.state!)
 				const config = message.state?.apiConfiguration
 				const hasKey = config
@@ -178,7 +165,6 @@ export const ExtensionStateContextProvider: React.FC<{
 					: false
 				setShowWelcome(!hasKey)
 				setDidHydrateState(true)
-=======
 				// Handler for direct state messages
 				if (message.state) {
 					const stateData = message.state as ExtensionState
@@ -217,7 +203,7 @@ export const ExtensionStateContextProvider: React.FC<{
 									config.doubaoApiKey,
 									config.mistralApiKey,
 									config.vsCodeLmModelSelector,
-									config.clineApiKey,
+									config.caretApiKey,
 									config.asksageApiKey,
 									config.xaiApiKey,
 									config.sambanovaApiKey,
@@ -229,7 +215,6 @@ export const ExtensionStateContextProvider: React.FC<{
 						return newState
 					})
 				}
->>>>>>> upstream/main
 				break
 			}
 			case "theme": {
@@ -374,7 +359,7 @@ export const ExtensionStateContextProvider: React.FC<{
 											config.doubaoApiKey,
 											config.mistralApiKey,
 											config.vsCodeLmModelSelector,
-											config.clineApiKey,
+											config.caretApiKey,
 											config.asksageApiKey,
 											config.xaiApiKey,
 											config.sambanovaApiKey,
@@ -439,21 +424,18 @@ export const ExtensionStateContextProvider: React.FC<{
 		mcpMarketplaceCatalog,
 		filePaths,
 		totalTasksSize,
-<<<<<<< HEAD
 		apiError: state.apiError || null,
 		setApiConfiguration: (value) => {
-			console.log('[Caret Debug] setApiConfiguration called with:', value)
-=======
+			console.log('[Caret Debug] setApiConfiguration called with:', value),
 		showMcp,
 		mcpTab,
-		globalClineRulesToggles: state.globalClineRulesToggles || {},
-		localClineRulesToggles: state.localClineRulesToggles || {},
+		globalCaretRulesToggles: state.globalCaretRulesToggles || {},
+		localCaretRulesToggles: state.localCaretRulesToggles || {},
 		localCursorRulesToggles: state.localCursorRulesToggles || {},
 		localWindsurfRulesToggles: state.localWindsurfRulesToggles || {},
 		workflowToggles: state.workflowToggles || {},
 		enableCheckpointsSetting: state.enableCheckpointsSetting,
 		setApiConfiguration: (value) =>
->>>>>>> upstream/main
 			setState((prevState) => ({
 				...prevState,
 				apiConfiguration: {
@@ -492,7 +474,6 @@ export const ExtensionStateContextProvider: React.FC<{
 				...prevState,
 				shouldShowAnnouncement: value,
 			})),
-<<<<<<< HEAD
 		availableModes: state.availableModes, // Add availableModes to context value
 		// 프로필 이미지 관련 처리기
 		alphaAvatarUri: state.alphaAvatarUri || "https://raw.githubusercontent.com/fstory97/caret-avatar/main/alpha-maid.png",
@@ -515,7 +496,6 @@ export const ExtensionStateContextProvider: React.FC<{
 		persona: state.persona,
 		selectedLanguage: state.selectedLanguage,
 		supportedLanguages: state.supportedLanguages,
-=======
 		setShellIntegrationTimeout: (value) =>
 			setState((prevState) => ({
 				...prevState,
@@ -540,7 +520,6 @@ export const ExtensionStateContextProvider: React.FC<{
 			})
 		},
 		setMcpTab,
->>>>>>> upstream/main
 	}
 
 	return <ExtensionStateContext.Provider value={contextValue}>{children}</ExtensionStateContext.Provider>

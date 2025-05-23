@@ -2,34 +2,8 @@ import * as path from "path"
 import * as vscode from "vscode"
 import fs from "fs/promises"
 import { Anthropic } from "@anthropic-ai/sdk"
-<<<<<<< HEAD
-import { fileExistsAtPath } from "../../utils/fs"
-import { CaretMessage } from "../../shared/ExtensionMessage"
-
-export interface FileMetadataEntry {
-	path: string
-	record_state: "active" | "stale"
-	record_source: "read_tool" | "user_edited" | "caret_edited" | "file_mentioned"
-	caret_read_date: number | null
-	caret_edit_date: number | null
-	user_edit_date?: number | null
-}
-
-export interface TaskMetadata {
-	files_in_context: FileMetadataEntry[]
-}
-
-export const GlobalFileNames = {
-	apiConversationHistory: "api_conversation_history.json",
-	contextHistory: "context_history.json", // Added from upstream
-	uiMessages: "ui_messages.json",
-	openRouterModels: "openrouter_models.json",
-	mcpSettings: "caret_mcp_settings.json",
-	caretRules: process.env.CARET_RULES_FILE || ".caretrules",
-	taskMetadata: "task_metadata.json", // Added from upstream
-=======
 import { fileExistsAtPath } from "@utils/fs"
-import { ClineMessage } from "@shared/ExtensionMessage"
+import { CaretMessage } from "@shared/ExtensionMessage"
 import { TaskMetadata } from "@core/context/context-tracking/ContextTrackerTypes"
 import os from "os"
 import { execa } from "@packages/execa"
@@ -39,9 +13,9 @@ export const GlobalFileNames = {
 	contextHistory: "context_history.json",
 	uiMessages: "ui_messages.json",
 	openRouterModels: "openrouter_models.json",
-	mcpSettings: "cline_mcp_settings.json",
-	clineRules: ".clinerules",
-	workflows: ".clinerules/workflows",
+	mcpSettings: "caret_mcp_settings.json",
+	caretRules: ".caretrules",
+	workflows: ".caretrules/workflows",
 	cursorRulesDir: ".cursor/rules",
 	cursorRulesFile: ".cursorrules",
 	windsurfRules: ".windsurfrules",
@@ -82,7 +56,6 @@ export async function getDocumentsPath(): Promise<string> {
 
 	// Default fallback for all platforms
 	return path.join(os.homedir(), "Documents")
->>>>>>> upstream/main
 }
 
 export async function ensureTaskDirectoryExists(context: vscode.ExtensionContext, taskId: string): Promise<string> {
@@ -94,22 +67,22 @@ export async function ensureTaskDirectoryExists(context: vscode.ExtensionContext
 
 export async function ensureRulesDirectoryExists(): Promise<string> {
 	const userDocumentsPath = await getDocumentsPath()
-	const clineRulesDir = path.join(userDocumentsPath, "Cline", "Rules")
+	const caretRulesDir = path.join(userDocumentsPath, "Caret", "Rules")
 	try {
-		await fs.mkdir(clineRulesDir, { recursive: true })
+		await fs.mkdir(caretRulesDir, { recursive: true })
 	} catch (error) {
-		return path.join(os.homedir(), "Documents", "Cline", "Rules") // in case creating a directory in documents fails for whatever reason (e.g. permissions) - this is fine because we will fail gracefully with a path that does not exist
+		return path.join(os.homedir(), "Documents", "Caret", "Rules") // in case creating a directory in documents fails for whatever reason (e.g. permissions) - this is fine because we will fail gracefully with a path that does not exist
 	}
-	return clineRulesDir
+	return caretRulesDir
 }
 
 export async function ensureMcpServersDirectoryExists(): Promise<string> {
 	const userDocumentsPath = await getDocumentsPath()
-	const mcpServersDir = path.join(userDocumentsPath, "Cline", "MCP")
+	const mcpServersDir = path.join(userDocumentsPath, "Caret", "MCP")
 	try {
 		await fs.mkdir(mcpServersDir, { recursive: true })
 	} catch (error) {
-		return "~/Documents/Cline/MCP" // in case creating a directory in documents fails for whatever reason (e.g. permissions) - this is fine since this path is only ever used in the system prompt
+		return "~/Documents/Caret/MCP" // in case creating a directory in documents fails for whatever reason (e.g. permissions) - this is fine since this path is only ever used in the system prompt
 	}
 	return mcpServersDir
 }
@@ -181,11 +154,7 @@ export async function getTaskMetadata(context: vscode.ExtensionContext, taskId: 
 	} catch (error) {
 		console.error("Failed to read task metadata:", error)
 	}
-<<<<<<< HEAD
-	return { files_in_context: [] }
-=======
 	return { files_in_context: [], model_usage: [] }
->>>>>>> upstream/main
 }
 
 export async function saveTaskMetadata(context: vscode.ExtensionContext, taskId: string, metadata: TaskMetadata) {

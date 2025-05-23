@@ -1,7 +1,7 @@
 import { Controller } from ".."
 import { Empty } from "../../../shared/proto/common"
 import { AskResponseRequest } from "../../../shared/proto/task"
-import { ClineAskResponse } from "../../../shared/WebviewMessage"
+import { CaretAskResponse } from "../../../shared/WebviewMessage"
 
 /**
  * Handles a response from the webview for a previous ask operation
@@ -17,8 +17,8 @@ export async function askResponse(controller: Controller, request: AskResponseRe
 			return Empty.create()
 		}
 
-		// Map the string responseType to the ClineAskResponse enum
-		let responseType: ClineAskResponse
+		// Map the string responseType to the CaretAskResponse enum
+		let responseType: CaretAskResponse
 		switch (request.responseType) {
 			case "yesButtonClicked":
 				responseType = "yesButtonClicked"

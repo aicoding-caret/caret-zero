@@ -1,7 +1,7 @@
 import { Controller } from ".."
 import { RuleFileRequest, RuleFile } from "@shared/proto/file"
 import { FileMethodHandler } from "./index"
-import { refreshClineRulesToggles } from "@core/context/instructions/user-instructions/cline-rules"
+import { refreshCaretRulesToggles } from "@core/context/instructions/user-instructions/caret-rules"
 import { deleteRuleFile as deleteRuleFileImpl } from "@core/context/instructions/user-instructions/rule-helpers"
 import { refreshExternalRulesToggles } from "@core/context/instructions/user-instructions/external-rules"
 import { refreshWorkflowToggles } from "@core/context/instructions/user-instructions/workflows"
@@ -39,7 +39,7 @@ export const deleteRuleFile: FileMethodHandler = async (controller: Controller, 
 	}
 
 	// we refresh inside of the deleteRuleFileImpl(..) call
-	//await refreshClineRulesToggles(controller.context, cwd)
+	//await refreshCaretRulesToggles(controller.context, cwd)
 	//await refreshExternalRulesToggles(controller.context, cwd)
 	//await refreshWorkflowToggles(controller.context, cwd)
 	await controller.postStateToWebview()

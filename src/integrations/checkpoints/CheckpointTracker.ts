@@ -102,15 +102,14 @@ class CheckpointTracker {
 			console.info(`Creating new CheckpointTracker for task ${taskId}`)
 			const startTime = performance.now()
 
-<<<<<<< HEAD
 			// Check if checkpoints are disabled in VS Code settings
 			const enableCheckpoints = vscode.workspace.getConfiguration("caret").get<boolean>("enableCheckpoints") ?? true
 			if (!enableCheckpoints) {
-=======
+				return undefined // Don't create tracker when disabled
+			}
 			// Check if checkpoints are disabled by setting
 			if (!enableCheckpointsSetting) {
 				console.info(`Checkpoints disabled by setting for task ${taskId}`)
->>>>>>> upstream/main
 				return undefined // Don't create tracker when disabled
 			}
 

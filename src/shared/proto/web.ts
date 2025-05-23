@@ -8,7 +8,7 @@
 import { BinaryReader, BinaryWriter } from "@bufbuild/protobuf/wire"
 import { StringRequest } from "./common"
 
-export const protobufPackage = "cline"
+export const protobufPackage = "caret"
 
 export interface IsImageUrl {
 	isImage: boolean
@@ -243,7 +243,7 @@ export const OpenGraphData: MessageFns<OpenGraphData> = {
 export type WebServiceDefinition = typeof WebServiceDefinition
 export const WebServiceDefinition = {
 	name: "WebService",
-	fullName: "cline.WebService",
+	fullName: "caret.WebService",
 	methods: {
 		checkIsImageUrl: {
 			name: "checkIsImageUrl",

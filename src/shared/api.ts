@@ -41,11 +41,8 @@ export interface ApiHandlerOptions {
 	liteLlmModelId?: string
 	liteLlmApiKey?: string
 	liteLlmUsePromptCache?: boolean
-<<<<<<< HEAD
-=======
 	openAiHeaders?: Record<string, string> // Custom headers for OpenAI requests
 	liteLlmModelInfo?: LiteLLMModelInfo
->>>>>>> upstream/main
 	anthropicBaseUrl?: string
 	openRouterApiKey?: string
 	openRouterModelId?: string
@@ -91,10 +88,7 @@ export interface ApiHandlerOptions {
 	mistralApiKey?: string
 	azureApiVersion?: string
 	vsCodeLmModelSelector?: LanguageModelChatSelector
-<<<<<<< HEAD
 	o3MiniReasoningEffort?: string
-=======
->>>>>>> upstream/main
 	qwenApiLine?: string
 	asksageApiUrl?: string
 	asksageApiKey?: string
@@ -102,13 +96,10 @@ export interface ApiHandlerOptions {
 	thinkingBudgetTokens?: number
 	reasoningEffort?: string
 	sambanovaApiKey?: string
-<<<<<<< HEAD
 	hyperclovaxUrl?: string
 	// Options for HyperCLOVA X SEED Vision local model	
-=======
 	requestTimeoutMs?: number
 	onRetryAttempt?: (attempt: number, maxRetries: number, delay: number, error: any) => void
->>>>>>> upstream/main
 }
 
 export interface ApiConfiguration extends ApiHandlerOptions {
@@ -129,11 +120,8 @@ export interface ModelInfo {
 	supportsImages?: boolean
 	supportsPromptCache: boolean // this value is hardcoded for now
 	inputPrice?: number // Keep for non-tiered input models
-<<<<<<< HEAD
 	inputPriceTiers?: PriceTier[] // Add for tiered input pricing
-	outputPrice?: number // Keep for non-tiered output models
 	outputPriceTiers?: PriceTier[] // Add for tiered output pricing
-=======
 	outputPrice?: number // Keep for non-tiered output models
 	thinkingConfig?: {
 		maxBudget?: number // Max allowed thinking budget tokens
@@ -141,7 +129,6 @@ export interface ModelInfo {
 		outputPriceTiers?: PriceTier[] // Optional: Tiered output price when budget > 0
 	}
 	supportsGlobalEndpoint?: boolean // Whether the model supports a global endpoint with Vertex AI
->>>>>>> upstream/main
 	cacheWritesPrice?: number
 	cacheReadsPrice?: number
 	description?: string
@@ -479,9 +466,6 @@ export const vertexModels = {
 		inputPrice: 0,
 		outputPrice: 0,
 	},
-<<<<<<< HEAD
-	"gemini-2.5-pro-preview-03-25": {
-=======
 	"gemini-2.5-pro-preview-05-06": {
 		maxTokens: 65536,
 		contextWindow: 1_048_576,
@@ -507,12 +491,10 @@ export const vertexModels = {
 		],
 	},
 	"gemini-2.5-flash-preview-04-17": {
->>>>>>> upstream/main
 		maxTokens: 65536,
 		contextWindow: 1_048_576,
 		supportsImages: true,
 		supportsPromptCache: false,
-<<<<<<< HEAD
 		// inputPrice: 1.25, // Removed
 		// outputPrice: 10, // Removed
 		inputPriceTiers: [
@@ -523,7 +505,6 @@ export const vertexModels = {
 			{ tokenLimit: 200000, price: 10.0 }, // Output price for <= 200k input tokens
 			{ tokenLimit: Infinity, price: 15.0 }, // Output price for > 200k input tokens
 		],
-=======
 		supportsGlobalEndpoint: true,
 		inputPrice: 0.15,
 		outputPrice: 0.6,
@@ -531,7 +512,6 @@ export const vertexModels = {
 			maxBudget: 24576,
 			outputPrice: 3.5,
 		},
->>>>>>> upstream/main
 	},
 	"gemini-2.0-flash-thinking-exp-01-21": {
 		maxTokens: 65_536,
@@ -1540,10 +1520,7 @@ export const liteLlmModelInfoSaneDefaults: LiteLLMModelInfo = {
 	outputPrice: 0,
 	cacheWritesPrice: 0,
 	cacheReadsPrice: 0,
-<<<<<<< HEAD
-=======
 	temperature: 0,
->>>>>>> upstream/main
 }
 
 // AskSage Models
@@ -1819,11 +1796,8 @@ export const requestyDefaultModelInfo: ModelInfo = {
 	maxTokens: 8192,
 	contextWindow: 200_000,
 	supportsImages: true,
-<<<<<<< HEAD
 	supportsComputerUse: false,
-=======
 
->>>>>>> upstream/main
 	supportsPromptCache: true,
 	inputPrice: 3.0,
 	outputPrice: 15.0,
@@ -1831,7 +1805,6 @@ export const requestyDefaultModelInfo: ModelInfo = {
 	cacheReadsPrice: 0.3,
 	description: "Anthropic's most intelligent model. Highest level of intelligence and capability.",
 }
-<<<<<<< HEAD
 
 // HyperCLOVA X SEED Vision (Local)
 // https://huggingface.co/naver-hyperclovax/HyperCLOVAX-SEED-Vision-Instruct-3B
@@ -1849,5 +1822,3 @@ export const hyperClovaXLocalModels = {
 		description: "Naver's HyperCLOVA X SEED Vision Instruct 3B (3.2B LLM + 0.43B Vision) model. LLaVA-based architecture run locally using Transformers/PyTorch. Supports multimodal input (text, image, video) with 16k context length. Optimized for Korean language tasks. Knowledge cutoff: August 2024.",
 	},
 } as const satisfies Record<string, ModelInfo>
-=======
->>>>>>> upstream/main

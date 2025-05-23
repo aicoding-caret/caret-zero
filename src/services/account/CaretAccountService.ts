@@ -1,43 +1,18 @@
 import axios, { AxiosRequestConfig, AxiosResponse } from "axios"
-<<<<<<< HEAD:src/services/account/CaretAccountService.ts
-import { Controller } from "../../core/controller"
-import type { BalanceResponse, PaymentTransaction, UsageTransaction } from "../../shared/CaretAccount"
+import type { BalanceResponse, PaymentTransaction, UsageTransaction } from "@shared/CaretAccount"
+import { ExtensionMessage } from "@shared/ExtensionMessage"
 
 export class CaretAccountService {
 	private readonly baseUrl = "https://api.caret.bot/v1"
-	private controllerRef: WeakRef<Controller>
-
-	constructor(controller: Controller) {
-		this.controllerRef = new WeakRef(controller)
-	}
-
-	/**
-	 * Get the user's Caret Account key from the apiConfiguration
-	 */
-	private async getCaretApiKey(): Promise<string | undefined> {
-		const provider = this.controllerRef.deref()
-		if (!provider) {
-			return undefined
-		}
-
-		const { apiConfiguration } = await provider.getStateToPostToWebview()
-		return apiConfiguration?.caretApiKey
-=======
-import type { BalanceResponse, PaymentTransaction, UsageTransaction } from "@shared/ClineAccount"
-import { ExtensionMessage } from "@shared/ExtensionMessage"
-
-export class ClineAccountService {
-	private readonly baseUrl = "https://api.cline.bot/v1"
 	private postMessageToWebview: (message: ExtensionMessage) => Promise<void>
-	private getClineApiKey: () => Promise<string | undefined>
+	private getCaretApiKey: () => Promise<string | undefined>
 
 	constructor(
 		postMessageToWebview: (message: ExtensionMessage) => Promise<void>,
-		getClineApiKey: () => Promise<string | undefined>,
+		getCaretApiKey: () => Promise<string | undefined>,
 	) {
 		this.postMessageToWebview = postMessageToWebview
-		this.getClineApiKey = getClineApiKey
->>>>>>> upstream/main:src/services/account/ClineAccountService.ts
+		this.getCaretApiKey = getCaretApiKey
 	}
 
 	/**

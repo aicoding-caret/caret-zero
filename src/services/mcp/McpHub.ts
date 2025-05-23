@@ -75,15 +75,11 @@ const McpSettingsSchema = z.object({
 	mcpServers: z.record(ServerConfigSchema),
 })
 
-// cline 스타일로 의존성 주입 구조로 리팩터링
+// caret 스타일로 의존성 주입 구조로 리팩터링
 export class McpHub {
 	getMcpServersPath: () => Promise<string>
 	private getSettingsDirectoryPath: () => Promise<string>
-<<<<<<< HEAD
-	private postMessageToWebview: (message: any) => Promise<void>
-=======
 	private postMessageToWebview: (message: ExtensionMessage) => Promise<void>
->>>>>>> upstream/main
 	private clientVersion: string
 
 	private disposables: vscode.Disposable[] = []
@@ -95,11 +91,7 @@ export class McpHub {
 	constructor(
 		getMcpServersPath: () => Promise<string>,
 		getSettingsDirectoryPath: () => Promise<string>,
-<<<<<<< HEAD
-		postMessageToWebview: (message: any) => Promise<void>,
-=======
 		postMessageToWebview: (message: ExtensionMessage) => Promise<void>,
->>>>>>> upstream/main
 		clientVersion: string,
 	) {
 		this.getMcpServersPath = getMcpServersPath
@@ -111,7 +103,6 @@ export class McpHub {
 	}
 
 	getServers(): McpServer[] {
-<<<<<<< HEAD
 		return this.connections.filter((conn) => !conn.server.disabled).map((conn) => conn.server)
 	}
 
@@ -119,13 +110,6 @@ export class McpHub {
 		return vscode.workspace.getConfiguration("caret.mcp").get<McpMode>("mode", "full")
 	}
 
-=======
-		// Only return enabled servers
-
-		return this.connections.filter((conn) => !conn.server.disabled).map((conn) => conn.server)
-	}
-
->>>>>>> upstream/main
 	async getMcpSettingsFilePath(): Promise<string> {
 		const mcpSettingsFilePath = path.join(await this.getSettingsDirectoryPath(), GlobalFileNames.mcpSettings)
 		const fileExists = await fileExistsAtPath(mcpSettingsFilePath)
@@ -211,7 +195,7 @@ export class McpHub {
 			// Each MCP server requires its own transport connection and has unique capabilities, configurations, and error handling. Having separate clients also allows proper scoping of resources/tools and independent server management like reconnection.
 			const client = new Client(
 				{
-					name: "Cline",
+					name: "Caret",
 					version: this.clientVersion,
 				},
 				{
@@ -325,11 +309,7 @@ export class McpHub {
 			// Each MCP server requires its own transport connection and has unique capabilities, configurations, and error handling. Having separate clients also allows proper scoping of resources/tools and independent server management like reconnection.
 			const client = new Client(
 				{
-<<<<<<< HEAD
 					name: "Caret",
-=======
-					name: "Cline",
->>>>>>> upstream/main
 					version: this.clientVersion,
 				},
 				{
@@ -664,10 +644,6 @@ export class McpHub {
 
 	async restartConnection(serverName: string): Promise<void> {
 		this.isConnecting = true
-<<<<<<< HEAD
-=======
-
->>>>>>> upstream/main
 		// Get existing connection and update its status
 		const connection = this.connections.find((conn) => conn.server.name === serverName)
 		const config = connection?.server.config

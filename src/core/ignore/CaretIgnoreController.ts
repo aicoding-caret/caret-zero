@@ -58,12 +58,8 @@ export class CaretIgnoreController {
 	}
 
 	/**
-<<<<<<< HEAD:src/core/ignore/CaretIgnoreController.ts
-	 * Load custom patterns from .caretignore if it exists
-=======
-	 * Load custom patterns from .clineignore if it exists.
+	 * Load custom patterns from .caretignore if it exists.
 	 * Supports "!include <filename>" to load additional ignore patterns from other files.
->>>>>>> upstream/main:src/core/ignore/ClineIgnoreController.ts
 	 */
 	private async loadCaretIgnore(): Promise<void> {
 		try {
@@ -72,15 +68,9 @@ export class CaretIgnoreController {
 			const ignorePath = path.join(this.cwd, ".caretignore")
 			if (await fileExistsAtPath(ignorePath)) {
 				const content = await fs.readFile(ignorePath, "utf8")
-<<<<<<< HEAD:src/core/ignore/CaretIgnoreController.ts
 				this.caretIgnoreContent = content
-				this.ignoreInstance.add(content)
-				this.ignoreInstance.add(".caretignore")
-=======
-				this.clineIgnoreContent = content
 				await this.processIgnoreContent(content)
-				this.ignoreInstance.add(".clineignore")
->>>>>>> upstream/main:src/core/ignore/ClineIgnoreController.ts
+				this.ignoreInstance.add(".caretignore")
 			} else {
 				this.caretIgnoreContent = undefined
 			}
@@ -101,14 +91,14 @@ export class CaretIgnoreController {
 		}
 
 		// Process !include directives
-		const combinedContent = await this.processClineIgnoreIncludes(content)
+		const combinedContent = await this.processCaretIgnoreIncludes(content)
 		this.ignoreInstance.add(combinedContent)
 	}
 
 	/**
 	 * Process !include directives and combine all included file contents
 	 */
-	private async processClineIgnoreIncludes(content: string): Promise<string> {
+	private async processCaretIgnoreIncludes(content: string): Promise<string> {
 		let combinedContent = ""
 		const lines = content.split(/\r?\n/)
 
@@ -138,7 +128,7 @@ export class CaretIgnoreController {
 		const resolvedIncludePath = path.join(this.cwd, includePath)
 
 		if (!(await fileExistsAtPath(resolvedIncludePath))) {
-			console.debug(`[ClineIgnore] Included file not found: ${resolvedIncludePath}`)
+			console.debug(`[CaretIgnore] Included file not found: ${resolvedIncludePath}`)
 			return null
 		}
 

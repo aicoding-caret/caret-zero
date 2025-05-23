@@ -52,7 +52,6 @@ export function parseAssistantMessageV1(assistantMessage: string): AssistantMess
 		// no currentParamName
 		if (currentToolUse) {
 			const currentToolValue = accumulator.slice(currentToolUseStartIndex)
-<<<<<<< HEAD
 			const standardClosingTag = `</${currentToolUse.name}>`
 			// 'write_to_file'을 사용할 경우 'write_file' 닫는 태그도 인식
 			const alternativeClosingTag = currentToolUse.name === "write_to_file" ? "</write_file>" : ""
@@ -62,12 +61,10 @@ export function parseAssistantMessageV1(assistantMessage: string): AssistantMess
 				(alternativeClosingTag && currentToolValue.endsWith(alternativeClosingTag))
 			) {
 				// end of a tool use
-=======
 			const toolUseClosingTag = `</${currentToolUse.name}>`
 
 			if (currentToolValue.endsWith(toolUseClosingTag)) {
 				// End of a tool use found
->>>>>>> upstream/main
 				currentToolUse.partial = false
 				contentBlocks.push(currentToolUse)
 				currentToolUse = undefined // Go back to parsing text or looking for next tool
@@ -139,7 +136,6 @@ export function parseAssistantMessageV1(assistantMessage: string): AssistantMess
 		const possibleToolUseOpeningTags = toolUseNames.map((name) => `<${name}>`)
 		for (const toolUseOpeningTag of possibleToolUseOpeningTags) {
 			if (accumulator.endsWith(toolUseOpeningTag)) {
-<<<<<<< HEAD
 				// start of a new tool use
 				const toolName = toolUseOpeningTag.slice(1, -1) as ToolUseName
 
@@ -149,13 +145,6 @@ export function parseAssistantMessageV1(assistantMessage: string): AssistantMess
 				currentToolUse = {
 					type: "tool_use",
 					name: normalizedToolName,
-=======
-				// Start of a new tool use found
-				const toolName = toolUseOpeningTag.slice(1, -1) as ToolUseName
-				currentToolUse = {
-					type: "tool_use",
-					name: toolName,
->>>>>>> upstream/main
 					params: {},
 					partial: true,
 				}
@@ -195,19 +184,6 @@ export function parseAssistantMessageV1(assistantMessage: string): AssistantMess
 			// (or continuing after a closed tool use)
 			if (currentTextContent === undefined) {
 				// Start of a new text block
-<<<<<<< HEAD
-				currentTextContentStartIndex = i
-			}
-			currentTextContent = {
-				type: "text",
-				content: accumulator.slice(currentTextContentStartIndex).trim(),
-				partial: true,
-			}
-			// Log partial text content accumulation
-			// console.log(`[Parser] Accumulating text: "${currentTextContent.content}"`)
-		}
-	}
-=======
 				currentTextContentStartIndex = i - (accumulator.length - currentTextContentStartIndex - 1) // Adjust start index based on how much we've accumulated since the last block ended or the beginning
 				// If accumulator starts from 0, start index is i
 				if (contentBlocks.length === 0 && currentToolUse === undefined) {
@@ -234,7 +210,6 @@ export function parseAssistantMessageV1(assistantMessage: string): AssistantMess
 						// Reset start index to the beginning of the *current* potential text block
 						currentTextContentStartIndex = accumulator.length - 1 // Start accumulating from the current character `i`
 					}
->>>>>>> upstream/main
 
 					// If we just closed a tool, text starts *after* its closing tag
 					// The logic needs refinement here for accurate start index after a tool closure.

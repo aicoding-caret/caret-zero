@@ -53,7 +53,7 @@ export type GlobalStateKey =
 	| "openRouterModelInfo"
 	| "openRouterProviderSorting"
 	| "autoApprovalSettings"
-	| "globalClineRulesToggles"
+	| "globalCaretRulesToggles"
 	| "browserSettings"
 	| "chatSettings"
 	| "vsCodeLmModelSelector"
@@ -83,13 +83,11 @@ export type GlobalStateKey =
 	| "thinkingBudgetTokens"
 	| "reasoningEffort"
 	| "planActSeparateModelsSetting"
-<<<<<<< HEAD
 	| "retryStatus"
 	| "hyperclovaxUrl"
 	| "persona"
 	| "selectedLanguage"
 	| "supportedLanguages"
-=======
 	| "enableCheckpointsSetting"
 	| "mcpMarketplaceEnabled"
 	| "favoritedModelIds"
@@ -97,5 +95,4 @@ export type GlobalStateKey =
 	| "shellIntegrationTimeout"
 	| "isNewUser"
 
-export type LocalStateKey = "localClineRulesToggles"
->>>>>>> upstream/main
+export type LocalStateKey = "localCaretRulesToggles"

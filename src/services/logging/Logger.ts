@@ -1,9 +1,6 @@
-<<<<<<< HEAD
 import { ILogger } from "./ILogger"
-=======
 import type { OutputChannel } from "vscode"
 import { ErrorService } from "../error/ErrorService"
->>>>>>> upstream/main
 
 /**
  * A simple logger implementation that writes to a VSCode OutputChannel.
@@ -29,7 +26,6 @@ export class Logger implements ILogger {
 		this.isDevelopmentMode = true
 	}
 
-<<<<<<< HEAD
 	private getCallerInfo(): { file: string; function: string; line: number } {
 		const stackLines = new Error().stack?.split("\n") || []
 		// 첫 번째 줄은 Error 객체 생성, 두 번째 줄은 현재 메서드, 세 번째 줄부터 실제 호출자
@@ -126,7 +122,6 @@ export class Logger implements ILogger {
 	 */
 	dispose(): void {
 		this.outputChannel.dispose()
-=======
 	static error(message: string, exception?: Error) {
 		Logger.outputChannel.appendLine(`ERROR: ${message}`)
 		ErrorService.logMessage(message, "error")
@@ -147,7 +142,6 @@ export class Logger implements ILogger {
 	}
 	static trace(message: string) {
 		Logger.outputChannel.appendLine(`TRACE: ${message}`)
->>>>>>> upstream/main
 	}
 }
 

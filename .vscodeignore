@@ -7,12 +7,12 @@ node_modules/**
 src/**
 back/**
 caret-docs/**
-cline/**
+caret/**
 docs/** 
 experiment/**
 locales/** 
 **/node_modules/**
-private-cline/**
+private-caret/**
 release/**
 scripts/**
 sllm-servers/**
@@ -44,15 +44,15 @@ demo.gif
 
 # Development/Repo specific folders
 caret-upstream/**
-cline/**
+caret/**
 models_backup/**
 sllm/**
 experiment/**
 .changeset/**
 .github/**
 .husky/**
-cline/**
-private-cline/**
+caret/**
+private-caret/**
 docs/**
 caret-docs/**
 release/**
@@ -88,7 +88,6 @@ docs/**
 
 # Include icons
 !assets/icons/**
-<<<<<<< HEAD
 
 # Include agent images
 !assets/*.png
@@ -103,5 +102,3 @@ docs/**
 sllm-servers/** */
 
 **/.venv/**
-=======
->>>>>>> upstream/main

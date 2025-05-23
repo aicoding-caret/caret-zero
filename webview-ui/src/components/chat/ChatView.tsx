@@ -2,40 +2,12 @@ import { VSCodeButton, VSCodeLink } from "@vscode/webview-ui-toolkit/react"
 import { useState, useRef, useCallback, useEffect, useMemo } from "react"
 import { Virtuoso } from "react-virtuoso"
 import styled from "styled-components"
-<<<<<<< HEAD
-import { useExtensionState } from "../../context/ExtensionStateContext"
-import { vscode } from "../../utils/vscode"
-import { useEvent } from "react-use"
-import BrowserSessionRow from "./BrowserSessionRow"
-import ChatRow from "./ChatRow"
-import ChatTextArea from "./ChatTextArea"
-import TaskHeader from "./TaskHeader"
-import AutoApproveMenu from "./AutoApproveMenu"
-import HistoryPreview from "../history/HistoryPreview"
-import TelemetryBanner from "../common/TelemetryBanner"
-import { AlertIcon } from "@primer/octicons-react"
-import { CaretMessage } from "../../../../src/shared/ExtensionMessage";
-import Announcement from "./Announcement"
-
-// 추출한 Hook 임포트
 import {
-	useMessageState,
-	useScrollControl,
-	useChatInputState,
-	useCaretAskState,
-	useBrowserSessionState,
-	useModeShortcuts
-} from "./chat_hooks"
-
-// 분리한 UI 컴포넌트 임포트
-import 	ChatButtons from "./chat_ui/ChatButtons"
-=======
-import {
-	ClineApiReqInfo,
-	ClineAsk,
-	ClineMessage,
-	ClineSayBrowserAction,
-	ClineSayTool,
+	CaretApiReqInfo,
+	CaretAsk,
+	CaretMessage,
+	CaretSayBrowserAction,
+	CaretSayTool,
 	ExtensionMessage,
 } from "@shared/ExtensionMessage"
 import { findLast } from "@shared/array"
@@ -113,7 +85,6 @@ async function convertHtmlToMarkdown(html: string) {
 }
 
 export const MAX_IMAGES_PER_MESSAGE = 20 // Anthropic limits to 20 images
->>>>>>> upstream/main
 
 import { normalizeApiConfiguration } from "../settings/ApiOptions"
 import { WebviewMessage } from "@shared/WebviewMessage"
@@ -137,19 +108,12 @@ const RetryStatusHeader = styled.div`
 	font-weight: 500;
 `
 
-<<<<<<< HEAD
-const RetryStatusIcon = styled.span`
-	margin-right: 8px;
-	color: var(--vscode-notifications-foreground);
-`
-=======
 	const [inputValue, setInputValue] = useState("")
 	const [activeQuote, setActiveQuote] = useState<string | null>(null)
 	const [isTextAreaFocused, setIsTextAreaFocused] = useState(false)
 	const textAreaRef = useRef<HTMLTextAreaElement>(null)
 	const [sendingDisabled, setSendingDisabled] = useState(false)
 	const [selectedImages, setSelectedImages] = useState<string[]>([])
->>>>>>> upstream/main
 
 const RetryStatusInfo = styled.div`
 	margin-left: 24px;
@@ -158,7 +122,6 @@ const RetryStatusInfo = styled.div`
 	gap: 4px;
 `
 
-<<<<<<< HEAD
 const RetryStatusProgress = styled.div`
 	margin-top: 8px;
 	height: 4px;
@@ -173,7 +136,6 @@ const RetryStatusProgressBar = styled.div<{ progress: number }>`
 	background-color: var(--vscode-notifications-foreground);
 	transition: width 1s linear;
 `
-=======
 	useEffect(() => {
 		const handleCopy = async (e: ClipboardEvent) => {
 			const targetElement = e.target as HTMLElement | null
@@ -276,44 +238,44 @@ const RetryStatusProgressBar = styled.div<{ progress: number }>`
 					switch (lastMessage.ask) {
 						case "api_req_failed":
 							setSendingDisabled(true)
-							setClineAsk("api_req_failed")
+							setCaretAsk("api_req_failed")
 							setEnableButtons(true)
 							setPrimaryButtonText("Retry")
 							setSecondaryButtonText("Start New Task")
 							break
 						case "mistake_limit_reached":
 							setSendingDisabled(false)
-							setClineAsk("mistake_limit_reached")
+							setCaretAsk("mistake_limit_reached")
 							setEnableButtons(true)
 							setPrimaryButtonText("Proceed Anyways")
 							setSecondaryButtonText("Start New Task")
 							break
 						case "auto_approval_max_req_reached":
 							setSendingDisabled(true)
-							setClineAsk("auto_approval_max_req_reached")
+							setCaretAsk("auto_approval_max_req_reached")
 							setEnableButtons(true)
 							setPrimaryButtonText("Proceed")
 							setSecondaryButtonText("Start New Task")
 							break
 						case "followup":
 							setSendingDisabled(isPartial)
-							setClineAsk("followup")
+							setCaretAsk("followup")
 							setEnableButtons(false)
 							// setPrimaryButtonText(undefined)
 							// setSecondaryButtonText(undefined)
 							break
 						case "plan_mode_respond":
 							setSendingDisabled(isPartial)
-							setClineAsk("plan_mode_respond")
+							setCaretAsk("plan_mode_respond")
 							setEnableButtons(false)
 							// setPrimaryButtonText(undefined)
 							// setSecondaryButtonText(undefined)
 							break
 						case "tool":
 							setSendingDisabled(isPartial)
-							setClineAsk("tool")
+							setCaretAsk("tool")
 							setEnableButtons(!isPartial)
-							const tool = JSON.parse(lastMessage.text || "{}") as ClineSayTool
+							const tool = JSON.parse(lastMessage.text || "{}") as CaretSayTool
 							switch (tool.tool) {
 								case "editedExistingFile":
 								case "newFileCreated":
@@ -328,28 +290,28 @@ const RetryStatusProgressBar = styled.div<{ progress: number }>`
 							break
 						case "browser_action_launch":
 							setSendingDisabled(isPartial)
-							setClineAsk("browser_action_launch")
+							setCaretAsk("browser_action_launch")
 							setEnableButtons(!isPartial)
 							setPrimaryButtonText("Approve")
 							setSecondaryButtonText("Reject")
 							break
 						case "command":
 							setSendingDisabled(isPartial)
-							setClineAsk("command")
+							setCaretAsk("command")
 							setEnableButtons(!isPartial)
 							setPrimaryButtonText("Run Command")
 							setSecondaryButtonText("Reject")
 							break
 						case "command_output":
 							setSendingDisabled(false)
-							setClineAsk("command_output")
+							setCaretAsk("command_output")
 							setEnableButtons(true)
 							setPrimaryButtonText("Proceed While Running")
 							setSecondaryButtonText(undefined)
 							break
 						case "use_mcp_server":
 							setSendingDisabled(isPartial)
-							setClineAsk("use_mcp_server")
+							setCaretAsk("use_mcp_server")
 							setEnableButtons(!isPartial)
 							setPrimaryButtonText("Approve")
 							setSecondaryButtonText("Reject")
@@ -357,14 +319,14 @@ const RetryStatusProgressBar = styled.div<{ progress: number }>`
 						case "completion_result":
 							// extension waiting for feedback. but we can just present a new task button
 							setSendingDisabled(isPartial)
-							setClineAsk("completion_result")
+							setCaretAsk("completion_result")
 							setEnableButtons(!isPartial)
 							setPrimaryButtonText("Start New Task")
 							setSecondaryButtonText(undefined)
 							break
 						case "resume_task":
 							setSendingDisabled(false)
-							setClineAsk("resume_task")
+							setCaretAsk("resume_task")
 							setEnableButtons(true)
 							setPrimaryButtonText("Resume Task")
 							setSecondaryButtonText(undefined)
@@ -372,7 +334,7 @@ const RetryStatusProgressBar = styled.div<{ progress: number }>`
 							break
 						case "resume_completed_task":
 							setSendingDisabled(false)
-							setClineAsk("resume_completed_task")
+							setCaretAsk("resume_completed_task")
 							setEnableButtons(true)
 							setPrimaryButtonText("Start New Task")
 							setSecondaryButtonText(undefined)
@@ -380,21 +342,21 @@ const RetryStatusProgressBar = styled.div<{ progress: number }>`
 							break
 						case "new_task":
 							setSendingDisabled(isPartial)
-							setClineAsk("new_task")
+							setCaretAsk("new_task")
 							setEnableButtons(!isPartial)
 							setPrimaryButtonText("Start New Task with Context")
 							setSecondaryButtonText(undefined)
 							break
 						case "condense":
 							setSendingDisabled(isPartial)
-							setClineAsk("condense")
+							setCaretAsk("condense")
 							setEnableButtons(!isPartial)
 							setPrimaryButtonText("Condense Conversation")
 							setSecondaryButtonText(undefined)
 							break
 						case "report_bug":
 							setSendingDisabled(isPartial)
-							setClineAsk("report_bug")
+							setCaretAsk("report_bug")
 							setEnableButtons(!isPartial)
 							setPrimaryButtonText("Report GitHub issue")
 							setSecondaryButtonText(undefined)
@@ -410,7 +372,7 @@ const RetryStatusProgressBar = styled.div<{ progress: number }>`
 								setInputValue("")
 								setSendingDisabled(true)
 								setSelectedImages([])
-								setClineAsk(undefined)
+								setCaretAsk(undefined)
 								setEnableButtons(false)
 							}
 							break
@@ -437,7 +399,7 @@ const RetryStatusProgressBar = styled.div<{ progress: number }>`
 			// this would get called after sending the first message, so we have to watch messages.length instead
 			// No messages, so user has to submit a task
 			// setTextAreaDisabled(false)
-			// setClineAsk(undefined)
+			// setCaretAsk(undefined)
 			// setPrimaryButtonText(undefined)
 			// setSecondaryButtonText(undefined)
 		}
@@ -446,13 +408,12 @@ const RetryStatusProgressBar = styled.div<{ progress: number }>`
 	useEffect(() => {
 		if (messages.length === 0) {
 			setSendingDisabled(false)
-			setClineAsk(undefined)
+			setCaretAsk(undefined)
 			setEnableButtons(false)
 			setPrimaryButtonText("Approve")
 			setSecondaryButtonText("Reject")
 		}
 	}, [messages.length])
->>>>>>> upstream/main
 
 // API 에러 상태 UI 컴포넌트
 const ApiErrorContainer = styled.div`
@@ -492,7 +453,6 @@ const ModeSelectorContainer = styled.div`
 	box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
 `
 
-<<<<<<< HEAD
 const ModeButton = styled(VSCodeButton)`
 	min-width: 32px; /* 너비 축소 */
 	height: 18px; /* 높이 설정 */
@@ -515,7 +475,12 @@ const ModeButton = styled(VSCodeButton)`
 		border-radius: 2px;
 		opacity: 0;
 		transition: opacity 0.2s;
-=======
+		}
+
+	&:hover::after {
+		opacity: 1;
+	}
+`
 	const handleSendMessage = useCallback(
 		async (text: string, images: string[]) => {
 			let messageToSend = text.trim()
@@ -533,8 +498,8 @@ const ModeButton = styled(VSCodeButton)`
 				console.log("[ChatView] handleSendMessage - Sending message:", messageToSend)
 				if (messages.length === 0) {
 					await TaskServiceClient.newTask({ text: messageToSend, images })
-				} else if (clineAsk) {
-					switch (clineAsk) {
+				} else if (caretAsk) {
+					switch (caretAsk) {
 						case "followup":
 						case "plan_mode_respond":
 						case "tool":
@@ -574,14 +539,14 @@ const ModeButton = styled(VSCodeButton)`
 				setActiveQuote(null) // Clear quote when sending message
 				setSendingDisabled(true)
 				setSelectedImages([])
-				setClineAsk(undefined)
+				setCaretAsk(undefined)
 				setEnableButtons(false)
 				// setPrimaryButtonText(undefined)
 				// setSecondaryButtonText(undefined)
 				disableAutoScrollRef.current = false
 			}
 		},
-		[messages.length, clineAsk, activeQuote],
+		[messages.length, caretAsk, activeQuote],
 	)
 
 	const startNewTask = useCallback(async () => {
@@ -590,12 +555,12 @@ const ModeButton = styled(VSCodeButton)`
 	}, [])
 
 	/*
-	This logic depends on the useEffect[messages] above to set clineAsk, after which buttons are shown and we then send an askResponse to the extension.
+	This logic depends on the useEffect[messages] above to set caretAsk, after which buttons are shown and we then send an askResponse to the extension.
 	*/
 	const handlePrimaryButtonClick = useCallback(
 		async (text?: string, images?: string[]) => {
 			const trimmedInput = text?.trim()
-			switch (clineAsk) {
+			switch (caretAsk) {
 				case "api_req_failed":
 				case "command":
 				case "command_output":
@@ -627,7 +592,7 @@ const ModeButton = styled(VSCodeButton)`
 					startNewTask()
 					break
 				case "new_task":
-					console.info("new task button clicked!", { lastMessage, messages, clineAsk, text })
+					console.info("new task button clicked!", { lastMessage, messages, caretAsk, text })
 					await TaskServiceClient.newTask({
 						text: lastMessage?.text,
 						images: [],
@@ -641,13 +606,13 @@ const ModeButton = styled(VSCodeButton)`
 					break
 			}
 			setSendingDisabled(true)
-			setClineAsk(undefined)
+			setCaretAsk(undefined)
 			setEnableButtons(false)
 			// setPrimaryButtonText(undefined)
 			// setSecondaryButtonText(undefined)
 			disableAutoScrollRef.current = false
 		},
-		[clineAsk, startNewTask, lastMessage],
+		[caretAsk, startNewTask, lastMessage],
 	)
 
 	const handleSecondaryButtonClick = useCallback(
@@ -659,7 +624,7 @@ const ModeButton = styled(VSCodeButton)`
 				return
 			}
 
-			switch (clineAsk) {
+			switch (caretAsk) {
 				case "api_req_failed":
 				case "mistake_limit_reached":
 				case "auto_approval_max_req_reached":
@@ -688,13 +653,13 @@ const ModeButton = styled(VSCodeButton)`
 					break
 			}
 			setSendingDisabled(true)
-			setClineAsk(undefined)
+			setCaretAsk(undefined)
 			setEnableButtons(false)
 			// setPrimaryButtonText(undefined)
 			// setSecondaryButtonText(undefined)
 			disableAutoScrollRef.current = false
 		},
-		[clineAsk, startNewTask, isStreaming],
+		[caretAsk, startNewTask, isStreaming],
 	)
 
 	const handleTaskCloseButtonClick = useCallback(() => {
@@ -803,7 +768,7 @@ const ModeButton = styled(VSCodeButton)`
 		return modifiedMessages.filter((message) => {
 			switch (message.ask) {
 				case "completion_result":
-					// don't show a chat row for a completion_result ask without text. This specific type of message only occurs if cline wants to execute a command as part of its completion result, in which case we interject the completion_result tool with the execute_command tool.
+					// don't show a chat row for a completion_result ask without text. This specific type of message only occurs if caret wants to execute a command as part of its completion result, in which case we interject the completion_result tool with the execute_command tool.
 					if (message.text === "") {
 						return false
 					}
@@ -819,7 +784,7 @@ const ModeButton = styled(VSCodeButton)`
 				case "deleted_api_reqs": // aggregated api_req metrics from deleted messages
 					return false
 				case "text":
-					// Sometimes cline returns an empty text message, we don't want to render these. (We also use a say text for user messages, so in case they just sent images we still render that)
+					// Sometimes caret returns an empty text message, we don't want to render these. (We also use a say text for user messages, so in case they just sent images we still render that)
 					if ((message.text ?? "") === "" && (message.images?.length ?? 0) === 0) {
 						return false
 					}
@@ -831,7 +796,7 @@ const ModeButton = styled(VSCodeButton)`
 		})
 	}, [modifiedMessages])
 
-	const isBrowserSessionMessage = (message: ClineMessage): boolean => {
+	const isBrowserSessionMessage = (message: CaretMessage): boolean => {
 		// which of visible messages are browser session messages, see above
 
 		// NOTE: any messages we want to make as part of a browser session should be included here
@@ -851,7 +816,6 @@ const ModeButton = styled(VSCodeButton)`
 			].includes(message.say!)
 		}
 		return false
->>>>>>> upstream/main
 	}
 
 	&:hover::after {
@@ -859,7 +823,6 @@ const ModeButton = styled(VSCodeButton)`
 	}
 `
 
-<<<<<<< HEAD
 const SettingsButton = styled(VSCodeButton)`
 	flex-shrink: 0;
 	&::part(control) {
@@ -867,7 +830,6 @@ const SettingsButton = styled(VSCodeButton)`
 		min-width: auto;
 	}
 `
-=======
 		const endBrowserSession = () => {
 			if (currentGroup.length > 0) {
 				result.push([...currentGroup])
@@ -905,7 +867,7 @@ const SettingsButton = styled(VSCodeButton)`
 
 					// Check if this is a close action
 					if (message.say === "browser_action") {
-						const browserAction = JSON.parse(message.text || "{}") as ClineSayBrowserAction
+						const browserAction = JSON.parse(message.text || "{}") as CaretSayBrowserAction
 						if (browserAction.action === "close") {
 							endBrowserSession()
 						}
@@ -1048,7 +1010,7 @@ const SettingsButton = styled(VSCodeButton)`
 	}, [task])
 
 	const itemContent = useCallback(
-		(index: number, messageOrGroup: ClineMessage | ClineMessage[]) => {
+		(index: number, messageOrGroup: CaretMessage | CaretMessage[]) => {
 			// browser session group
 			if (Array.isArray(messageOrGroup)) {
 				return (
@@ -1271,7 +1233,6 @@ const SettingsButton = styled(VSCodeButton)`
 		</div>
 	)
 }
->>>>>>> upstream/main
 
 // ScrollToBottomButton 정의
 const ScrollToBottomButton = styled.div`
@@ -1494,7 +1455,7 @@ const ChatView = ({ isHidden, showAnnouncement, hideAnnouncement, showHistoryVie
 					switch (message.ask) {
 						case "followup":
 						case "plan_mode_respond":
-							// Question 타입 메시지 표시 (원본 cline과 동일하게 처리)
+							// Question 타입 메시지 표시 (원본 caret과 동일하게 처리)
 							return true
 						case "completion_result":
 							// completion_result 메시지는 항상 표시
@@ -1502,7 +1463,7 @@ const ChatView = ({ isHidden, showAnnouncement, hideAnnouncement, showHistoryVie
 						case "api_req_failed":
 						case "resume_task":
 						case "resume_completed_task":
-							// 내부 처리 메시지는 표시하지 않음 (원본 cline과 동일하게 처리)
+							// 내부 처리 메시지는 표시하지 않음 (원본 caret과 동일하게 처리)
 							return false
 						default:
 							return true

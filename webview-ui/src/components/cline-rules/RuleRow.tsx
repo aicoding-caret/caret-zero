@@ -62,7 +62,7 @@ const RuleRow: React.FC<{
 			DeleteRuleFileRequest.create({
 				rulePath: rulePath,
 				isGlobal: isGlobal,
-				type: ruleType || "cline",
+				type: ruleType || "caret",
 			}),
 		).catch((err) => console.error("Failed to delete rule file:", err))
 	}

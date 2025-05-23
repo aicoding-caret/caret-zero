@@ -31,11 +31,7 @@
 			"@utils/*": ["src/utils/*"]
 		}
 	},
-<<<<<<< HEAD
 	"include": ["src"],
 	"exclude": ["src/**/__tests__/**"],
 	"types": ["vitest/globals", "@testing-library/jest-dom"]
-=======
-	"include": ["src"]
->>>>>>> upstream/main
 }

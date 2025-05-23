@@ -97,7 +97,6 @@ describe("ApiOptions Component", () => {
 	})
 })
 
-<<<<<<< HEAD
 vi.mock("../../../context/ExtensionStateContext", async (importOriginal) => {
 	const actual = await importOriginal()
 	return {
@@ -114,7 +113,8 @@ vi.mock("../../../context/ExtensionStateContext", async (importOriginal) => {
 			uriScheme: "vscode",
 		})),
 	}
-=======
+})
+
 describe("ApiOptions Component", () => {
 	vi.clearAllMocks()
 	const mockPostMessage = vi.fn()
@@ -171,7 +171,6 @@ describe("ApiOptions Component", () => {
 		const maxTokensInput = screen.getByPlaceholderText("4000")
 		expect(maxTokensInput).toBeInTheDocument()
 	})
->>>>>>> upstream/main
 })
 
 describe("OpenApiInfoOptions", () => {

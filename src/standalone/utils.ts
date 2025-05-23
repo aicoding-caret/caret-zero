@@ -5,14 +5,14 @@ import * as health from "grpc-health-check"
 
 const log = (...args: unknown[]) => {
 	const timestamp = new Date().toISOString()
-	console.log(`[${timestamp}]`, "#bot.cline.server.ts", ...args)
+	console.log(`[${timestamp}]`, "#bot.caret.server.ts", ...args)
 }
 
 // Load service definitions.
 const descriptorSet = fs.readFileSync("proto/descriptor_set.pb")
-const clineDef = protoLoader.loadFileDescriptorSetFromBuffer(descriptorSet)
+const caretDef = protoLoader.loadFileDescriptorSetFromBuffer(descriptorSet)
 const healthDef = protoLoader.loadSync(health.protoPath)
-const packageDefinition = { ...clineDef, ...healthDef }
+const packageDefinition = { ...caretDef, ...healthDef }
 const proto = grpc.loadPackageDefinition(packageDefinition) as unknown
 
 // Helper function to convert camelCase to snake_case

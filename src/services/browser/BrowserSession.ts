@@ -2,18 +2,13 @@ import * as vscode from "vscode"
 import * as fs from "fs/promises"
 import * as path from "path"
 import { exec, spawn } from "child_process"
-<<<<<<< HEAD
-import { Browser, Page, ScreenshotOptions, TimeoutError, launch, connect } from "puppeteer-core"
-=======
 import { Browser, Page, TimeoutError, launch, connect } from "puppeteer-core"
 import type { ScreenshotOptions, ConsoleMessage } from "puppeteer-core"
->>>>>>> upstream/main
 // @ts-ignore
 import PCR from "puppeteer-chromium-resolver"
 import pWaitFor from "p-wait-for"
 import { setTimeout as setTimeoutPromise } from "node:timers/promises"
 import axios from "axios"
-<<<<<<< HEAD
 import { fileExistsAtPath } from "../../utils/fs"
 import { BrowserActionResult } from "../../shared/ExtensionMessage"
 import { BrowserSettings } from "../../shared/BrowserSettings"
@@ -21,16 +16,7 @@ import { discoverChromeInstances, testBrowserConnection, isPortOpen } from "./Br
 import * as chromeLauncher from "chrome-launcher"
 import { Controller } from "../../core/controller"
 import { telemetryService } from "../../services/telemetry/TelemetryService"
-=======
-import { fileExistsAtPath } from "@utils/fs"
-import { BrowserActionResult } from "@shared/ExtensionMessage"
-import { BrowserSettings } from "@shared/BrowserSettings"
-import { discoverChromeInstances, testBrowserConnection, isPortOpen } from "./BrowserDiscovery"
-import * as chromeLauncher from "chrome-launcher"
-import { Controller } from "@core/controller"
-import { telemetryService } from "@/services/posthog/telemetry/TelemetryService"
 import os from "os"
->>>>>>> upstream/main
 
 interface PCRStats {
 	puppeteer: { launch: typeof launch }
@@ -82,19 +68,12 @@ export class BrowserSession {
 		}
 	}
 
-<<<<<<< HEAD
-	async getDetectedChromePath(): Promise<{ path: string; isBundled: boolean }> {
-		// First check VSCode config
-		const configPath = vscode.workspace.getConfiguration("caret").get<string>("chromeExecutablePath")
-		if (configPath && (await fileExistsAtPath(configPath))) {
-			return { path: configPath, isBundled: false }
-=======
 	/**
 	 * Migrates the chromeExecutablePath setting from VSCode configuration to browserSettings
 	 */
 	private async migrateChromeExecutablePathSetting(): Promise<void> {
-		const config = vscode.workspace.getConfiguration("cline")
-		const configPath = vscode.workspace.getConfiguration("cline").get<string>("chromeExecutablePath")
+		const config = vscode.workspace.getConfiguration("caret")
+		const configPath = vscode.workspace.getConfiguration("caret").get<string>("chromeExecutablePath")
 
 		if (configPath !== undefined) {
 			this.browserSettings.chromeExecutablePath = configPath
@@ -108,7 +87,6 @@ export class BrowserSession {
 		await this.migrateChromeExecutablePathSetting()
 		if (this.browserSettings.chromeExecutablePath && (await fileExistsAtPath(this.browserSettings.chromeExecutablePath))) {
 			return { path: this.browserSettings.chromeExecutablePath, isBundled: false }
->>>>>>> upstream/main
 		}
 
 		// Then try to find system Chrome
@@ -146,14 +124,14 @@ export class BrowserSession {
 	}
 
 	async relaunchChromeDebugMode(controller: Controller) {
-<<<<<<< HEAD
-		const result = await vscode.window.showWarningMessage(
-			"This will close your existing Chrome tabs and relaunch Chrome in debug mode. Are you sure?",
+		const result = await vscode.window.showInformationMessage(
+			"This will relaunch Chrome in debug mode.\n\nYou can choose to reuse your Chrome session or start a fresh one.",
 			{ modal: true },
-			"Yes",
+			"Use Existing Session",
+			"Launch Temporary Session",
 		)
 
-		if (result !== "Yes") {
+		if (!result) {
 			controller?.postMessageToWebview({
 				type: "browserRelaunchResult",
 				success: false,
@@ -163,87 +141,41 @@ export class BrowserSession {
 		}
 
 		try {
-			// Chrome-launcher's killAll only kills instances it launched
-			// We need to handle system Chrome processes separately
-			await this.killAllChromeBrowsers()
-
-			// Wait a moment for Chrome to fully shut down
-			await new Promise((resolve) => setTimeout(resolve, 500))
-
-			// Instead of using any default flags, use a minimal set to ensure session persistence
-			// This closely mimics running "google-chrome-stable --remote-debugging-port=9222" from the CLI
-			const chromeFlags = [
-				"--remote-debugging-port=" + DEBUG_PORT,
-				"--disable-notifications",
-				// Do not add any flags that might interfere with profile data
-			]
-
 			const installation = chromeLauncher.Launcher.getFirstInstallation()
 			if (!installation) {
 				throw new Error("Could not find Chrome installation on this system")
 			}
 			console.info("chrome installation", installation)
 
-			// Prepare the command arguments
-			const args = [`--remote-debugging-port=${DEBUG_PORT}`, "--disable-notifications", "chrome://newtab"]
-
-			// Spawn Chrome as a detached process
-			const chromeProcess = spawn(installation, args, {
-				detached: true, // This is key - makes the process independent of parent
-				stdio: "ignore", // Detach stdio to prevent hanging
-				shell: false, // Don't run in a shell
-			})
-
-			// Unref the process to allow Node to exit independently
-			chromeProcess.unref()
-
-			// Wait a moment to ensure Chrome has time to start
-			await new Promise((resolve) => setTimeout(resolve, 1000))
-
-			// Test if Chrome is actually running with debug port
-			const isRunning = await isPortOpen("localhost", DEBUG_PORT, 2000)
-
-			if (!isRunning) {
-				throw new Error("Chrome was launched but debug port is not responding")
-			}
-
-=======
-		try {
-			const userDataDir = path.join(os.tmpdir(), "chrome-debug-profile")
-			const installation = chromeLauncher.Launcher.getFirstInstallation()
-			if (!installation) {
-				throw new Error("Could not find Chrome installation on this system")
-			}
-			console.info("chrome installation", installation)
-
-			const args = [
+			let args: string[] = [
 				`--remote-debugging-port=${DEBUG_PORT}`,
-				`--user-data-dir=${userDataDir}`,
 				"--disable-notifications",
 				"chrome://newtab",
 			]
 
-			// Spawn Chrome as a detached process
-			const chromeProcess = spawn(installation, args, {
-				detached: true, // This is key - makes the process independent of parent
-				stdio: "ignore", // Detach stdio to prevent hanging
-				shell: false, // Don't run in a shell
-			})
+			if (result === "Use Existing Session") {
+				// 강제로 모든 Chrome 프로세스 종료
+				await this.killAllChromeBrowsers()
+				await new Promise((resolve) => setTimeout(resolve, 500)) // Wait for shutdown
+			} else if (result === "Launch Temporary Session") {
+				const userDataDir = path.join(os.tmpdir(), "chrome-debug-profile")
+				args.splice(1, 0, `--user-data-dir=${userDataDir}`) // add after debug port
+			}
 
-			// Unref the process to allow Node to exit independently
+			const chromeProcess = spawn(installation, args, {
+				detached: true,
+				stdio: "ignore",
+				shell: false,
+			})
 			chromeProcess.unref()
 
-			// Wait a moment to ensure Chrome has time to start
 			await new Promise((resolve) => setTimeout(resolve, 1000))
 
-			// Test if Chrome is actually running with debug port
 			const isRunning = await isPortOpen("localhost", DEBUG_PORT, 2000)
-
 			if (!isRunning) {
 				throw new Error("Chrome was launched but debug port is not responding")
 			}
 
->>>>>>> upstream/main
 			controller?.postMessageToWebview({
 				type: "browserRelaunchResult",
 				success: true,
@@ -257,6 +189,7 @@ export class BrowserSession {
 			})
 		}
 	}
+
 
 	/**
 	 * Set the task ID for telemetry tracking

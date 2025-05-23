@@ -4,13 +4,6 @@ import { defineConfig, ViteDevServer, type Plugin } from "vite"
 import tailwindcss from "@tailwindcss/vite"
 import react from "@vitejs/plugin-react-swc"
 import { resolve } from "path"
-<<<<<<< HEAD
-
-export default defineConfig({
-	plugins: [react(), tailwindcss()],
-	publicDir: "public",
-	base: "./",
-=======
 import { writeFileSync } from "node:fs"
 
 // Custom plugin to write the server port to a file
@@ -35,7 +28,8 @@ const writePortToFile = (): Plugin => {
 
 export default defineConfig({
 	plugins: [react(), tailwindcss(), writePortToFile()],
->>>>>>> upstream/main
+	publicDir: "public",
+	base: "./",
 	test: {
 		environment: "jsdom",
 		globals: true,

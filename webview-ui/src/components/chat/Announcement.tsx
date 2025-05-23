@@ -30,11 +30,7 @@ const linkContainerStyle: CSSProperties = { margin: "0" }
 const linkStyle: CSSProperties = { display: "inline" }
 
 /*
-<<<<<<< HEAD
-You must update the latestAnnouncementId in CaretProvider for new announcements to show to users. This new id will be compared with whats in state for the 'last announcement shown', and if it's different then the announcement will render. As soon as an announcement is shown, the id will be updated in state. This ensures that announcements are not shown more than once, even if the user doesn't close it themselves.
-=======
-You must update the latestAnnouncementId in ClineProvider for new announcements to show to users. This new id will be compared with what's in state for the 'last announcement shown', and if it's different then the announcement will render. As soon as an announcement is shown, the id will be updated in state. This ensures that announcements are not shown more than once, even if the user doesn't close it themselves.
->>>>>>> upstream/main
+You must update the latestAnnouncementId in CaretProvider for new announcements to show to users. This new id will be compared with what's in state for the 'last announcement shown', and if it's different then the announcement will render. As soon as an announcement is shown, the id will be updated in state. This ensures that announcements are not shown more than once, even if the user doesn't close it themselves.
 */
 const Announcement = ({ version, hideAnnouncement }: AnnouncementProps) => {
 	const minorVersion = version.split(".").slice(0, 2).join(".") // 2.0.0 -> 2.0
@@ -48,7 +44,6 @@ const Announcement = ({ version, hideAnnouncement }: AnnouncementProps) => {
 			</h3>
 			<ul style={ulStyle}>
 				<li>
-<<<<<<< HEAD
 					<b>Add to Caret:</b> Right-click selected text in any file or terminal to quickly add context to your current
 					task! Plus, when you see a lightbulb icon, select 'Fix with Caret' to have Caret fix errors in your code.
 				</li>
@@ -59,26 +54,14 @@ const Announcement = ({ version, hideAnnouncement }: AnnouncementProps) => {
 				<li>
 					<b>Faster Inference:</b> Caret/OpenRouter users can sort underlying providers used by throughput, price, and
 					latency. Sorting by throughput will output faster generations (at a higher cost).
-=======
-					<b>Workflows:</b> Create and manage workflow files that can be injected into conversations via slash commands,
-					making it easy to automate repetitive tasks.
 				</li>
 				<li>
-					<b>Collapsible Task List:</b> Hide your recent tasks when sharing your screen to keep your prompts private.
-				</li>
-				<li>
-					<b>Global Endpoint for Vertex AI:</b> Improved availability and reduced rate limiting errors for Vertex AI
-					users.
->>>>>>> upstream/main
-				</li>
-				<li>
-					<b>New User Experience:</b> Special components and guidance for new users to help them get started with Cline.
+					<b>New User Experience:</b> Special components and guidance for new users to help them get started with Caret.
 				</li>
 				<li>
 					<b>UI Improvements:</b> Fixed loading states and improved settings organization for a smoother experience.
 				</li>
 			</ul>
-<<<<<<< HEAD
 			{/*<ul style={{ margin: "0 0 8px", paddingLeft: "12px" }}>
 				 <li>
 					OpenRouter now supports prompt caching! They also have much higher rate limits than other providers,
@@ -126,7 +109,6 @@ const Announcement = ({ version, hideAnnouncement }: AnnouncementProps) => {
 					environments)
 				</li>
 			</ul>*/}
-=======
 			<Accordion isCompact className="pl-0">
 				<AccordionItem
 					key="1"
@@ -143,7 +125,7 @@ const Announcement = ({ version, hideAnnouncement }: AnnouncementProps) => {
 							<b>Task Timeline:</b> See the history of your coding journey with a visual timeline of checkpoints.
 						</li>
 						<li>
-							<b>UX Improvements:</b> Type while Cline works, smarter auto-scrolling, and copy buttons for task
+							<b>UX Improvements:</b> Type while Caret works, smarter auto-scrolling, and copy buttons for task
 							headers and messages.
 						</li>
 						<li>
@@ -151,13 +133,12 @@ const Announcement = ({ version, hideAnnouncement }: AnnouncementProps) => {
 							tracking.
 						</li>
 						<li>
-							<b>Global Cline Rules:</b> Store multiple rules files in Documents/Cline/Rules to share between
+							<b>Global Caret Rules:</b> Store multiple rules files in Documents/Caret/Rules to share between
 							projects.
 						</li>
 					</ul>
 				</AccordionItem>
 			</Accordion>
->>>>>>> upstream/main
 			<div style={hrStyle} />
 			<p style={linkContainerStyle}>
 				Join us on{" "}

@@ -3,29 +3,29 @@ import { ensureRulesDirectoryExists, GlobalFileNames } from "@core/storage/disk"
 import { fileExistsAtPath, isDirectory, readDirectory } from "@utils/fs"
 import { formatResponse } from "@core/prompts/responses"
 import fs from "fs/promises"
-import { ClineRulesToggles } from "@shared/cline-rules"
+import { CaretRulesToggles } from "@shared/caret-rules"
 import { getGlobalState, getWorkspaceState, updateGlobalState, updateWorkspaceState } from "@core/storage/state"
 import * as vscode from "vscode"
 import { synchronizeRuleToggles, getRuleFilesTotalContent } from "@core/context/instructions/user-instructions/rule-helpers"
 
-export const getGlobalClineRules = async (globalClineRulesFilePath: string, toggles: ClineRulesToggles) => {
-	if (await fileExistsAtPath(globalClineRulesFilePath)) {
-		if (await isDirectory(globalClineRulesFilePath)) {
+export const getGlobalCaretRules = async (globalCaretRulesFilePath: string, toggles: CaretRulesToggles) => {
+	if (await fileExistsAtPath(globalCaretRulesFilePath)) {
+		if (await isDirectory(globalCaretRulesFilePath)) {
 			try {
-				const rulesFilePaths = await readDirectory(globalClineRulesFilePath)
-				const rulesFilesTotalContent = await getRuleFilesTotalContent(rulesFilePaths, globalClineRulesFilePath, toggles)
+				const rulesFilePaths = await readDirectory(globalCaretRulesFilePath)
+				const rulesFilesTotalContent = await getRuleFilesTotalContent(rulesFilePaths, globalCaretRulesFilePath, toggles)
 				if (rulesFilesTotalContent) {
-					const clineRulesFileInstructions = formatResponse.clineRulesGlobalDirectoryInstructions(
-						globalClineRulesFilePath,
+					const caretRulesFileInstructions = formatResponse.caretRulesGlobalDirectoryInstructions(
+						globalCaretRulesFilePath,
 						rulesFilesTotalContent,
 					)
-					return clineRulesFileInstructions
+					return caretRulesFileInstructions
 				}
 			} catch {
-				console.error(`Failed to read .clinerules directory at ${globalClineRulesFilePath}`)
+				console.error(`Failed to read .caretrules directory at ${globalCaretRulesFilePath}`)
 			}
 		} else {
-			console.error(`${globalClineRulesFilePath} is not a directory`)
+			console.error(`${globalCaretRulesFilePath} is not a directory`)
 			return undefined
 		}
 	}
@@ -33,60 +33,60 @@ export const getGlobalClineRules = async (globalClineRulesFilePath: string, togg
 	return undefined
 }
 
-export const getLocalClineRules = async (cwd: string, toggles: ClineRulesToggles) => {
-	const clineRulesFilePath = path.resolve(cwd, GlobalFileNames.clineRules)
+export const getLocalCaretRules = async (cwd: string, toggles: CaretRulesToggles) => {
+	const caretRulesFilePath = path.resolve(cwd, GlobalFileNames.caretRules)
 
-	let clineRulesFileInstructions: string | undefined
+	let caretRulesFileInstructions: string | undefined
 
-	if (await fileExistsAtPath(clineRulesFilePath)) {
-		if (await isDirectory(clineRulesFilePath)) {
+	if (await fileExistsAtPath(caretRulesFilePath)) {
+		if (await isDirectory(caretRulesFilePath)) {
 			try {
-				const rulesFilePaths = await readDirectory(clineRulesFilePath, [[".clinerules", "workflows"]])
+				const rulesFilePaths = await readDirectory(caretRulesFilePath, [[".caretrules", "workflows"]])
 
 				const rulesFilesTotalContent = await getRuleFilesTotalContent(rulesFilePaths, cwd, toggles)
 				if (rulesFilesTotalContent) {
-					clineRulesFileInstructions = formatResponse.clineRulesLocalDirectoryInstructions(cwd, rulesFilesTotalContent)
+					caretRulesFileInstructions = formatResponse.caretRulesLocalDirectoryInstructions(cwd, rulesFilesTotalContent)
 				}
 			} catch {
-				console.error(`Failed to read .clinerules directory at ${clineRulesFilePath}`)
+				console.error(`Failed to read .caretrules directory at ${caretRulesFilePath}`)
 			}
 		} else {
 			try {
-				if (clineRulesFilePath in toggles && toggles[clineRulesFilePath] !== false) {
-					const ruleFileContent = (await fs.readFile(clineRulesFilePath, "utf8")).trim()
+				if (caretRulesFilePath in toggles && toggles[caretRulesFilePath] !== false) {
+					const ruleFileContent = (await fs.readFile(caretRulesFilePath, "utf8")).trim()
 					if (ruleFileContent) {
-						clineRulesFileInstructions = formatResponse.clineRulesLocalFileInstructions(cwd, ruleFileContent)
+						caretRulesFileInstructions = formatResponse.caretRulesLocalFileInstructions(cwd, ruleFileContent)
 					}
 				}
 			} catch {
-				console.error(`Failed to read .clinerules file at ${clineRulesFilePath}`)
+				console.error(`Failed to read .caretrules file at ${caretRulesFilePath}`)
 			}
 		}
 	}
 
-	return clineRulesFileInstructions
+	return caretRulesFileInstructions
 }
 
-export async function refreshClineRulesToggles(
+export async function refreshCaretRulesToggles(
 	context: vscode.ExtensionContext,
 	workingDirectory: string,
 ): Promise<{
-	globalToggles: ClineRulesToggles
-	localToggles: ClineRulesToggles
+	globalToggles: CaretRulesToggles
+	localToggles: CaretRulesToggles
 }> {
 	// Global toggles
-	const globalClineRulesToggles = ((await getGlobalState(context, "globalClineRulesToggles")) as ClineRulesToggles) || {}
-	const globalClineRulesFilePath = await ensureRulesDirectoryExists()
-	const updatedGlobalToggles = await synchronizeRuleToggles(globalClineRulesFilePath, globalClineRulesToggles)
-	await updateGlobalState(context, "globalClineRulesToggles", updatedGlobalToggles)
+	const globalCaretRulesToggles = ((await getGlobalState(context, "globalCaretRulesToggles")) as CaretRulesToggles) || {}
+	const globalCaretRulesFilePath = await ensureRulesDirectoryExists()
+	const updatedGlobalToggles = await synchronizeRuleToggles(globalCaretRulesFilePath, globalCaretRulesToggles)
+	await updateGlobalState(context, "globalCaretRulesToggles", updatedGlobalToggles)
 
 	// Local toggles
-	const localClineRulesToggles = ((await getWorkspaceState(context, "localClineRulesToggles")) as ClineRulesToggles) || {}
-	const localClineRulesFilePath = path.resolve(workingDirectory, GlobalFileNames.clineRules)
-	const updatedLocalToggles = await synchronizeRuleToggles(localClineRulesFilePath, localClineRulesToggles, "", [
-		[".clinerules", "workflows"],
+	const localCaretRulesToggles = ((await getWorkspaceState(context, "localCaretRulesToggles")) as CaretRulesToggles) || {}
+	const localCaretRulesFilePath = path.resolve(workingDirectory, GlobalFileNames.caretRules)
+	const updatedLocalToggles = await synchronizeRuleToggles(localCaretRulesFilePath, localCaretRulesToggles, "", [
+		[".caretrules", "workflows"],
 	])
-	await updateWorkspaceState(context, "localClineRulesToggles", updatedLocalToggles)
+	await updateWorkspaceState(context, "localCaretRulesToggles", updatedLocalToggles)
 
 	return {
 		globalToggles: updatedGlobalToggles,

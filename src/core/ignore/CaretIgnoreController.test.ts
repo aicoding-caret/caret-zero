@@ -248,29 +248,29 @@ describe("CaretIgnoreController", () => {
 			// Create a .gitignore file with patterns "*.log" and "debug/"
 			await fs.writeFile(path.join(tempDir, ".gitignore"), ["*.log", "debug/"].join("\n"))
 
-			// Create a .clineignore file that includes .gitignore and adds an extra pattern "secret.txt"
-			await fs.writeFile(path.join(tempDir, ".clineignore"), ["!include .gitignore", "secret.txt"].join("\n"))
+			// Create a .caretignore file that includes .gitignore and adds an extra pattern "secret.txt"
+			await fs.writeFile(path.join(tempDir, ".caretignore"), ["!include .gitignore", "secret.txt"].join("\n"))
 
-			// Initialize the controller to load the updated .clineignore
-			controller = new ClineIgnoreController(tempDir)
+			// Initialize the controller to load the updated .caretignore
+			controller = new CaretIgnoreController(tempDir)
 			await controller.initialize()
 
 			// "server.log" should be ignored due to the "*.log" pattern from .gitignore
 			controller.validateAccess("server.log").should.be.false()
 			// "debug/app.js" should be ignored due to the "debug/" pattern from .gitignore
 			controller.validateAccess("debug/app.js").should.be.false()
-			// "secret.txt" should be ignored as specified directly in .clineignore
+			// "secret.txt" should be ignored as specified directly in .caretignore
 			controller.validateAccess("secret.txt").should.be.false()
 			// Other files should be allowed
 			controller.validateAccess("app.js").should.be.true()
 		})
 
 		it("should handle non-existent included file gracefully", async () => {
-			// Create a .clineignore file that includes a non-existent file
-			await fs.writeFile(path.join(tempDir, ".clineignore"), ["!include missing-file.txt"].join("\n"))
+			// Create a .caretignore file that includes a non-existent file
+			await fs.writeFile(path.join(tempDir, ".caretignore"), ["!include missing-file.txt"].join("\n"))
 
 			// Initialize the controller
-			controller = new ClineIgnoreController(tempDir)
+			controller = new CaretIgnoreController(tempDir)
 			await controller.initialize()
 
 			// Validate access to a regular file; it should be allowed because the missing include should not break everything
@@ -279,9 +279,9 @@ describe("CaretIgnoreController", () => {
 
 		it("should handle non-existent included file gracefully alongside a valid pattern", async () => {
 			// Test with an include directive for a non-existent file alongside a valid pattern ("*.tmp")
-			await fs.writeFile(path.join(tempDir, ".clineignore"), ["!include non-existent.txt", "*.tmp"].join("\n"))
+			await fs.writeFile(path.join(tempDir, ".caretignore"), ["!include non-existent.txt", "*.tmp"].join("\n"))
 
-			controller = new ClineIgnoreController(tempDir)
+			controller = new CaretIgnoreController(tempDir)
 			await controller.initialize()
 
 			// "file.tmp" should be ignored because of the "*.tmp" pattern

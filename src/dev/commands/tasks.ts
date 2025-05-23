@@ -1,15 +1,9 @@
 import * as vscode from "vscode"
 import * as fs from "fs/promises"
 import * as path from "path"
-<<<<<<< HEAD
 import { Controller } from "../../core/controller"
 import { HistoryItem } from "../../shared/HistoryItem"
 import { CaretMessage } from "../../shared/ExtensionMessage"
-=======
-import { Controller } from "@core/controller"
-import { HistoryItem } from "@shared/HistoryItem"
-import { ClineMessage } from "@shared/ExtensionMessage"
->>>>>>> upstream/main
 
 /**
  * Registers development-only commands for task manipulation.

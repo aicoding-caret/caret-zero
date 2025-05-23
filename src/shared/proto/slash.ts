@@ -7,13 +7,13 @@
 /* eslint-disable */
 import { Empty, StringRequest } from "./common"
 
-export const protobufPackage = "cline"
+export const protobufPackage = "caret"
 
 /** SlashService provides methods for managing slash */
 export type SlashServiceDefinition = typeof SlashServiceDefinition
 export const SlashServiceDefinition = {
 	name: "SlashService",
-	fullName: "cline.SlashService",
+	fullName: "caret.SlashService",
 	methods: {
 		/** Sends button click message */
 		reportBug: {

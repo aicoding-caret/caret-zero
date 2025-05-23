@@ -8,7 +8,7 @@
 import { BinaryReader, BinaryWriter } from "@bufbuild/protobuf/wire"
 import { Empty, EmptyRequest, Metadata, StringArray, StringRequest } from "./common"
 
-export const protobufPackage = "cline"
+export const protobufPackage = "caret"
 
 /** Request to convert a list of URIs to relative paths */
 export interface RelativePathsRequest {
@@ -904,7 +904,7 @@ export const RuleFile: MessageFns<RuleFile> = {
 export type FileServiceDefinition = typeof FileServiceDefinition
 export const FileServiceDefinition = {
 	name: "FileService",
-	fullName: "cline.FileService",
+	fullName: "caret.FileService",
 	methods: {
 		/** Copies text to clipboard */
 		copyToClipboard: {

@@ -7,7 +7,7 @@
 /* eslint-disable */
 import { BinaryReader, BinaryWriter } from "@bufbuild/protobuf/wire"
 
-export const protobufPackage = "cline"
+export const protobufPackage = "caret"
 
 export interface Metadata {}
 

@@ -1,17 +1,17 @@
 import React from "react"
-import { ClineMessage } from "@shared/ExtensionMessage"
+import { CaretMessage } from "@shared/ExtensionMessage"
 import { COLOR_WHITE, COLOR_GRAY, COLOR_DARK_GRAY, COLOR_BEIGE, COLOR_BLUE, COLOR_RED, COLOR_PURPLE, COLOR_GREEN } from "./colors"
 import { Tooltip } from "@heroui/react"
 
 // Color mapping for different message types
 
 interface TaskTimelineTooltipProps {
-	message: ClineMessage
+	message: CaretMessage
 	children: React.ReactNode
 }
 
 const TaskTimelineTooltip = ({ message, children }: TaskTimelineTooltipProps) => {
-	const getMessageDescription = (message: ClineMessage): string => {
+	const getMessageDescription = (message: CaretMessage): string => {
 		if (message.type === "say") {
 			switch (message.say) {
 				// TODO: Need to confirm these classifcations with design
@@ -99,7 +99,7 @@ const TaskTimelineTooltip = ({ message, children }: TaskTimelineTooltipProps) =>
 		return "Unknown Message Type"
 	}
 
-	const getMessageContent = (message: ClineMessage): string => {
+	const getMessageContent = (message: CaretMessage): string => {
 		if (message.text) {
 			if (message.type === "ask" && message.ask === "plan_mode_respond" && message.text) {
 				try {
@@ -125,7 +125,7 @@ const TaskTimelineTooltip = ({ message, children }: TaskTimelineTooltipProps) =>
 		return ""
 	}
 
-	const getTimestamp = (message: ClineMessage): string => {
+	const getTimestamp = (message: CaretMessage): string => {
 		if (message.ts) {
 			const messageDate = new Date(message.ts)
 			const today = new Date()
@@ -150,7 +150,7 @@ const TaskTimelineTooltip = ({ message, children }: TaskTimelineTooltipProps) =>
 	}
 
 	// Get color for the indicator based on message type
-	const getMessageColor = (message: ClineMessage): string => {
+	const getMessageColor = (message: CaretMessage): string => {
 		if (message.type === "say") {
 			switch (message.say) {
 				case "task":

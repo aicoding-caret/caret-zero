@@ -5,15 +5,10 @@ import { vscode } from "@/utils/vscode"
 import VSCodeButtonLink from "../common/VSCodeButtonLink"
 import CountUp from "react-countup"
 import CreditsHistoryTable from "./CreditsHistoryTable"
-<<<<<<< HEAD
 import { UsageTransaction, PaymentTransaction } from "@shared/CaretAccount"
-import { useExtensionState } from "@/context/ExtensionStateContext"
-=======
-import { UsageTransaction, PaymentTransaction } from "@shared/ClineAccount"
 import { useExtensionState } from "@/context/ExtensionStateContext"
 import { AccountServiceClient } from "@/services/grpc-client"
 import { EmptyRequest } from "@shared/proto/common"
->>>>>>> upstream/main
 
 type AccountViewProps = {
 	onDone: () => void

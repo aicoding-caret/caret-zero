@@ -1,5 +1,5 @@
 syntax = "proto3";
-package cline;
+package caret;
 
 import "common.proto";
 

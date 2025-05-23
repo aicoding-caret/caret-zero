@@ -1,6 +1,6 @@
 import React, { useMemo, useState, useRef, useEffect, useCallback } from "react"
 import { Virtuoso } from "react-virtuoso"
-import { ClineMessage } from "@shared/ExtensionMessage"
+import { CaretMessage } from "@shared/ExtensionMessage"
 import { combineApiRequests } from "@shared/combineApiRequests"
 import { combineCommandSequences } from "@shared/combineCommandSequences"
 import TaskTimelineTooltip from "./TaskTimelineTooltip"
@@ -13,10 +13,10 @@ const BLOCK_GAP = "3px"
 const TOOLTIP_MARGIN = 32 // 32px margin on each side
 
 interface TaskTimelineProps {
-	messages: ClineMessage[]
+	messages: CaretMessage[]
 }
 
-const getBlockColor = (message: ClineMessage): string => {
+const getBlockColor = (message: CaretMessage): string => {
 	if (message.type === "say") {
 		switch (message.say) {
 			case "task":

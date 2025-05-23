@@ -2,11 +2,7 @@
 	"name": "caret-dev",
 	"displayName": "Caret",
 	"description": "Autonomous coding agent right in your IDE, capable of creating/editing files, running commands, using the browser, and more with your permission every step of the way.",
-<<<<<<< HEAD
-	"version": "3.10.1",
-=======
 	"version": "3.16.1",
->>>>>>> upstream/main
 	"icon": "assets/icons/icon.png",
 	"engines": {
 		"vscode": "^1.84.0"
@@ -122,42 +118,29 @@
 				"category": "Caret"
 			},
 			{
-<<<<<<< HEAD
-				"command": "caret.fixWithCaret",
-				"title": "Fix with Caret",
-				"category": "Caret"
-=======
-				"command": "cline.focusChatInput",
+				"command": "caret.focusChatInput",
 				"title": "Jump to Chat Input",
-				"category": "Cline"
+				"category": "Caret"
 			},
 			{
-				"command": "cline.generateGitCommitMessage",
-				"title": "Generate Commit Message with Cline",
-				"category": "Cline",
+				"command": "caret.generateGitCommitMessage",
+				"title": "Generate Commit Message with Caret",
+				"category": "Caret",
 				"icon": "$(robot)"
->>>>>>> upstream/main
 			}
 		],
 		"keybindings": [
 			{
-<<<<<<< HEAD
 				"command": "caret.addToChat",
-=======
-				"command": "cline.addToChat",
->>>>>>> upstream/main
 				"key": "cmd+'",
 				"mac": "cmd+'",
 				"win": "ctrl+'",
 				"linux": "ctrl+'",
 				"when": "editorHasSelection"
-<<<<<<< HEAD
-=======
 			},
 			{
-				"command": "cline.generateGitCommitMessage",
+				"command": "caret.generateGitCommitMessage",
 				"when": "scmProvider == git"
->>>>>>> upstream/main
 			}
 		],
 		"menus": {
@@ -240,20 +223,19 @@
 			],
 			"scm/title": [
 				{
-					"command": "cline.generateGitCommitMessage",
+					"command": "caret.generateGitCommitMessage",
 					"group": "navigation",
 					"when": "scmProvider == git"
 				}
 			],
 			"commandPalette": [
 				{
-					"command": "cline.generateGitCommitMessage",
+					"command": "caret.generateGitCommitMessage",
 					"when": "scmProvider == git"
 				}
 			]
 		},
 		"configuration": {
-<<<<<<< HEAD
 			"title": "Caret",
 			"properties": {
 				"caret.vsCodeLmModelSelector": {
@@ -341,10 +323,6 @@
 					"description": "Controls whether the MCP Marketplace is enabled."
 				}
 			}
-=======
-			"title": "Cline",
-			"properties": {}
->>>>>>> upstream/main
 		}
 	},
 	"scripts": {
@@ -396,11 +374,8 @@
 		"@types/p-wait-for": "^2.0.0",
 		"@types/pdf-parse": "^1.1.4",
 		"@types/proxyquire": "^1.3.31",
-<<<<<<< HEAD
 		"@types/react": "^19.1.2",
 		"@types/serialize-error": "^2.1.0",
-=======
->>>>>>> upstream/main
 		"@types/should": "^11.2.0",
 		"@types/sinon": "^17.0.4",
 		"@types/turndown": "^5.0.5",
@@ -410,11 +385,8 @@
 		"@vscode/test-cli": "^0.0.10",
 		"@vscode/test-electron": "^2.4.1",
 		"chai": "^4.3.10",
-<<<<<<< HEAD
 		"cross-env": "^7.0.3",
-=======
 		"chalk": "^5.3.0",
->>>>>>> upstream/main
 		"esbuild": "^0.25.0",
 		"eslint": "^8.57.0",
 		"grpc-tools": "^1.13.0",
@@ -422,10 +394,7 @@
 		"mintlify": "^4.0.515",
 		"npm-run-all": "^4.1.5",
 		"prettier": "^3.3.3",
-<<<<<<< HEAD
-=======
 		"protoc-gen-ts": "^0.8.7",
->>>>>>> upstream/main
 		"proxyquire": "^2.1.3",
 		"should": "^13.2.3",
 		"sinon": "^19.0.2",
@@ -454,13 +423,9 @@
 		"@opentelemetry/semantic-conventions": "^1.30.0",
 		"@sentry/browser": "^9.12.0",
 		"@vscode/codicons": "^0.0.36",
-<<<<<<< HEAD
 		"@vscode/webview-ui-toolkit": "^1.4.0",
 		"axios": "^1.8.4",
-=======
 		"archiver": "^7.0.1",
-		"axios": "^1.8.2",
->>>>>>> upstream/main
 		"cheerio": "^1.0.0",
 		"chokidar": "^4.0.1",
 		"chrome-launcher": "^1.1.2",

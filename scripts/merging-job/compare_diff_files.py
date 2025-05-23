@@ -8,7 +8,7 @@ SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 # These are now constructed based on SCRIPT_DIR going up two levels to workspace root
 WORKSPACE_ROOT = os.path.dirname(os.path.dirname(SCRIPT_DIR))
 CAREZERO_CHANGES_PATH = os.path.join(WORKSPACE_ROOT, "caret-docs/tasks/029-02-action-git-caret-zero-changes.txt")
-CLINE_UPSTREAM_CHANGES_PATH = os.path.join(WORKSPACE_ROOT, "caret-docs/tasks/029-02-action-git-cline-upstream-changes.txt")
+CLINE_UPSTREAM_CHANGES_PATH = os.path.join(WORKSPACE_ROOT, "caret-docs/tasks/029-02-action-git-caret-upstream-changes.txt")
 
 # Output file paths (now relative to SCRIPT_DIR)
 UPSTREAM_ONLY_OUTPUT_PATH = os.path.join(SCRIPT_DIR, "upstream_only_changes.txt")
@@ -49,7 +49,7 @@ def write_lines_to_file(filepath, lines):
 if __name__ == "__main__":
     print("Comparing diff files...")
     caret_files = read_file_lines(CAREZERO_CHANGES_PATH) 
-    # Assuming cline-upstream changes file is also UTF-16LE based on previous issues
+    # Assuming caret-upstream changes file is also UTF-16LE based on previous issues
     # If it's consistently UTF-8, this can be read_file_lines(CLINE_UPSTREAM_CHANGES_PATH, encoding='utf-8')
     upstream_files = read_file_lines(CLINE_UPSTREAM_CHANGES_PATH, encoding='utf-16-le')
 

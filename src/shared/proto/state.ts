@@ -8,7 +8,7 @@
 import { BinaryReader, BinaryWriter } from "@bufbuild/protobuf/wire"
 import { Empty, EmptyRequest, Metadata, StringRequest } from "./common"
 
-export const protobufPackage = "cline"
+export const protobufPackage = "caret"
 
 export enum PlanActMode {
 	PLAN = 0,
@@ -394,7 +394,7 @@ export const ChatContent: MessageFns<ChatContent> = {
 export type StateServiceDefinition = typeof StateServiceDefinition
 export const StateServiceDefinition = {
 	name: "StateService",
-	fullName: "cline.StateService",
+	fullName: "caret.StateService",
 	methods: {
 		getLatestState: {
 			name: "getLatestState",

@@ -1,7 +1,7 @@
 {
-	"name": "cline-evaluation-cli",
+	"name": "caret-evaluation-cli",
 	"version": "0.1.0",
-	"description": "CLI tool for orchestrating Cline evaluations across multiple benchmarks",
+	"description": "CLI tool for orchestrating Caret evaluations across multiple benchmarks",
 	"main": "dist/index.js",
 	"scripts": {
 		"build": "tsc",
@@ -10,7 +10,7 @@
 		"test": "echo \"Error: no test specified\" && exit 1"
 	},
 	"keywords": [
-		"cline",
+		"caret",
 		"evaluation",
 		"benchmark"
 	],

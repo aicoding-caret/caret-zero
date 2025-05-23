@@ -32,43 +32,43 @@ export interface ServiceHandlerConfig {
  * Map of service names to their handler configurations
  */
 export const serviceHandlers: Record<string, ServiceHandlerConfig> = {
-	"cline.AccountService": {
+	"caret.AccountService": {
 		requestHandler: handleAccountServiceRequest,
 		streamingHandler: handleAccountServiceStreamingRequest,
 	},
-	"cline.BrowserService": {
+	"caret.BrowserService": {
 		requestHandler: handleBrowserServiceRequest,
 		streamingHandler: handleBrowserServiceStreamingRequest,
 	},
-	"cline.CheckpointsService": {
+	"caret.CheckpointsService": {
 		requestHandler: handleCheckpointsServiceRequest,
 		streamingHandler: handleCheckpointsServiceStreamingRequest,
 	},
-	"cline.FileService": {
+	"caret.FileService": {
 		requestHandler: handleFileServiceRequest,
 		streamingHandler: handleFileServiceStreamingRequest,
 	},
-	"cline.McpService": {
+	"caret.McpService": {
 		requestHandler: handleMcpServiceRequest,
 		streamingHandler: handleMcpServiceStreamingRequest,
 	},
-	"cline.StateService": {
+	"caret.StateService": {
 		requestHandler: handleStateServiceRequest,
 		streamingHandler: handleStateServiceStreamingRequest,
 	},
-	"cline.TaskService": {
+	"caret.TaskService": {
 		requestHandler: handleTaskServiceRequest,
 		streamingHandler: handleTaskServiceStreamingRequest,
 	},
-	"cline.WebService": {
+	"caret.WebService": {
 		requestHandler: handleWebServiceRequest,
 		streamingHandler: handleWebServiceStreamingRequest,
 	},
-	"cline.ModelsService": {
+	"caret.ModelsService": {
 		requestHandler: handleModelsServiceRequest,
 		streamingHandler: handleModelsServiceStreamingRequest,
 	},
-	"cline.SlashService": {
+	"caret.SlashService": {
 		requestHandler: handleSlashServiceRequest,
 		streamingHandler: handleSlashServiceStreamingRequest,
 	},

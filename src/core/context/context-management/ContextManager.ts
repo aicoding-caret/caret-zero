@@ -5,7 +5,7 @@ import { fileExistsAtPath } from "@utils/fs"
 import * as path from "path"
 import fs from "fs/promises"
 import cloneDeep from "clone-deep"
-import { ClineApiReqInfo, ClineMessage } from "@shared/ExtensionMessage"
+import { CaretApiReqInfo, CaretMessage } from "@shared/ExtensionMessage"
 import { ApiHandler } from "@api/index"
 import { Anthropic } from "@anthropic-ai/sdk"
 
@@ -110,7 +110,7 @@ export class ContextManager {
 	 */
 	async getNewContextMessagesAndMetadata(
 		apiConversationHistory: Anthropic.Messages.MessageParam[],
-		clineMessages: ClineMessage[],
+		caretMessages: CaretMessage[],
 		api: ApiHandler,
 		conversationHistoryDeletedRange: [number, number] | undefined,
 		previousApiReqIndex: number,
@@ -120,10 +120,10 @@ export class ContextManager {
 
 		// If the previous API request's total token usage is close to the context window, truncate the conversation history to free up space for the new request
 		if (previousApiReqIndex >= 0) {
-			const previousRequest = clineMessages[previousApiReqIndex]
+			const previousRequest = caretMessages[previousApiReqIndex]
 			if (previousRequest && previousRequest.text) {
 				const timestamp = previousRequest.ts
-				const { tokensIn, tokensOut, cacheWrites, cacheReads }: ClineApiReqInfo = JSON.parse(previousRequest.text)
+				const { tokensIn, tokensOut, cacheWrites, cacheReads }: CaretApiReqInfo = JSON.parse(previousRequest.text)
 				const totalTokens = (tokensIn || 0) + (tokensOut || 0) + (cacheWrites || 0) + (cacheReads || 0)
 				const { maxAllowedSize } = getContextWindowInfo(api)
 
@@ -223,7 +223,7 @@ export class ContextManager {
 		let rangeEndIndex = startOfRest + messagesToRemove - 1 // inclusive ending index
 
 		// Make sure that the last message being removed is a assistant message, so the next message after the initial user-assistant pair is an assistant message. This preserves the user-assistant-user-assistant structure.
-		// NOTE: anthropic format messages are always user-assistant-user-assistant, while openai format messages can have multiple user messages in a row (we use anthropic format throughout cline)
+		// NOTE: anthropic format messages are always user-assistant-user-assistant, while openai format messages can have multiple user messages in a row (we use anthropic format throughout caret)
 		if (apiMessages[rangeEndIndex].role !== "assistant") {
 			rangeEndIndex -= 1
 		}

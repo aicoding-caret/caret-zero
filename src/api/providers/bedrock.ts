@@ -59,7 +59,7 @@ export class AwsBedrockHandler implements ApiHandler {
 		const client = await this.getAnthropicClient()
 
 		// AWS SDK prioritizes AWS_PROFILE over AWS_ACCESS_KEY_ID/AWS_SECRET_ACCESS_KEY pair
-		// If this is set as an env variable already (ie. from ~/.zshrc) it will override credentials configured by Cline
+		// If this is set as an env variable already (ie. from ~/.zshrc) it will override credentials configured by Caret
 		const previousEnv = process.env
 		delete process.env["AWS_PROFILE"]
 		const stream = await client.messages.create({

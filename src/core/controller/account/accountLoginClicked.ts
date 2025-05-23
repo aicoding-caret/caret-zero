@@ -24,7 +24,7 @@ export async function accountLoginClicked(controller: Controller, unused: EmptyR
 	const uriScheme = vscode.env.uriScheme
 
 	const authUrl = vscode.Uri.parse(
-		`https://app.cline.bot/auth?state=${encodeURIComponent(nonce)}&callback_url=${encodeURIComponent(`${uriScheme || "vscode"}://saoudrizwan.claude-dev/auth`)}`,
+		`https://app.caret.bot/auth?state=${encodeURIComponent(nonce)}&callback_url=${encodeURIComponent(`${uriScheme || "vscode"}://saoudrizwan.claude-dev/auth`)}`,
 	)
 	await vscode.env.openExternal(authUrl)
 	return {

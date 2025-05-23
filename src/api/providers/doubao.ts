@@ -1,9 +1,5 @@
 import { ApiHandler } from ".."
-<<<<<<< HEAD
 import { ApiHandlerOptions, doubaoDefaultModelId, DoubaoModelId, doubaoModels, ModelInfo } from "../../shared/api"
-=======
-import { ApiHandlerOptions, doubaoDefaultModelId, DoubaoModelId, doubaoModels, ModelInfo } from "@shared/api"
->>>>>>> upstream/main
 import { Anthropic } from "@anthropic-ai/sdk"
 import OpenAI from "openai"
 import { convertToOpenAiMessages } from "../transform/openai-format"
