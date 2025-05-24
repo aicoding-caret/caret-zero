@@ -276,9 +276,9 @@ export function createTestServer(webviewProvider?: WebviewProvider): http.Server
 
 					// Ensure we're in Act mode before initiating the task
 					const { chatSettings } = await visibleWebview.controller.getStateToPostToWebview()
-					if (chatSettings.mode === "plan") {
+					if (chatSettings.mode === "arch") {
 						// Switch to Act mode if currently in Plan mode
-						await visibleWebview.controller.togglePlanActModeWithChatSettings({ mode: "act" })
+						await visibleWebview.controller.toggleModeWithChatSettings({ mode: "dev" })
 					}
 
 					// Initialize tool call tracker
@@ -288,7 +288,7 @@ export function createTestServer(webviewProvider?: WebviewProvider): http.Server
 					const taskStartTime = Date.now()
 
 					// Initiate the new task
-					const result = await visibleWebview.controller.initTask(task)
+					const result = await visibleWebview.controller.initCaretWithTask(task)
 
 					// Try to get the task ID directly from the result or from the state
 					let taskId: string | undefined
@@ -602,7 +602,7 @@ async function autoRespondToAsk(webviewProvider: WebviewProvider, askType: Caret
 				try {
 					if (webviewProvider.controller) {
 						Logger.log("Auto-toggling to Act mode from Plan mode")
-						await webviewProvider.controller.togglePlanActModeWithChatSettings({ mode: "act" })
+						await webviewProvider.controller.toggleModeWithChatSettings({ mode: "dev" })
 					}
 				} catch (error) {
 					Logger.log(`Error toggling to Act mode: ${error}`)

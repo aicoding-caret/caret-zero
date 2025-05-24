@@ -16,13 +16,13 @@ import { FirebaseAuthProvider } from "./context/FirebaseAuthContext"
 
 
 // [ALPHA] VSCode API 브릿지 전역 할당 (VSCode Webview 환경에서만 1회)
-const isVSCodeWebview = typeof window !== "undefined"
-  && typeof window.acquireVsCodeApi === "function"
-  && window.navigator.userAgent.includes("vscode");
+// const isVSCodeWebview = typeof window !== "undefined"
+//   && typeof window.acquireVsCodeApi === "function"
+//   && window.navigator.userAgent.includes("vscode");
 
-if (isVSCodeWebview && !window.vscode) {
-  window.vscode = window.acquireVsCodeApi();
-}
+// if (isVSCodeWebview && !window.vscode) {
+//   window.vscode = window.acquireVsCodeApi();
+// }
 
 const AppContent = () => {
 	const { didHydrateState, showWelcome, shouldShowAnnouncement, telemetrySetting, vscMachineId, alphaAvatarUri, alphaThinkingAvatarUri , showMcp, mcpTab} = useExtensionState()

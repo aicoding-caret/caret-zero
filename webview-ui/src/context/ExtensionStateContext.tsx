@@ -34,7 +34,8 @@ import { ChatSettings, DEFAULT_CHAT_SETTINGS } from "@shared/ChatSettings"
 interface ExtensionStateContextType extends ExtensionState {
 	didHydrateState: boolean
 	showWelcome: boolean
-	theme: Record<string, string> | undefined
+	// theme: Record<string, string> | undefined
+	theme : any
 	openRouterModels: Record<string, ModelInfo>
 	openAiModels: string[]
 	requestyModels: Record<string, ModelInfo>

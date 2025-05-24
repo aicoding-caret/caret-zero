@@ -122,6 +122,9 @@ export interface ExtensionMessage {
 		| "fileSearchResults"
 		| "grpc_response" // New type for gRPC responses
 		| "setActiveQuote"
+		| "addRemoteServerResult"
+		| "vsCodeLmModels"
+
 	text?: string
 	uri?: string // [ALPHA] Added for persona/character support
 	paths?: (string | null)[] // Used for relativePathsResponse
@@ -205,6 +208,12 @@ export interface ExtensionMessage {
 	imageType?: "default" | "thinking"
 	imageUrl?: string
 	isTmp?: boolean // 임시 이미지 여부(썸네일 미리보기용)
+
+	addRemoteServerResult?: {
+		success: boolean
+		serverName: string
+		error?: string
+	}
 }
 
 export type Invoke = "sendMessage" | "primaryButtonClick" | "secondaryButtonClick"
@@ -216,6 +225,7 @@ export const DEFAULT_PLATFORM = "unknown"
 export interface ExtensionState {
 	// version: string
 	// theme: string
+	theme?: string // 선택적(optional) 속성으로 추가
 	mode: string
 	isNewUser: boolean
 	apiConfiguration?: ApiConfiguration

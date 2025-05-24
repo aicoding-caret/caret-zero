@@ -1,7 +1,8 @@
 import * as path from "path"
 import * as vscode from "vscode"
-import { getTaskMetadata, saveTaskMetadata, FileMetadataEntry } from "../storage/disk" // Import types from disk.ts
+import { getTaskMetadata, saveTaskMetadata } from "../storage/disk" // Import types from disk.ts
 import type { Controller } from "../controller" // Import Controller type directly
+import type { FileMetadataEntry } from "../../core/context/context-tracking/ContextTrackerTypes"
 
 // Define ControllerLike locally if needed, or adjust imports if it exists elsewhere
 interface ControllerLike {

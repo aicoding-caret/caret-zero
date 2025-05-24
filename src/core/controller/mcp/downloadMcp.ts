@@ -71,12 +71,12 @@ export async function downloadMcp(controller: Controller, request: StringRequest
 Here is the project's README to help you get started:\n\n${mcpDetails.readmeContent}\n${mcpDetails.llmsInstallationContent}`
 
 		const { chatSettings } = await controller.getStateToPostToWebview()
-		if (chatSettings.mode === "plan") {
-			await controller.togglePlanActModeWithChatSettings({ mode: "act" })
+		if (chatSettings.mode === "arch") {
+			await controller.toggleModeWithChatSettings({ mode: "dev" })
 		}
 
 		// Initialize task and show chat view
-		await controller.initTask(task)
+		await controller.initCaretWithTask(task)
 		await controller.postMessageToWebview({
 			type: "action",
 			action: "chatButtonClicked",

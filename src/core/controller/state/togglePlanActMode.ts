@@ -22,7 +22,7 @@ export async function togglePlanActMode(controller: Controller, request: ToggleP
 		const chatContent = request.chatContent ? convertProtoChatContentToChatContent(request.chatContent) : undefined
 
 		// Call the existing controller implementation
-		await controller.togglePlanActModeWithChatSettings(chatSettings, chatContent)
+		await controller.toggleModeWithChatSettings(chatSettings, chatContent)
 
 		return Empty.create()
 	} catch (error) {

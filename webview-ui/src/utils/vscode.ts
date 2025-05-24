@@ -1,5 +1,5 @@
 import { WebviewMessage } from "@shared/WebviewMessage"
-import type { WebviewApi } from "vscode-webview"
+// import type { WebviewApi } from "vscode-webview"
 
 /**
  * A utility wrapper around the acquireVsCodeApi() function, which enables
@@ -10,16 +10,25 @@ import type { WebviewApi } from "vscode-webview"
  * dev server by using native web browser features that mock the functionality
  * enabled by acquireVsCodeApi.
  */
-declare global {
-	interface Window {
-		vscode: {
-			postMessage: (message: any) => void
-		}
-	}
+// declare global {
+// 	interface Window {
+// 		vscode: {
+// 			postMessage: (message: any) => void
+// 		}
+// 	}
+// }
+// 타입 직접 정의
+declare function acquireVsCodeApi<T = unknown>(): {
+  postMessage: (message: any) => void
+  getState: () => T | undefined
+  setState: (newState: T) => T
 }
 
+type WebviewApi<T = unknown> = ReturnType<typeof acquireVsCodeApi<T>>
+
 class VSCodeAPIWrapper {
-	private readonly vscodeApi: any
+	// private readonly vscodeApi: any
+	private readonly vscodeApi: WebviewApi | undefined
 
 	constructor() {
 		// Check if the acquireVsCodeApi function exists in the current development
@@ -41,7 +50,8 @@ class VSCodeAPIWrapper {
 		if (this.vscodeApi) {
 			this.vscodeApi.postMessage(message)
 		} else {
-			window.vscode.postMessage(message)
+			// window.vscode.postMessage(message)
+			console.log(message)
 		}
 	}
 
@@ -75,7 +85,7 @@ class VSCodeAPIWrapper {
 	 */
 	public setState<T extends unknown | undefined>(newState: T): T {
 		if (this.vscodeApi) {
-			return this.vscodeApi.setState(newState)
+			return this.vscodeApi.setState(newState) as T
 		} else {
 			localStorage.setItem("vscodeState", JSON.stringify(newState))
 			return newState

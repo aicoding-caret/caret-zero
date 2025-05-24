@@ -16,7 +16,8 @@ import { getTheme } from "../../integrations/theme/getTheme"
 import WorkspaceTracker from "../../integrations/workspace/WorkspaceTracker"
 import { CaretAccountService } from "../../services/account/CaretAccountService"
 import { McpHub } from "../../services/mcp/McpHub"
-import { telemetryService } from "../../services/telemetry/TelemetryService"
+// import { telemetryService } from "../../services/telemetry/TelemetryService"
+import { telemetryService } from "@/services/posthog/telemetry/TelemetryService"
 import { ApiProvider, ModelInfo } from "../../shared/api"
 import { findLast } from "../../shared/array"
 import { ChatContent } from "../../shared/ChatContent"
@@ -66,6 +67,10 @@ import { sendStateUpdate } from "./state/subscribeToState"
 import { refreshCaretRulesToggles } from "../../core/context/instructions/user-instructions/caret-rules"
 import { refreshExternalRulesToggles } from "@core/context/instructions/user-instructions/external-rules"
 import { refreshWorkflowToggles } from "@core/context/instructions/user-instructions/workflows"
+
+import { execa } from "execa"
+import os from "os"
+import crypto from "crypto"
 
 /*
 https://github.com/microsoft/vscode-webview-ui-toolkit-samples/blob/main/default/weather-webview/src/providers/WeatherViewProvider.ts
@@ -343,35 +348,149 @@ export class Controller {
 		}
 	}
 
+	// // Send any JSON serializable data to the react app
+	// async postMessageToWebview(message: ExtensionMessage) {
+	// 	console.log("[Controller:postMessageToWebview] Sending message to webview:", message.type)
+	// 	try {
+	// 		const webviewProvider = this.webviewProviderRef.deref()
+	// 		if (!webviewProvider) {
+	// 			console.error("[Controller:postMessageToWebview] Webview provider is not valid")
+	// 			return
+	// 		}
+
+	// 		const view = webviewProvider.view
+	// 		if (!view) {
+	// 			console.error("[Controller:postMessageToWebview] Webview is not valid")
+	// 			return
+	// 		}			
+
+	// 		await view.webview.postMessage(message)
+	// 		console.log("[Controller:postMessageToWebview] Message sent to webview successfully", message.type)
+
+	// 	} catch (error) {
+	// 		console.error("[Controller:postMessageToWebview] Failed to send message to webview:", error)
+	// 	}
+	// 	await this.postMessage(message)
+	// }
+
 	// Send any JSON serializable data to the react app
 	async postMessageToWebview(message: ExtensionMessage) {
-		console.log("[Controller:postMessageToWebview] Sending message to webview:", message.type)
-		try {
-			const webviewProvider = this.webviewProviderRef.deref()
-			if (!webviewProvider) {
-				console.error("[Controller:postMessageToWebview] Webview provider is not valid")
-				return
-			}
-
-			const view = webviewProvider.view
-			if (!view) {
-				console.error("[Controller:postMessageToWebview] Webview is not valid")
-				return
-			}			
-
-			await view.webview.postMessage(message)
-			console.log("[Controller:postMessageToWebview] Message sent to webview successfully", message.type)
-
-		} catch (error) {
-			console.error("[Controller:postMessageToWebview] Failed to send message to webview:", error)
+		if (this.postMessage) {
+			await this.postMessage(message);
 		}
-		await this.postMessage(message)
 	}
-
+	
 	// // Send any JSON serializable data to the react app
 	// async postMessageToWebview(message: ExtensionMessage) {
 	// 	await this.postMessage(message)
 	// }
+
+	private async downloadMcp(mcpId: string) {
+		try {
+			// First check if we already have this MCP server installed
+			const servers = this.mcpHub?.getServers() || []
+			const isInstalled = servers.some((server: McpServer) => server.name === mcpId)
+
+			if (isInstalled) {
+				throw new Error("This MCP server is already installed")
+			}
+
+			// Fetch server details from marketplace
+			const response = await axios.post<McpDownloadResponse>(
+				"https://api.caret.bot/v1/mcp/download",
+				{ mcpId },
+				{
+					headers: { "Content-Type": "application/json" },
+					timeout: 10000,
+				},
+			)
+
+			if (!response.data) {
+				throw new Error("Invalid response from MCP marketplace API")
+			}
+
+			const mcpDetails = response.data
+
+			// Validate required fields
+			if (!mcpDetails.githubUrl) {
+				throw new Error("Missing GitHub URL in MCP download response")
+			}
+			if (!mcpDetails.readmeContent) {
+				throw new Error("Missing README content in MCP download response")
+			}
+
+			// Send details to webview
+			await this.postMessageToWebview({
+				type: "mcpDownloadDetails",
+				mcpDownloadDetails: mcpDetails,
+			})
+
+			// Create task with context from README and added guidelines for MCP server installation
+			const task = `Set up the MCP server from ${mcpDetails.githubUrl} while adhering to these MCP server installation rules:
+- Use "${mcpDetails.mcpId}" as the server name in caret_mcp_settings.json.
+- Create the directory for the new MCP server before starting installation.
+- Use commands aligned with the user's shell and operating system best practices.
+- The following README may contain instructions that conflict with the user's OS, in which case proceed thoughtfully.
+- Once installed, demonstrate the server's capabilities by using one of its tools.
+Here is the project's README to help you get started:\n\n${mcpDetails.readmeContent}\n${mcpDetails.llmsInstallationContent}`
+
+			// Initialize task and show chat view
+			await this.initCaretWithTask(task)
+			await this.postMessageToWebview({
+				type: "action",
+				action: "chatButtonClicked",
+			})
+		} catch (error) {
+			console.error("Failed to download MCP:", error)
+			let errorMessage = "Failed to download MCP"
+
+			if (axios.isAxiosError(error)) {
+				if (error.code === "ECONNABORTED") {
+					errorMessage = "Request timed out. Please try again."
+				} else if (error.response?.status === 404) {
+					errorMessage = "MCP server not found in marketplace."
+				} else if (error.response?.status === 500) {
+					errorMessage = "Internal server error. Please try again later."
+				} else if (!error.response && error.request) {
+					errorMessage = "Network error. Please check your internet connection."
+				}
+			} else if (error instanceof Error) {
+				errorMessage = error.message
+			}
+
+			// Show error in both notification and marketplace UI
+			vscode.window.showErrorMessage(errorMessage)
+			await this.postMessageToWebview({
+				type: "mcpDownloadDetails",
+				error: errorMessage,
+			})
+		}
+	}
+
+	// OpenAi
+
+	async getOpenAiModels(baseUrl?: string, apiKey?: string) {
+		try {
+			if (!baseUrl) {
+				return []
+			}
+
+			if (!URL.canParse(baseUrl)) {
+				return []
+			}
+			const config: Record<string, any> = {}
+			if (apiKey) {
+				config["headers"] = { Authorization: `Bearer ${apiKey}` }
+			}
+
+			const response = await axios.get(`${baseUrl}/models`, config)
+			const modelsArray = response.data?.data?.map((model: any) => model.id) || []
+			const models = [...new Set<string>(modelsArray)]
+			return models
+		} catch (error) {
+			return []
+		}
+	}
 
 	/**
 	 * Sets up an event listener to listen for messages passed from the webview context and
@@ -693,7 +812,9 @@ export class Controller {
 								this.logger.log(`[${imageType}] Template image copied to temporary file:`, tmpTargetPath);
 								
 								// 웹뷰에 이미지 업데이트 알림
-								const webview = this.webviewProviderRef.deref()?.view?.webview;
+								// const webview = this.webviewProviderRef.deref()?.view?.webview;
+								const webviewProvider = this.webviewProviderRef?.deref();
+								const webview = webviewProvider?.view?.webview;
 								if (webview) {
 									const tmpWebviewUri = webview.asWebviewUri(vscode.Uri.joinPath(this.context.extensionUri, "assets", tmpImageFileName)).toString() + `?t=${Date.now()}`;
 									await this.postMessageToWebview({
@@ -759,7 +880,9 @@ export class Controller {
 								// 설정 키는 아직 업데이트하지 않음 (확정 저장 아님)
 
 								// 상태 업데이트: TMP 파일 webview로 알려주기
-								const webview = this.webviewProviderRef.deref()?.view?.webview;
+								// const webview = this.webviewProviderRef.deref()?.view?.webview;
+								const webviewProvider = this.webviewProviderRef?.deref();
+								const webview = webviewProvider?.view?.webview;
 								if (webview) {
 									const tmpWebviewUri = webview.asWebviewUri(vscode.Uri.joinPath(this.context.extensionUri, "assets", tmpImageFileName)).toString() + `?t=${Date.now()}`;
 									await this.postMessageToWebview({
@@ -932,12 +1055,8 @@ export class Controller {
 			case "apiConfiguration":
 				if (message.apiConfiguration) {
 					await updateApiConfiguration(this.context, message.apiConfiguration)
-					if (this.task && message.apiConfiguration && message.apiConfiguration.apiProvider) {
-						const provider = message.apiConfiguration.apiProvider as string // 명시적 타입 단언
-						const apiHandlerOptions = { ...message.apiConfiguration, provider: message.apiConfiguration.apiProvider }
-						this.task.api = buildApiHandler(apiHandlerOptions, async (partialState: Partial<ExtensionState>) => {
-							// ...
-						})
+					if (this.task) {
+						this.task.api = buildApiHandler(message.apiConfiguration)
 					}
 				}
 				await this.postStateToWebview()
@@ -1169,6 +1288,7 @@ export class Controller {
 				break
 			case "openImage":
 				openImage(message.text!)
+				break
 			case "refreshCaretRules":
 				await refreshCaretRulesToggles(this.context, cwd)
 				await refreshExternalRulesToggles(this.context, cwd)
@@ -1461,14 +1581,8 @@ export class Controller {
 				// api config
 				if (message.apiConfiguration) {
 					await updateApiConfiguration(this.context, message.apiConfiguration)
-					if (this.task && message.apiConfiguration && message.apiConfiguration.apiProvider) {
-						const apiHandlerOptions = { ...message.apiConfiguration, provider: message.apiConfiguration.apiProvider }
-						this.task.api = buildApiHandler(apiHandlerOptions, async (partialState: Partial<ExtensionState>) => {
-							if (partialState.retryStatus) {
-								await this.context.globalState.update("retryStatus", partialState.retryStatus)
-							}
-							await this.postStateToWebview()
-						})
+					if (this.task) {
+						this.task.api = buildApiHandler(message.apiConfiguration)
 					}
 				}
 
@@ -1508,7 +1622,9 @@ export class Controller {
 				// [ALPHA] 프로필/생각중 이미지 TMP → 정식 파일로 move/rename
 				try {
 					const assetsDir = path.join(this.context.extensionUri.fsPath, "assets");
-					const webview = this.webviewProviderRef.deref()?.view?.webview;
+					// const webview = this.webviewProviderRef.deref()?.view?.webview;
+					const webviewProvider = this.webviewProviderRef?.deref();
+					const webview = webviewProvider?.view?.webview;
 					let profileImageChanged = false;
 
 					// 프로필 이미지
@@ -2008,13 +2124,7 @@ export class Controller {
 
 				if (this.task) {
 					const { apiConfiguration: updatedApiConfiguration } = await getAllExtensionState(this.context)
-					const apiHandlerOptions = { ...updatedApiConfiguration, provider: updatedApiConfiguration.apiProvider }
-					this.task.api = buildApiHandler(apiHandlerOptions, async (partialState: Partial<ExtensionState>) => {
-						if (partialState.retryStatus) {
-							await this.context.globalState.update("retryStatus", partialState.retryStatus)
-						}
-						await this.postStateToWebview()
-					})
+					this.task.api = buildApiHandler(updatedApiConfiguration)
 				}
 			}
 		}
@@ -2230,10 +2340,7 @@ export class Controller {
 			}
 
 			if (this.task) {
-				const apiHandlerOptions = { ...updatedConfig, provider: updatedConfig.apiProvider }
-				this.task.api = buildApiHandler(apiHandlerOptions, async (partialState: Partial<ExtensionState>) => {
-					// ...
-				})
+				this.task.api = buildApiHandler(updatedConfig)
 			}
 
 			await this.postStateToWebview()
@@ -2353,13 +2460,9 @@ export class Controller {
 		await storeSecret(this.context, "openRouterApiKey", apiKey)
 		await this.postStateToWebview()
 		if (this.task) {
-			const apiHandlerOptions = {
-				provider: openrouter, // provider 속성 추가
+			this.task.api = buildApiHandler({
 				apiProvider: openrouter,
 				openRouterApiKey: apiKey,
-			}
-			this.task.api = buildApiHandler(apiHandlerOptions, async (partialState: Partial<ExtensionState>) => {
-				// ...
 			})
 		}
 		// await this.postMessageToWebview({ type: "action", action: "settingsButtonClicked" }) // bad ux if user is on welcome
@@ -2710,7 +2813,9 @@ export class Controller {
 		// *** End logging ***
 
 		// Get webview to construct URI
-		const webview = this.webviewProviderRef.deref()?.view?.webview
+		// const webview = this.webviewProviderRef.deref()?.view?.webview
+		const webviewProvider = this.webviewProviderRef?.deref();
+		const webview = webviewProvider?.view?.webview;
 
 		// 기본 프로필 이미지 URI 생성
 		const alphaAvatarFileUri = vscode.Uri.joinPath(this.context.extensionUri, "assets", PersonaManager.AGENT_PROFILE_FILENAME)
@@ -2983,15 +3088,15 @@ Commit message:`
 	// 	return cacheDir
 	// } // Removed duplicate
 
-	async readOpenRouterModels(): Promise<Record<string, ModelInfo> | undefined> {
-		const openRouterModelsFilePath = path.join(await this.ensureCacheDirectoryExists(), GlobalFileNames.openRouterModels)
-		const fileExists = await fileExistsAtPath(openRouterModelsFilePath)
-		if (fileExists) {
-			const fileContents = await fs.readFile(openRouterModelsFilePath, "utf8")
-			return JSON.parse(fileContents)
-		}
-		return undefined
-	}
+	// async readOpenRouterModels(): Promise<Record<string, ModelInfo> | undefined> {
+	// 	const openRouterModelsFilePath = path.join(await this.ensureCacheDirectoryExists(), GlobalFileNames.openRouterModels)
+	// 	const fileExists = await fileExistsAtPath(openRouterModelsFilePath)
+	// 	if (fileExists) {
+	// 		const fileContents = await fs.readFile(openRouterModelsFilePath, "utf8")
+	// 		return JSON.parse(fileContents)
+	// 	}
+	// 	return undefined
+	// }
 
 	async refreshOpenRouterModels() {
 		const cacheDir = await this.ensureCacheDirectoryExists()
