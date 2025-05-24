@@ -18,7 +18,7 @@ export class PersonaManager {
 
   static loadPersona(workspaceRoot: string): Persona | null {
     const filePath = this.getPersonaFilePath(workspaceRoot);
-    if (!fs.existsSync(filePath)) return null;
+    if (!fs.existsSync(filePath)) {return null;}
     const raw = fs.readFileSync(filePath, 'utf-8');
     return JSON.parse(raw);
   }

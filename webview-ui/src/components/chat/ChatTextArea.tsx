@@ -1,5 +1,6 @@
+// import React from "react"
 import { VSCodeButton } from "@vscode/webview-ui-toolkit/react"
-import React, { forwardRef, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react"
+import { forwardRef, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react"
 import DynamicTextArea from "react-textarea-autosize"
 import { useClickAway, useEvent, useWindowSize } from "react-use"
 import styled from "styled-components"
@@ -80,6 +81,46 @@ interface GitCommit {
 	label: string
 	description: string
 }
+
+const PLAN_MODE_COLOR = "var(--vscode-inputValidation-warningBorder)"
+
+const SwitchOption = styled.div<{ isActive: boolean }>`
+	padding: 2px 8px;
+	color: ${(props) => (props.isActive ? "white" : "var(--vscode-input-foreground)")};
+	z-index: 1;
+	transition: color 0.2s ease;
+	font-size: 12px;
+	width: 50%;
+	text-align: center;
+
+	&:hover {
+		background-color: ${(props) => (!props.isActive ? "var(--vscode-toolbar-hoverBackground)" : "transparent")};
+	}
+`
+
+const SwitchContainer = styled.div<{ disabled: boolean }>`
+	display: flex;
+	align-items: center;
+	background-color: var(--vscode-editor-background);
+	border: 1px solid var(--vscode-input-border);
+	border-radius: 12px;
+	overflow: hidden;
+	cursor: ${(props) => (props.disabled ? "not-allowed" : "pointer")};
+	opacity: ${(props) => (props.disabled ? 0.5 : 1)};
+	transform: scale(0.85);
+	transform-origin: right center;
+	margin-left: -10px; // compensate for the transform so flex spacing works
+	user-select: none; // Prevent text selection
+`
+
+const Slider = styled.div<{ isAct: boolean; isPlan?: boolean }>`
+	position: absolute;
+	height: 100%;
+	width: 50%;
+	background-color: ${(props) => (props.isPlan ? PLAN_MODE_COLOR : "var(--vscode-focusBorder)")};
+	transition: transform 0.2s ease;
+	transform: translateX(${(props) => (props.isAct ? "100%" : "0%")});
+`
 
 // Define styled components for the new mode buttons
 const ModeSelectorContainer = styled.div`
@@ -261,7 +302,7 @@ const ChatTextArea = forwardRef<HTMLTextAreaElement, ChatTextAreaProps>(
 		},
 		ref,
 	) => {
-		const { filePaths, chatSettings, apiConfiguration, openRouterModels, platform, workflowToggles } = useExtensionState()
+		const { filePaths, chatSettings, apiConfiguration, openRouterModels, platform, workflowToggles, availableModes} = useExtensionState()
 		const [isTextAreaFocused, setIsTextAreaFocused] = useState(false)
 		const [isDraggingOver, setIsDraggingOver] = useState(false)
 		const [gitCommits, setGitCommits] = useState<GitCommit[]>([])
@@ -805,31 +846,37 @@ const ChatTextArea = forwardRef<HTMLTextAreaElement, ChatTextAreaProps>(
 								if (reader.error) {
 									console.error("Error reading file:", reader.error)
 									resolve(null)
-								} else {
-									const result = reader.result
-									if (typeof result === "string") {
-										try {
-											await getImageDimensions(result)
-											resolve(result)
-										} catch (error) {
-											console.warn((error as Error).message)
-											showDimensionErrorMessage()
-											resolve(null)
-										}
-									} else {
+									return
+								} 
+								const result = reader.result
+								if (typeof result === "string") {
+									try {
+										await getImageDimensions(result)
+										resolve(result)
+									} catch (error) {
+										console.warn((error as Error).message)
+										showDimensionErrorMessage()
 										resolve(null)
 									}
+								} else {
+									resolve(null)
 								}
-								const reader = new FileReader()
-								reader.onloadend = () => resolve(typeof reader.result === "string" ? reader.result : null)
+							
+								// const reader = new FileReader()
+								// reader.onloadend = () => resolve(typeof reader.result === "string" ? reader.result : null)
 								reader.onerror = () => resolve(null)
 								reader.readAsDataURL(blob)
-							}),
-					)
+							}
+					})
+				})
 					const imageDataArray = await Promise.all(imagePromises)
 					const dataUrls = imageDataArray.filter((url): url is string => url !== null)
-					if (dataUrls.length > 0) setSelectedImages((prev) => [...prev, ...dataUrls].slice(0, MAX_IMAGES_PER_MESSAGE))
-					else console.warn("No valid images were processed from paste.")
+					if (dataUrls.length > 0){
+						 setSelectedImages((prev) => [...prev, ...dataUrls].slice(0, MAX_IMAGES_PER_MESSAGE))
+					}
+					else { 
+					console.warn("No valid images were processed from paste.")
+					}
 				}
 			},
 			[shouldDisableImages, setSelectedImages, cursorPosition, setInputValue, inputValue, showDimensionErrorMessage],
@@ -888,6 +935,149 @@ const ChatTextArea = forwardRef<HTMLTextAreaElement, ChatTextAreaProps>(
 			[updateCursorPosition],
 		)
 
+		const onKeyDown = useCallback(
+			(event: React.KeyboardEvent<HTMLTextAreaElement>) => {
+				const { key, ctrlKey, altKey, shiftKey, metaKey } = event
+
+				// Ctrl+Enter로 메시지 전송
+				if (ctrlKey && key === "Enter" && !altKey && !shiftKey && !metaKey) {
+					event.preventDefault()
+					onSend()
+					return
+				}
+
+				// Alt + 숫자키 조합 처리 (모드 전환)
+				if (!ctrlKey && altKey && !shiftKey && !metaKey) {
+					// 숫자 키 체크 - 숫자 키보드 (1-9)
+					const keyNum = parseInt(key)
+
+					if (!isNaN(keyNum) && keyNum >= 1 && keyNum <= 9) {
+						// 이벤트 전파 중단 - 이 부분을 주석 처리하여 이벤트가 상위로 전달되도록 함
+						// event.stopPropagation();
+
+						// 기본 동작만 방지(브라우저에서 Ctrl+숫자 단축키 처리 막기)
+						event.preventDefault()
+						console.log(`키 입력 감지: Ctrl+${keyNum} (TextArea 내부)`)
+
+						// 모드 인덱스 계산 (0부터 시작)
+						const modeIndex = keyNum - 1
+
+						// 사용 가능한 모드 확인 및 범위 체크
+						if (availableModes && modeIndex < availableModes.length && chatSettings) {
+							const targetMode = availableModes[modeIndex].id
+
+							// 현재 모드와 다른 경우에만 변경
+							if (chatSettings.mode !== targetMode) {
+								// VS Code API를 직접 사용하여 메시지 전송
+								vscode.postMessage({
+									type: "updateSettings",
+									chatSettings: { ...chatSettings, mode: targetMode },
+								})
+								console.log(`모드 변경 요청: ${chatSettings.mode} -> ${targetMode}`)
+
+								// 일정 시간 후 포커스 유지 - 이벤트 버블 끝나고 실행되도록
+								setTimeout(() => {
+									if (textAreaRef.current) {
+										textAreaRef.current.focus()
+									}
+								}, 0)
+
+								// 키 이벤트 처리 완료
+								return
+							}
+						}
+					}
+				}
+				if (showContextMenu) {
+					if (event.key === "Escape") {
+						setSelectedType(null)
+						setSelectedMenuIndex(3)
+						return
+					}
+					if (event.key === "ArrowUp" || event.key === "ArrowDown") {
+						event.preventDefault()
+						setSelectedMenuIndex((prevIndex) => {
+							const direction = event.key === "ArrowUp" ? -1 : 1
+							const options = getContextMenuOptions(searchQuery, selectedType, queryItems)
+							if (options.length === 0) return prevIndex
+							const selectableOptions = options.filter(
+								(o) => o.type !== ContextMenuOptionType.URL && o.type !== ContextMenuOptionType.NoResults,
+							)
+							if (selectableOptions.length === 0) return -1
+							const currentSelectableIndex = selectableOptions.findIndex((o) => o === options[prevIndex])
+							const newSelectableIndex =
+								(currentSelectableIndex + direction + selectableOptions.length) % selectableOptions.length
+							return options.findIndex((o) => o === selectableOptions[newSelectableIndex])
+						})
+						return
+					}
+					if ((event.key === "Enter" || event.key === "Tab") && selectedMenuIndex !== -1) {
+						event.preventDefault()
+						const selectedOption = getContextMenuOptions(searchQuery, selectedType, queryItems)[selectedMenuIndex]
+						if (
+							selectedOption &&
+							selectedOption.type !== ContextMenuOptionType.URL &&
+							selectedOption.type !== ContextMenuOptionType.NoResults
+						) {
+							handleMentionSelect(selectedOption.type, selectedOption.value)
+						}
+						return
+					}
+				}
+				const isComposing = event.nativeEvent?.isComposing ?? false
+				if (event.key === "Enter" && !event.shiftKey && !isComposing) {
+					event.preventDefault()
+					setIsTextAreaFocused(false)
+					onSend()
+				}
+				if (event.key === "Backspace" && !isComposing) {
+					const charBeforeCursor = inputValue[cursorPosition - 1]
+					const charAfterCursor = inputValue[cursorPosition + 1]
+					const charBeforeIsWhitespace =
+						charBeforeCursor === " " || charBeforeCursor === "\n" || charBeforeCursor === "\r\n"
+					const charAfterIsWhitespace =
+						charAfterCursor === " " || charAfterCursor === "\n" || charAfterCursor === "\r\n"
+					if (
+						charBeforeIsWhitespace &&
+						inputValue.slice(0, cursorPosition - 1).match(new RegExp(mentionRegex.source + "$"))
+					) {
+						const newCursorPosition = cursorPosition - 1
+						if (!charAfterIsWhitespace) {
+							event.preventDefault()
+							textAreaRef.current?.setSelectionRange(newCursorPosition, newCursorPosition)
+							setCursorPosition(newCursorPosition)
+						}
+						setCursorPosition(newCursorPosition)
+						setJustDeletedSpaceAfterMention(true)
+					} else if (justDeletedSpaceAfterMention) {
+						const { newText, newPosition } = removeMention(inputValue, cursorPosition)
+						if (newText !== inputValue) {
+							event.preventDefault()
+							setInputValue(newText)
+							setIntendedCursorPosition(newPosition)
+						}
+						setJustDeletedSpaceAfterMention(false)
+						setShowContextMenu(false)
+					} else {
+						setJustDeletedSpaceAfterMention(false)
+					}
+				}
+			},
+			[
+				onSend,
+				showContextMenu,
+				searchQuery,
+				selectedMenuIndex,
+				handleMentionSelect,
+				selectedType,
+				inputValue,
+				cursorPosition,
+				setInputValue,
+				justDeletedSpaceAfterMention,
+				queryItems,
+			],
+		)
+
 		const submitApiConfig = useCallback(() => {
 			const apiValidationResult = validateApiConfiguration(apiConfiguration)
 			const modelIdValidationResult = validateModelId(apiConfiguration, openRouterModels)
@@ -898,18 +1088,18 @@ const ChatTextArea = forwardRef<HTMLTextAreaElement, ChatTextAreaProps>(
 
 		// Removed onModeToggle function
 
-		const handleContextButtonClick = useCallback(() => {
-			if (textAreaDisabled) return
-			} else {
-				StateServiceClient.getLatestState(EmptyRequest.create())
-					.then(() => {
-						console.log("State refreshed")
-					})
-					.catch((error) => {
-						console.error("Error refreshing state:", error)
-					})
-			}
-		}, [apiConfiguration, openRouterModels])
+		// const handleContextButtonClick = useCallback(() => {
+		// 	if (textAreaDisabled) return
+		// 	} else {
+		// 		StateServiceClient.getLatestState(EmptyRequest.create())
+		// 			.then(() => {
+		// 				console.log("State refreshed")
+		// 			})
+		// 			.catch((error) => {
+		// 				console.error("Error refreshing state:", error)
+		// 			})
+		// 	}
+		// }, [apiConfiguration, openRouterModels])
 
 		const onModeToggle = useCallback(() => {
 			// if (textAreaDisabled) return

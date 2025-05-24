@@ -1,4 +1,4 @@
-import { GoogleGenerativeAI } from "@google/generative-ai"
+// import { GoogleGenerativeAI } from "@google/generative-ai"
 import type { Anthropic } from "@anthropic-ai/sdk"
 // Restore GenerateContentConfig import and add GenerateContentResponseUsageMetadata
 import { GoogleGenAI, type GenerateContentConfig, type GenerateContentResponseUsageMetadata } from "@google/genai"
@@ -79,7 +79,7 @@ export class GeminiHandler implements ApiHandler {
 		maxRetries: 4,
 		baseDelay: 2000,// 초기 대기 시간을 2초로 설정
 		maxDelay: 15000,
-				
+
 		onRetry: (error: any, attempt: number, delay: number) => {
 			// 에러 본문 파싱
 			let errorBody

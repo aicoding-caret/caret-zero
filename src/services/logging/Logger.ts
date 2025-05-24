@@ -122,6 +122,17 @@ export class Logger implements ILogger {
 	 */
 	dispose(): void {
 		this.outputChannel.dispose()
+	}
+}
+
+/*
+export class Logger {
+	private static outputChannel: OutputChannel
+
+	static initialize(outputChannel: OutputChannel) {
+		Logger.outputChannel = outputChannel
+	}
+
 	static error(message: string, exception?: Error) {
 		Logger.outputChannel.appendLine(`ERROR: ${message}`)
 		ErrorService.logMessage(message, "error")
@@ -144,20 +155,4 @@ export class Logger implements ILogger {
 		Logger.outputChannel.appendLine(`TRACE: ${message}`)
 	}
 }
-
-// Singleton instance (optional, depends on how it will be used)
-// let globalLogger: Logger | undefined;
-
-// export function initializeGlobalLogger(context: vscode.ExtensionContext): Logger {
-//   if (!globalLogger) {
-//     globalLogger = new Logger("Caret", context); // Use your extension's name
-//   }
-//   return globalLogger;
-// }
-
-// export function getLogger(): Logger {
-//   if (!globalLogger) {
-//     throw new Error("Logger not initialized. Call initializeGlobalLogger first.");
-//   }
-//   return globalLogger;
-// }
+*/

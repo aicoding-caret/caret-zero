@@ -86,7 +86,7 @@ export class WebviewLogger implements IWebviewLogger {
    * 디버그 메시지를 로깅합니다. 개발 모드에서만 로깅됩니다.
    */
   debug(message: string, data?: unknown): void {
-    if (!this.isDev) return;
+    if (!this.isDev) {return;}
     
     if (data) {
       console.debug(`${this.prefix} ${message}`, data);

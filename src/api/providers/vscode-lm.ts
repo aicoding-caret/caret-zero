@@ -11,6 +11,7 @@ import type { LanguageModelChatSelector as LanguageModelChatSelectorFromTypes } 
 // Caret does not update VSCode type definitions or engine requirements to maintain compatibility.
 // This declaration (as seen in src/integrations/TerminalManager.ts) provides types for the Language Model API in newer versions of VSCode.
 // Extracted from https://github.com/microsoft/vscode/blob/131ee0ef660d600cd0a7e6058375b281553abe20/src/vscode-dts/vscode.d.ts
+/*
 declare module "vscode" {
 	enum LanguageModelChatMessageRole {
 		User = 1,
@@ -94,6 +95,12 @@ declare module "vscode" {
 		function selectChatModels(selector?: LanguageModelChatSelector): Thenable<LanguageModelChat[]>
 	}
 }
+*/ //caret merge 20250515
+// VSCode의 내부 타입을 사용하기 위한 타입 선언
+type VSCodeLanguageModelChat = vscode.LanguageModelChat
+type VSCodeLanguageModelChatSelector = vscode.LanguageModelChatSelector
+type VSCodeLanguageModelTextPart = vscode.LanguageModelTextPart
+type VSCodeLanguageModelChatMessage = vscode.LanguageModelChatMessage
 
 /**
  * Handles interaction with VS Code's Language Model API for chat-based operations.
@@ -124,7 +131,8 @@ declare module "vscode" {
  */
 export class VsCodeLmHandler implements ApiHandler, SingleCompletionHandler {
 	private options: ApiHandlerOptions
-	private client: vscode.LanguageModelChat | null
+	//private client: vscode.LanguageModelChat | null //caret merge 20250515
+	private client: VSCodeLanguageModelChat | null
 	private disposable: vscode.Disposable | null
 	private currentRequestCancellation: vscode.CancellationTokenSource | null
 
@@ -167,7 +175,8 @@ export class VsCodeLmHandler implements ApiHandler, SingleCompletionHandler {
 	 * const selector = { vendor: "copilot", family: "gpt-4o" };
 	 * const chatClient = await createClient(selector);
 	 */
-	async createClient(selector: vscode.LanguageModelChatSelector): Promise<vscode.LanguageModelChat> {
+	// async createClient(selector: vscode.LanguageModelChatSelector): Promise<vscode.LanguageModelChat> {//caret merge 20250515
+	async createClient(selector: VSCodeLanguageModelChatSelector): Promise<VSCodeLanguageModelChat> {
 		try {
 			const models = await vscode.lm.selectChatModels(selector)
 
@@ -232,7 +241,8 @@ export class VsCodeLmHandler implements ApiHandler, SingleCompletionHandler {
 		}
 	}
 
-	private async countTokens(text: string | vscode.LanguageModelChatMessage): Promise<number> {
+	// private async countTokens(text: string | vscode.LanguageModelChatMessage): Promise<number> {//caret merge 20250515
+	private async countTokens(text: string | VSCodeLanguageModelChatMessage): Promise<number> {
 		// Check for required dependencies
 		if (!this.client) {
 			console.warn("Caret <Language Model API>: No client available for token counting")
@@ -318,7 +328,8 @@ export class VsCodeLmHandler implements ApiHandler, SingleCompletionHandler {
 		}
 	}
 
-	private async getClient(): Promise<vscode.LanguageModelChat> {
+	// private async getClient(): Promise<vscode.LanguageModelChat> {//caret merge 20250515
+	private async getClient(): Promise<VSCodeLanguageModelChat> {
 		if (!this.client) {
 			console.debug("Caret <Language Model API>: Getting client with options:", {
 				vsCodeLmModelSelector: this.options.vsCodeLmModelSelector,
@@ -409,7 +420,8 @@ export class VsCodeLmHandler implements ApiHandler, SingleCompletionHandler {
 	async *createMessage(systemPrompt: string, messages: Anthropic.Messages.MessageParam[]): ApiStream {
 		// Ensure clean state before starting a new request
 		this.ensureCleanState()
-		const client: vscode.LanguageModelChat = await this.getClient()
+		// const client: vscode.LanguageModelChat = await this.getClient() //caret merge 20250515
+		const client: VSCodeLanguageModelChat = await this.getClient()
 
 		// Clean system prompt and messages
 		const cleanedSystemPrompt = this.cleanTerminalOutput(systemPrompt)

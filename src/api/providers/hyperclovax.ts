@@ -18,10 +18,10 @@ function extractOnlyLastUserDialogue(text: string): string[] {
       last = match[1].trim();
     }
   }
-  if (last) return [last];
+  if (last) {return [last];}
   // 태그/피드백/툴/에러/시스템 안내 등은 제외
-  if (/<environment_details>|<tool>|<error>|<feedback>|\[ERROR\]|\[Reminder\]|system|assistant/i.test(text)) return [];
-  if (text.trim().length > 1) return [text.trim()];
+  if (/<environment_details>|<tool>|<error>|<feedback>|\[ERROR\]|\[Reminder\]|system|assistant/i.test(text)){return [];}
+  if (text.trim().length > 1) {return [text.trim()];}
   return [];
 }
 
@@ -65,7 +65,7 @@ function parseClovaResponse(raw: string): string {
   // <task>...</task>만 있으면 그 부분
   if (!result) {
     const taskMatch = raw.match(/<task>([\s\S]*?)<\/task>/i);
-    if (taskMatch) result = taskMatch[1].trim();
+    if (taskMatch) {result = taskMatch[1].trim();}
   }
   // 그 외엔 마지막 줄
   if (!result) {

@@ -36,7 +36,7 @@ export function useMessageState(messages: CaretMessage[]) {
   // 마지막 API 요청의 총 토큰 수 계산
   const lastApiReqTotalTokens = useMemo(() => {
     const getTotalTokensFromApiReqMessage = (msg: CaretMessage) => {
-      if (!msg.text) return 0
+      if (!msg.text) {return 0}
       try {
         const { tokensIn, tokensOut, cacheWrites, cacheReads }: CaretApiReqInfo = JSON.parse(msg.text)
         return (tokensIn || 0) + (tokensOut || 0) + (cacheWrites || 0) + (cacheReads || 0)
@@ -47,11 +47,11 @@ export function useMessageState(messages: CaretMessage[]) {
     }
     
     const lastApiReqMessage = findLast(modifiedMessages, (msg) => {
-      if (msg.say !== "api_req_started") return false
+      if (msg.say !== "api_req_started") {return false}
       return getTotalTokensFromApiReqMessage(msg) > 0
     })
     
-    if (!lastApiReqMessage) return undefined
+    if (!lastApiReqMessage) {return undefined}
     return getTotalTokensFromApiReqMessage(lastApiReqMessage)
   }, [modifiedMessages])
 

@@ -72,7 +72,7 @@ const SettingsView = ({ onDone }: SettingsViewProps) => {
 		chatSettings,
 		setChatSettings,
 		planActSeparateModelsSetting,
-		setPlanActSeparateModelsSetting,
+		// setPlanActSeparateModelsSetting,
 		enableCheckpointsSetting,
 		mcpMarketplaceEnabled,
 	} = useExtensionState()
@@ -133,8 +133,7 @@ const SettingsView = ({ onDone }: SettingsViewProps) => {
 			telemetrySetting,
 			apiConfiguration: apiConfigurationToSubmit, // Submit potentially undefined if invalid
 			enableCheckpointsSetting,
-			mcpMarketplaceEnabled,
-			apiConfiguration: apiConfigurationToSubmit,
+			mcpMarketplaceEnabled,			
 		})
 
 		// Image updates are now handled via dedicated messages triggered by buttons
@@ -153,9 +152,9 @@ const SettingsView = ({ onDone }: SettingsViewProps) => {
 	// Legacy message handler logic removed.
 
 	// State Reset Handler
-	const handleResetState = useCallback(() => {
-		vscode.postMessage({ type: "resetState" })
-	}, [])
+	// const handleResetState = useCallback(() => {
+	// 	vscode.postMessage({ type: "resetState" })
+	// }, [])
 	// validate as soon as the component is mounted
 	/*
 	useEffect will use stale values of variables if they are not included in the dependency array. 
@@ -169,44 +168,44 @@ const SettingsView = ({ onDone }: SettingsViewProps) => {
 	If we only want to run code once on mount we can use react-use's useEffectOnce or useMount
 	*/
 
-	const handleMessage = useCallback(
-		(event: MessageEvent) => {
-			const message: ExtensionMessage = event.data
-			switch (message.type) {
-				case "didUpdateSettings":
-					if (pendingTabChange) {
-						StateServiceClient.togglePlanActMode({
-							chatSettings: {
-								mode: pendingTabChange,
-							},
-						})
-						setPendingTabChange(null)
-					}
-					break
-				case "scrollToSettings":
-					setTimeout(() => {
-						const elementId = message.text
-						if (elementId) {
-							const element = document.getElementById(elementId)
-							if (element) {
-								element.scrollIntoView({ behavior: "smooth" })
+	// const handleMessage = useCallback(
+	// 	(event: MessageEvent) => {
+	// 		const message: ExtensionMessage = event.data
+	// 		switch (message.type) {
+	// 			case "didUpdateSettings":
+	// 				if (pendingTabChange) {
+	// 					StateServiceClient.togglePlanActMode({
+	// 						chatSettings: {
+	// 							mode: pendingTabChange,
+	// 						},
+	// 					})
+	// 					setPendingTabChange(null)
+	// 				}
+	// 				break
+	// 			case "scrollToSettings":
+	// 				setTimeout(() => {
+	// 					const elementId = message.text
+	// 					if (elementId) {
+	// 						const element = document.getElementById(elementId)
+	// 						if (element) {
+	// 							element.scrollIntoView({ behavior: "smooth" })
 
-								element.style.transition = "background-color 0.5s ease"
-								element.style.backgroundColor = "var(--vscode-textPreformat-background)"
+	// 							element.style.transition = "background-color 0.5s ease"
+	// 							element.style.backgroundColor = "var(--vscode-textPreformat-background)"
 
-								setTimeout(() => {
-									element.style.backgroundColor = "transparent"
-								}, 1200)
-							}
-						}
-					}, 300)
-					break
-			}
-		},
-		[pendingTabChange],
-	)
+	// 							setTimeout(() => {
+	// 								element.style.backgroundColor = "transparent"
+	// 							}, 1200)
+	// 						}
+	// 					}
+	// 				}, 300)
+	// 				break
+	// 		}
+	// 	},
+	// 	[pendingTabChange],
+	// )
 
-	useEvent("message", handleMessage)
+	// useEvent("message", handleMessage)
 
 	const handleResetState = async () => {
 		try {
@@ -273,7 +272,7 @@ const SettingsView = ({ onDone }: SettingsViewProps) => {
 				/>
 
 				{/* API 설정 */}
-				{planActSeparateModelsSetting ? (
+				{/* {planActSeparateModelsSetting ? (
 					<div className="border border-solid border-[var(--vscode-panel-border)] rounded-md p-[10px] mb-5 bg-[var(--vscode-panel-background)]">
 						<div className="flex gap-[1px] mb-[10px] -mt-2 border-0 border-b border-solid border-[var(--vscode-panel-border)]">
 							<TabButton isActive={chatSettings.mode === "plan"} onClick={() => handleTabChange("plan")}>Plan Mode</TabButton>
@@ -285,7 +284,7 @@ const SettingsView = ({ onDone }: SettingsViewProps) => {
 					</div>
 				) : (
 					<ApiOptions key="single" showModelOptions={true} apiErrorMessage={apiErrorMessage} modelIdErrorMessage={modelIdErrorMessage} />
-				)}
+				)} */}
 
 				{/* 언어 설정 */}
 				{chatSettings && <PreferredLanguageSetting chatSettings={chatSettings} setChatSettings={setChatSettings} />}

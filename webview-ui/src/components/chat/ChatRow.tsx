@@ -1,7 +1,7 @@
 // import React, { memo, useEffect, useRef } from "react"
 // import { CaretMessage } from "../../../../src/shared/ExtensionMessage"
 import deepEqual from "fast-deep-equal"
-import ChatRowContent from "./ChatRowContent"
+// import ChatRowContent from "./ChatRowContent"
 // import { VSCodeButton } from "@vscode/webview-ui-toolkit/react"
 import { vscode } from "../../utils/vscode"
 import styled from "styled-components"

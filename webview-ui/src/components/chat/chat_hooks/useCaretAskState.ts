@@ -25,7 +25,7 @@ export function useCaretAskState(
 
   // ub9c8uc9c0ub9c9 uba54uc2dcuc9c0 ubcc0uacbduc2dc uc0c1ud0dc uc5c5ub370uc774ud2b8
   useEffect(() => {
-    if (!lastMessage) return
+    if (!lastMessage) {return}
 
     const updateState = () => {
       if (lastMessage.type === "ask") {

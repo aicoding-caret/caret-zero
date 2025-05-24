@@ -96,7 +96,7 @@ ${replaceContent}
 		console.log("\n1. constructNewFileContent 함수 테스트:")
 		let newContent: string
 		try {
-			newContent = await constructNewFileContent(diffContent, originalContent, true, logger)
+			newContent = await constructNewFileContent(diffContent, originalContent, true,"v1", logger)
 			console.log(`새 내용 생성 성공, 크기: ${newContent.length} 바이트`)
 
 			// 원본 내용과 다른지 확인

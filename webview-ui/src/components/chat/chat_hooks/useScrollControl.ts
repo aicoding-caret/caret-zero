@@ -18,7 +18,7 @@ export function useScrollControl() {
   // 스크롤 위치 변경 핸들러
   const handleScroll = useCallback(
     (e: React.UIEvent<HTMLDivElement>) => {
-      if (!scrollContainerRef.current) return
+      if (!scrollContainerRef.current) {return}
       
       const { scrollTop, scrollHeight, clientHeight } = scrollContainerRef.current
       const scrollBottom = scrollHeight - scrollTop - clientHeight

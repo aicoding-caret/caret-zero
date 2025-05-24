@@ -1606,7 +1606,8 @@ export class Task {
 
 		let systemPrompt = await SYSTEM_PROMPT(cwd, supportsBrowserUse, this.mcpHub, this.browserSettings)
 
-		let settingsCustomInstructions = this.customInstructions?.trim()await this.migratePreferredLanguageToolSetting()
+		let settingsCustomInstructions = this.customInstructions?.trim()
+		await this.migratePreferredLanguageToolSetting()
 
 		const preferredLanguageConfig =
 			this.chatSettings?.preferredLanguage ??

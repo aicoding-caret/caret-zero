@@ -11,6 +11,9 @@ import { vscode } from "./utils/vscode"
 import McpView from "./components/mcp/McpView"
 import VisionInferencePanel from "./components/VisionInferencePanel"
 import { Providers } from "./Providers"
+import { ExtensionStateContextProvider } from "./context/ExtensionStateContext"
+import { FirebaseAuthProvider } from "./context/FirebaseAuthContext"
+
 
 // [ALPHA] VSCode API 브릿지 전역 할당 (VSCode Webview 환경에서만 1회)
 const isVSCodeWebview = typeof window !== "undefined"
@@ -29,7 +32,7 @@ const AppContent = () => {
 	const [showAccount, setShowAccount] = useState(false)
 	const [showAnnouncement, setShowAnnouncement] = useState(false)
 	const [showVision, setShowVision] = useState(false)
-
+	
 	// Handler to show the settings view
 	const handleShowSettings = useCallback(() => {
 		setShowSettings(true)
@@ -46,6 +49,13 @@ const AppContent = () => {
 		setShowAccount(false)
 	}, [])
 
+	const { setShowMcp, setMcpTab } = useExtensionState()
+
+	const closeMcpView = useCallback(() => {
+		setShowMcp(false)
+		setMcpTab(undefined)
+	}, [setShowMcp, setMcpTab])
+
 	const handleMessage = useCallback((e: MessageEvent) => {
 		const message: ExtensionMessage = e.data
 		switch (message.type) {
@@ -55,16 +65,23 @@ const AppContent = () => {
 						setShowSettings(true)
 						// Use the new handler for settings button click action
 						handleShowSettings()
+						setShowHistory(false)
+						closeMcpView()
+						setShowAccount(false)
 						break
 					case "historyButtonClicked":
 						setShowSettings(false)
 						setShowHistory(true)
 						setShowMcp(false)
+						closeMcpView()
 						setShowAccount(false)
 						break
 					case "mcpButtonClicked":
 						setShowSettings(false)
 						setShowHistory(false)
+						if (message.tab) {
+							setMcpTab(message.tab)
+						}
 						setShowMcp(true)
 						setShowAccount(false)
 						break
@@ -72,12 +89,14 @@ const AppContent = () => {
 						setShowSettings(false)
 						setShowHistory(false)
 						setShowMcp(false)
+						closeMcpView()
 						setShowAccount(true)
 						break
 					case "chatButtonClicked": // Brings back to chat view
 						setShowSettings(false)
 						setShowHistory(false)
 						setShowMcp(false)
+						closeMcpView()
 						setShowAccount(false)
 						break
 				}
@@ -117,61 +136,6 @@ const AppContent = () => {
 			}
 		}
 	}, [didHydrateState, alphaAvatarUri, alphaThinkingAvatarUri]);
-
-	const { setShowMcp, setMcpTab } = useExtensionState()
-
-	const closeMcpView = useCallback(() => {
-		setShowMcp(false)
-		setMcpTab(undefined)
-	}, [setShowMcp, setMcpTab])
-
-	const handleMessage = useCallback(
-		(e: MessageEvent) => {
-			const message: ExtensionMessage = e.data
-			switch (message.type) {
-				case "action":
-					switch (message.action!) {
-						case "settingsButtonClicked":
-							setShowSettings(true)
-							setShowHistory(false)
-							closeMcpView()
-							setShowAccount(false)
-							break
-						case "historyButtonClicked":
-							setShowSettings(false)
-							setShowHistory(true)
-							closeMcpView()
-							setShowAccount(false)
-							break
-						case "mcpButtonClicked":
-							setShowSettings(false)
-							setShowHistory(false)
-							if (message.tab) {
-								setMcpTab(message.tab)
-							}
-							setShowMcp(true)
-							setShowAccount(false)
-							break
-						case "accountButtonClicked":
-							setShowSettings(false)
-							setShowHistory(false)
-							closeMcpView()
-							setShowAccount(true)
-							break
-						case "chatButtonClicked":
-							setShowSettings(false)
-							setShowHistory(false)
-							closeMcpView()
-							setShowAccount(false)
-							break
-					}
-					break
-			}
-		},
-		[setShowMcp, setMcpTab, closeMcpView],
-	)
-
-	useEvent("message", handleMessage)
 
 	useEffect(() => {
 		if (shouldShowAnnouncement) {
@@ -216,11 +180,21 @@ const AppContent = () => {
 	)
 }
 
+// const App = () => {
+// 	return (
+// 		<Providers>
+// 			<AppContent />
+// 		</Providers>
+// 	)
+// }
+
 const App = () => {
 	return (
-		<Providers>
-			<AppContent />
-		</Providers>
+		<ExtensionStateContextProvider>
+			<FirebaseAuthProvider>
+				<AppContent />
+			</FirebaseAuthProvider>
+		</ExtensionStateContextProvider>
 	)
 }
 

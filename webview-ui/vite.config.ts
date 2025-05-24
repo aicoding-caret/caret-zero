@@ -88,13 +88,4 @@ export default defineConfig({
 			"@utils": resolve(__dirname, "./src/utils"),
 		},
 	},
-	resolve: {
-		alias: {
-			"@": resolve(__dirname, "./src"),
-			"@components": resolve(__dirname, "./src/components"),
-			"@context": resolve(__dirname, "./src/context"),
-			"@shared": resolve(__dirname, "../src/shared"),
-			"@utils": resolve(__dirname, "./src/utils"),
-		},
-	},
 })

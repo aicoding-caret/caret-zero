@@ -50,10 +50,10 @@ export function useBrowserSessionState(messages: CaretMessage[]) {
       else if (isInBrowserSession) {
         if (message.say === "api_req_started") {
           const lastApiReqStarted = [...currentGroup].reverse().find(m => m.say === "api_req_started")
-          if (lastApiReqStarted?.text != null) {
+          if (lastApiReqStarted?.text !== null) {
             try {
               const info = JSON.parse(lastApiReqStarted.text)
-              if (info.cancelReason != null) {
+              if (info.cancelReason !== null) {
                 endBrowserSession()
                 result.push(message)
                 return

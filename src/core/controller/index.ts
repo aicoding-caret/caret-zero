@@ -52,7 +52,7 @@ import {
 } from "../storage/state"
 import { WebviewProvider } from "../webview"
 import { BrowserSession } from "../../services/browser/BrowserSession"
-import { GlobalFileNames } from "../storage/disk"
+// import { GlobalFileNames } from "../storage/disk"
 import { discoverChromeInstances } from "../../services/browser/BrowserDiscovery" // Corrected import path if needed
 import { searchWorkspaceFiles } from "../../services/search/file-search"
 import { ILogger } from "../../services/logging/ILogger" // Import ILogger
@@ -61,9 +61,9 @@ import { PersonaController } from './persona-controller';
 import { MessageType, PersonaMessages } from './message-types';
 import { PersonaManager } from '../persona/PersonaManager';
 import { Task, cwd } from "../task"
-import { CaretRulesToggles } from "@shared/caret-rules"
+import { CaretRulesToggles } from "../../shared/caret-rules"
 import { sendStateUpdate } from "./state/subscribeToState"
-import { refreshCaretRulesToggles } from "@core/context/instructions/user-instructions/caret-rules"
+import { refreshCaretRulesToggles } from "../../core/context/instructions/user-instructions/caret-rules"
 import { refreshExternalRulesToggles } from "@core/context/instructions/user-instructions/external-rules"
 import { refreshWorkflowToggles } from "@core/context/instructions/user-instructions/workflows"
 
@@ -74,18 +74,20 @@ https://github.com/KumarVariable/vscode-extension-sidebar-html/blob/master/src/c
 */
 
 export class Controller {
-	private disposables: vscode.Disposable[] = []
-	private task?: Task
-	public workspaceTracker: WorkspaceTracker
-	public mcpHub: McpHub
-	public accountService: CaretAccountService
+	private postMessage?: (msg: ExtensionMessage) => Thenable<boolean> | undefined
 
+	private disposables: vscode.Disposable[] = []
+	task?: Task
+	workspaceTracker: WorkspaceTracker
+	mcpHub: McpHub
+	accountService: CaretAccountService
 	private latestAnnouncementId = "may-16-2025_16:11:00"
-	private logger: ILogger
+	private webviewProviderRef?: WeakRef<WebviewProvider>
+	logger: ILogger
 	private availableModes: ModeInfo[] = []
 	private personaController: PersonaController
-	private webviewProviderRef?: WeakRef<WebviewProvider>
-	private postMessage?: (msg: ExtensionMessage) => Thenable<boolean> | undefined
+	
+	
 
 	constructor(
 		public readonly context: vscode.ExtensionContext,
@@ -100,8 +102,10 @@ export class Controller {
 			debug: (msg, ...meta) => this.outputChannel.appendLine(`[DEBUG] ${msg} ${meta.length ? JSON.stringify(meta) : ""}`),
 		}
 
-		if (webviewProvider) this.webviewProviderRef = new WeakRef(webviewProvider)
-		if (postMessage) this.postMessage = postMessage
+		if (webviewProvider) {this.webviewProviderRef = new WeakRef(webviewProvider)}
+		if (postMessage) {this.postMessage = postMessage}
+		// this.webviewProviderRef = new WeakRef(webviewProvider)
+		// this.postMessage = postMessage
 
 		this.outputChannel.appendLine("CaretProvider instantiated")
 
@@ -123,17 +127,6 @@ export class Controller {
 		)
 
 		this.loadAvailableModes().catch(err => this.logger.error("Failed to load initial modes", err))
-	}
-
-	private postMessageToWebview(msg: ExtensionMessage) {
-		const provider = this.webviewProviderRef?.deref()
-		if (provider) {
-			return provider.postMessage(msg)
-		} else if (this.postMessage) {
-			return this.postMessage(msg)
-		}
-		this.logger.warn("No WebviewProvider or postMessage available")
-	}
 
 		// Clean up legacy checkpoints
 		cleanupLegacyCheckpoints(this.context.globalStorageUri.fsPath, this.outputChannel).catch((error) => {
@@ -322,30 +315,31 @@ export class Controller {
 			customInstructions,
 			task,
 			images,
-		)
-	}
-
-	async initCaretWithHistoryItem(historyItem: HistoryItem) {
-		await this.clearTask()
-		const { apiConfiguration, customInstructions, autoApprovalSettings, browserSettings, chatSettings } =
-			await getAllExtensionState(this.context)
-		this.task = new Task(
-			this,
-			apiConfiguration,
-			autoApprovalSettings,
-			browserSettings,
-			chatSettings,
-			customInstructions,
-			undefined,
-			undefined,
 			historyItem,
 		)
 	}
 
+	// async initCaretWithHistoryItem(historyItem: HistoryItem) {
+	// 	await this.clearTask()
+	// 	const { apiConfiguration, customInstructions, autoApprovalSettings, browserSettings, chatSettings } =
+	// 		await getAllExtensionState(this.context)
+	// 	this.task = new Task(
+	// 		this,
+	// 		apiConfiguration,
+	// 		autoApprovalSettings,
+	// 		browserSettings,
+	// 		chatSettings,
+	// 		customInstructions,
+	// 		undefined,
+	// 		undefined,
+	// 		historyItem,
+	// 	)
+	// }
+
 	async reinitExistingTaskFromId(taskId: string) {
 		const history = await this.getTaskWithId(taskId)
 		if (history) {
-			await this.initTask(undefined, undefined, history.historyItem)
+			await this.initCaretWithTask(undefined, undefined, history.historyItem)
 		}
 	}
 
@@ -373,6 +367,11 @@ export class Controller {
 		}
 		await this.postMessage(message)
 	}
+
+	// // Send any JSON serializable data to the react app
+	// async postMessageToWebview(message: ExtensionMessage) {
+	// 	await this.postMessage(message)
+	// }
 
 	/**
 	 * Sets up an event listener to listen for messages passed from the webview context and
@@ -1716,6 +1715,9 @@ export class Controller {
 						text: "[]",
 						error: String(err)
 					} as import("../../shared/ExtensionMessage").ExtensionMessage);
+				}
+				break
+			}
 			case "grpc_request": {
 				if (message.grpc_request) {
 					await handleGrpcRequest(this, message.grpc_request)
@@ -2061,9 +2063,9 @@ export class Controller {
 				// 'abandoned' will prevent this caret instance from affecting future caret instance gui. this may happen if its hanging on a streaming request
 				this.task.abandoned = true
 			}
-			await this.initCaretWithHistoryItem(historyItem) // clears task again, so we need to abortTask manually above
+			// await this.initCaretWithHistoryItem(historyItem) // clears task again, so we need to abortTask manually above
 			// await this.postStateToWebview() // new Caret instance will post state when it's ready. having this here sent an empty messages array to webview leading to virtuoso having to reload the entire list
-			await this.initTask(undefined, undefined, historyItem) // clears task again, so we need to abortTask manually above
+			await this.initCaretWithTask(undefined, undefined, historyItem) // clears task again, so we need to abortTask manually above
 			// await this.postStateToWebview() // new Caret instance will post state when it's ready. having this here sent an empty messages array to webview leading to virtuoso having to reload the entire list
 		}
 	}
@@ -2446,7 +2448,7 @@ export class Controller {
 		await this.initCaretWithTask(
 			`Fix the following code in ${fileMention}\n\`\`\`\n${code}\n\`\`\`\n\nProblems:\n${problemsString}`,
 		)
-		await this.initTask(`Fix the following code in ${fileMention}\n\`\`\`\n${code}\n\`\`\`\n\nProblems:\n${problemsString}`)
+		await this.initCaretWithTask(`Fix the following code in ${fileMention}\n\`\`\`\n${code}\n\`\`\`\n\nProblems:\n${problemsString}`)
 
 		console.log("fixWithCaret", code, filePath, languageId, diagnostics, problemsString)
 	}
@@ -2522,8 +2524,8 @@ export class Controller {
 		if (id !== this.task?.taskId) {
 			// non-current task
 			const { historyItem } = await this.getTaskWithId(id)
-			await this.initCaretWithHistoryItem(historyItem) // clears existing task
-			await this.initTask(undefined, undefined, historyItem) // clears existing task
+			// await this.initCaretWithHistoryItem(historyItem) // clears existing task
+			await this.initCaretWithTask(undefined, undefined, historyItem) // clears existing task
 		}
 		await this.postMessageToWebview({
 			type: "action",

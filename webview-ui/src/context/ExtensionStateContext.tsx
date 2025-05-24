@@ -101,7 +101,7 @@ export const ExtensionStateContextProvider: React.FC<{
 		alphaAvatarUri: "https://raw.githubusercontent.com/fstory97/caret-avatar/main/alpha-maid.png", // 기본 프로필 이미지
 		alphaThinkingAvatarUri: "https://raw.githubusercontent.com/fstory97/caret-avatar/main/alpha-maid-thinking.png",
 		apiError: null, // API 에러 정보 초기화
-		theme: "", // Add theme to initial state
+		// theme: "", // Add theme to initial state
 		mode: "", // Add mode to initial state
 		historyItems: [], // Add historyItems to initial state
 		// Persona 관리 관련 기본값 추가
@@ -425,8 +425,6 @@ export const ExtensionStateContextProvider: React.FC<{
 		filePaths,
 		totalTasksSize,
 		apiError: state.apiError || null,
-		setApiConfiguration: (value) => {
-			console.log('[Caret Debug] setApiConfiguration called with:', value),
 		showMcp,
 		mcpTab,
 		globalCaretRulesToggles: state.globalCaretRulesToggles || {},
@@ -442,8 +440,7 @@ export const ExtensionStateContextProvider: React.FC<{
 					...prevState.apiConfiguration,
 					...value,
 				},
-			}))
-		},
+			})),
 		setCustomInstructions: (value) =>
 			setState((prevState) => ({
 				...prevState,

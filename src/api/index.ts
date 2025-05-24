@@ -62,7 +62,8 @@ export function buildApiHandler(
 		case "lmstudio":
 			return new LmStudioHandler(optionsWithoutProvider)
 		case "gemini":
-			return new GeminiHandler(optionsWithoutProvider, updateStateCallback)
+			// return new GeminiHandler(optionsWithoutProvider, updateStateCallback) //Caret 재시도 상태 추가 기존 버전
+			return new GeminiHandler(optionsWithoutProvider) // 3.16.1
 		case "openai-native":
 			return new OpenAiNativeHandler(optionsWithoutProvider)
 		case "deepseek":

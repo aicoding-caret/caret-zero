@@ -107,7 +107,7 @@ export class TemplateCharacterManager {
    * @returns 웹뷰에서 사용 가능한 URI 문자열
    */
   public getWebviewUri(webview: vscode.Webview, relativePath: string): string {
-    if (!relativePath) return "";
+    if (!relativePath) {return "";}
     
     // asset:/ 경로 처리
     const cleanPath = relativePath.replace(/^asset:\//, "");

@@ -103,3 +103,25 @@ export async function detectImageUrl(url: string): Promise<boolean> {
 		return /\.(jpg|jpeg|png|gif|webp|bmp|svg|tiff|tif|avif)$/i.test(url)
 	}
 }
+
+/**
+ * Checks if a URL is an image by making a HEAD request and checking the content type
+ * @param url The URL to check
+ * @returns Promise resolving to boolean indicating if the URL is an image
+ */
+export async function isImageUrl(url: string): Promise<boolean> {
+	try {
+		const response = await axios.head(url, {
+			headers: {
+				"User-Agent": "Mozilla/5.0 (compatible; VSCodeExtension/1.0; +https://caret.bot)",
+			},
+			timeout: 3000,
+		})
+
+		const contentType = response.headers["content-type"]
+		return contentType && contentType.startsWith("image/")
+	} catch (error) {
+		// If we can't determine, fall back to checking the file extension
+		return /\.(jpg|jpeg|png|gif|webp|bmp|svg|tiff|tif|avif)$/i.test(url)
+	}
+}

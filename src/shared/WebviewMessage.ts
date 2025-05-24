@@ -129,8 +129,8 @@ export interface WebviewMessage {
 
 	// For task feedback
 	feedbackType?: TaskFeedbackType
-	mentionsRequestId?: string
-	query?: string
+	// mentionsRequestId?: string
+	// query?: string
 	// 페르소나 데이터
 	persona?: Persona
 	personaId?: string

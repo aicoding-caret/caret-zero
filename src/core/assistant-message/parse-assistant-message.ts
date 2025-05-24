@@ -52,6 +52,7 @@ export function parseAssistantMessageV1(assistantMessage: string): AssistantMess
 		// no currentParamName
 		if (currentToolUse) {
 			const currentToolValue = accumulator.slice(currentToolUseStartIndex)
+			/*
 			const standardClosingTag = `</${currentToolUse.name}>`
 			// 'write_to_file'을 사용할 경우 'write_file' 닫는 태그도 인식
 			const alternativeClosingTag = currentToolUse.name === "write_to_file" ? "</write_file>" : ""
@@ -59,8 +60,9 @@ export function parseAssistantMessageV1(assistantMessage: string): AssistantMess
 			if (
 				currentToolValue.endsWith(standardClosingTag) ||
 				(alternativeClosingTag && currentToolValue.endsWith(alternativeClosingTag))
-			) {
+			)
 				// end of a tool use
+			*/ //caret
 			const toolUseClosingTag = `</${currentToolUse.name}>`
 
 			if (currentToolValue.endsWith(toolUseClosingTag)) {

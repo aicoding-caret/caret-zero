@@ -14,15 +14,17 @@ import { DEFAULT_MCP_TIMEOUT_SECONDS, McpServer } from "../../../../src/shared/m
 import { useExtensionState } from "../../context/ExtensionStateContext"
 import { getMcpServerDisplayName } from "../../utils/mcp"
 import { vscode } from "../../utils/vscode"
-import McpMarketplaceView from "./marketplace/McpMarketplaceView"
-import McpResourceRow from "./McpResourceRow"
-import McpToolRow from "./McpToolRow"
+import McpMarketplaceView from "./configuration/tabs/marketplace/McpMarketplaceView"
+import McpResourceRow from "./configuration/tabs/installed/server-row/McpResourceRow"
+import McpToolRow from "./configuration/tabs/installed/server-row/McpToolRow"
 import DangerButton from "../common/DangerButton"
-import AddRemoteServerForm from "./tabs/AddRemoteServerForm"
-import AddLocalServerForm from "./tabs/AddLocalServerForm"
+import AddRemoteServerForm from "./configuration/tabs/add-server/AddRemoteServerForm"
+import AddLocalServerForm from "./configuration/tabs/add-server/AddLocalServerForm"
+import { McpViewTab } from "@shared/mcp"
 
 type McpViewProps = {
 	onDone: () => void
+	initialTab?: McpViewTab
 }
 
 const McpView = ({ onDone }: McpViewProps) => {

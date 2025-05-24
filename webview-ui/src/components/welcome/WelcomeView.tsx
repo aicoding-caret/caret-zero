@@ -6,6 +6,8 @@ import { useExtensionState } from "../../context/ExtensionStateContext"
 import { validateApiConfiguration } from "../../utils/validate"
 import { vscode } from "../../utils/vscode"
 import ApiOptions from "../settings/ApiOptions"
+import { AccountServiceClient } from "@/services/grpc-client"
+import { EmptyRequest } from "@shared/proto/common"
 
 const WelcomeView = memo(() => {
 	const { apiConfiguration, caretBanner } = useExtensionState()

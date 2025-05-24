@@ -151,19 +151,19 @@ export interface ExtensionMessage {
 	error?: string
 	mcpDownloadDetails?: McpDownloadResponse
 	commits?: GitCommit[]
-	success?: boolean // Added for browserConnectionResult
-	endpoint?: string // Added for browserConnectionResult
-	isBundled?: boolean // Added for detectedChromePath
-	isConnected?: boolean // Added for browserConnectionInfo
-	isRemote?: boolean // Added for browserConnectionInfo
-	host?: string // Added for browserConnectionInfo
-	mentionsRequestId?: string // Added for fileSearchResults
-	results?: Array<{
-		// Added for fileSearchResults
-		path: string
-		type: "file" | "folder"
-		label?: string
-	}>
+	// success?: boolean // Added for browserConnectionResult
+	// endpoint?: string // Added for browserConnectionResult
+	// isBundled?: boolean // Added for detectedChromePath
+	// isConnected?: boolean // Added for browserConnectionInfo
+	// isRemote?: boolean // Added for browserConnectionInfo
+	// host?: string // Added for browserConnectionInfo
+	// mentionsRequestId?: string // Added for fileSearchResults
+	// results?: Array<{
+	// 	// Added for fileSearchResults
+	// 	path: string
+	// 	type: "file" | "folder"
+	// 	label?: string
+	// }>
 	openGraphData?: {
 		title?: string
 		description?: string
@@ -214,14 +214,14 @@ export type Platform = "aix" | "darwin" | "freebsd" | "linux" | "openbsd" | "sun
 export const DEFAULT_PLATFORM = "unknown"
 
 export interface ExtensionState {
-	version: string
-	theme: string
+	// version: string
+	// theme: string
 	mode: string
 	isNewUser: boolean
 	apiConfiguration?: ApiConfiguration
-	customInstructions?: string
-	telemetrySetting: TelemetrySetting
-	planActSeparateModelsSetting: boolean
+	// customInstructions?: string
+	// telemetrySetting: TelemetrySetting
+	// planActSeparateModelsSetting: boolean
 	shouldShowAnnouncement: boolean
 	availableModes: ModeInfo[]
 	alphaAvatarUri?: string
@@ -412,7 +412,7 @@ export interface CaretApiReqInfo {
 	quotaViolation?: string // 할당량 위반 정보
 	index?: number // API 요청 인덱스
 	model?: string // 사용된 모델
-	
+
 	retryStatus?: {
 		attempt: number
 		maxAttempts: number

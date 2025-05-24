@@ -118,6 +118,7 @@ export interface ModelInfo {
 	maxTokens?: number
 	contextWindow?: number
 	supportsImages?: boolean
+	supportsComputerUse?: boolean
 	supportsPromptCache: boolean // this value is hardcoded for now
 	inputPrice?: number // Keep for non-tiered input models
 	inputPriceTiers?: PriceTier[] // Add for tiered input pricing
