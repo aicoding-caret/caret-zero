@@ -24,7 +24,6 @@ import { AskSageHandler } from "./providers/asksage"
 import { XAIHandler } from "./providers/xai"
 import { SambanovaHandler } from "./providers/sambanova"
 import { HyperClovaXHandler } from "./providers/hyperclovax" // Import the new handler
-import { ExtensionState } from "../shared/ExtensionMessage"
 
 export interface ApiHandler {
 	createMessage(systemPrompt: string, messages: Anthropic.Messages.MessageParam[]): ApiStream
@@ -36,65 +35,56 @@ export interface SingleCompletionHandler {
 	completePrompt(prompt: string): Promise<string>
 }
 
-export interface ApiHandlerOptions {
-	provider: string
-	[options: string]: any
-}
-
-export function buildApiHandler(
-	options: ApiHandlerOptions,
-	updateStateCallback: (state: Partial<ExtensionState>) => void,
-): ApiHandler {
-	const { provider, ...optionsWithoutProvider } = options
-	switch (provider) {
+export function buildApiHandler(configuration: ApiConfiguration): ApiHandler {
+	const { apiProvider, ...options } = configuration
+	switch (apiProvider) {
 		case "anthropic":
-			return new AnthropicHandler(optionsWithoutProvider)
+			return new AnthropicHandler(options)
 		case "openrouter":
-			return new OpenRouterHandler(optionsWithoutProvider)
+			return new OpenRouterHandler(options)
 		case "bedrock":
-			return new AwsBedrockHandler(optionsWithoutProvider)
+			return new AwsBedrockHandler(options)
 		case "vertex":
-			return new VertexHandler(optionsWithoutProvider)
+			return new VertexHandler(options)
 		case "openai":
-			return new OpenAiHandler(optionsWithoutProvider)
+			return new OpenAiHandler(options)
 		case "ollama":
-			return new OllamaHandler(optionsWithoutProvider)
+			return new OllamaHandler(options)
 		case "lmstudio":
-			return new LmStudioHandler(optionsWithoutProvider)
+			return new LmStudioHandler(options)
 		case "gemini":
-			// return new GeminiHandler(optionsWithoutProvider, updateStateCallback) //Caret 재시도 상태 추가 기존 버전
-			return new GeminiHandler(optionsWithoutProvider) // 3.16.1
+			return new GeminiHandler(options)
 		case "openai-native":
-			return new OpenAiNativeHandler(optionsWithoutProvider)
+			return new OpenAiNativeHandler(options)
 		case "deepseek":
-			return new DeepSeekHandler(optionsWithoutProvider)
+			return new DeepSeekHandler(options)
 		case "requesty":
-			return new RequestyHandler(optionsWithoutProvider)
+			return new RequestyHandler(options)
 		case "fireworks":
-			return new FireworksHandler(optionsWithoutProvider)
+			return new FireworksHandler(options)
 		case "together":
-			return new TogetherHandler(optionsWithoutProvider)
+			return new TogetherHandler(options)
 		case "qwen":
-			return new QwenHandler(optionsWithoutProvider)
+			return new QwenHandler(options)
 		case "doubao":
-			return new DoubaoHandler(optionsWithoutProvider)
+			return new DoubaoHandler(options)
 		case "mistral":
-			return new MistralHandler(optionsWithoutProvider)
+			return new MistralHandler(options)
 		case "vscode-lm":
-			return new VsCodeLmHandler(optionsWithoutProvider)
+			return new VsCodeLmHandler(options)
 		case "caret":
-			return new CaretHandler(optionsWithoutProvider)
+			return new CaretHandler(options)
 		case "litellm":
-			return new LiteLlmHandler(optionsWithoutProvider)
+			return new LiteLlmHandler(options)
 		case "asksage":
-			return new AskSageHandler(optionsWithoutProvider)
+			return new AskSageHandler(options)
 		case "xai":
-			return new XAIHandler(optionsWithoutProvider)
+			return new XAIHandler(options)
 		case "sambanova":
-			return new SambanovaHandler(optionsWithoutProvider)
+			return new SambanovaHandler(options)
 		case "hyperclovax-local": // Add case for the new provider
-			return new HyperClovaXHandler(optionsWithoutProvider)
+			return new HyperClovaXHandler(options)
 		default:
-			return new AnthropicHandler(optionsWithoutProvider)
+			return new AnthropicHandler(options)
 	}
 }

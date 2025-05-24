@@ -101,15 +101,6 @@ export const BrowserSettingsMenu = () => {
 		}
 	}
 
-	// const updateChromeType = (chromeType: BrowserSettings["chromeType"]) => {
-	// 	vscode.postMessage({
-	// 		type: "browserSettings",
-	// 		browserSettings: {
-	// 			...browserSettings,
-	// 			chromeType,
-	// 		},
-	// 	})
-	// }
 	// Determine icon based on connection state
 	const getIconClass = () => {
 		if (connectionInfo.isRemote) {
@@ -204,63 +195,6 @@ export const BrowserSettingsMenu = () => {
 			<VSCodeButton appearance="icon" onClick={openBrowserSettings}>
 				<i className="codicon codicon-settings-gear" style={{ fontSize: "14.5px" }} />
 			</VSCodeButton>
-			{showMenu && (
-				<SettingsMenu ref={menuRef} maxWidth={maxWidth} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
-					{/* Headless mode settings removed */}
-
-					{/* <SettingsGroup>
-						<SettingsHeader>Chrome Executable</SettingsHeader>
-						<VSCodeDropdown
-							style={{ width: "100%", marginBottom: "8px" }}
-							value={browserSettings.chromeType}
-							onChange={(e) =>
-								updateChromeType((e.target as HTMLSelectElement).value as BrowserSettings["chromeType"])
-							}>
-							<VSCodeOption value="chromium">Chromium (Auto-downloaded)</VSCodeOption>
-							<VSCodeOption value="system">System Chrome</VSCodeOption>
-						</VSCodeDropdown>
-						<SettingsDescription>
-							{browserSettings.chromeType === "system" ? (
-								<>
-									Caret will use your personal browser. You must{" "}
-									<VSCodeLink
-										href="#"
-										style={{ fontSize: "inherit" }}
-										onClick={(e: React.MouseEvent) => {
-											e.preventDefault()
-											relaunchChromeDebugMode()
-										}}>
-										relaunch Chrome in debug mode
-									</VSCodeLink>{" "}
-									to use this setting.
-								</>
-							) : (
-								"Caret will use a Chromium browser bundled with the extension."
-							)}
-						</SettingsDescription>
-					</SettingsGroup> */}
-
-					<SettingsGroup>
-						<SettingsHeader>Viewport Size</SettingsHeader>
-						<VSCodeDropdown
-							style={{ width: "100%" }}
-							value={
-								Object.entries(BROWSER_VIEWPORT_PRESETS).find(
-									([_, size]) =>
-										size.width === browserSettings.viewport.width &&
-										size.height === browserSettings.viewport.height,
-								)?.[0]
-							}
-							onChange={(event) => handleViewportChange(event as Event)}>
-							{Object.entries(BROWSER_VIEWPORT_PRESETS).map(([name]) => (
-								<VSCodeOption key={name} value={name}>
-									{name}
-								</VSCodeOption>
-							))}
-						</VSCodeDropdown>
-					</SettingsGroup>
-				</SettingsMenu>
-			)}
 		</div>
 	)
 }

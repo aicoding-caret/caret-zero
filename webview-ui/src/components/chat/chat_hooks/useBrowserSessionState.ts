@@ -48,21 +48,21 @@ export function useBrowserSessionState(messages: CaretMessage[]) {
       } 
       // ud604uc7ac uadf8ub8f9uc5d0 uc788ub294 uacbd uc6b0 ucc98ub9ac
       else if (isInBrowserSession) {
-        if (message.say === "api_req_started") {
-          const lastApiReqStarted = [...currentGroup].reverse().find(m => m.say === "api_req_started")
-          if (lastApiReqStarted?.text !== null) {
-            try {
-              const info = JSON.parse(lastApiReqStarted.text)
-              if (info.cancelReason !== null) {
-                endBrowserSession()
-                result.push(message)
-                return
-              }
-            } catch (e) {
-              console.error("Failed to parse API Req Info for grouping:", lastApiReqStarted.text, e)
-            }
-          }
-        }
+        // if (message.say === "api_req_started") {
+        //   const lastApiReqStarted = [...currentGroup].reverse().find(m => m.say === "api_req_started")
+        //   if (lastApiReqStarted?.text !== null) {
+        //     try {
+        //       const info = JSON.parse(lastApiReqStarted.text)
+        //       if (info.cancelReason !== null) {
+        //         endBrowserSession()
+        //         result.push(message)
+        //         return
+        //       }
+        //     } catch (e) {
+        //       console.error("Failed to parse API Req Info for grouping:", lastApiReqStarted.text, e)
+        //     }
+        //   }
+        // }
 
         if (isBrowserSessionMessage(message)) {
           currentGroup.push(message)

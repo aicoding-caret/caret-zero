@@ -1702,7 +1702,7 @@ const ChatTextArea = forwardRef<HTMLTextAreaElement, ChatTextAreaProps>(
 								<ModelButtonWrapper ref={buttonRef}>
 									<ModelDisplayButton
 										role="button"
-										isActive={showModelSelector}
+										$isActive={showModelSelector}
 										disabled={false}
 										title="Select Model / API Provider"
 										onClick={handleModelButtonClick}

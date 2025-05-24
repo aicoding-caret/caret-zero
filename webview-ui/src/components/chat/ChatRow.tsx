@@ -127,6 +127,8 @@ interface QuoteButtonState {
 	selectedText: string
 }
 
+interface ChatRowContentProps extends Omit<ChatRowProps, "onHeightChange"> {}
+
 export const ProgressIndicator = () => (
 	<div
 		style={{

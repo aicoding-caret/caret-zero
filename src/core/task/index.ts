@@ -9,34 +9,31 @@ import pWaitFor from "p-wait-for"
 import * as path from "path"
 import { serializeError } from "serialize-error"
 import * as vscode from "vscode"
-import { ApiHandler, buildApiHandler } from "../../api"
-import { AnthropicHandler } from "../../api/providers/anthropic"
-import { CaretHandler } from "../../api/providers/caret"
-import { OpenRouterHandler } from "../../api/providers/openrouter"
-import { getContextWindowInfo } from "../context-management/context-window-utils"
-import { ApiStream } from "../../api/transform/stream"
-import CheckpointTracker from "../../integrations/checkpoints/CheckpointTracker"
-import { DIFF_VIEW_URI_SCHEME, DiffViewProvider } from "../../integrations/editor/DiffViewProvider"
-import { formatContentBlockToMarkdown } from "../../integrations/misc/export-markdown"
-import { extractTextFromFile } from "../../integrations/misc/extract-text"
-import { showSystemNotification } from "../../integrations/notifications"
-import { TerminalManager } from "../../integrations/terminal/TerminalManager"
-import { BrowserSession } from "../../services/browser/BrowserSession"
-import { UrlContentFetcher } from "../../services/browser/UrlContentFetcher"
-import { listFiles } from "../../services/glob/list-files"
-import { regexSearchFiles } from "../../services/ripgrep"
-import { telemetryService } from "../../services/telemetry/TelemetryService"
-import { parseSourceCodeForDefinitionsTopLevel } from "../../services/tree-sitter"
-import { ApiConfiguration } from "../../shared/api"
-import { findLast, findLastIndex, parsePartialArrayString } from "../../shared/array"
-import { AutoApprovalSettings } from "../../shared/AutoApprovalSettings"
-import { BrowserSettings } from "../../shared/BrowserSettings"
-import { ChatSettings } from "../../shared/ChatSettings"
-import { combineApiRequests } from "../../shared/combineApiRequests"
-import { combineCommandSequences, COMMAND_REQ_APP_STRING } from "../../shared/combineCommandSequences"
-import { ExtensionState } from "../../shared/ExtensionMessage"
-
 import { Logger } from "@services/logging/Logger"
+import { ApiHandler, buildApiHandler } from "@api/index"
+import { AnthropicHandler } from "@api/providers/anthropic"
+import { CaretHandler } from "@api/providers/caret"
+import { OpenRouterHandler } from "@api/providers/openrouter"
+import { ApiStream } from "@api/transform/stream"
+import CheckpointTracker from "@integrations/checkpoints/CheckpointTracker"
+import { DIFF_VIEW_URI_SCHEME, DiffViewProvider } from "@integrations/editor/DiffViewProvider"
+import { formatContentBlockToMarkdown } from "@integrations/misc/export-markdown"
+import { extractTextFromFile } from "@integrations/misc/extract-text"
+import { showSystemNotification } from "@integrations/notifications"
+import { TerminalManager } from "@integrations/terminal/TerminalManager"
+import { BrowserSession } from "@services/browser/BrowserSession"
+import { UrlContentFetcher } from "@services/browser/UrlContentFetcher"
+import { listFiles } from "@services/glob/list-files"
+import { regexSearchFiles } from "@services/ripgrep"
+import { telemetryService } from "@/services/posthog/telemetry/TelemetryService"
+import { parseSourceCodeForDefinitionsTopLevel } from "@services/tree-sitter"
+import { ApiConfiguration } from "@shared/api"
+import { findLast, findLastIndex, parsePartialArrayString } from "@shared/array"
+import { AutoApprovalSettings } from "@shared/AutoApprovalSettings"
+import { BrowserSettings } from "@shared/BrowserSettings"
+import { ChatSettings } from "@shared/ChatSettings"
+import { combineApiRequests } from "@shared/combineApiRequests"
+import { combineCommandSequences, COMMAND_REQ_APP_STRING } from "@shared/combineCommandSequences"
 import {
 	BrowserAction,
 	BrowserActionResult,
@@ -53,41 +50,39 @@ import {
 	CaretSayTool,
 	COMPLETION_RESULT_CHANGES_FLAG,
 	ExtensionMessage,
-} from "../../shared/ExtensionMessage"
-import { getApiMetrics } from "../../shared/getApiMetrics"
-import { HistoryItem } from "../../shared/HistoryItem"
-import { DEFAULT_LANGUAGE_SETTINGS, getLanguageKey, LanguageDisplay } from "../../shared/Languages"
-import { CaretAskResponse, CaretCheckpointRestore } from "../../shared/WebviewMessage"
-import { calculateApiCostAnthropic } from "../../utils/cost"
-import { fileExistsAtPath, isDirectory } from "../../utils/fs"
-// import { arePathsEqual, getReadablePath } from "../../utils/path"
-import { fixModelHtmlEscaping, removeInvalidChars } from "../../utils/string"
-// import { AssistantMessageContent, parseAssistantMessage, ToolParamName, ToolUseName } from ".././assistant-message"
-import { constructNewFileContent } from ".././assistant-message/diff"
-import { ContextManager } from ".././context-management/ContextManager"
-import { CaretIgnoreController } from ".././ignore/CaretIgnoreController"
-import { parseMentions } from ".././mentions"
-import { formatResponse } from ".././prompts/responses"
-import { addUserInstructions, SYSTEM_PROMPT } from ".././prompts/system"
-import { FileContextTracker } from "../context-tracking/FileContextTracker"
-	
+} from "@shared/ExtensionMessage"
+import { getApiMetrics } from "@shared/getApiMetrics"
+import { HistoryItem } from "@shared/HistoryItem"
+import { DEFAULT_LANGUAGE_SETTINGS, getLanguageKey, LanguageDisplay } from "@shared/Languages"
+import { CaretAskResponse, CaretCheckpointRestore } from "@shared/WebviewMessage"
+import { calculateApiCostAnthropic } from "@utils/cost"
+import { fileExistsAtPath } from "@utils/fs"
 import { createAndOpenGitHubIssue } from "@utils/github-url-utils"
 import { arePathsEqual, getReadablePath, isLocatedInWorkspace } from "@utils/path"
+import { fixModelHtmlEscaping, removeInvalidChars } from "@utils/string"
 import { AssistantMessageContent, parseAssistantMessageV2, ToolParamName, ToolUseName } from "@core/assistant-message"
+import { constructNewFileContent } from "@core/assistant-message/diff"
+import { CaretIgnoreController } from "@core/ignore/CaretIgnoreController"
+import { parseMentions } from "@core/mentions"
+import { formatResponse } from "@core/prompts/responses"
+import { addUserInstructions, SYSTEM_PROMPT } from "@core/prompts/system"
+import { getContextWindowInfo } from "@core/context/context-management/context-window-utils"
+import { FileContextTracker } from "@core/context/context-tracking/FileContextTracker"
 import { ModelContextTracker } from "@core/context/context-tracking/ModelContextTracker"
 import {
 	checkIsAnthropicContextWindowError,
 	checkIsOpenRouterContextWindowError,
 } from "@core/context/context-management/context-error-handling"
+import { ContextManager } from "@core/context/context-management/ContextManager"
 import { loadMcpDocumentation } from "@core/prompts/loadMcpDocumentation"
 import {
 	ensureRulesDirectoryExists,
 	ensureTaskDirectoryExists,
 	getSavedApiConversationHistory,
 	getSavedCaretMessages,
+	GlobalFileNames,
 	saveApiConversationHistory,
 	saveCaretMessages,
-	GlobalFileNames,
 } from "@core/storage/disk"
 import {
 	getGlobalCaretRules,
@@ -196,12 +191,6 @@ export class Task {
 		images?: string[],
 		historyItem?: HistoryItem,
 	) {
-		this.caretIgnoreController = new CaretIgnoreController(cwd)
-		this.caretIgnoreController.initialize().catch((error) => {
-			console.error("Failed to initialize CaretIgnoreController:", error)
-		})
-		this.controllerRef = new WeakRef(controller)
-		this.apiProvider = apiConfiguration.apiProvider
 		this.context = context
 		this.mcpHub = mcpHub
 		this.workspaceTracker = workspaceTracker
@@ -376,13 +365,6 @@ export class Task {
 		} catch (error) {
 			console.error("Failed to save caret messages:", error)
 		}
-	}
-
-	async updateState(partialState: Partial<ExtensionState>) {
-		if (partialState.retryStatus) {
-			await this.controllerRef.deref()?.context.globalState.update("retryStatus", partialState.retryStatus)
-		}
-		await this.controllerRef.deref()?.postStateToWebview()
 	}
 
 	async restoreCheckpoint(messageTs: number, restoreType: CaretCheckpointRestore, offset?: number) {
@@ -1096,36 +1078,6 @@ export class Task {
 
 		const wasRecent = lastCaretMessage?.ts && Date.now() - lastCaretMessage.ts < 30_000
 
-		newUserContent.push({
-			type: "text",
-			text: formatResponse.taskResumption(
-				// 현재 모드에 따라 적절한 모드 선택
-				(() => {
-					// 모드가 없으면 기본값 사용
-					if (!this.chatSettings?.mode) {
-						return "dev"
-					}
-
-					const controllerRef = this.controllerRef.deref()
-					// 컨트롤러 참조가 유효하지 않으면 기본값 사용
-					if (!controllerRef) {
-						return "dev"
-					}
-
-					// chatSettings의 mode에 따라 적절한 모드 처리
-					// 네이밍 규칙에 따라 arch는 계획 모드, dev는 실행 모드로 처리
-					if (this.chatSettings.mode === "arch" || this.chatSettings.mode === "plan") {
-						return "arch"
-					} else {
-						return "dev"
-					}
-				})(),
-				agoText,
-				cwd,
-				wasRecent,
-				responseText,
-			),
-		})
 		const [taskResumptionMessage, userResponseMessage] = formatResponse.taskResumption(
 			this.chatSettings?.mode === "plan" ? "plan" : "act",
 			agoText,
@@ -1597,59 +1549,21 @@ export class Task {
 		})
 
 		await this.migrateDisableBrowserToolSetting()
-		const disableBrowserTool = this.browserSettings.disableToolUse ?? vscode.workspace.getConfiguration("caret").get<boolean>("disableBrowserTool") ?? false
+		const disableBrowserTool = this.browserSettings.disableToolUse ?? false
 		// caret browser tool uses image recognition for navigation (requires model image support).
-		const modelSupportsComputerUse = this.api.getModel().info.supportsImages || this.api.getModel().info.supportsComputerUse ?? false
-		const supportsBrowserUse = modelSupportsBrowserUse && !disableBrowserTool // only enable browser use if the model supports it and the user hasn't disabled it
+		const modelSupportsBrowserUse = this.api.getModel().info.supportsImages ?? false
 
-		
+		const supportsBrowserUse = modelSupportsBrowserUse && !disableBrowserTool // only enable browser use if the model supports it and the user hasn't disabled it
 
 		let systemPrompt = await SYSTEM_PROMPT(cwd, supportsBrowserUse, this.mcpHub, this.browserSettings)
 
 		let settingsCustomInstructions = this.customInstructions?.trim()
 		await this.migratePreferredLanguageToolSetting()
-
-		const preferredLanguageConfig =
-			this.chatSettings?.preferredLanguage ??
-			vscode.workspace.getConfiguration("caret").get<LanguageDisplay>("preferredLanguage")
-
-		const preferredLanguage = getLanguageKey(preferredLanguageConfig)
+		const preferredLanguage = getLanguageKey(this.chatSettings.preferredLanguage as LanguageDisplay)
 		const preferredLanguageInstructions =
 			preferredLanguage && preferredLanguage !== DEFAULT_LANGUAGE_SETTINGS
 				? `# Preferred Language\n\nSpeak in ${preferredLanguage}.`
 				: ""
-		const caretRulesFilePath = path.resolve(cwd, process.env.CARET_RULES_FILE || ".caretrules")
-		let caretRulesFileInstructions: string | undefined
-		if (await fileExistsAtPath(caretRulesFilePath)) {
-			if (await isDirectory(caretRulesFilePath)) {
-				try {
-					// Read all files in the rules directory.
-					const ruleFiles = await fs
-						.readdir(caretRulesFilePath, { withFileTypes: true, recursive: true })
-						.then((files) => files.filter((file) => file.isFile()))
-						.then((files) => files.map((file) => path.resolve(file.parentPath, file.name)))
-					const ruleFilesTotalContent = await Promise.all(
-						ruleFiles.map(async (file) => {
-							const ruleFilePath = path.resolve(caretRulesFilePath, file)
-							const ruleFilePathRelative = path.relative(cwd, ruleFilePath)
-							return `${ruleFilePathRelative}\n` + (await fs.readFile(ruleFilePath, "utf8")).trim()
-						}),
-					).then((contents) => contents.join("\n\n"))
-					caretRulesFileInstructions = formatResponse.caretRulesDirectoryInstructions(cwd, ruleFilesTotalContent)
-				} catch {
-					console.error(`Failed to read .caretrules directory at ${caretRulesFilePath}`)
-				}
-			} else {
-				try {
-					const ruleFileContent = (await fs.readFile(caretRulesFilePath, "utf8")).trim()
-					if (ruleFileContent) {
-						caretRulesFileInstructions = formatResponse.caretRulesFileInstructions(cwd, ruleFileContent)
-					}
-				} catch {
-					console.error(`Failed to read .caretrules file at ${caretRulesFilePath}`)
-				}
-			}
-		}
 
 		const { globalToggles, localToggles } = await refreshCaretRulesToggles(this.getContext(), cwd)
 		const { windsurfLocalToggles, cursorLocalToggles } = await refreshExternalRulesToggles(this.getContext(), cwd)
@@ -1672,25 +1586,23 @@ export class Task {
 
 		if (
 			settingsCustomInstructions ||
-			caretRulesFileInstructions ||
-			caretIgnoreInstructions ||
 			globalCaretRulesFileInstructions ||
 			localCaretRulesFileInstructions ||
 			localCursorRulesFileInstructions ||
 			localCursorRulesDirInstructions ||
 			localWindsurfRulesFileInstructions ||
+			caretIgnoreInstructions ||
 			preferredLanguageInstructions
 		) {
 			// altering the system prompt mid-task will break the prompt cache, but in the grand scheme this will not change often so it's better to not pollute user messages with it the way we have to with <potentially relevant details>
 			const userInstructions = addUserInstructions(
 				settingsCustomInstructions,
-				caretRulesFileInstructions,
-				caretIgnoreInstructions,
 				globalCaretRulesFileInstructions,
 				localCaretRulesFileInstructions,
 				localCursorRulesFileInstructions,
 				localCursorRulesDirInstructions,
 				localWindsurfRulesFileInstructions,
+				caretIgnoreInstructions,
 				preferredLanguageInstructions,
 			)
 			systemPrompt += userInstructions
@@ -1932,8 +1844,7 @@ export class Task {
 						case "new_rule":
 							return `[${block.name} for '${block.params.path}']`
 						default:
-							// Added default case to satisfy TS7030
-							return `[${block.name}]`
+							return `[${block.name}]`//return 없어서 임시로 추가.
 					}
 				}
 
@@ -2265,14 +2176,6 @@ export class Task {
 
 									// we need an artificial delay to let the diagnostics catch up to the changes
 									await setTimeoutPromise(3_500)
-								} else if (this.shouldAutoApproveTool(block.name)) {
-									this.removeLastPartialMessageIfExistsWithType("ask", "tool")
-									await this.say("tool", completeMessage, undefined, false)
-									this.consecutiveAutoApprovedRequestsCount++
-									telemetryService.captureToolUsage(this.taskId, block.name, true, true)
-
-									// we need an artificial delay to let the diagnostics catch up to the changes
-									await setTimeoutPromise(3_500)
 								} else {
 									// If auto-approval is enabled but this tool wasn't auto-approved, send notification
 									showNotificationForApprovalIfAutoApprovalEnabled(
@@ -2391,9 +2294,6 @@ export class Task {
 								if (this.shouldAutoApproveToolWithPath(block.name, block.params.path)) {
 									this.removeLastPartialMessageIfExistsWithType("ask", "tool")
 									await this.say("tool", partialMessage, undefined, block.partial)
-								} else if (this.shouldAutoApproveTool(block.name)) {
-									this.removeLastPartialMessageIfExistsWithType("ask", "tool")
-									await this.say("tool", partialMessage, undefined, block.partial)
 								} else {
 									this.removeLastPartialMessageIfExistsWithType("say", "tool")
 									await this.ask("tool", partialMessage, block.partial).catch(() => {})
@@ -2423,11 +2323,6 @@ export class Task {
 									operationIsLocatedInWorkspace: isLocatedInWorkspace(relPath),
 								} satisfies CaretSayTool)
 								if (this.shouldAutoApproveToolWithPath(block.name, block.params.path)) {
-									this.removeLastPartialMessageIfExistsWithType("ask", "tool")
-									await this.say("tool", completeMessage, undefined, false) // need to be sending partialValue bool, since undefined has its own purpose in that the message is treated neither as a partial or completion of a partial, but as a single complete message
-									this.consecutiveAutoApprovedRequestsCount++
-									telemetryService.captureToolUsage(this.taskId, block.name, true, true)
-								} else if (this.shouldAutoApproveTool(block.name)) {
 									this.removeLastPartialMessageIfExistsWithType("ask", "tool")
 									await this.say("tool", completeMessage, undefined, false) // need to be sending partialValue bool, since undefined has its own purpose in that the message is treated neither as a partial or completion of a partial, but as a single complete message
 									this.consecutiveAutoApprovedRequestsCount++
@@ -2479,9 +2374,6 @@ export class Task {
 								if (this.shouldAutoApproveToolWithPath(block.name, block.params.path)) {
 									this.removeLastPartialMessageIfExistsWithType("ask", "tool")
 									await this.say("tool", partialMessage, undefined, block.partial)
-								} else if (this.shouldAutoApproveTool(block.name)) {
-									this.removeLastPartialMessageIfExistsWithType("ask", "tool")
-									await this.say("tool", partialMessage, undefined, block.partial)
 								} else {
 									this.removeLastPartialMessageIfExistsWithType("say", "tool")
 									await this.ask("tool", partialMessage, block.partial).catch(() => {})
@@ -2512,11 +2404,6 @@ export class Task {
 									operationIsLocatedInWorkspace: isLocatedInWorkspace(block.params.path),
 								} satisfies CaretSayTool)
 								if (this.shouldAutoApproveToolWithPath(block.name, block.params.path)) {
-									this.removeLastPartialMessageIfExistsWithType("ask", "tool")
-									await this.say("tool", completeMessage, undefined, false)
-									this.consecutiveAutoApprovedRequestsCount++
-									telemetryService.captureToolUsage(this.taskId, block.name, true, true)
-								} else if (this.shouldAutoApproveTool(block.name)) {
 									this.removeLastPartialMessageIfExistsWithType("ask", "tool")
 									await this.say("tool", completeMessage, undefined, false)
 									this.consecutiveAutoApprovedRequestsCount++
@@ -2560,9 +2447,6 @@ export class Task {
 								if (this.shouldAutoApproveToolWithPath(block.name, block.params.path)) {
 									this.removeLastPartialMessageIfExistsWithType("ask", "tool")
 									await this.say("tool", partialMessage, undefined, block.partial)
-								} else if (this.shouldAutoApproveTool(block.name)) {
-									this.removeLastPartialMessageIfExistsWithType("ask", "tool")
-									await this.say("tool", partialMessage, undefined, block.partial)
 								} else {
 									this.removeLastPartialMessageIfExistsWithType("say", "tool")
 									await this.ask("tool", partialMessage, block.partial).catch(() => {})
@@ -2590,11 +2474,6 @@ export class Task {
 									operationIsLocatedInWorkspace: isLocatedInWorkspace(block.params.path),
 								} satisfies CaretSayTool)
 								if (this.shouldAutoApproveToolWithPath(block.name, block.params.path)) {
-									this.removeLastPartialMessageIfExistsWithType("ask", "tool")
-									await this.say("tool", completeMessage, undefined, false)
-									this.consecutiveAutoApprovedRequestsCount++
-									telemetryService.captureToolUsage(this.taskId, block.name, true, true)
-								} else if (this.shouldAutoApproveTool(block.name)) {
 									this.removeLastPartialMessageIfExistsWithType("ask", "tool")
 									await this.say("tool", completeMessage, undefined, false)
 									this.consecutiveAutoApprovedRequestsCount++
@@ -2642,9 +2521,6 @@ export class Task {
 								if (this.shouldAutoApproveToolWithPath(block.name, block.params.path)) {
 									this.removeLastPartialMessageIfExistsWithType("ask", "tool")
 									await this.say("tool", partialMessage, undefined, block.partial)
-								} else if (this.shouldAutoApproveTool(block.name)) {
-									this.removeLastPartialMessageIfExistsWithType("ask", "tool")
-									await this.say("tool", partialMessage, undefined, block.partial)
 								} else {
 									this.removeLastPartialMessageIfExistsWithType("say", "tool")
 									await this.ask("tool", partialMessage, block.partial).catch(() => {})
@@ -2680,11 +2556,6 @@ export class Task {
 									operationIsLocatedInWorkspace: isLocatedInWorkspace(block.params.path),
 								} satisfies CaretSayTool)
 								if (this.shouldAutoApproveToolWithPath(block.name, block.params.path)) {
-									this.removeLastPartialMessageIfExistsWithType("ask", "tool")
-									await this.say("tool", completeMessage, undefined, false)
-									this.consecutiveAutoApprovedRequestsCount++
-									telemetryService.captureToolUsage(this.taskId, block.name, true, true)
-								} else if (this.shouldAutoApproveTool(block.name)) {
 									this.removeLastPartialMessageIfExistsWithType("ask", "tool")
 									await this.say("tool", completeMessage, undefined, false)
 									this.consecutiveAutoApprovedRequestsCount++
@@ -2794,11 +2665,10 @@ export class Task {
 									await this.say("browser_action_result", "") // starts loading spinner
 
 									// Re-make browserSession to make sure latest settings apply
-									const contextToUse = this.controllerRef?.deref()?.context ?? this.context
-									if (contextToUse) {
+									if (this.context) {
 										await this.browserSession.dispose()
-										this.browserSession = new BrowserSession(contextToUse, this.browserSettings)
-									}else {
+										this.browserSession = new BrowserSession(this.context, this.browserSettings)
+									} else {
 										console.warn("no controller context available for browserSession")
 									}
 									await this.browserSession.launchBrowser()
@@ -3529,52 +3399,6 @@ export class Task {
 							break
 						}
 					}
-					case "new_task": {
-						const content: string | undefined = block.params.content // Renamed from context
-						try {
-							if (block.partial) {
-								await this.ask("new_task", removeClosingTag("content", content), block.partial).catch(() => {}) // Renamed from context
-								break
-							} else {
-								if (!content) {
-									// Renamed from context
-									this.consecutiveMistakeCount++
-									pushToolResult(await this.sayAndCreateMissingParamError("new_task", "context"))
-									break
-								}
-								this.consecutiveMistakeCount = 0
-
-								if (this.autoApprovalSettings.enabled && this.autoApprovalSettings.enableNotifications) {
-									showSystemNotification({
-										subtitle: "Caret wants to start a new task...",
-										message: `Caret is suggesting to start a new task with: ${content}`, // Renamed from context
-									})
-								}
-
-								const { text, images } = await this.ask("new_task", content, false) // Renamed from context
-
-								// If the user provided a response, treat it as feedback
-								if (text || images?.length) {
-									await this.say("user_feedback", text ?? "", images)
-									pushToolResult(
-										formatResponse.toolResult(
-											`The user provided feedback instead of creating a new task:\n<feedback>\n${text}\n</feedback>`,
-											images,
-										),
-									)
-								} else {
-									// If no response, the user clicked the "Create New Task" button
-									pushToolResult(
-										formatResponse.toolResult(`The user has created a new task with the provided context.`),
-									)
-								}
-								break
-							}
-						} catch (error) {
-							await handleError("creating new task", error)
-							break
-						}
-					}
 					case "plan_mode_respond": {
 						const response: string | undefined = block.params.response
 						const optionsRaw: string | undefined = block.params.options
@@ -4181,11 +4005,6 @@ export class Task {
 					const errorMessage = this.formatErrorWithStatusCode(error)
 
 					await abortStream("streaming_failed", errorMessage)
-					const history = await this.controllerRef.deref()?.getTaskWithId(this.taskId)
-					if (history) {
-						await this.controllerRef.deref()?.initCaretWithHistoryItem(history.historyItem)
-						// await this.controllerRef.deref()?.postStateToWebview()
-					}
 					await this.reinitExistingTaskFromId(this.taskId)
 				}
 			} finally {
@@ -4366,9 +4185,9 @@ export class Task {
 		// It could be useful for caret to know if the user went from one or no file to another between messages, so we always include this context
 		details += "\n\n# VSCode Visible Files"
 		const visibleFilePaths = vscode.window.visibleTextEditors
-			?.map((editor: vscode.TextEditor) => editor.document?.uri?.fsPath)
+			?.map((editor) => editor.document?.uri?.fsPath)
 			.filter(Boolean)
-			.map((absolutePath: string) => path.relative(cwd, absolutePath))
+			.map((absolutePath) => path.relative(cwd, absolutePath))
 
 		// Filter paths through caretIgnoreController
 		const allowedVisibleFiles = this.caretIgnoreController
@@ -4384,8 +4203,8 @@ export class Task {
 
 		details += "\n\n# VSCode Open Tabs"
 		const openTabPaths = vscode.window.tabGroups.all
-			.flatMap((group: vscode.TabGroup) => group.tabs)
-			.map((tab: vscode.Tab) => (tab.input as vscode.TabInputText)?.uri?.fsPath)
+			.flatMap((group) => group.tabs)
+			.map((tab) => (tab.input as vscode.TabInputText)?.uri?.fsPath)
 			.filter(Boolean)
 			.map((absolutePath) => path.relative(cwd, absolutePath))
 
@@ -4555,33 +4374,12 @@ export class Task {
 		details += "\n\n# Context Window Usage"
 		details += `\n${lastApiReqTotalTokens.toLocaleString()} / ${(contextWindow / 1000).toLocaleString()}K tokens used (${usagePercentage}%)`
 
-		details += "\n\n# Current Mode"
-		// 모드 타입에 맞는 표시 로직 사용
-		const currentModeId = this.chatSettings?.mode || "dev"
-
-		// 특별한 처리가 필요한 모드 처리
-		if (currentModeId === "arch" || currentModeId === "plan") {
-			// 계획 모드 (arch, plan) 처리
-			const modeName = currentModeId.toUpperCase()
-			// formatResponse.archModeInstructions() 호출 제거
-			details += `\n${modeName} MODE\n`
-		} else if (currentModeId === "do" || currentModeId === "dev") {
-			// 실행 모드 (do, dev) 처리
-			const modeName = currentModeId.toUpperCase()
-			details += `\n${modeName} MODE\n` + `You are in ${modeName} mode. Focus on executing tasks efficiently.`
-		} else if (currentModeId === "rule") {
-			// 규칙 모드 처리
-			details += `\nRULE MODE\n` + `You are in RULE mode. Focus on system rules and configurations.`
-		} else if (currentModeId === "talk") {
-			// 대화 모드 처리
-			details += `\nTALK MODE\n` + `You are in TALK mode. Engage in friendly conversation.`
-		} else if (currentModeId === "empty") {
-			// 빈 모드 처리
-			details += `\nEMPTY MODE\n` + `You are in EMPTY mode. No specific guidance is provided.`
-		} else {
-			// 기타 모드들 - 일반적인 처리
-			details += `\n${currentModeId.toUpperCase()} MODE\n` + `You are in ${currentModeId.toUpperCase()} mode.`
-		}
+		// details += "\n\n# Current Mode"
+		// if (this.chatSettings.mode === "plan") {
+		// 	details += "\nPLAN MODE\n" + formatResponse.planModeInstructions()
+		// } else {
+		// 	details += "\nACT MODE"
+		// }
 
 		return `<environment_details>\n${details.trim()}\n</environment_details>`
 	}

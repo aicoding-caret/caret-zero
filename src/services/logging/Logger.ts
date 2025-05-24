@@ -9,6 +9,8 @@ export class Logger implements ILogger {
 	private outputChannel: any
 	public readonly isDevelopmentMode: boolean // Made public and readonly
 
+	private static outputChannelStatic: OutputChannel
+
 	/**
 	 * Creates a new Logger instance.
 	 * @param channelName The name of the VSCode OutputChannel to use.
@@ -122,6 +124,32 @@ export class Logger implements ILogger {
 	 */
 	dispose(): void {
 		this.outputChannel.dispose()
+	}
+
+	static initialize(outputChannel: OutputChannel) {
+		Logger.outputChannelStatic = outputChannel
+	}
+
+	static error(message: string, exception?: Error) {
+		Logger.outputChannelStatic.appendLine(`ERROR: ${message}`)
+		ErrorService.logMessage(message, "error")
+		exception && ErrorService.logException(exception)
+	}
+	static warn(message: string) {
+		Logger.outputChannelStatic.appendLine(`WARN: ${message}`)
+		ErrorService.logMessage(message, "warning")
+	}
+	static log(message: string) {
+		Logger.outputChannelStatic.appendLine(`LOG: ${message}`)
+	}
+	static debug(message: string) {
+		Logger.outputChannelStatic.appendLine(`DEBUG: ${message}`)
+	}
+	static info(message: string) {
+		Logger.outputChannelStatic.appendLine(`INFO: ${message}`)
+	}
+	static trace(message: string) {
+		Logger.outputChannelStatic.appendLine(`TRACE: ${message}`)
 	}
 }
 

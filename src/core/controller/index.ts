@@ -74,7 +74,7 @@ https://github.com/KumarVariable/vscode-extension-sidebar-html/blob/master/src/c
 */
 
 export class Controller {
-	private postMessage?: (msg: ExtensionMessage) => Thenable<boolean> | undefined
+	private postMessage?: (message: ExtensionMessage) => Thenable<boolean> | undefined
 
 	private disposables: vscode.Disposable[] = []
 	task?: Task
@@ -90,16 +90,16 @@ export class Controller {
 	
 
 	constructor(
-		public readonly context: vscode.ExtensionContext,
+		readonly context: vscode.ExtensionContext,
 		private readonly outputChannel: vscode.OutputChannel,
-		webviewProvider?: WebviewProvider,
 		postMessage?: (message: ExtensionMessage) => Thenable<boolean> | undefined,
+		webviewProvider?: WebviewProvider,
 	) {
 		this.logger = {
-			log: (msg, ...meta) => this.outputChannel.appendLine(`[INFO] ${msg} ${meta.length ? JSON.stringify(meta) : ""}`),
-			error: (msg, ...meta) => this.outputChannel.appendLine(`[ERROR] ${msg} ${meta.length ? JSON.stringify(meta) : ""}`),
-			warn: (msg, ...meta) => this.outputChannel.appendLine(`[WARN] ${msg} ${meta.length ? JSON.stringify(meta) : ""}`),
-			debug: (msg, ...meta) => this.outputChannel.appendLine(`[DEBUG] ${msg} ${meta.length ? JSON.stringify(meta) : ""}`),
+			log: (message, ...meta) => this.outputChannel.appendLine(`[INFO] ${message} ${meta.length ? JSON.stringify(meta) : ""}`),
+			error: (message, ...meta) => this.outputChannel.appendLine(`[ERROR] ${message} ${meta.length ? JSON.stringify(meta) : ""}`),
+			warn: (message, ...meta) => this.outputChannel.appendLine(`[WARN] ${message} ${meta.length ? JSON.stringify(meta) : ""}`),
+			debug: (message, ...meta) => this.outputChannel.appendLine(`[DEBUG] ${message} ${meta.length ? JSON.stringify(meta) : ""}`),
 		}
 
 		if (webviewProvider) {this.webviewProviderRef = new WeakRef(webviewProvider)}
@@ -108,7 +108,7 @@ export class Controller {
 		// this.postMessage = postMessage
 
 		this.outputChannel.appendLine("CaretProvider instantiated")
-
+		
 		this.workspaceTracker = new WorkspaceTracker((msg) => this.postMessageToWebview(msg))
 
 		this.mcpHub = new McpHub(

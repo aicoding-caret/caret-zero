@@ -23,7 +23,7 @@ export interface ModeInfo {
 	apiProvider?: string // API 제공자 (e.g. 'anthropic', 'openai', 'openrouter')
 	apiKey?: string // 모드별 API 키 (선택사항)
 }
-import { CaretRulesToggles } from "./caret-rules"
+import { CaretRulesToggles } from "../shared/caret-rules"
 
 // webview will hold state
 /**
