@@ -57,10 +57,10 @@ import { BrowserSession } from "../../services/browser/BrowserSession"
 import { discoverChromeInstances } from "../../services/browser/BrowserDiscovery" // Corrected import path if needed
 import { searchWorkspaceFiles } from "../../services/search/file-search"
 import { ILogger } from "../../services/logging/ILogger" // Import ILogger
-import { TemplateCharacterManager } from '../persona/templateCharacters';
-import { PersonaController } from './persona-controller';
-import { MessageType, PersonaMessages } from './message-types';
-import { PersonaManager } from '../persona/PersonaManager';
+import { TemplateCharacterManager } from "../persona/templateCharacters"
+import { PersonaController } from "./persona-controller"
+import { MessageType, PersonaMessages } from "./message-types"
+import { PersonaManager } from "../persona/PersonaManager"
 import { Task, cwd } from "../task"
 import { CaretRulesToggles } from "../../shared/caret-rules"
 import { sendStateUpdate } from "./state/subscribeToState"
@@ -91,8 +91,6 @@ export class Controller {
 	logger: ILogger
 	private availableModes: ModeInfo[] = []
 	private personaController: PersonaController
-	
-	
 
 	constructor(
 		readonly context: vscode.ExtensionContext,
@@ -101,19 +99,27 @@ export class Controller {
 		webviewProvider?: WebviewProvider,
 	) {
 		this.logger = {
-			log: (message, ...meta) => this.outputChannel.appendLine(`[INFO] ${message} ${meta.length ? JSON.stringify(meta) : ""}`),
-			error: (message, ...meta) => this.outputChannel.appendLine(`[ERROR] ${message} ${meta.length ? JSON.stringify(meta) : ""}`),
-			warn: (message, ...meta) => this.outputChannel.appendLine(`[WARN] ${message} ${meta.length ? JSON.stringify(meta) : ""}`),
-			debug: (message, ...meta) => this.outputChannel.appendLine(`[DEBUG] ${message} ${meta.length ? JSON.stringify(meta) : ""}`),
+			log: (message, ...meta) =>
+				this.outputChannel.appendLine(`[INFO] ${message} ${meta.length ? JSON.stringify(meta) : ""}`),
+			error: (message, ...meta) =>
+				this.outputChannel.appendLine(`[ERROR] ${message} ${meta.length ? JSON.stringify(meta) : ""}`),
+			warn: (message, ...meta) =>
+				this.outputChannel.appendLine(`[WARN] ${message} ${meta.length ? JSON.stringify(meta) : ""}`),
+			debug: (message, ...meta) =>
+				this.outputChannel.appendLine(`[DEBUG] ${message} ${meta.length ? JSON.stringify(meta) : ""}`),
 		}
 
-		if (webviewProvider) {this.webviewProviderRef = new WeakRef(webviewProvider)}
-		if (postMessage) {this.postMessage = postMessage}
+		if (webviewProvider) {
+			this.webviewProviderRef = new WeakRef(webviewProvider)
+		}
+		if (postMessage) {
+			this.postMessage = postMessage
+		}
 		// this.webviewProviderRef = new WeakRef(webviewProvider)
 		// this.postMessage = postMessage
 
 		this.outputChannel.appendLine("CaretProvider instantiated")
-		
+
 		this.workspaceTracker = new WorkspaceTracker((msg) => this.postMessageToWebview(msg))
 
 		this.mcpHub = new McpHub(
@@ -131,7 +137,7 @@ export class Controller {
 			},
 		)
 
-		this.loadAvailableModes().catch(err => this.logger.error("Failed to load initial modes", err))
+		this.loadAvailableModes().catch((err) => this.logger.error("Failed to load initial modes", err))
 
 		// Clean up legacy checkpoints
 		cleanupLegacyCheckpoints(this.context.globalStorageUri.fsPath, this.outputChannel).catch((error) => {
@@ -139,7 +145,7 @@ export class Controller {
 		})
 
 		// PersonaController 인스턴스 생성
-		this.personaController = new PersonaController(this.context, this.logger, this.postMessageToWebview.bind(this));
+		this.personaController = new PersonaController(this.context, this.logger, this.postMessageToWebview.bind(this))
 	}
 
 	// Function to load available modes from modes.json
@@ -210,8 +216,15 @@ export class Controller {
 			// 모드 데이터 처리
 			try {
 				this.availableModes = parsedData.modes.map(
-					(mode: { id: string; name: string; description?: string; rules?: string[]; modetype?: "plan" | "act"; model?: string }) => {
-						this.logger.log(`[DEBUG] Processing mode: ${mode.id}, model: ${mode.model || 'default'}`)
+					(mode: {
+						id: string
+						name: string
+						description?: string
+						rules?: string[]
+						modetype?: "plan" | "act"
+						model?: string
+					}) => {
+						this.logger.log(`[DEBUG] Processing mode: ${mode.id}, model: ${mode.model || "default"}`)
 						return {
 							id: mode.id,
 							label: mode.name, // 'name'을 'label'로 맵핑
@@ -362,7 +375,7 @@ export class Controller {
 	// 		if (!view) {
 	// 			console.error("[Controller:postMessageToWebview] Webview is not valid")
 	// 			return
-	// 		}			
+	// 		}
 
 	// 		await view.webview.postMessage(message)
 	// 		console.log("[Controller:postMessageToWebview] Message sent to webview successfully", message.type)
@@ -376,10 +389,10 @@ export class Controller {
 	// Send any JSON serializable data to the react app
 	async postMessageToWebview(message: ExtensionMessage) {
 		if (this.postMessage) {
-			await this.postMessage(message);
+			await this.postMessage(message)
 		}
 	}
-	
+
 	// // Send any JSON serializable data to the react app
 	// async postMessageToWebview(message: ExtensionMessage) {
 	// 	await this.postMessage(message)
@@ -499,12 +512,12 @@ Here is the project's README to help you get started:\n\n${mcpDetails.readmeCont
 	 * @param webview A reference to the extension webview
 	 */
 	async handleWebviewMessage(message: WebviewMessage) {
-		this.logger.log("[DEBUG] handleWebviewMessage received", message);
+		this.logger.log("[DEBUG] handleWebviewMessage received", message)
 		// 페르소나 컨트롤러에서 처리 가능한 메시지인지 확인
 		if (this.personaController.canHandle(message.type)) {
-			const handled = await this.personaController.handleMessage(message);
+			const handled = await this.personaController.handleMessage(message)
 			if (handled) {
-				return;
+				return
 			}
 		}
 
@@ -513,10 +526,10 @@ Here is the project's README to help you get started:\n\n${mcpDetails.readmeCont
 				this.logger.log("Webview launched - loading modes")
 				// 모드 목록 로드
 				await this.loadAvailableModes()
-								
+
 				// 상태를 웹뷰로 전송
 				const state = await this.getStateToPostToWebview()
-				this.logger.log("Sending state to webview. Available modes:", state.availableModes?.map(m => m.id).join(", "))
+				this.logger.log("Sending state to webview. Available modes:", state.availableModes?.map((m) => m.id).join(", "))
 				await this.postMessageToWebview({
 					type: "state",
 					state,
@@ -550,7 +563,11 @@ Here is the project's README to help you get started:\n\n${mcpDetails.readmeCont
 							text: modesFileContent,
 						}
 						this.logger.log("Sending modes configuration to webview:", message.type)
-						console.log("[Controller] Sending modes configuration to webview:", message.type, message.text ? message.text.length : 0)
+						console.log(
+							"[Controller] Sending modes configuration to webview:",
+							message.type,
+							message.text ? message.text.length : 0,
+						)
 						this.postMessageToWebview(message)
 					} else {
 						this.logger.warn("Modes configuration file not found:", modesFilePath)
@@ -628,7 +645,9 @@ Here is the project's README to help you get started:\n\n${mcpDetails.readmeCont
 					this.logger.log("Modes configuration file saved successfully:", modesFilePath)
 
 					// 사용자에게 성공 메시지 표시
-					vscode.window.showInformationMessage("Modes configuration saved successfully. Caret will restart to apply changes.")
+					vscode.window.showInformationMessage(
+						"Modes configuration saved successfully. Caret will restart to apply changes.",
+					)
 
 					// 모드 목록 다시 로드
 					await this.loadAvailableModes()
@@ -690,7 +709,7 @@ Here is the project's README to help you get started:\n\n${mcpDetails.readmeCont
 									"Evaluate external tech integration.",
 									"Design/propose system structures.",
 									"Define/adjust scope based on feasibility.",
-									"Document decisions and rationale."
+									"Document decisions and rationale.",
 								],
 							},
 							{
@@ -703,7 +722,7 @@ Here is the project's README to help you get started:\n\n${mcpDetails.readmeCont
 									"Implement code per plan.",
 									"Report progress, document work.",
 									"Adapt plans flexibly.",
-									"Listen to user, adjust priorities."
+									"Listen to user, adjust priorities.",
 								],
 							},
 							{
@@ -778,68 +797,80 @@ Here is the project's README to help you get started:\n\n${mcpDetails.readmeCont
 			case "selectAgentProfileImage": {
 				try {
 					// 이미지 타입 확인 (기본값: default)
-					const imageType = message.imageType || "default";
-					const isThinking = imageType === "thinking";
-					const imageTitle = isThinking ? "AI Agent Thinking Image Selection" : "AI Agent Profile Image Selection";
+					const imageType = message.imageType || "default"
+					const isThinking = imageType === "thinking"
+					const imageTitle = isThinking ? "AI Agent Thinking Image Selection" : "AI Agent Profile Image Selection"
 
 					// 템플릿 이미지 경로가 전달된 경우
 					if (message.text) {
-						this.logger.log(`[${imageType}] Template image path received:`, message.text);
-						
+						this.logger.log(`[${imageType}] Template image path received:`, message.text)
+
 						// 저장 위치 확인 및 생성
-						const assetsDir = path.join(this.context.extensionUri.fsPath, "assets");
+						const assetsDir = path.join(this.context.extensionUri.fsPath, "assets")
 						try {
-							await fs.mkdir(assetsDir, { recursive: true });
+							await fs.mkdir(assetsDir, { recursive: true })
 						} catch (err) {
-							this.logger.warn("assets directory creation failed (may already exist):", err);
+							this.logger.warn("assets directory creation failed (may already exist):", err)
 						}
 
 						// 이미지 타입에 따른 파일명 결정 (TMP 우선)
-						const tmpImageFileName = isThinking ? PersonaManager.AGENT_THINKING_TMP_FILENAME : PersonaManager.AGENT_PROFILE_TMP_FILENAME;
-						const tmpTargetPath = path.join(assetsDir, tmpImageFileName);
-						
+						const tmpImageFileName = isThinking
+							? PersonaManager.AGENT_THINKING_TMP_FILENAME
+							: PersonaManager.AGENT_PROFILE_TMP_FILENAME
+						const tmpTargetPath = path.join(assetsDir, tmpImageFileName)
+
 						try {
 							// 템플릿 이미지 경로 (상대 경로를 절대 경로로 변환)
-							const templateImagePath = path.join(this.context.extensionUri.fsPath, "assets", "template_characters", path.basename(message.text));
-							
-							this.logger.log(`[${imageType}] Looking for template image at:`, templateImagePath);
-							
+							const templateImagePath = path.join(
+								this.context.extensionUri.fsPath,
+								"assets",
+								"template_characters",
+								path.basename(message.text),
+							)
+
+							this.logger.log(`[${imageType}] Looking for template image at:`, templateImagePath)
+
 							// 파일 존재 확인
 							if (await fileExistsAtPath(templateImagePath)) {
 								// 이미지 파일 복사
-								const imageBuffer = await fs.readFile(templateImagePath);
-								await fs.writeFile(tmpTargetPath, imageBuffer);
-								this.logger.log(`[${imageType}] Template image copied to temporary file:`, tmpTargetPath);
-								
+								const imageBuffer = await fs.readFile(templateImagePath)
+								await fs.writeFile(tmpTargetPath, imageBuffer)
+								this.logger.log(`[${imageType}] Template image copied to temporary file:`, tmpTargetPath)
+
 								// 웹뷰에 이미지 업데이트 알림
 								// const webview = this.webviewProviderRef.deref()?.view?.webview;
-								const webviewProvider = this.webviewProviderRef?.deref();
-								const webview = webviewProvider?.view?.webview;
+								const webviewProvider = this.webviewProviderRef?.deref()
+								const webview = webviewProvider?.view?.webview
 								if (webview) {
-									const tmpWebviewUri = webview.asWebviewUri(vscode.Uri.joinPath(this.context.extensionUri, "assets", tmpImageFileName)).toString() + `?t=${Date.now()}`;
+									const tmpWebviewUri =
+										webview
+											.asWebviewUri(
+												vscode.Uri.joinPath(this.context.extensionUri, "assets", tmpImageFileName),
+											)
+											.toString() + `?t=${Date.now()}`
 									await this.postMessageToWebview({
 										type: "agentProfileImageUpdated",
 										imageType,
 										imageUrl: tmpWebviewUri,
-										isTmp: true
-									});
+										isTmp: true,
+									})
 								}
-								
+
 								// 성공 메시지 (임시 반영)
-								const successMessage = isThinking 
+								const successMessage = isThinking
 									? "AI Agent thinking image temporarily applied. Click save to apply permanently."
-									: "AI Agent profile image temporarily applied. Click save to apply permanently.";
-								vscode.window.showInformationMessage(successMessage);
+									: "AI Agent profile image temporarily applied. Click save to apply permanently."
+								vscode.window.showInformationMessage(successMessage)
 							} else {
-								this.logger.error(`[${imageType}] Template image not found:`, templateImagePath);
-								vscode.window.showErrorMessage(`Template image not found: ${templateImagePath}`);
+								this.logger.error(`[${imageType}] Template image not found:`, templateImagePath)
+								vscode.window.showErrorMessage(`Template image not found: ${templateImagePath}`)
 							}
 						} catch (err) {
-							this.logger.error(`[${imageType}] Template image copy failed:`, err);
-							vscode.window.showErrorMessage(`Template image copy failed: ${err.message}`);
+							this.logger.error(`[${imageType}] Template image copy failed:`, err)
+							vscode.window.showErrorMessage(`Template image copy failed: ${err.message}`)
 						}
-						
-						return; // 템플릿 이미지 처리 완료
+
+						return // 템플릿 이미지 처리 완료
 					}
 
 					// 파일 다이얼로그 설정
@@ -868,7 +899,9 @@ Here is the project's README to help you get started:\n\n${mcpDetails.readmeCont
 							}
 
 							// 이미지 타입에 따른 파일명 결정 (TMP 우선)
-							const tmpImageFileName = isThinking ? PersonaManager.AGENT_THINKING_TMP_FILENAME : PersonaManager.AGENT_PROFILE_TMP_FILENAME;
+							const tmpImageFileName = isThinking
+								? PersonaManager.AGENT_THINKING_TMP_FILENAME
+								: PersonaManager.AGENT_PROFILE_TMP_FILENAME
 							const tmpTargetPath = path.join(assetsDir, tmpImageFileName)
 
 							// 파일 복사 (임시 파일)
@@ -881,26 +914,31 @@ Here is the project's README to help you get started:\n\n${mcpDetails.readmeCont
 
 								// 상태 업데이트: TMP 파일 webview로 알려주기
 								// const webview = this.webviewProviderRef.deref()?.view?.webview;
-								const webviewProvider = this.webviewProviderRef?.deref();
-								const webview = webviewProvider?.view?.webview;
+								const webviewProvider = this.webviewProviderRef?.deref()
+								const webview = webviewProvider?.view?.webview
 								if (webview) {
-									const tmpWebviewUri = webview.asWebviewUri(vscode.Uri.joinPath(this.context.extensionUri, "assets", tmpImageFileName)).toString() + `?t=${Date.now()}`;
+									const tmpWebviewUri =
+										webview
+											.asWebviewUri(
+												vscode.Uri.joinPath(this.context.extensionUri, "assets", tmpImageFileName),
+											)
+											.toString() + `?t=${Date.now()}`
 									await this.postMessageToWebview({
 										type: "agentProfileImageUpdated",
 										imageType,
 										imageUrl: tmpWebviewUri,
-										isTmp: true
-									});
+										isTmp: true,
+									})
 								}
 
 								// 성공 메시지 (임시 반영)
-								const successMessage = isThinking 
+								const successMessage = isThinking
 									? "AI Agent thinking image temporarily applied. Click save to apply permanently."
-									: "AI Agent profile image temporarily applied. Click save to apply permanently.";
+									: "AI Agent profile image temporarily applied. Click save to apply permanently."
 								vscode.window.showInformationMessage(successMessage)
 							} catch (err) {
-								this.logger.error(`${imageType} temporary image save failed:`, err);
-								vscode.window.showErrorMessage(`Temporary image save failed: ${err.message}`);
+								this.logger.error(`${imageType} temporary image save failed:`, err)
+								vscode.window.showErrorMessage(`Temporary image save failed: ${err.message}`)
 							}
 						}
 					})
@@ -913,10 +951,8 @@ Here is the project's README to help you get started:\n\n${mcpDetails.readmeCont
 
 			case "resetAgentProfileImage": {
 				try {
-					// To-do : reset시 AgetnProfileImage는 비우고 template중 다시 고르게 한다. 
-					
-					
-				} catch (error) {					
+					// To-do : reset시 AgetnProfileImage는 비우고 template중 다시 고르게 한다.
+				} catch (error) {
 					vscode.window.showErrorMessage(`Image reset failed: ${error.message}`)
 				}
 				break
@@ -927,24 +963,25 @@ Here is the project's README to help you get started:\n\n${mcpDetails.readmeCont
 					// URL 경로를 전달받은 경우
 					try {
 						// 이미지 타입에 따라 다른 설정 키 사용
-						const imageType = message.imageType || "default";
-						const settingKey = imageType === "thinking" ? "alphaThinkingAvatarUri" : "alphaAvatarUri";
-						
+						const imageType = message.imageType || "default"
+						const settingKey = imageType === "thinking" ? "alphaThinkingAvatarUri" : "alphaAvatarUri"
+
 						// 설정 저장
-						await this.context.globalState.update(settingKey, message.text);
-						this.logger.log(`Profile image URL updated (${imageType}):`, message.text);
+						await this.context.globalState.update(settingKey, message.text)
+						this.logger.log(`Profile image URL updated (${imageType}):`, message.text)
 
 						// 상태 업데이트
-						await this.postStateToWebview();
+						await this.postStateToWebview()
 
 						// 성공 메시지
-						const successMessage = imageType === "thinking" 
-							? "AI Agent thinking image updated successfully."
-							: "AI Agent profile image updated successfully.";
-						vscode.window.showInformationMessage(successMessage);
+						const successMessage =
+							imageType === "thinking"
+								? "AI Agent thinking image updated successfully."
+								: "AI Agent profile image updated successfully."
+						vscode.window.showInformationMessage(successMessage)
 					} catch (error) {
-						this.logger.error("Profile image URL update failed:", error);
-						vscode.window.showErrorMessage(`Profile image URL update failed: ${error.message}`);
+						this.logger.error("Profile image URL update failed:", error)
+						vscode.window.showErrorMessage(`Profile image URL update failed: ${error.message}`)
 					}
 				}
 				break
@@ -1621,51 +1658,69 @@ Here is the project's README to help you get started:\n\n${mcpDetails.readmeCont
 
 				// [ALPHA] 프로필/생각중 이미지 TMP → 정식 파일로 move/rename
 				try {
-					const assetsDir = path.join(this.context.extensionUri.fsPath, "assets");
+					const assetsDir = path.join(this.context.extensionUri.fsPath, "assets")
 					// const webview = this.webviewProviderRef.deref()?.view?.webview;
-					const webviewProvider = this.webviewProviderRef?.deref();
-					const webview = webviewProvider?.view?.webview;
-					let profileImageChanged = false;
+					const webviewProvider = this.webviewProviderRef?.deref()
+					const webview = webviewProvider?.view?.webview
+					let profileImageChanged = false
 
 					// 프로필 이미지
-					const tmpProfilePath = path.join(assetsDir, PersonaManager.AGENT_PROFILE_TMP_FILENAME);
-					const finalProfilePath = path.join(assetsDir, PersonaManager.AGENT_PROFILE_FILENAME);
+					const tmpProfilePath = path.join(assetsDir, PersonaManager.AGENT_PROFILE_TMP_FILENAME)
+					const finalProfilePath = path.join(assetsDir, PersonaManager.AGENT_PROFILE_FILENAME)
 					if (await fileExistsAtPath(tmpProfilePath)) {
-						this.logger.log(`[Profile] TMP → final move: ${tmpProfilePath} → ${finalProfilePath}`);
-						await fs.rename(tmpProfilePath, finalProfilePath);
-						await this.context.globalState.update("alphaAvatarUri", PersonaManager.AGENT_PROFILE_FILENAME);
-						profileImageChanged = true;
+						this.logger.log(`[Profile] TMP → final move: ${tmpProfilePath} → ${finalProfilePath}`)
+						await fs.rename(tmpProfilePath, finalProfilePath)
+						await this.context.globalState.update("alphaAvatarUri", PersonaManager.AGENT_PROFILE_FILENAME)
+						profileImageChanged = true
 					}
 					// 생각중 이미지
-					const tmpThinkingPath = path.join(assetsDir, PersonaManager.AGENT_THINKING_TMP_FILENAME);
-					const finalThinkingPath = path.join(assetsDir, PersonaManager.AGENT_THINKING_FILENAME);
+					const tmpThinkingPath = path.join(assetsDir, PersonaManager.AGENT_THINKING_TMP_FILENAME)
+					const finalThinkingPath = path.join(assetsDir, PersonaManager.AGENT_THINKING_FILENAME)
 					if (await fileExistsAtPath(tmpThinkingPath)) {
-						this.logger.log(`[Thinking] TMP → final move: ${tmpThinkingPath} → ${finalThinkingPath}`);
-						await fs.rename(tmpThinkingPath, finalThinkingPath);
-						await this.context.globalState.update("alphaThinkingAvatarUri", PersonaManager.AGENT_THINKING_FILENAME);
-						profileImageChanged = true;
+						this.logger.log(`[Thinking] TMP → final move: ${tmpThinkingPath} → ${finalThinkingPath}`)
+						await fs.rename(tmpThinkingPath, finalThinkingPath)
+						await this.context.globalState.update("alphaThinkingAvatarUri", PersonaManager.AGENT_THINKING_FILENAME)
+						profileImageChanged = true
 					}
 					// 최종 반영 메시지
 					if (profileImageChanged && webview) {
-						const profileWebviewUri = webview.asWebviewUri(vscode.Uri.joinPath(this.context.extensionUri, "assets", PersonaManager.AGENT_PROFILE_FILENAME)).toString() + `?t=${Date.now()}`;
-						const thinkingWebviewUri = webview.asWebviewUri(vscode.Uri.joinPath(this.context.extensionUri, "assets", PersonaManager.AGENT_THINKING_FILENAME)).toString() + `?t=${Date.now()}`;
-						this.logger.log(`[Profile] Final reflection message sent: ${profileWebviewUri}`);
+						const profileWebviewUri =
+							webview
+								.asWebviewUri(
+									vscode.Uri.joinPath(
+										this.context.extensionUri,
+										"assets",
+										PersonaManager.AGENT_PROFILE_FILENAME,
+									),
+								)
+								.toString() + `?t=${Date.now()}`
+						const thinkingWebviewUri =
+							webview
+								.asWebviewUri(
+									vscode.Uri.joinPath(
+										this.context.extensionUri,
+										"assets",
+										PersonaManager.AGENT_THINKING_FILENAME,
+									),
+								)
+								.toString() + `?t=${Date.now()}`
+						this.logger.log(`[Profile] Final reflection message sent: ${profileWebviewUri}`)
 						await this.postMessageToWebview({
 							type: "agentProfileImageUpdated",
 							imageType: "default",
 							imageUrl: profileWebviewUri,
-							isTmp: false
-						});
-						this.logger.log(`[Thinking] Final reflection message sent: ${thinkingWebviewUri}`);
+							isTmp: false,
+						})
+						this.logger.log(`[Thinking] Final reflection message sent: ${thinkingWebviewUri}`)
 						await this.postMessageToWebview({
 							type: "agentProfileImageUpdated",
 							imageType: "thinking",
 							imageUrl: thinkingWebviewUri,
-							isTmp: false
-						});
+							isTmp: false,
+						})
 					}
 				} catch (err) {
-					this.logger.error("[Image save(move) failed]", err);
+					this.logger.error("[Image save(move) failed]", err)
 				}
 				break
 			}
@@ -1786,51 +1841,56 @@ Here is the project's README to help you get started:\n\n${mcpDetails.readmeCont
 			}
 			// [ALPHA] Handle template character JSON URI request from webview
 			case "requestTemplateCharacters": {
-				console.log("[DEBUG] requestTemplateCharacters message received", message);
-				this.logger.log("[PersonaSettings] Template character loading request received - starting template_characters.json load")
+				console.log("[DEBUG] requestTemplateCharacters message received", message)
+				this.logger.log(
+					"[PersonaSettings] Template character loading request received - starting template_characters.json load",
+				)
 				try {
 					// 템플릿 캐릭터 관리자 생성
-					const templateManager = new TemplateCharacterManager(this.context, this.logger);
-					
+					const templateManager = new TemplateCharacterManager(this.context, this.logger)
+
 					// 템플릿 캐릭터 데이터 로드
-					const templateCharacters = templateManager.loadTemplateCharacters();
+					const templateCharacters = templateManager.loadTemplateCharacters()
 					if (templateCharacters.length === 0) {
-						this.logger.warn("[PersonaSettings] No template characters found.");
-						await this.postMessageToWebview({
-							type: "templateCharactersLoaded",
-							text: "[]"
-						} as import("../../shared/ExtensionMessage").ExtensionMessage);
-						break;
-					}
-					
-					// 웹뷰 찾기
-					const view = WebviewProvider.getSidebarInstance()?.view;
-					if (!view || !view.webview) {
-						this.logger.error("[PersonaSettings] Webview not found.");
+						this.logger.warn("[PersonaSettings] No template characters found.")
 						await this.postMessageToWebview({
 							type: "templateCharactersLoaded",
 							text: "[]",
-							error: "Webview not found."
-						} as import("../../shared/ExtensionMessage").ExtensionMessage);
-						break;
+						} as import("../../shared/ExtensionMessage").ExtensionMessage)
+						break
 					}
-					
+
+					// 웹뷰 찾기
+					const view = WebviewProvider.getSidebarInstance()?.view
+					if (!view || !view.webview) {
+						this.logger.error("[PersonaSettings] Webview not found.")
+						await this.postMessageToWebview({
+							type: "templateCharactersLoaded",
+							text: "[]",
+							error: "Webview not found.",
+						} as import("../../shared/ExtensionMessage").ExtensionMessage)
+						break
+					}
+
 					// 이미지 경로 변환
-					const preparedCharacters = templateManager.prepareTemplateCharactersForWebview(view.webview, templateCharacters);
-					
+					const preparedCharacters = templateManager.prepareTemplateCharactersForWebview(
+						view.webview,
+						templateCharacters,
+					)
+
 					// 변환된 데이터 전송
 					await this.postMessageToWebview({
 						type: "templateCharactersLoaded",
-						text: JSON.stringify(preparedCharacters)
-					} as import("../../shared/ExtensionMessage").ExtensionMessage);
-					this.logger.log("[PersonaSettings] template_characters.json load successful.");
+						text: JSON.stringify(preparedCharacters),
+					} as import("../../shared/ExtensionMessage").ExtensionMessage)
+					this.logger.log("[PersonaSettings] template_characters.json load successful.")
 				} catch (err) {
-					this.logger.error("[PersonaSettings] template_characters.json load failed: ", err);
+					this.logger.error("[PersonaSettings] template_characters.json load failed: ", err)
 					await this.postMessageToWebview({
 						type: "templateCharactersLoaded",
 						text: "[]",
-						error: String(err)
-					} as import("../../shared/ExtensionMessage").ExtensionMessage);
+						error: String(err),
+					} as import("../../shared/ExtensionMessage").ExtensionMessage)
 				}
 				break
 			}
@@ -1866,7 +1926,7 @@ Here is the project's README to help you get started:\n\n${mcpDetails.readmeCont
 			// are created within the webview context (i.e. inside media/main.js)
 			default: {
 				// PersonaController 인스턴스에 메시지 전달
-				await this.personaController.handleMessage(message);
+				await this.personaController.handleMessage(message)
 			}
 		}
 	}
@@ -1880,11 +1940,11 @@ Here is the project's README to help you get started:\n\n${mcpDetails.readmeCont
 	async toggleModeWithChatSettings(chatSettings: ChatSettings, chatContent?: ChatContent) {
 		// 현재 설정된 모드 정보 찾기
 		const currentMode = this.availableModes.find((mode) => mode.id === chatSettings.mode)
-		
+
 		// 모드별 모델 설정 처리
 		if (currentMode?.model) {
 			this.logger.log(`Mode-specific model detected: ${currentMode.id} => ${currentMode.model}`)
-			
+
 			const modelId = currentMode.model
 			// 다양한 API 형식 지원 (예: anthropic/claude-3-5-sonnet, openai/gpt-4, 등)
 			let apiProvider: ApiProvider | undefined = undefined
@@ -1892,47 +1952,47 @@ Here is the project's README to help you get started:\n\n${mcpDetails.readmeCont
 			let openRouterModelId: string | undefined = undefined
 
 			// 모델 ID 파싱
-			if (modelId.includes('/')) {
-				const [provider, model] = modelId.split('/')
-				
-				switch(provider.toLowerCase()) {
-					case 'anthropic':
-						apiProvider = 'anthropic'
+			if (modelId.includes("/")) {
+				const [provider, model] = modelId.split("/")
+
+				switch (provider.toLowerCase()) {
+					case "anthropic":
+						apiProvider = "anthropic"
 						apiModelId = model
 						break
-					case 'openai':
-						apiProvider = 'openai'
+					case "openai":
+						apiProvider = "openai"
 						await updateGlobalState(this.context, "openAiModelId", model)
 						break
-					case 'gemini':
-						apiProvider = 'gemini'
+					case "gemini":
+						apiProvider = "gemini"
 						apiModelId = model
 						break
-					case 'ollama':
-						apiProvider = 'ollama'
+					case "ollama":
+						apiProvider = "ollama"
 						await updateGlobalState(this.context, "ollamaModelId", model)
 						break
-					case 'deepseek':
-						apiProvider = 'deepseek'
+					case "deepseek":
+						apiProvider = "deepseek"
 						apiModelId = model
 						break
 					default:
 						// 지원되지 않는 형식의 모델은 OpenRouter를 통해 사용
-						apiProvider = 'openrouter'
+						apiProvider = "openrouter"
 						openRouterModelId = modelId
 				}
 			} else {
 				// 슬래시가 없는 모델 ID는 단일 제공자 모델로 취급
 				// 예: claude-3-5-sonnet, gpt-4 등
-				if (modelId.startsWith('claude-')) {
-					apiProvider = 'anthropic'
+				if (modelId.startsWith("claude-")) {
+					apiProvider = "anthropic"
 					apiModelId = modelId
-				} else if (modelId.startsWith('gpt-')) {
-					apiProvider = 'openai'
+				} else if (modelId.startsWith("gpt-")) {
+					apiProvider = "openai"
 					await updateGlobalState(this.context, "openAiModelId", modelId)
 				} else {
 					// 기타 모델은 OpenRouter를 통해 처리
-					apiProvider = 'openrouter'
+					apiProvider = "openrouter"
 					openRouterModelId = modelId
 				}
 			}
@@ -1940,7 +2000,7 @@ Here is the project's README to help you get started:\n\n${mcpDetails.readmeCont
 			// API 제공자 설정 저장
 			if (apiProvider) {
 				await updateGlobalState(this.context, "apiProvider", apiProvider)
-				
+
 				// 모델 ID 설정 (API 제공자에 따라 다른 필드 사용)
 				if (apiModelId) {
 					await updateGlobalState(this.context, "apiModelId", apiModelId)
@@ -1951,31 +2011,31 @@ Here is the project's README to help you get started:\n\n${mcpDetails.readmeCont
 
 				// API Key 설정 (필요시 모드별 API Key 사용)
 				// SecretKey 타입에 존재하는 키만 사용해야 함
-				if (currentMode.apiKey && typeof currentMode.apiKey === 'string' && currentMode.apiKey.trim() !== '') {
-					switch(apiProvider) {
-						case 'anthropic':
+				if (currentMode.apiKey && typeof currentMode.apiKey === "string" && currentMode.apiKey.trim() !== "") {
+					switch (apiProvider) {
+						case "anthropic":
 							await storeSecret(this.context, "apiKey", currentMode.apiKey)
 							break
-						case 'openai':
+						case "openai":
 							await storeSecret(this.context, "openAiApiKey", currentMode.apiKey)
 							break
-						case 'openrouter':
-							await storeSecret(this.context, "openRouterApiKey", currentMode.apiKey) 
+						case "openrouter":
+							await storeSecret(this.context, "openRouterApiKey", currentMode.apiKey)
 							break
-						case 'gemini':
+						case "gemini":
 							await storeSecret(this.context, "geminiApiKey", currentMode.apiKey)
 							break
 					}
 				}
 			}
-			
+
 			// API 구성 다시 가져오기 전에 상태 전송 (메시지를 통해 알림)
 			this.logger.log(`Mode-specific model applied: ${modelId}`)
 			// 상태 갱신하여 웹뷰에 전달
 			const state = await this.getStateToPostToWebview()
 			await this.postMessageToWebview({
 				type: "state",
-				state
+				state,
 			})
 		}
 
@@ -2551,7 +2611,9 @@ Here is the project's README to help you get started:\n\n${mcpDetails.readmeCont
 		await this.initCaretWithTask(
 			`Fix the following code in ${fileMention}\n\`\`\`\n${code}\n\`\`\`\n\nProblems:\n${problemsString}`,
 		)
-		await this.initCaretWithTask(`Fix the following code in ${fileMention}\n\`\`\`\n${code}\n\`\`\`\n\nProblems:\n${problemsString}`)
+		await this.initCaretWithTask(
+			`Fix the following code in ${fileMention}\n\`\`\`\n${code}\n\`\`\`\n\nProblems:\n${problemsString}`,
+		)
 
 		console.log("fixWithCaret", code, filePath, languageId, diagnostics, problemsString)
 	}
@@ -2814,23 +2876,33 @@ Here is the project's README to help you get started:\n\n${mcpDetails.readmeCont
 
 		// Get webview to construct URI
 		// const webview = this.webviewProviderRef.deref()?.view?.webview
-		const webviewProvider = this.webviewProviderRef?.deref();
-		const webview = webviewProvider?.view?.webview;
+		const webviewProvider = this.webviewProviderRef?.deref()
+		const webview = webviewProvider?.view?.webview
 
 		// 기본 프로필 이미지 URI 생성
 		const alphaAvatarFileUri = vscode.Uri.joinPath(this.context.extensionUri, "assets", PersonaManager.AGENT_PROFILE_FILENAME)
-		const now = new Date();
-		const dailyCacheBuster = `${now.getFullYear()}${String(now.getMonth()+1).padStart(2,'0')}${String(now.getDate()).padStart(2,'0')}`;
-		const alphaAvatarWebviewUri = webview ? webview.asWebviewUri(alphaAvatarFileUri).toString() + `?d=${dailyCacheBuster}` : undefined
+		const now = new Date()
+		const dailyCacheBuster = `${now.getFullYear()}${String(now.getMonth() + 1).padStart(2, "0")}${String(now.getDate()).padStart(2, "0")}`
+		const alphaAvatarWebviewUri = webview
+			? webview.asWebviewUri(alphaAvatarFileUri).toString() + `?d=${dailyCacheBuster}`
+			: undefined
 
 		// 생각 중 이미지 URI 생성
-		const alphaThinkingAvatarFileUri = vscode.Uri.joinPath(this.context.extensionUri, "assets", PersonaManager.AGENT_THINKING_FILENAME)
-		const alphaThinkingAvatarWebviewUri = webview ? webview.asWebviewUri(alphaThinkingAvatarFileUri).toString() + `?d=${dailyCacheBuster}` : undefined
+		const alphaThinkingAvatarFileUri = vscode.Uri.joinPath(
+			this.context.extensionUri,
+			"assets",
+			PersonaManager.AGENT_THINKING_FILENAME,
+		)
+		const alphaThinkingAvatarWebviewUri = webview
+			? webview.asWebviewUri(alphaThinkingAvatarFileUri).toString() + `?d=${dailyCacheBuster}`
+			: undefined
 
 		// 배너 이미지 URI 생성
-		const caretBannerFileUri = vscode.Uri.joinPath(this.context.extensionUri, "assets", "imgs","main_banner.webp")
-		const caretBannerWebviewUri = webview ? webview.asWebviewUri(caretBannerFileUri).toString() + `?d=${dailyCacheBuster}` : undefined
-			
+		const caretBannerFileUri = vscode.Uri.joinPath(this.context.extensionUri, "assets", "imgs", "main_banner.webp")
+		const caretBannerWebviewUri = webview
+			? webview.asWebviewUri(caretBannerFileUri).toString() + `?d=${dailyCacheBuster}`
+			: undefined
+
 		const localCaretRulesToggles =
 			((await getWorkspaceState(this.context, "localCaretRulesToggles")) as CaretRulesToggles) || {}
 

@@ -9,8 +9,12 @@ import chalk from "chalk"
 
 import { createRequire } from "module"
 const require = createRequire(import.meta.url)
-const protoc = path.join(require.resolve("grpc-tools"), "../bin/protoc")
-const tsProtoPlugin = require.resolve("ts-proto/protoc-gen-ts_proto")
+//other
+// const protoc = path.join(require.resolve("grpc-tools"), "../bin/protoc")
+// const tsProtoPlugin = require.resolve("ts-proto/protoc-gen-ts_proto")
+//windows
+const protoc = require.resolve("./protoc-31.0-win64/bin/protoc.exe")
+const tsProtoPlugin = require.resolve(".bin/protoc-gen-ts_proto.cmd")
 
 const __filename = fileURLToPath(import.meta.url)
 const SCRIPT_DIR = path.dirname(__filename)
