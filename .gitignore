@@ -13,7 +13,7 @@ pnpm-lock.yaml
 .caretignore
 
 # Model Cache (e.g., downloaded by TGI)
-models/
+
 
 # Environment variables
 .env
