@@ -10,34 +10,52 @@ import { Empty, EmptyRequest, Metadata, StringRequest } from "./common"
 
 export const protobufPackage = "caret"
 
-export enum PlanActMode {
-	PLAN = 0,
-	ACT = 1,
+export enum ChatMode {
+	ARCH = 0,
+	DEV = 1,
+	RULE = 2,
+	TALK = 3,
+	CUSTOM = 4,
 	UNRECOGNIZED = -1,
 }
 
-export function planActModeFromJSON(object: any): PlanActMode {
+export function chatModeFromJSON(object: any): ChatMode {
 	switch (object) {
 		case 0:
-		case "PLAN":
-			return PlanActMode.PLAN
+		case "ARCH":
+			return ChatMode.ARCH
 		case 1:
-		case "ACT":
-			return PlanActMode.ACT
+		case "DEV":
+			return ChatMode.DEV
+		case 2:
+		case "RULE":
+			return ChatMode.RULE
+		case 3:
+		case "TALK":
+			return ChatMode.TALK
+		case 4:
+		case "CUSTOM":
+			return ChatMode.CUSTOM
 		case -1:
 		case "UNRECOGNIZED":
 		default:
-			return PlanActMode.UNRECOGNIZED
+			return ChatMode.UNRECOGNIZED
 	}
 }
 
-export function planActModeToJSON(object: PlanActMode): string {
+export function chatModeToJSON(object: ChatMode): string {
 	switch (object) {
-		case PlanActMode.PLAN:
-			return "PLAN"
-		case PlanActMode.ACT:
-			return "ACT"
-		case PlanActMode.UNRECOGNIZED:
+		case ChatMode.ARCH:
+			return "ARCH"
+		case ChatMode.DEV:
+			return "DEV"
+		case ChatMode.RULE:
+			return "RULE"
+		case ChatMode.TALK:
+			return "TALK"
+		case ChatMode.CUSTOM:
+			return "CUSTOM"
+		case ChatMode.UNRECOGNIZED:
 		default:
 			return "UNRECOGNIZED"
 	}
@@ -53,8 +71,14 @@ export interface TogglePlanActModeRequest {
 	chatContent?: ChatContent | undefined
 }
 
+export interface UpdateChatModeRequest {
+	metadata?: Metadata | undefined
+	chatSettings?: ChatSettings | undefined
+	chatContent?: ChatContent | undefined
+}
+
 export interface ChatSettings {
-	mode: PlanActMode
+	mode: ChatMode
 	preferredLanguage?: string | undefined
 	openAiReasoningEffort?: string | undefined
 }
@@ -221,6 +245,105 @@ export const TogglePlanActModeRequest: MessageFns<TogglePlanActModeRequest> = {
 	},
 }
 
+function createBaseUpdateChatModeRequest(): UpdateChatModeRequest {
+	return { metadata: undefined, chatSettings: undefined, chatContent: undefined }
+}
+
+export const UpdateChatModeRequest: MessageFns<UpdateChatModeRequest> = {
+	encode(message: UpdateChatModeRequest, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+		if (message.metadata !== undefined) {
+			Metadata.encode(message.metadata, writer.uint32(10).fork()).join()
+		}
+		if (message.chatSettings !== undefined) {
+			ChatSettings.encode(message.chatSettings, writer.uint32(18).fork()).join()
+		}
+		if (message.chatContent !== undefined) {
+			ChatContent.encode(message.chatContent, writer.uint32(26).fork()).join()
+		}
+		return writer
+	},
+
+	decode(input: BinaryReader | Uint8Array, length?: number): UpdateChatModeRequest {
+		const reader = input instanceof BinaryReader ? input : new BinaryReader(input)
+		let end = length === undefined ? reader.len : reader.pos + length
+		const message = createBaseUpdateChatModeRequest()
+		while (reader.pos < end) {
+			const tag = reader.uint32()
+			switch (tag >>> 3) {
+				case 1: {
+					if (tag !== 10) {
+						break
+					}
+
+					message.metadata = Metadata.decode(reader, reader.uint32())
+					continue
+				}
+				case 2: {
+					if (tag !== 18) {
+						break
+					}
+
+					message.chatSettings = ChatSettings.decode(reader, reader.uint32())
+					continue
+				}
+				case 3: {
+					if (tag !== 26) {
+						break
+					}
+
+					message.chatContent = ChatContent.decode(reader, reader.uint32())
+					continue
+				}
+			}
+			if ((tag & 7) === 4 || tag === 0) {
+				break
+			}
+			reader.skip(tag & 7)
+		}
+		return message
+	},
+
+	fromJSON(object: any): UpdateChatModeRequest {
+		return {
+			metadata: isSet(object.metadata) ? Metadata.fromJSON(object.metadata) : undefined,
+			chatSettings: isSet(object.chatSettings) ? ChatSettings.fromJSON(object.chatSettings) : undefined,
+			chatContent: isSet(object.chatContent) ? ChatContent.fromJSON(object.chatContent) : undefined,
+		}
+	},
+
+	toJSON(message: UpdateChatModeRequest): unknown {
+		const obj: any = {}
+		if (message.metadata !== undefined) {
+			obj.metadata = Metadata.toJSON(message.metadata)
+		}
+		if (message.chatSettings !== undefined) {
+			obj.chatSettings = ChatSettings.toJSON(message.chatSettings)
+		}
+		if (message.chatContent !== undefined) {
+			obj.chatContent = ChatContent.toJSON(message.chatContent)
+		}
+		return obj
+	},
+
+	create<I extends Exact<DeepPartial<UpdateChatModeRequest>, I>>(base?: I): UpdateChatModeRequest {
+		return UpdateChatModeRequest.fromPartial(base ?? ({} as any))
+	},
+	fromPartial<I extends Exact<DeepPartial<UpdateChatModeRequest>, I>>(object: I): UpdateChatModeRequest {
+		const message = createBaseUpdateChatModeRequest()
+		message.metadata =
+			object.metadata !== undefined && object.metadata !== null ? Metadata.fromPartial(object.metadata) : undefined
+		message.chatSettings =
+			object.chatSettings !== undefined && object.chatSettings !== null
+				? ChatSettings.fromPartial(object.chatSettings)
+				: undefined
+		message.chatContent =
+			object.chatContent !== undefined && object.chatContent !== null
+				? ChatContent.fromPartial(object.chatContent)
+				: undefined
+		return message
+	},
+}
+
 function createBaseChatSettings(): ChatSettings {
 	return { mode: 0, preferredLanguage: undefined, openAiReasoningEffort: undefined }
 }
@@ -281,7 +404,7 @@ export const ChatSettings: MessageFns<ChatSettings> = {
 
 	fromJSON(object: any): ChatSettings {
 		return {
-			mode: isSet(object.mode) ? planActModeFromJSON(object.mode) : 0,
+			mode: isSet(object.mode) ? chatModeFromJSON(object.mode) : 0,
 			preferredLanguage: isSet(object.preferredLanguage) ? globalThis.String(object.preferredLanguage) : undefined,
 			openAiReasoningEffort: isSet(object.openAiReasoningEffort)
 				? globalThis.String(object.openAiReasoningEffort)
@@ -292,7 +415,7 @@ export const ChatSettings: MessageFns<ChatSettings> = {
 	toJSON(message: ChatSettings): unknown {
 		const obj: any = {}
 		if (message.mode !== 0) {
-			obj.mode = planActModeToJSON(message.mode)
+			obj.mode = chatModeToJSON(message.mode)
 		}
 		if (message.preferredLanguage !== undefined) {
 			obj.preferredLanguage = message.preferredLanguage
@@ -431,6 +554,14 @@ export const StateServiceDefinition = {
 		togglePlanActMode: {
 			name: "togglePlanActMode",
 			requestType: TogglePlanActModeRequest,
+			requestStream: false,
+			responseType: Empty,
+			responseStream: false,
+			options: {},
+		},
+		updateChatMode: {
+			name: "updateChatMode",
+			requestType: UpdateChatModeRequest,
 			requestStream: false,
 			responseType: Empty,
 			responseStream: false,

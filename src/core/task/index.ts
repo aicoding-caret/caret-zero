@@ -31,7 +31,7 @@ import { ApiConfiguration } from "@shared/api"
 import { findLast, findLastIndex, parsePartialArrayString } from "@shared/array"
 import { AutoApprovalSettings } from "@shared/AutoApprovalSettings"
 import { BrowserSettings } from "@shared/BrowserSettings"
-import { ChatSettings } from "@shared/ChatSettings"
+import { ChatSettings, ChatMode } from "@shared/ChatSettings"
 import { combineApiRequests } from "@shared/combineApiRequests"
 import { combineCommandSequences, COMMAND_REQ_APP_STRING } from "@shared/combineCommandSequences"
 import {
@@ -1079,7 +1079,7 @@ export class Task {
 		const wasRecent = lastCaretMessage?.ts && Date.now() - lastCaretMessage.ts < 30_000
 
 		const [taskResumptionMessage, userResponseMessage] = formatResponse.taskResumption(
-			this.chatSettings?.mode === "plan" ? "plan" : "act",
+			this.chatSettings?.mode === "plan" as ChatMode ? "plan" : "act",
 			agoText,
 			cwd,
 			wasRecent,

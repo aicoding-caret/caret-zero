@@ -8,6 +8,7 @@ import { resetState } from "./resetState"
 import { subscribeToState } from "./subscribeToState"
 import { toggleFavoriteModel } from "./toggleFavoriteModel"
 import { togglePlanActMode } from "./togglePlanActMode"
+import { updateChatMode } from "./updateChatMode"
 
 // Streaming methods for this service
 export const streamingMethods = ["subscribeToState"]
@@ -20,4 +21,5 @@ export function registerAllMethods(): void {
 	registerMethod("subscribeToState", subscribeToState, { isStreaming: true })
 	registerMethod("toggleFavoriteModel", toggleFavoriteModel)
 	registerMethod("togglePlanActMode", togglePlanActMode)
+	registerMethod("updateChatMode", updateChatMode)
 }

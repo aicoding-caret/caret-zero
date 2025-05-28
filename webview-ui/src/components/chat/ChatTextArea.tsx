@@ -37,7 +37,7 @@ import ApiOptions, { normalizeApiConfiguration } from "@/components/settings/Api
 import { MAX_IMAGES_PER_MESSAGE } from "@/components/chat/ChatView"
 import ContextMenu from "@/components/chat/ContextMenu"
 import SlashCommandMenu from "@/components/chat/SlashCommandMenu"
-import { ChatSettings } from "@shared/ChatSettings"
+import { ChatMode, ChatSettings } from "@shared/ChatSettings"
 import ServersToggleModal from "./ServersToggleModal"
 import CaretRulesToggleModal from "../caret-rules/CaretRulesToggleModal"
 
@@ -84,20 +84,6 @@ interface GitCommit {
 
 const PLAN_MODE_COLOR = "var(--vscode-inputValidation-warningBorder)"
 
-const SwitchOption = styled.div<{ isActive: boolean }>`
-	padding: 2px 8px;
-	color: ${(props) => (props.isActive ? "white" : "var(--vscode-input-foreground)")};
-	z-index: 1;
-	transition: color 0.2s ease;
-	font-size: 12px;
-	width: 50%;
-	text-align: center;
-
-	&:hover {
-		background-color: ${(props) => (!props.isActive ? "var(--vscode-toolbar-hoverBackground)" : "transparent")};
-	}
-`
-
 const SwitchContainer = styled.div<{ disabled: boolean }>`
 	display: flex;
 	align-items: center;
@@ -109,17 +95,42 @@ const SwitchContainer = styled.div<{ disabled: boolean }>`
 	opacity: ${(props) => (props.disabled ? 0.5 : 1)};
 	transform: scale(0.85);
 	transform-origin: right center;
-	margin-left: -10px; // compensate for the transform so flex spacing works
-	user-select: none; // Prevent text selection
+	margin-left: -10px;
+	user-select: none;
 `
 
-const Slider = styled.div<{ isAct: boolean; isPlan?: boolean }>`
+const Slider = styled.div<{ mode: ChatMode }>`
 	position: absolute;
 	height: 100%;
-	width: 50%;
-	background-color: ${(props) => (props.isPlan ? PLAN_MODE_COLOR : "var(--vscode-focusBorder)")};
+	width: 20%;
+	background-color: var(--vscode-focusBorder);
 	transition: transform 0.2s ease;
-	transform: translateX(${(props) => (props.isAct ? "100%" : "0%")});
+	transform: translateX(${(props) => {
+		switch (props.mode) {
+			case 'arch': return '0%';
+			case 'dev': return '100%';
+			case 'rule': return '200%';
+			case 'talk': return '300%';
+			case 'custom': return '400%';
+			default: return '0%';
+		}
+	}});
+`
+
+const SwitchOption = styled.div<{ isActive: boolean }>`
+	padding: 2px 8px;
+	color: ${(props) => (props.isActive ? "white" : "var(--vscode-input-foreground)")};
+	z-index: 1;
+	transition: color 0.2s ease;
+	font-size: 12px;
+	width: 20%;
+	text-align: center;
+	min-width: 40px;
+	flex: 1;
+
+	&:hover {
+		background-color: ${(props) => (!props.isActive ? "var(--vscode-toolbar-hoverBackground)" : "transparent")};
+	}
 `
 
 // Define styled components for the new mode buttons
@@ -665,7 +676,6 @@ const ChatTextArea = forwardRef<HTMLTextAreaElement, ChatTextAreaProps>(
 				setInputValue,
 				justDeletedSpaceAfterMention,
 				queryItems,
-				fileSearchResults,
 				showSlashCommandsMenu,
 				selectedSlashCommandsIndex,
 				slashCommandsQuery,
@@ -1101,16 +1111,21 @@ const ChatTextArea = forwardRef<HTMLTextAreaElement, ChatTextAreaProps>(
 		// 	}
 		// }, [apiConfiguration, openRouterModels])
 
-		const onModeToggle = useCallback(() => {
-			// if (textAreaDisabled) return
-			let changeModeDelay = 0
+		const onModeToggle = useCallback((newMode: ChatMode) => {
+			// 1. 로컬 상태 즉시 업데이트
+			vscode.postMessage({
+				type: "updateSettings",
+				chatSettings: { ...chatSettings, mode: newMode },
+			});
+
+			let changeModeDelay = 0;
 			if (showModelSelector) {
-				// user has model selector open, so we should save it before switching modes
-				submitApiConfig()
-				changeModeDelay = 250 // necessary to let the api config update (we send message and wait for it to be saved) FIXME: this is a hack and we ideally should check for api config changes, then wait for it to be saved, before switching modes
+				submitApiConfig();
+				changeModeDelay = 250; // API 설정 업데이트 대기
 			}
+			
 			setTimeout(() => {
-				const newMode = chatSettings.mode === "plan" ? "act" : "plan"
+				// 2. API 호출
 				StateServiceClient.togglePlanActMode({
 					chatSettings: {
 						mode: newMode,
@@ -1119,15 +1134,23 @@ const ChatTextArea = forwardRef<HTMLTextAreaElement, ChatTextAreaProps>(
 						message: inputValue.trim() ? inputValue : undefined,
 						images: selectedImages.length > 0 ? selectedImages : undefined,
 					},
-				})
-				// Focus the textarea after mode toggle with slight delay
+				}).catch(error => {
+					console.error("Error updating chat mode:", error);
+					// 3. 실패 시 상태 롤백
+					vscode.postMessage({
+						type: "updateSettings",
+						chatSettings: { ...chatSettings, mode: chatSettings.mode },
+					});
+				});
+				
+				// 모드 전환 후 텍스트 영역 포커스
 				setTimeout(() => {
-					textAreaRef.current?.focus()
-				}, 100)
-			}, changeModeDelay)
-		}, [chatSettings.mode, showModelSelector, submitApiConfig, inputValue, selectedImages])
+					textAreaRef.current?.focus();
+				}, 100);
+			}, changeModeDelay);
+		}, [showModelSelector, submitApiConfig, inputValue, selectedImages, chatSettings]);
 
-		useShortcut("Meta+Shift+a", onModeToggle, { disableTextInputs: false }) // important that we don't disable the text input here
+		useShortcut("Meta+Shift+a", () => onModeToggle(chatSettings.mode), { disableTextInputs: false }) // important that we don't disable the text input here
 
 		const handleContextButtonClick = useCallback(() => {
 			// Focus the textarea first
@@ -1594,7 +1617,7 @@ const ChatTextArea = forwardRef<HTMLTextAreaElement, ChatTextAreaProps>(
 								isDraggingOver && !showUnsupportedFileError // Only show drag outline if not showing error
 									? "2px dashed var(--vscode-focusBorder)"
 									: isTextAreaFocused
-										? `1px solid ${chatSettings.mode === "plan" ? PLAN_MODE_COLOR : "var(--vscode-focusBorder)"}`
+										? `1px solid var(--vscode-focusBorder)`
 										: "none",
 							outlineOffset: isDraggingOver && !showUnsupportedFileError ? "1px" : "0px", // Add offset for drag-over outline
 						}}
@@ -1741,21 +1764,44 @@ const ChatTextArea = forwardRef<HTMLTextAreaElement, ChatTextAreaProps>(
 					<Tooltip
 						style={{ zIndex: 1000 }}
 						visible={shownTooltipMode !== null}
-						tipText={`In ${shownTooltipMode === "act" ? "Act" : "Plan"} mode, Caret will ${shownTooltipMode === "act" ? "complete the task immediately" : "gather information to architect a plan"}`}
+						tipText={`In ${shownTooltipMode} mode, Caret will ${getModeDescription(shownTooltipMode)}`}
 						hintText={`Toggle w/ ${metaKeyChar}+Shift+A`}>
-						<SwitchContainer data-testid="mode-switch" disabled={false} onClick={onModeToggle}>
-							<Slider isAct={chatSettings.mode === "act"} isPlan={chatSettings.mode === "plan"} />
-							<SwitchOption
-								isActive={chatSettings.mode === "plan"}
-								onMouseOver={() => setShownTooltipMode("plan")}
+						<SwitchContainer data-testid="mode-switch" disabled={false}>
+							<Slider mode={chatSettings.mode} />
+							<SwitchOption 
+								isActive={chatSettings.mode === "arch"}
+								onClick={() => onModeToggle("arch")}
+								onMouseOver={() => setShownTooltipMode("arch")}
 								onMouseLeave={() => setShownTooltipMode(null)}>
-								Plan
+								Arch
 							</SwitchOption>
-							<SwitchOption
-								isActive={chatSettings.mode === "act"}
-								onMouseOver={() => setShownTooltipMode("act")}
+							<SwitchOption 
+								isActive={chatSettings.mode === "dev"}
+								onClick={() => onModeToggle("dev")}
+								onMouseOver={() => setShownTooltipMode("dev")}
 								onMouseLeave={() => setShownTooltipMode(null)}>
-								Act
+								Dev
+							</SwitchOption>
+							<SwitchOption 
+								isActive={chatSettings.mode === "rule"}
+								onClick={() => onModeToggle("rule")}
+								onMouseOver={() => setShownTooltipMode("rule")}
+								onMouseLeave={() => setShownTooltipMode(null)}>
+								Rule
+							</SwitchOption>
+							<SwitchOption 
+								isActive={chatSettings.mode === "talk"}
+								onClick={() => onModeToggle("talk")}
+								onMouseOver={() => setShownTooltipMode("talk")}
+								onMouseLeave={() => setShownTooltipMode(null)}>
+								Talk
+							</SwitchOption>
+							<SwitchOption 
+								isActive={chatSettings.mode === "custom"}
+								onClick={() => onModeToggle("custom")}
+								onMouseOver={() => setShownTooltipMode("custom")}
+								onMouseLeave={() => setShownTooltipMode(null)}>
+								Custom
 							</SwitchOption>
 						</SwitchContainer>
 					</Tooltip>
@@ -1770,6 +1816,19 @@ const ChatTextArea = forwardRef<HTMLTextAreaElement, ChatTextAreaProps>(
 interface ModelSelectorTooltipProps {
 	arrowPosition: number
 	menuPosition: number
+}
+
+// 모드 설명을 반환하는 헬퍼 함수 추가
+const getModeDescription = (mode: ChatMode | null): string => {
+	if (!mode) return '';
+	switch (mode) {
+		case 'arch': return 'help architect and design solutions';
+		case 'dev': return 'assist with development tasks';
+		case 'rule': return 'enforce coding standards and rules';
+		case 'talk': return 'engage in general discussion';
+		case 'custom': return 'use custom behavior';
+		default: return '';
+	}
 }
 
 export default ChatTextArea

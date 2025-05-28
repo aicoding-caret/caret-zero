@@ -127,12 +127,12 @@ if ($LASTEXITCODE -ne 0) {
     npm install -g @vscode/vsce
     if ($LASTEXITCODE -ne 0) {
         Write-Warning "⚠️ Failed to install @vscode/vsce globally. Trying to use npx instead."
-        npx @vscode/vsce package --no-dependencies --no-git-tag-version --out $outputFileName # 출력 파일 이름 지정
+        npx @vscode/vsce package --no-dependencies --no-git-tag-version --allow-package-env-file --out $outputFileName # 출력 파일 이름 지정
     } else {
-        vsce package --no-dependencies --no-git-tag-version --out $outputFileName # 출력 파일 이름 지정
+        vsce package --no-dependencies --no-git-tag-version --allow-package-env-file --out $outputFileName # 출력 파일 이름 지정
     }
 } else {
-    vsce package --no-dependencies --no-git-tag-version --out $outputFileName # 출력 파일 이름 지정
+    vsce package --no-dependencies --no-git-tag-version --allow-package-env-file --out $outputFileName # 출력 파일 이름 지정
 }
 
 if ($LASTEXITCODE -ne 0) {

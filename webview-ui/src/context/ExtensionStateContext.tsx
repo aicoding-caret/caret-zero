@@ -502,10 +502,13 @@ export const ExtensionStateContextProvider: React.FC<{
 		setMcpServers: (mcpServers: McpServer[]) => setMcpServers(mcpServers),
 		setShowMcp,
 		setChatSettings: (value) => {
+			// 1. 로컬 상태 즉시 업데이트
 			setState((prevState) => ({
 				...prevState,
 				chatSettings: value,
-			}))
+			}));
+
+			// 2. VS Code에 상태 변경 알림
 			vscode.postMessage({
 				type: "updateSettings",
 				chatSettings: value,
@@ -515,7 +518,45 @@ export const ExtensionStateContextProvider: React.FC<{
 				planActSeparateModelsSetting: state.planActSeparateModelsSetting,
 				enableCheckpointsSetting: state.enableCheckpointsSetting,
 				mcpMarketplaceEnabled: state.mcpMarketplaceEnabled,
-			})
+			});
+
+			// 3. 상태 변경 이벤트 구독
+			const subscription = StateServiceClient.subscribeToState({}, {
+				onResponse: (response: { stateJson: string }) => {
+					if (response.stateJson) {
+						try {
+							const stateData = JSON.parse(response.stateJson) as ExtensionState;
+							// 상태가 변경된 경우에만 업데이트
+							if (stateData.chatSettings?.mode !== value.mode) {
+								setState((prevState) => ({
+									...prevState,
+									chatSettings: stateData.chatSettings,
+								}));
+							}
+						} catch (error) {
+							console.error("Error parsing state JSON:", error);
+						}
+					}
+				},
+				onError: (error: Error) => {
+					console.error("Error in state subscription:", error);
+					// 에러 발생 시 이전 상태로 롤백
+					setState((prevState) => ({
+						...prevState,
+						chatSettings: prevState.chatSettings,
+					}));
+				},
+				onComplete: () => {
+					console.log("State subscription completed");
+				}
+			});
+
+			// 구독 취소 함수 반환
+			return () => {
+				if (subscription) {
+					subscription();
+				}
+			};
 		},
 		setMcpTab,
 	}

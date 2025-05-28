@@ -1,8 +1,9 @@
 export type OpenAIReasoningEffort = "low" | "medium" | "high"
 
+export type ChatMode = "arch" | "dev" | "rule" | "talk" | "custom"
+
 export interface ChatSettings {
-	mode: string // Allow any string for flexibility with custom modes
-	// mode: "plan" | "act"
+	mode: ChatMode
 	preferredLanguage?: string
 	openAIReasoningEffort?: OpenAIReasoningEffort
 }
@@ -10,8 +11,7 @@ export interface ChatSettings {
 export type PartialChatSettings = Partial<ChatSettings>
 
 export const DEFAULT_CHAT_SETTINGS: ChatSettings = {
-	mode: "strategy", // Default to 'Strategy' mode (previously 'plan')
-	// mode: "act",
+	mode: "arch", // Default to 'Arch' mode
 	preferredLanguage: "English",
 	openAIReasoningEffort: "medium",
 }

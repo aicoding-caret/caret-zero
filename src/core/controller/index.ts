@@ -21,7 +21,7 @@ import { telemetryService } from "@/services/posthog/telemetry/TelemetryService"
 import { ApiProvider, ModelInfo } from "../../shared/api"
 import { findLast } from "../../shared/array"
 import { ChatContent } from "../../shared/ChatContent"
-import { ChatSettings } from "../../shared/ChatSettings"
+import { ChatSettings, ChatMode } from "../../shared/ChatSettings"
 import { ExtensionMessage, ExtensionState, Invoke, Platform, ModeInfo, RetryStatusMessage } from "../../shared/ExtensionMessage" // Import ModeInfo and
 import { HistoryItem } from "../../shared/HistoryItem"
 import { McpDownloadResponse, McpMarketplaceCatalog, McpServer } from "../../shared/mcp"
@@ -1433,11 +1433,11 @@ Here is the project's README to help you get started:\n\n${mcpDetails.readmeCont
 						// 모드 정보가 있는 경우 처음 찾은 act 모드 사용
 						const actMode = this.availableModes.find((mode) => mode.modetype === "act")
 						if (actMode) {
-							targetModeId = actMode.id
+							targetModeId = actMode.id as ChatMode
 						}
 
 						// 모드 전환 진행
-						await this.toggleModeWithChatSettings({ mode: targetModeId })
+						await this.toggleModeWithChatSettings({ mode: targetModeId as ChatMode })
 					}
 
 					// 2. Enable MCP settings if disabled

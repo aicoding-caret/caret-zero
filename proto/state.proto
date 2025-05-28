@@ -9,6 +9,7 @@ service StateService {
   rpc toggleFavoriteModel(StringRequest) returns (Empty);
   rpc resetState(EmptyRequest) returns (Empty);
   rpc togglePlanActMode(TogglePlanActModeRequest) returns (Empty);
+  rpc updateChatMode(UpdateChatModeRequest) returns (Empty);
 }
 
 message State {
@@ -21,13 +22,22 @@ message TogglePlanActModeRequest {
   optional ChatContent chat_content = 3;
 }
 
-enum PlanActMode {
-  PLAN = 0;
-  ACT = 1;
+message UpdateChatModeRequest {
+  Metadata metadata = 1;
+  ChatSettings chat_settings = 2;
+  optional ChatContent chat_content = 3;
+}
+
+enum ChatMode {
+  ARCH = 0;
+  DEV = 1;
+  RULE = 2;
+  TALK = 3;
+  CUSTOM = 4;
 }
 
 message ChatSettings {
-  PlanActMode mode = 1;
+  ChatMode mode = 1;
   optional string preferred_language = 2;
   optional string open_ai_reasoning_effort = 3;
 }

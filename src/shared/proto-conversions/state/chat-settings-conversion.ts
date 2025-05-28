@@ -1,13 +1,13 @@
 import { ChatContent } from "@shared/ChatContent"
-import { ChatSettings } from "@shared/ChatSettings"
-import { ChatContent as ProtoChatContent, ChatSettings as ProtoChatSettings, PlanActMode } from "../../../shared/proto/state"
+import { ChatSettings, ChatMode } from "@shared/ChatSettings"
+import { ChatContent as ProtoChatContent, ChatSettings as ProtoChatSettings, ChatMode as ProtoChatMode } from "../../../shared/proto/state"
 
 /**
  * Converts domain ChatSettings objects to proto ChatSettings objects
  */
 export function convertChatSettingsToProtoChatSettings(chatSettings: ChatSettings): ProtoChatSettings {
 	return {
-		mode: chatSettings.mode === "plan" ? PlanActMode.PLAN : PlanActMode.ACT,
+		mode: convertModeToProtoMode(chatSettings.mode),
 		preferredLanguage: chatSettings.preferredLanguage,
 		openAiReasoningEffort: chatSettings.openAIReasoningEffort,
 	}
@@ -18,9 +18,37 @@ export function convertChatSettingsToProtoChatSettings(chatSettings: ChatSetting
  */
 export function convertProtoChatSettingsToChatSettings(protoChatSettings: ProtoChatSettings): ChatSettings {
 	return {
-		mode: protoChatSettings.mode === PlanActMode.PLAN ? "plan" : "act",
+		mode: convertProtoModeToMode(protoChatSettings.mode),
 		preferredLanguage: protoChatSettings.preferredLanguage,
 		openAIReasoningEffort: protoChatSettings.openAiReasoningEffort as "low" | "medium" | "high" | undefined,
+	}
+}
+
+/**
+ * Converts domain mode to proto mode
+ */
+function convertModeToProtoMode(mode: ChatMode): ProtoChatMode {
+	switch (mode) {
+		case 'arch': return ProtoChatMode.ARCH;
+		case 'dev': return ProtoChatMode.DEV;
+		case 'rule': return ProtoChatMode.RULE;
+		case 'talk': return ProtoChatMode.TALK;
+		case 'custom': return ProtoChatMode.CUSTOM;
+		default: return ProtoChatMode.ARCH;
+	}
+}
+
+/**
+ * Converts proto mode to domain mode
+ */
+function convertProtoModeToMode(mode: ProtoChatMode): ChatMode {
+	switch (mode) {
+		case ProtoChatMode.ARCH: return 'arch';
+		case ProtoChatMode.DEV: return 'dev';
+		case ProtoChatMode.RULE: return 'rule';
+		case ProtoChatMode.TALK: return 'talk';
+		case ProtoChatMode.CUSTOM: return 'custom';
+		default: return 'arch';
 	}
 }
 
