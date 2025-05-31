@@ -6,6 +6,7 @@ export interface ChatSettings {
 	mode: ChatMode
 	preferredLanguage?: string
 	openAIReasoningEffort?: OpenAIReasoningEffort
+	customInstructions?: string
 }
 
 export type PartialChatSettings = Partial<ChatSettings>

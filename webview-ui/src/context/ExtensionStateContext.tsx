@@ -505,15 +505,20 @@ export const ExtensionStateContextProvider: React.FC<{
 			// 1. 로컬 상태 즉시 업데이트
 			setState((prevState) => ({
 				...prevState,
-				chatSettings: value,
+				chatSettings: {
+					...value,
+					customInstructions: prevState.customInstructions
+				},
 			}));
 
 			// 2. VS Code에 상태 변경 알림
 			vscode.postMessage({
 				type: "updateSettings",
-				chatSettings: value,
+				chatSettings: {
+					...value,
+					customInstructions: state.customInstructions
+				},
 				apiConfiguration: state.apiConfiguration,
-				customInstructionsSetting: state.customInstructions,
 				telemetrySetting: state.telemetrySetting,
 				planActSeparateModelsSetting: state.planActSeparateModelsSetting,
 				enableCheckpointsSetting: state.enableCheckpointsSetting,
@@ -530,7 +535,10 @@ export const ExtensionStateContextProvider: React.FC<{
 							if (stateData.chatSettings?.mode !== value.mode) {
 								setState((prevState) => ({
 									...prevState,
-									chatSettings: stateData.chatSettings,
+									chatSettings: {
+										...stateData.chatSettings,
+										customInstructions: prevState.customInstructions
+									},
 								}));
 							}
 						} catch (error) {

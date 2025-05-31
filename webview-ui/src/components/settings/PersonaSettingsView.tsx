@@ -47,7 +47,7 @@ interface PersonaForm {
 }
 
 export default function PersonaSettingsView() {
-  const { supportedLanguages, selectedLanguage } = useExtensionState();
+  const { supportedLanguages, selectedLanguage, chatSettings } = useExtensionState();
   const [form, setForm] = useState<PersonaForm>({
     id: "",
     name: {},
@@ -132,11 +132,13 @@ export default function PersonaSettingsView() {
     // 기존 업데이트 로직을 타도록 설정
     vscode.postMessage({
       type: "updateSettings",
-      customInstructionsSetting: customInstructionData,
+      chatSettings: {
+        ...chatSettings,
+        customInstructions: customInstructionData
+      },
       apiConfiguration: null,
       telemetrySetting: null,
-      planActSeparateModelsSetting: null,
-      chatSettings: null
+      planActSeparateModelsSetting: null
     });
 
     // 이미지 선택 로직 - TMP 이미지로 복사하도록 요청

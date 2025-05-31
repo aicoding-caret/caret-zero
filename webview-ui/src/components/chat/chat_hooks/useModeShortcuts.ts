@@ -34,7 +34,11 @@ export function useModeShortcuts(
             if (chatSettings.mode !== targetMode) {
               vscode.postMessage({
                 type: "updateSettings",
-                chatSettings: { ...chatSettings, mode: targetMode },
+                chatSettings: { 
+                  ...chatSettings, 
+                  mode: targetMode,
+                  customInstructions: chatSettings.customInstructions
+                },
               })
               kbEvent.preventDefault() // 기본 동작 방지
               kbEvent.stopPropagation() // 이벤트 버블링 중단 추가
@@ -62,7 +66,11 @@ export function useModeShortcuts(
       if (chatSettings.mode !== modeId) {
         vscode.postMessage({
           type: "updateSettings",
-          chatSettings: { ...chatSettings, mode: modeId },
+          chatSettings: { 
+            ...chatSettings, 
+            mode: modeId,
+            customInstructions: chatSettings.customInstructions
+          },
         })
       }
     },

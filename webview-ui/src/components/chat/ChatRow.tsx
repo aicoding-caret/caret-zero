@@ -231,6 +231,25 @@ const ChatRow = memo((props: ChatRowProps) => {
 
 export default ChatRow
 
+// 아바타 이미지 스타일링
+const AvatarImage = styled.img`
+	width: 48px;
+	height: 48px;
+	border-radius: 20%;
+	margin-right: 10px;
+	object-fit: cover;
+	flex-shrink: 0;
+	border: 1px solid rgba(255, 255, 255, 0.1);
+`
+
+// 메시지 행 컨테이너
+const MessageRowContainer = styled.div`
+	display: flex;
+	align-items: flex-start;
+	position: relative;
+	margin-bottom: 8px;
+`
+
 export const ChatRowContent = ({
 	message,
 	isExpanded,
@@ -241,7 +260,7 @@ export const ChatRowContent = ({
 	sendMessageFromChatRow,
 	onSetQuote,
 }: ChatRowContentProps) => {
-	const { mcpServers, mcpMarketplaceCatalog } = useExtensionState()
+	const { mcpServers, mcpMarketplaceCatalog, alphaAvatarUri, alphaThinkingAvatarUri } = useExtensionState()
 	const [seeNewChangesDisabled, setSeeNewChangesDisabled] = useState(false)
 	const [quoteButtonState, setQuoteButtonState] = useState<QuoteButtonState>({
 		visible: false,
@@ -537,6 +556,19 @@ export const ChatRowContent = ({
 		}
 		return null
 	}, [message.ask, message.say, message.text])
+
+	// 메시지 상태에 따른 아바타 결정 함수
+	const getAvatarSrc = () => {
+		const isThinking = (message.type === "say" && message.say === "reasoning") ||
+						  (message.type === "ask" && message.ask === "completion_result");
+		
+		return isThinking ? alphaThinkingAvatarUri : alphaAvatarUri;
+	};
+
+	// AI 메시지인지 확인
+	const isAiMessage = (message.type === "say" && 
+		(message.say === "completion_result" || message.say === "reasoning")) ||
+		(message.type === "ask" && message.ask === "completion_result");
 
 	if (tool) {
 		const colorMap = {

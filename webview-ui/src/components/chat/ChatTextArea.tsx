@@ -981,7 +981,11 @@ const ChatTextArea = forwardRef<HTMLTextAreaElement, ChatTextAreaProps>(
 								// VS Code API를 직접 사용하여 메시지 전송
 								vscode.postMessage({
 									type: "updateSettings",
-									chatSettings: { ...chatSettings, mode: targetMode },
+									chatSettings: { 
+										...chatSettings, 
+										mode: targetMode,
+										customInstructions: chatSettings.customInstructions // customInstructions 유지
+									},
 								})
 								console.log(`모드 변경 요청: ${chatSettings.mode} -> ${targetMode}`)
 
@@ -1115,7 +1119,11 @@ const ChatTextArea = forwardRef<HTMLTextAreaElement, ChatTextAreaProps>(
 			// 1. 로컬 상태 즉시 업데이트
 			vscode.postMessage({
 				type: "updateSettings",
-				chatSettings: { ...chatSettings, mode: newMode },
+				chatSettings: { 
+					...chatSettings, 
+					mode: newMode,
+					customInstructions: chatSettings.customInstructions // customInstructions 유지
+				},
 			});
 
 			let changeModeDelay = 0;
@@ -1128,7 +1136,9 @@ const ChatTextArea = forwardRef<HTMLTextAreaElement, ChatTextAreaProps>(
 				// 2. API 호출
 				StateServiceClient.togglePlanActMode({
 					chatSettings: {
+						...chatSettings,
 						mode: newMode,
+						customInstructions: chatSettings.customInstructions // customInstructions 유지
 					},
 					chatContent: {
 						message: inputValue.trim() ? inputValue : undefined,
@@ -1139,7 +1149,11 @@ const ChatTextArea = forwardRef<HTMLTextAreaElement, ChatTextAreaProps>(
 					// 3. 실패 시 상태 롤백
 					vscode.postMessage({
 						type: "updateSettings",
-						chatSettings: { ...chatSettings, mode: chatSettings.mode },
+						chatSettings: { 
+							...chatSettings, 
+							mode: chatSettings.mode,
+							customInstructions: chatSettings.customInstructions // customInstructions 유지
+						},
 					});
 				});
 				
