@@ -1232,6 +1232,7 @@ const ChatView = ({ isHidden, showAnnouncement, hideAnnouncement, showHistoryVie
 
 					<HomeHeader />
 					{taskHistory.length > 0 && <HistoryPreview showHistoryView={showHistoryView} />}
+					<div>Current Mode: {chatSettings.mode}</div>
 				</div>
 			)}
 

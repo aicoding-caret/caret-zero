@@ -221,7 +221,7 @@ export class Controller {
 						name: string
 						description?: string
 						rules?: string[]
-						modetype?: "plan" | "act"
+						modetype?: string //"plan" | "act"
 						model?: string
 					}) => {
 						this.logger.log(`[DEBUG] Processing mode: ${mode.id}, model: ${mode.model || "default"}`)
@@ -229,7 +229,7 @@ export class Controller {
 							id: mode.id,
 							label: mode.name, // 'name'을 'label'로 맵핑
 							description: mode.description,
-							modetype: mode.modetype || "act", // modetype 추가, 기본값은 "act"
+							modetype: mode.modetype || "arch",//"act", // modetype 추가, 기본값은 "act"
 							rules: mode.rules, // rules 정보도 포함
 							model: mode.model, // 모델 정보 추가
 						}

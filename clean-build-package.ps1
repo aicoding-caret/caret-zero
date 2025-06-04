@@ -110,7 +110,7 @@ Write-Host "🎁 Packaging the extension (.vsix)..."
 
 # 파일 이름 설정 (이름-버전-날짜시간.vsix)
 $extensionName = "caret-dev" # package.json에서 가져옴
-$extensionVersion = "3.10.1" # package.json에서 가져옴
+$extensionVersion = "3.16.1" # package.json에서 가져옴
 $timestamp = Get-Date -Format 'yyyyMMdd-HHmmss'
 $outputFileName = "$($extensionName)-$($extensionVersion)-$($timestamp).vsix"
 Write-Host "  Output filename will be: $outputFileName"
@@ -127,12 +127,12 @@ if ($LASTEXITCODE -ne 0) {
     npm install -g @vscode/vsce
     if ($LASTEXITCODE -ne 0) {
         Write-Warning "⚠️ Failed to install @vscode/vsce globally. Trying to use npx instead."
-        npx @vscode/vsce package --no-dependencies --no-git-tag-version --allow-package-env-file --out $outputFileName # 출력 파일 이름 지정
+        npx @vscode/vsce package --no-dependencies --no-git-tag-version --allow-package-env-file --allow-package-secrets sendgrid --out $outputFileName # 출력 파일 이름 지정
     } else {
-        vsce package --no-dependencies --no-git-tag-version --allow-package-env-file --out $outputFileName # 출력 파일 이름 지정
+        vsce package --no-dependencies --no-git-tag-version --allow-package-env-file --allow-package-secrets sendgrid --out $outputFileName # 출력 파일 이름 지정
     }
 } else {
-    vsce package --no-dependencies --no-git-tag-version --allow-package-env-file --out $outputFileName # 출력 파일 이름 지정
+    vsce package --no-dependencies --no-git-tag-version --allow-package-env-file --allow-package-secrets sendgrid --out $outputFileName # 출력 파일 이름 지정
 }
 
 if ($LASTEXITCODE -ne 0) {

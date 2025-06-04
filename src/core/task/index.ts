@@ -1079,7 +1079,21 @@ export class Task {
 		const wasRecent = lastCaretMessage?.ts && Date.now() - lastCaretMessage.ts < 30_000
 
 		const [taskResumptionMessage, userResponseMessage] = formatResponse.taskResumption(
-			this.chatSettings?.mode === "plan" as ChatMode ? "plan" : "act",
+			//this.chatSettings?.mode === "plan" as ChatMode ? "plan" : "act",
+			(() => {
+			// 모드가 없으면 기본값 사용
+			if (!this.chatSettings?.mode) {
+			return "dev"
+			}
+
+			// chatSettings의 mode에 따라 적절한 모드 처리
+			// 네이밍 규칙에 따라 arch는 계획 모드, dev는 실행 모드로 처리
+			if (this.chatSettings.mode === "arch" || this.chatSettings.mode === "talk") {
+			return "arch"
+			} else {
+			return "dev"
+			}
+		})(),
 			agoText,
 			cwd,
 			wasRecent,
