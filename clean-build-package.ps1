@@ -137,7 +137,7 @@ if ($LASTEXITCODE -ne 0) {
 
 if ($LASTEXITCODE -ne 0) {
     Write-Warning "⚠️ vsce package command failed. Trying with npx as fallback..."
-    npx @vscode/vsce package --no-dependencies --no-git-tag-version --out $outputFileName # 출력 파일 이름 지정 (Fallback)
+    npx @vscode/vsce package --no-dependencies --no-git-tag-version --allow-package-env-file --allow-package-secrets --out $outputFileName # 출력 파일 이름 지정 (Fallback)
     if ($LASTEXITCODE -ne 0) {
         Write-Error "❌ Packaging failed! Could not run vsce package command."
         exit 1

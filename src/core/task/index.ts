@@ -170,6 +170,7 @@ export class Task {
 	private didCompleteReadingStream = false
 	private didAutomaticallyRetryFailedApiRequest = false
 	private enableCheckpoints: boolean
+	private modeSpecificRules?: string[]; // Mode Rule 적용 계획 3.2: Task 클래스에 modeSpecificRules 멤버 변수 추가
 
 	constructor(
 		context: vscode.ExtensionContext,
@@ -187,6 +188,7 @@ export class Task {
 		shellIntegrationTimeout: number,
 		enableCheckpointsSetting: boolean,
 		customInstructions?: string,
+		modeSpecificRules?: string[], // Mode Rule 적용 계획 3.2: Task 생성자에 modeSpecificRules 인자 추가
 		task?: string,
 		images?: string[],
 		historyItem?: HistoryItem,
@@ -212,6 +214,7 @@ export class Task {
 		this.browserSettings = browserSettings
 		this.chatSettings = chatSettings
 		this.enableCheckpoints = enableCheckpointsSetting
+		this.modeSpecificRules = modeSpecificRules; // Mode Rule 적용 계획 3.2: 전달받은 modeSpecificRules를 멤버 변수에 할당
 
 		// Initialize taskId first
 		if (historyItem) {
@@ -1606,18 +1609,21 @@ export class Task {
 			localCursorRulesDirInstructions ||
 			localWindsurfRulesFileInstructions ||
 			caretIgnoreInstructions ||
-			preferredLanguageInstructions
+			preferredLanguageInstructions ||
+			this.modeSpecificRules // Mode Rule 적용 계획 3.4: modeSpecificRules도 조건에 추가
 		) {
 			// altering the system prompt mid-task will break the prompt cache, but in the grand scheme this will not change often so it's better to not pollute user messages with it the way we have to with <potentially relevant details>
 			const userInstructions = addUserInstructions(
-				settingsCustomInstructions,
-				globalCaretRulesFileInstructions,
-				localCaretRulesFileInstructions,
-				localCursorRulesFileInstructions,
-				localCursorRulesDirInstructions,
-				localWindsurfRulesFileInstructions,
-				caretIgnoreInstructions,
-				preferredLanguageInstructions,
+				settingsCustomInstructions,             // 1. settingsCustomInstructions
+				undefined,                              // 2. caretRulesFileInstructions (general) - 현재 호출부에서 명시적으로 사용하지 않음
+				caretIgnoreInstructions,                // 3. caretIgnoreInstructions
+				preferredLanguageInstructions,          // 4. preferredLanguageInstructions
+				globalCaretRulesFileInstructions,       // 5. globalCaretRulesFileInstructions
+				localCaretRulesFileInstructions,        // 6. localCaretRulesFileInstructions
+				localCursorRulesFileInstructions,       // 7. localCursorRulesFileInstructions
+				localCursorRulesDirInstructions,        // 8. localCursorRulesDirInstructions
+				localWindsurfRulesFileInstructions,     // 9. localWindsurfRulesFileInstructions
+				this.modeSpecificRules                   // 10. modeSpecificRules
 			)
 			systemPrompt += userInstructions
 		}

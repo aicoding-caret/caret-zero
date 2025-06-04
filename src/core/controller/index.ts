@@ -229,7 +229,7 @@ export class Controller {
 							id: mode.id,
 							label: mode.name, // 'name'을 'label'로 맵핑
 							description: mode.description,
-							modetype: mode.modetype || "arch",//"act", // modetype 추가, 기본값은 "act"
+							modetype: mode.modetype || "arch", //"act", // modetype 추가, 기본값은 "act"
 							rules: mode.rules, // rules 정보도 포함
 							model: mode.model, // 모델 정보 추가
 						}
@@ -300,6 +300,11 @@ export class Controller {
 			taskHistory,
 		} = await getAllExtensionState(this.context)
 
+		// Mode Rule 적용 계획 3.1: Controller에서 현재 모드의 rules 가져오기
+		// 이 변수는 다음 단계(제안 사항 2)에서 Task 생성자로 전달될 것입니다.
+		const currentModeForTask = this.availableModes.find(mode => mode.id === chatSettings.mode);
+		const modeRulesForTask = currentModeForTask?.rules;
+
 		const NEW_USER_TASK_COUNT_THRESHOLD = 10
 
 		// Check if the user has completed enough tasks to no longer be considered a "new user"
@@ -331,6 +336,7 @@ export class Controller {
 			shellIntegrationTimeout,
 			enableCheckpointsSetting ?? true,
 			customInstructions,
+			modeRulesForTask, // Mode Rule 적용 계획 3.2: Controller에서 Task 생성 시 modeRulesForTask 전달
 			task,
 			images,
 			historyItem,
@@ -1940,6 +1946,9 @@ Here is the project's README to help you get started:\n\n${mcpDetails.readmeCont
 	async toggleModeWithChatSettings(chatSettings: ChatSettings, chatContent?: ChatContent) {
 		// 현재 설정된 모드 정보 찾기
 		const currentMode = this.availableModes.find((mode) => mode.id === chatSettings.mode)
+		// Mode Rule 적용 계획 3.1: Controller에서 현재 모드의 rules 가져오기
+		// 이 변수는 다음 단계(제안 사항 2)에서 Task 객체의 상태를 업데이트하는 데 사용될 수 있습니다.
+		const modeRulesFromCurrentMode = currentMode?.rules;
 
 		// 모드별 모델 설정 처리
 		if (currentMode?.model) {

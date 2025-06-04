@@ -358,6 +358,7 @@ export function addUserInstructions(
 	localCursorRulesFileInstructions?: string,
 	localCursorRulesDirInstructions?: string,
 	localWindsurfRulesFileInstructions?: string,
+	modeSpecificRules?: string[], // Mode Rule 적용 계획 3.3: addUserInstructions 함수 시그니처에 modeSpecificRules 인자 추가
 ): string {
 	let customInstructions = ""
 	if (preferredLanguageInstructions) {
@@ -390,6 +391,15 @@ export function addUserInstructions(
 	}
 	if (localWindsurfRulesFileInstructions) {
 		customInstructions += localWindsurfRulesFileInstructions + "\n\n"
+	}
+
+	// Mode Rule 적용 계획 3.3: modeSpecificRules를 시스템 프롬프트에 추가
+	if (modeSpecificRules && modeSpecificRules.length > 0) {
+		customInstructions += "# MODE-SPECIFIC RULES\n";
+		modeSpecificRules.forEach(rule => {
+			customInstructions += `- ${rule}\n`;
+		});
+		customInstructions += "\n"; // Ensure a newline after the block of rules, before trim/wrap
 	}
 
 	if (customInstructions.trim()) {
