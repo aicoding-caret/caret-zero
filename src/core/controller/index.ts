@@ -282,6 +282,11 @@ export class Controller {
 		}
 	}
 
+	async handleDidShowAnnouncement() {
+		await updateGlobalState(this.context, "lastShownAnnouncementId", this.latestAnnouncementId)
+		await this.postStateToWebview()
+	}
+
 	async setUserInfo(info?: { displayName: string | null; email: string | null; photoURL: string | null }) {
 		await updateGlobalState(this.context, "userInfo", info)
 	}
@@ -1278,8 +1283,7 @@ Here is the project's README to help you get started:\n\n${mcpDetails.readmeCont
 				await this.postStateToWebview()
 				break
 			case "didShowAnnouncement":
-				await updateGlobalState(this.context, "lastShownAnnouncementId", this.latestAnnouncementId)
-				await this.postStateToWebview()
+				await this.handleDidShowAnnouncement()
 				break
 			case "selectImages":
 				const images = await selectImages()

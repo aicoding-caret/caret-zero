@@ -16,8 +16,8 @@ $global:caretZeroDir = Split-Path $global:scriptsDir # This should be the worksp
 
 $global:caretUpstreamDir = Join-Path $global:caretZeroDir "caret-upstream"
 
-$global:caretUpstreamChangesFile = Join-Path $global:caretZeroDir "caret-docs/tasks/029-02-action-git-caret-upstream-changes.txt"
-$global:caretZeroChangesFile = Join-Path $global:caretZeroDir "caret-docs/tasks/029-02-action-git-caret-zero-changes.txt"
+$global:caretUpstreamChangesFile = Join-Path $global:caretZeroDir "docs/tasks/029-02-action-git-caret-upstream-changes.txt"
+$global:caretZeroChangesFile = Join-Path $global:caretZeroDir "docs/tasks/029-02-action-git-caret-zero-changes.txt"
 # Updated path for the Python script
 $global:compareScriptPath = Join-Path $global:caretZeroDir "scripts/merging-job/compare_diff_files.py"
 

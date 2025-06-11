@@ -1,0 +1,6 @@
+{
+	"rules": [
+		"Consider total task cost (tokens & time) before proceeding.",
+		"If cost (time & tokens) seems high, report to user for approval first."
+	]
+}

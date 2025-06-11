@@ -1,0 +1,13 @@
+{
+  "name": "caret-overlay",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Caret overlay layer for Cline",
+  "main": "index.js",
+  "scripts": {
+    "build": "tsc",
+    "test": "jest"
+  },
+  "dependencies": {},
+  "devDependencies": {}
+} 

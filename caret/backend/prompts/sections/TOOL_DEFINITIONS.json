@@ -1,0 +1,209 @@
+{
+	"tools": {
+		"execute_command": {
+			"description": "Request to execute a CLI command on the system",
+			"params": {
+				"command": {
+					"type": "string",
+					"required": true,
+					"desc": "CLI command to execute"
+				},
+				"requires_approval": {
+					"type": "boolean",
+					"required": true,
+					"desc": "True for potentially impactful operations"
+				}
+			}
+		},
+		"read_file": {
+			"description": "Request to read the contents of a file at the specified path",
+			"params": {
+				"path": {
+					"type": "string",
+					"required": true,
+					"desc": "Path to file to read"
+				}
+			}
+		},
+		"write_to_file": {
+			"description": "Create or overwrite file",
+			"params": {
+				"path": {
+					"type": "string",
+					"required": true,
+					"desc": "Path to write file"
+				},
+				"content": {
+					"type": "string",
+					"required": true,
+					"desc": "Complete file content"
+				}
+			}
+		},
+		"replace_in_file": {
+			"description": "Make targeted changes to file",
+			"params": {
+				"path": {
+					"type": "string",
+					"required": true,
+					"desc": "Path to file to modify"
+				},
+				"diff": {
+					"type": "string",
+					"required": true,
+					"desc": "SEARCH/REPLACE blocks following this exact format: '^SEARCH^\n[exact content to find]\n^=====^\n[new content to replace with]\n^REPLACE^'"
+				}
+			}
+		},
+		"search_files": {
+			"description": "Perform regex search across files",
+			"params": {
+				"path": {
+					"type": "string",
+					"required": true,
+					"desc": "Directory path to search in"
+				},
+				"regex": {
+					"type": "string",
+					"required": true,
+					"desc": "Regex pattern to search for"
+				},
+				"file_pattern": {
+					"type": "string",
+					"required": false,
+					"desc": "Glob pattern to filter files (optional)"
+				}
+			}
+		},
+		"list_files": {
+			"description": "List files and directories",
+			"params": {
+				"path": {
+					"type": "string",
+					"required": true,
+					"desc": "Directory path to list contents for"
+				},
+				"recursive": {
+					"type": "boolean",
+					"required": false,
+					"desc": "List recursively (optional)"
+				}
+			}
+		},
+		"list_code_definition_names": {
+			"description": "List top-level code definition names",
+			"params": {
+				"path": {
+					"type": "string",
+					"required": true,
+					"desc": "Directory path to list definitions for"
+				}
+			}
+		},
+		"browser_action": {
+			"description": "Request to interact with a Puppeteer-controlled browser. Every action, except `close`, will be responded to with a screenshot of the browser's current state, along with any new console logs. You may only perform one browser action per message, and wait for the user's response including a screenshot and logs to determine the next action.\\n- The sequence of actions **must always start with** launching the browser at a URL, and **must always end with** closing the browser. If you need to visit a new URL that is not possible to navigate to from the current webpage, you must first close the browser, then launch again at the new URL.\\n- While the browser is active, only the `browser_action` tool can be used. No other tools should be called during this time. You may proceed to use other tools only after closing the browser. For example if you run into an error and need to fix a file, you must close the browser, then use other tools to make the necessary changes, then re-launch the browser to verify the result.\\n- The browser window has a resolution of **${browserSettings.viewport.width}x${browserSettings.viewport.height}** pixels. When performing any click actions, ensure the coordinates are within this resolution range.",
+			"params": {
+				"action": {
+					"type": "string",
+					"required": true,
+					"desc": "Action to perform (launch, click, type, scroll_down, scroll_up, close)"
+				},
+				"url": {
+					"type": "string",
+					"required": false,
+					"desc": "URL to launch the browser at (optional). Ensure the URL is valid and includes the appropriate protocol (e.g. http://localhost:3000/page, file:///path/to/file.html, etc.)"
+				},
+				"coordinate": {
+					"type": "string",
+					"required": false,
+					"desc": "The X and Y coordinates for the `click` action. Coordinates should be within the **${browserSettings.viewport.width}x${browserSettings.viewport.height}** resolution. Always click in the center of an element (icon, button, link, etc.) based on coordinates derived from a screenshot."
+				},
+				"text": {
+					"type": "string",
+					"required": false,
+					"desc": "Use this for providing the text for the `type` action."
+				}
+			}
+		},
+		"use_mcp_tool": {
+			"description": "Use a tool provided by an MCP server",
+			"params": {
+				"server_name": {
+					"type": "string",
+					"required": true,
+					"desc": "Name of the MCP server"
+				},
+				"tool_name": {
+					"type": "string",
+					"required": true,
+					"desc": "Name of the tool to execute"
+				},
+				"arguments": {
+					"type": "string",
+					"required": true,
+					"desc": "JSON object of tool arguments"
+				}
+			}
+		},
+		"access_mcp_resource": {
+			"description": "Access a resource provided by an MCP server",
+			"params": {
+				"server_name": {
+					"type": "string",
+					"required": true,
+					"desc": "Name of the MCP server"
+				},
+				"uri": {
+					"type": "string",
+					"required": true,
+					"desc": "URI of the resource to access"
+				}
+			}
+		},
+		"ask_followup_question": {
+			"description": "Ask the user a followup question",
+			"params": {
+				"question": {
+					"type": "string",
+					"required": true,
+					"desc": "The question to ask the user"
+				},
+				"options": {
+					"type": "string",
+					"required": false,
+					"desc": "Array of options for the user (optional)"
+				}
+			}
+		},
+		"attempt_completion": {
+			"description": "Attempt to complete the task",
+			"params": {
+				"result": {
+					"type": "string",
+					"required": true,
+					"desc": "Final result description"
+				},
+				"command": {
+					"type": "string",
+					"required": false,
+					"desc": "Command to demonstrate result (optional)"
+				}
+			}
+		},
+		"plan_mode_respond": {
+			"description": "Respond to the user in PLAN MODE",
+			"params": {
+				"response": {
+					"type": "string",
+					"required": true,
+					"desc": "The response to provide"
+				},
+				"options": {
+					"type": "string",
+					"required": false,
+					"desc": "Array of options for the user (optional)"
+				}
+			}
+		}
+	}
+}

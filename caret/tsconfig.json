@@ -1,0 +1,28 @@
+{
+  "extends": "../tsconfig.json",
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["../src/*"],
+      "@api/*": ["../src/api/*"],
+      "@core/*": ["../src/core/*"],
+      "@integrations/*": ["../src/integrations/*"],
+      "@services/*": ["../src/services/*"],
+      "@shared/*": ["../src/shared/*"],
+      "@utils/*": ["../src/utils/*"],
+      "@packages/*": ["../src/packages/*"],
+      "@cline/*": ["../src/*"]
+    },
+    "jsx": "react-jsx",
+    "skipLibCheck": true
+  },
+  "include": [
+    "backend/**/*",
+    "frontend/**/*",
+    "config/**/*"
+  ],
+  "exclude": [
+    "../cline/**/*",
+    "node_modules"
+  ]
+} 

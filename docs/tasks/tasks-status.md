@@ -1,0 +1,44 @@
+# 태스크 상태 관리
+
+## 진행 중인 태스크 (Pending)
+- [ ] **Task #015:** ChatView/ChatRow 리팩토링 (분리, 중단상태, [014-1-chatview-refactoring.md](./014-1-chatview-refactoring.md))
+- [ ] **Task #028:** api.ts 파일 json 분리 및 리팩토링 ([018-02-01-action-checklist-persona-management.md](./018-02-01-action-checklist-persona-management.md))
+- [ ] **Task #029:** Cline Upstream 변경 사항 병합 ([029-01-plan-merge-cline.md](./029-01-plan-merge-cline.md))
+- [ ] **Task #030:** 오버레이 아키텍처 구현 ([030-01-plan-overlay-architecture-implementation.md](./030-01-plan-overlay-architecture-implementation.md), [030-02-action-checklist-overlay-architecture.md](./030-02-action-checklist-overlay-architecture.md))
+
+## 대기 중인 태스크 (Pending)
+- [ ] **Task #027:** Caret Team 로그인 구현 ([027-caret-team-auth.md](./027-caret-team-auth.md))
+- [ ] **Task #009:** 멀티 모드 시스템 구현 및 동적 프롬프트/규칙 관리 ([009-cline-multi-mode-core.md](./009-cline-multi-mode-core.md))
+- [ ] **Task #011:** Cline UI 현지화 ([011-cline-ui-localization.md](./011-cline-ui-localization.md))
+- [ ] **Task #012:** 다국어 규칙 지원 ([012-multilingual-rule-support.md](./012-multilingual-rule-support.md))
+- [ ] **Task #013:** AI 기반 규칙 관리 ([013-ai-assisted-rule-management.md](./013-ai-assisted-rule-management.md))
+- [ ] **Task #020:** 로깅 및 테스트 강화 ([018-01-plan-persona-management.md](./018-01-plan-persona-management.md) 2.1절)
+- [ ] **Task #022:** 채팅 중지 버튼 개선 ([022-chat-stop-button-improvement.md](./022-chat-stop-button-improvement.md))
+- [ ] **Task #024:** AI 에이전트 프로필 커스터마이징 ([024-ai-agent-profile-customization.md](./024-ai-agent-profile-customization.md))
+
+
+## 완료된 태스크 (Complete)
+- [x] **Task #001:** Cline 규칙 시스템 수정 ([001-cline-rule-syste-modify.md](./001-cline-rule-syste-modify.md))
+- [x] **Task #002:** 알파 설정 및 계획 ([002-cline-alpha-setup-and-planning.md](./002-cline-alpha-setup-and-planning.md))
+- [x] **Task #003:** sLLM 성능 테스트 ([complete/003-sllm-performance-test.md](./complete/003-sllm-performance-test.md))
+- [x] **Task #004:** vLLM 설정 및 테스트 ([complete/004-vllm-setup-and-test.md](./complete/004-vllm-setup-and-test.md))
+- [x] **Task #005:** vLLM Qwen2.5 4bit Cline 테스트 ([complete/005-vllm-qwen2.5-4bit-cline-test.md](./complete/005-vllm-qwen2.5-4bit-cline-test.md))
+- [x] **Task #006:** Cline 프로젝트 로드맵 계획 ([complete/006-cline-project-roadmap-planning.md](./complete/006-cline-project-roadmap-planning.md))
+- [x] **Task #007:** Cline 모드 개선 ([complete/007-cline-mode-improvement.md](./complete/007-cline-mode-improvement.md))
+- [x] **Task #008:** 도구 실행 불안정성 수정 ([complete/008-tool-execution-instability-fix.md](./complete/008-tool-execution-instability-fix.md))
+- [x] **Task #021:** Upstream v3.10.1 병합 ([complete/021-merge-upstream-v3.10.1.md](./complete/021-merge-upstream-v3.10.1.md))
+- [x] **Task #023:** 모델 리스트 동기화 ([complete/023-model-list-sync.md](./complete/023-model-list-sync.md))
+- [x] **Task #015:** `replace_in_file` 버그 조사 보고서 ([015-investigate-replace_in_file-bug-report.md](./015-investigate-replace_in_file-bug-report.md))
+- [x] **Task #015:** `replace_in_file` 버그 조사 ([015-investigate-replace_in_file-bug.md](./015-investigate-replace_in_file-bug.md))
+- [x] **Task #016:** 공통 로깅 시스템 구현 보고서 ([016-implement-common-logging-system-report.md](./016-implement-common-logging-system-report.md))
+- [x] **Task #016:** 공통 로깅 시스템 구현 ([016-implement-common-logging-system.md](./016-implement-common-logging-system.md))
+- [x] **Task #017:** HyperClovaX Seed Vision 모델 추가 ([017-add-hyperclovax-seed-vision-model.md](./017-add-hyperclovax-seed-vision-model.md))
+- [x] **Task #018:** 퍼소나/프로필 관리 및 UI 개선 (설계/구현/통합)
+  * 퍼소나 관리 시스템 설계 및 구현 계획 ([018-01-01-plan-persona-management.md](./018-01-01-plan-persona-management.md))
+  * 템플릿/캐릭터 정책 및 최신 설계 ([018-01-02-plan-template-character-policy-and-design-latest.md](./018-01-02-plan-template-character-policy-and-design-latest.md))
+  * 퍼소나 관리 액션 체크리스트 ([018-02-01-action-checklist-persona-management.md](./018-02-01-action-checklist-persona-management.md))
+
+| 29 | `Enhance overall project documentation and examples` | `queued` | `2025-05-24` | |
+| 30 | `Overlay Architecture PoC: Preliminary Implementation` | `completed` | `2025-05-25` | `2025-05-27` |
+| 31 | `Fix Build Failures in Overlay Architecture` | `completed` | `2025-05-26` | `2025-05-27` |
+| 32 | `Docs & Build Process Overhaul` | `in-progress` | `2025-05-27` | |

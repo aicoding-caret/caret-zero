@@ -1,7 +1,7 @@
 {
   "project_overview": {
     "name": "Caret",
-    "description": "VSCode extension for AI assistance, focusing on personalized development partnership. This project (Caret) is a fork of Caret. The 'caret-upstream' directory contains the original Caret source code for reference.",
+    "description": "VSCode extension for AI assistance, focusing on personalized development partnership. This project (Caret) is a fork of Cline. The 'cline' directory contains the original Cline source code for reference.",
     "repository_url": "https://github.com/aicoding-caret/caret-zero"
   },
   "architecture": {
@@ -37,26 +37,26 @@
         "description": "Handles persistence of task data and workspace snapshots."
       }
     ],
-    "diagram_reference": "caret-docs/architecture/extension-architecture.mmd"
+    "diagram_reference": "docs/architecture/extension-architecture.mmd"
   },
   "development_process": {
-    "state_management_guideline": "Core Extension (CaretProvider) is the source of truth. Sync state via messages. For detailed development/design/implementation guidelines, please refer to the caret-docs/development/ directory and its sub-documents (e.g., index.md, logging.md).",
-    "tool_integration": "Follow patterns in src/integrations/, respect .caretignore. For implementation and design standards, refer to caret-docs/development/.",
+    "state_management_guideline": "Core Extension (CaretProvider) is the source of truth. Sync state via messages. For detailed development/design/implementation guidelines, please refer to the docs/development/ directory and its sub-documents (e.g., index.md, logging.md).",
+    "tool_integration": "Follow patterns in src/integrations/, respect .caretignore. For implementation and design standards, refer to docs/development/.",
     "api_providers": "Implementations in src/api/providers/.",
-    "testing": "Refer to caret-docs/testing/ for plans. For testing and quality standards, also refer to documents in caret-docs/development/.",
-    "logging": "Use common logging system (see caret-docs/development/logging.md). For detailed logging policies and examples, refer to documents in caret-docs/development/.",
+    "testing": "Refer to docs/testing/ for plans. For testing and quality standards, also refer to documents in docs/development/.",
+    "logging": "Use common logging system (see docs/development/logging.md). For detailed logging policies and examples, refer to documents in docs/development/.",
     "checkpoints": "Managed by src/integrations/checkpoints/CheckpointTracker.ts (Git-based).",
-    "documentation": "Update relevant docs in caret-docs/. For development standards, design, and implementation guidelines, refer to caret-docs/development/.",
+    "documentation": "Update relevant docs in docs/.",
     "contributing": "Refer to CONTRIBUTING.md for guidelines.",
-    "rules_update_guideline": "All project rule changes (for .caretrules, .windsurfrules, .cursorrules, etc.) must first be defined in Korean in the master template file: 'caret-docs/caretrules.ko.md'. After updating the template, request the AI assistant (Alpha) to reflect these changes into the relevant English JSON rule file(s). If direct modification of 'caretrules.ko.md' is not feasible due to IDE limitations, describe the desired changes in Korean to Alpha, and explicitly ask to update 'caretrules.ko.md' first, then the target JSON files.",
+    "rules_update_guideline": "All project rule changes (for .caretrules, .windsurfrules, .cursorrules, etc.) must first be defined in Korean in the master template file: 'docs/caretrules.ko.md'. After updating the template, request the AI assistant (Alpha) to reflect these changes into the relevant English JSON rule file(s). If direct modification of 'caretrules.ko.md' is not feasible due to IDE limitations, describe the desired changes in Korean to Alpha, and explicitly ask to update 'caretrules.ko.md' first, then the target JSON files.",
     "work_logs": {
-      "user_daily_log_location_pattern": "caret-docs/work-logs/{username}/",
+      "user_daily_log_location_pattern": "docs/work-logs/{username}/",
       "user_daily_log_format": "{date}.md",
-      "task_docs_location": "caret-docs/tasks/",
+      "task_docs_location": "docs/tasks/",
       "task_doc_format_plan": "{task-number}-01-plan-{task-name}.md",
       "task_doc_format_checklist": "{task-number}-02-action-checklist-{task-name}.md",
       "task_doc_format_report": "{task-number}-03-report-{task-name}.md",
-      "task_status_file_path": "caret-docs/tasks/task-status.md",
+      "task_status_file_path": "docs/tasks/task-status.md",
       "purpose": "Defines locations and formats for user-specific daily work logs and centralized task documents (plan, checklist, report). It is crucial to check 'tasks-status.md' for the next available task number before creating a new task and update it accordingly. Daily logs are for individual progress tracking, while task documents and status are managed centrally per task."
     },
     "git_rules": {
@@ -77,12 +77,12 @@
       "logging.md": "Guidelines for backend and frontend logging.",
       "webview-extension-communication.md": "How to handle messages between webview and extension.",
       "ui-to-storage-flow.md": "Detailed guide on UI to Storage data flow, including security.",
-      "caret-upstream-merging-guide.md": "Strategy for merging with Caret upstream, including AI collaboration tips."
+      "cline-merging-guide.md": "Strategy and step-by-step guide for merging with the Cline upstream repository."
     }
   },
   "key_files_reference": [
     ".caretrules",
-    "caret-docs/",
+    "docs/",
     "src/extension.ts",
     "src/core/task/index.ts",
     "src/core/webview/CaretProvider.ts",

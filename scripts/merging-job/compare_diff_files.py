@@ -7,8 +7,8 @@ SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 # Paths relative to the workspace root
 # These are now constructed based on SCRIPT_DIR going up two levels to workspace root
 WORKSPACE_ROOT = os.path.dirname(os.path.dirname(SCRIPT_DIR))
-CAREZERO_CHANGES_PATH = os.path.join(WORKSPACE_ROOT, "caret-docs/tasks/029-02-action-git-caret-zero-changes.txt")
-CLINE_UPSTREAM_CHANGES_PATH = os.path.join(WORKSPACE_ROOT, "caret-docs/tasks/029-02-action-git-caret-upstream-changes.txt")
+CAREZERO_CHANGES_PATH = os.path.join(WORKSPACE_ROOT, "docs/tasks/029-02-action-git-caret-zero-changes.txt")
+CLINE_UPSTREAM_CHANGES_PATH = os.path.join(WORKSPACE_ROOT, "docs/tasks/029-02-action-git-caret-upstream-changes.txt")
 
 # Output file paths (now relative to SCRIPT_DIR)
 UPSTREAM_ONLY_OUTPUT_PATH = os.path.join(SCRIPT_DIR, "upstream_only_changes.txt")

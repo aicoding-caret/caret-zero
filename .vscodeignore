@@ -6,7 +6,7 @@ out/**
 node_modules/**
 src/**
 back/**
-caret-docs/**
+docs/**
 caret/**
 docs/** 
 experiment/**
@@ -54,7 +54,7 @@ experiment/**
 caret/**
 private-caret/**
 docs/**
-caret-docs/**
+docs/**
 release/**
 
 # Temporary / Backup files

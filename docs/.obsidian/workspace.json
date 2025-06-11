@@ -1,199 +1,173 @@
 {
-  "main": {
-    "id": "338d7f8b869a9488",
-    "type": "split",
-    "children": [
-      {
-        "id": "3971f48752234a29",
-        "type": "tabs",
-        "children": [
-          {
-            "id": "6c03671020d9d67b",
-            "type": "leaf",
-            "state": {
-              "type": "empty",
-              "state": {},
-              "icon": "lucide-file",
-              "title": "New tab"
-            }
-          }
-        ]
-      }
-    ],
-    "direction": "vertical"
-  },
-  "left": {
-    "id": "c9570a3a08f515d7",
-    "type": "split",
-    "children": [
-      {
-        "id": "ea69910ccc1e40eb",
-        "type": "tabs",
-        "children": [
-          {
-            "id": "56e93257784cc49e",
-            "type": "leaf",
-            "state": {
-              "type": "file-explorer",
-              "state": {
-                "sortOrder": "alphabetical",
-                "autoReveal": false
-              },
-              "icon": "lucide-folder-closed",
-              "title": "Files"
-            }
-          },
-          {
-            "id": "3da10d29974cacac",
-            "type": "leaf",
-            "state": {
-              "type": "search",
-              "state": {
-                "query": "github",
-                "matchingCase": false,
-                "explainSearch": false,
-                "collapseAll": false,
-                "extraContext": false,
-                "sortOrder": "alphabetical"
-              },
-              "icon": "lucide-search",
-              "title": "Search"
-            }
-          },
-          {
-            "id": "3fbfeedf0f6662e6",
-            "type": "leaf",
-            "state": {
-              "type": "bookmarks",
-              "state": {},
-              "icon": "lucide-bookmark",
-              "title": "Bookmarks"
-            }
-          }
-        ]
-      }
-    ],
-    "direction": "horizontal",
-    "width": 300
-  },
-  "right": {
-    "id": "ff0e65473eb8d6dd",
-    "type": "split",
-    "children": [
-      {
-        "id": "2cbdcac531ebff44",
-        "type": "tabs",
-        "children": [
-          {
-            "id": "1b0f2749fec450d8",
-            "type": "leaf",
-            "state": {
-              "type": "backlink",
-              "state": {
-                "file": "sLLM/benchmark.md",
-                "collapseAll": false,
-                "extraContext": false,
-                "sortOrder": "alphabetical",
-                "showSearch": false,
-                "searchQuery": "",
-                "backlinkCollapsed": false,
-                "unlinkedCollapsed": true
-              },
-              "icon": "links-coming-in",
-              "title": "Backlinks for benchmark"
-            }
-          },
-          {
-            "id": "e6682d2a99f676a7",
-            "type": "leaf",
-            "state": {
-              "type": "outgoing-link",
-              "state": {
-                "file": "sLLM/benchmark.md",
-                "linksCollapsed": false,
-                "unlinkedCollapsed": true
-              },
-              "icon": "links-going-out",
-              "title": "Outgoing links from benchmark"
-            }
-          },
-          {
-            "id": "e97c3b7af7ce7bb4",
-            "type": "leaf",
-            "state": {
-              "type": "tag",
-              "state": {
-                "sortOrder": "frequency",
-                "useHierarchy": true,
-                "showSearch": false,
-                "searchQuery": ""
-              },
-              "icon": "lucide-tags",
-              "title": "Tags"
-            }
-          },
-          {
-            "id": "e7cf4ddb62246372",
-            "type": "leaf",
-            "state": {
-              "type": "outline",
-              "state": {
-                "file": "sLLM/benchmark.md",
-                "followCursor": false,
-                "showSearch": false,
-                "searchQuery": ""
-              },
-              "icon": "lucide-list",
-              "title": "Outline of benchmark"
-            }
-          }
-        ]
-      }
-    ],
-    "direction": "horizontal",
-    "width": 300,
-    "collapsed": true
-  },
-  "left-ribbon": {
-    "hiddenItems": {
-      "switcher:Open quick switcher": false,
-      "graph:Open graph view": false,
-      "canvas:Create new canvas": false,
-      "daily-notes:Open today's daily note": false,
-      "templates:Insert template": false,
-      "command-palette:Open command palette": false
-    }
-  },
-  "active": "56e93257784cc49e",
-  "lastOpenFiles": [
-    "prompting/custom instructions library/caret-memory-bank.md",
-    "work-logs/tasks/026-gemini-api-error-handling.md",
-    "work-logs/tasks",
-    "roadmap.md",
-    "project-vision.ko.md",
-    "sLLM/benchmark.md",
-    "work-logs/luke-and-alpha/tasks/complete/005-vllm-qwen2.5-4bit-caret-test.md",
-    "work-logs/luke-and-alpha/2025-04-14.md",
-    "work-logs/luke-and-alpha/tasks/tasks-status.md",
-    "work-logs/luke-and-alpha/tasks/complete/023-model-list-sync.md",
-    "work-logs/luke-and-alpha/tasks/complete/021-merge-upstream-v3.10.1.md",
-    "work-logs/luke-and-alpha/tasks/025-reasoning-ui-improvement.md",
-    "work-logs/luke-and-alpha/tasks/024-model-list-sync.md",
-    "work-logs/luke-and-alpha/tasks/024-ai-agent-profile-customization.md",
-    "work-logs/luke-and-alpha/tasks/022-chat-stop-button.md",
-    "work-logs/luke-and-alpha/tasks/001-caret-rule-syste-modify copy.md",
-    "work-logs/luke-and-alpha/2025-04-13.md",
-    "work-logs/luke-and-alpha/2025-04-12.md",
-    "work-logs/luke-and-alpha/2025-04-11.md",
-    "work-logs/luke-and-alpha/2025-04-10.md",
-    "prompting/Plan-Act Mode 시스템 프롬프트와 A2A(Agent-to-Agent) 프로토콜의 통합 방안 및 기대효과.md",
-    "reports/replace_in_file_bug_fix_report_en.md",
-    "reports/replace_in_file_bug_fix_report.md",
-    "reports/llm-toc-optimization-report.md",
-    "reports/caret-project-strategy-report.md",
-    "reports",
-    "development/upstream-merge-strategy.md",
-    "development",
-    "work-logs/luke-and-alpha/tasks/tasks-statsus.md"
-  ]
+	"main": {
+		"id": "05454898d666db77",
+		"type": "split",
+		"children": [
+			{
+				"id": "cbcbacd6a7365477",
+				"type": "tabs",
+				"children": [
+					{
+						"id": "1c7ba6b1e3fbeca8",
+						"type": "leaf",
+						"state": {
+							"type": "markdown",
+							"state": {
+								"file": "sales-plan-and-spec.md",
+								"mode": "source",
+								"source": false
+							},
+							"icon": "lucide-file",
+							"title": "sales-plan-and-spec"
+						}
+					}
+				]
+			}
+		],
+		"direction": "vertical"
+	},
+	"left": {
+		"id": "87253044228c013a",
+		"type": "split",
+		"children": [
+			{
+				"id": "55c392e1496c4fd7",
+				"type": "tabs",
+				"children": [
+					{
+						"id": "0d1245412948aaee",
+						"type": "leaf",
+						"state": {
+							"type": "file-explorer",
+							"state": {
+								"sortOrder": "alphabetical",
+								"autoReveal": false
+							},
+							"icon": "lucide-folder-closed",
+							"title": "Files"
+						}
+					},
+					{
+						"id": "4a4879ac934281bd",
+						"type": "leaf",
+						"state": {
+							"type": "search",
+							"state": {
+								"query": "",
+								"matchingCase": false,
+								"explainSearch": false,
+								"collapseAll": false,
+								"extraContext": false,
+								"sortOrder": "alphabetical"
+							},
+							"icon": "lucide-search",
+							"title": "Search"
+						}
+					},
+					{
+						"id": "63d28e55b82da99c",
+						"type": "leaf",
+						"state": {
+							"type": "bookmarks",
+							"state": {},
+							"icon": "lucide-bookmark",
+							"title": "Bookmarks"
+						}
+					}
+				]
+			}
+		],
+		"direction": "horizontal",
+		"width": 300
+	},
+	"right": {
+		"id": "4f43d9977fa44eac",
+		"type": "split",
+		"children": [
+			{
+				"id": "741b1a64aadc0598",
+				"type": "tabs",
+				"children": [
+					{
+						"id": "4b5bc9855694e8ae",
+						"type": "leaf",
+						"state": {
+							"type": "backlink",
+							"state": {
+								"file": "sales-plan-and-spec.md",
+								"collapseAll": false,
+								"extraContext": false,
+								"sortOrder": "alphabetical",
+								"showSearch": false,
+								"searchQuery": "",
+								"backlinkCollapsed": false,
+								"unlinkedCollapsed": true
+							},
+							"icon": "links-coming-in",
+							"title": "Backlinks for sales-plan-and-spec"
+						}
+					},
+					{
+						"id": "78bd43fbfd83f452",
+						"type": "leaf",
+						"state": {
+							"type": "outgoing-link",
+							"state": {
+								"file": "sales-plan-and-spec.md",
+								"linksCollapsed": false,
+								"unlinkedCollapsed": true
+							},
+							"icon": "links-going-out",
+							"title": "Outgoing links from sales-plan-and-spec"
+						}
+					},
+					{
+						"id": "ed4d6731674290ed",
+						"type": "leaf",
+						"state": {
+							"type": "tag",
+							"state": {
+								"sortOrder": "frequency",
+								"useHierarchy": true,
+								"showSearch": false,
+								"searchQuery": ""
+							},
+							"icon": "lucide-tags",
+							"title": "Tags"
+						}
+					},
+					{
+						"id": "f809a4c44bf8bf9c",
+						"type": "leaf",
+						"state": {
+							"type": "outline",
+							"state": {
+								"file": "sales-plan-and-spec.md",
+								"followCursor": false,
+								"showSearch": false,
+								"searchQuery": ""
+							},
+							"icon": "lucide-list",
+							"title": "Outline of sales-plan-and-spec"
+						}
+					}
+				]
+			}
+		],
+		"direction": "horizontal",
+		"width": 300,
+		"collapsed": true
+	},
+	"left-ribbon": {
+		"hiddenItems": {
+			"switcher:Open quick switcher": false,
+			"graph:Open graph view": false,
+			"canvas:Create new canvas": false,
+			"daily-notes:Open today's daily note": false,
+			"templates:Insert template": false,
+			"command-palette:Open command palette": false
+		}
+	},
+	"active": "1c7ba6b1e3fbeca8",
+	"lastOpenFiles": ["architecture/system-prompt-analysis.ko.md", "sales-plan-and-spec.md"]
 }

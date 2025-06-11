@@ -1,0 +1,65 @@
+flowchart TB
+    subgraph "VSCode Extension Host"
+        subgraph "Caret Overlay Architecture"
+            subgraph "Caret Layer (Customizations)"
+                CaretProvider["CaretProvider<br/>src/core/webview/CaretProvider.ts"]
+                CaretController["Caret Controller<br/>(Overrides & New Features)"]
+                CaretTask["Caret Task<br/>(Custom Logic)"]
+            end
+
+            subgraph "cline Layer (Base)"
+                UpstreamProvider["WebviewProvider<br/>(Base Implementation)"]
+                UpstreamController["Controller<br/>(Base Logic)"]
+                UpstreamTask["Task<br/>(Base Logic)"]
+                UpstreamMcpHub["McpHub<br/>(Base Service)"]
+            end
+        end
+
+        subgraph "Webview UI (React)"
+            WebviewApp["React App<br/>webview-ui/src/App.tsx"]
+            ExtStateContext["ExtensionStateContext<br/>webview-ui/src/context/ExtensionStateContext.tsx"]
+        end
+
+        subgraph "External Systems"
+            direction LR
+            subgraph "Storage"
+                TaskStorage["Task Storage"]
+                CheckpointSystem["Git Checkpoints"]
+                GlobalState["VSCode Global State"]
+            end
+            subgraph "API Providers"
+                APIs["Anthropic, OpenAI, etc."]
+            end
+        end
+    end
+
+    %% Layer Interaction
+    CaretProvider --> |Extends & Uses| UpstreamProvider
+    CaretController --> |Extends & Uses| UpstreamController
+    CaretTask --> |Extends & Uses| UpstreamTask
+
+    %% Core Logic Flow
+    CaretProvider --> CaretController
+    CaretController --> CaretTask
+    CaretController --> UpstreamMcpHub
+    
+    %% Data and API Flow
+    CaretTask --> |Manages| TaskStorage
+    CaretTask --> |Manages| CheckpointSystem
+    CaretTask --> |Manages| GlobalState
+    CaretTask --> |Calls| APIs
+
+    %% Webview Communication
+    CaretProvider <--> |postMessage| ExtStateContext
+    ExtStateContext --> WebviewApp
+    
+    %% Style Definitions
+    classDef caretLayer fill:#d5f0d5,stroke:#267326,stroke-width:2px
+    classDef clineLayer fill:#e6f2ff,stroke:#0055cc,stroke-width:2px
+    classDef webviewUI fill:#fff0e6,stroke:#ff8c1a,stroke-width:2px
+    classDef externalSys fill:#f2f2f2,stroke:#666,stroke-width:2px
+
+    class CaretProvider,CaretController,CaretTask caretLayer
+    class UpstreamProvider,UpstreamController,UpstreamTask,UpstreamMcpHub clineLayer
+    class WebviewApp,ExtStateContext webviewUI
+    class TaskStorage,CheckpointSystem,GlobalState,APIs externalSys

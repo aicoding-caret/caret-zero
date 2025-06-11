@@ -1,0 +1,99 @@
+/**
+ * Generic service registry for gRPC services
+ */
+export class ServiceRegistry {
+    serviceName;
+    methodRegistry = {};
+    streamingMethodRegistry = {};
+    methodMetadata = {};
+    /**
+     * Create a new service registry
+     * @param serviceName The name of the service (used for logging)
+     */
+    constructor(serviceName) {
+        this.serviceName = serviceName;
+    }
+    /**
+     * Register a method handler
+     * @param methodName The name of the method to register
+     * @param handler The handler function for the method
+     * @param metadata Optional metadata about the method
+     */
+    registerMethod(methodName, handler, metadata) {
+        const isStreaming = metadata?.isStreaming || false;
+        if (isStreaming) {
+            this.streamingMethodRegistry[methodName] = handler;
+        }
+        else {
+            this.methodRegistry[methodName] = handler;
+        }
+        this.methodMetadata[methodName] = { isStreaming, ...metadata };
+        console.log(`Registered ${this.serviceName} method: ${methodName}${isStreaming ? " (streaming)" : ""}`);
+    }
+    /**
+     * Check if a method is a streaming method
+     * @param method The method name
+     * @returns True if the method is a streaming method
+     */
+    isStreamingMethod(method) {
+        return this.methodMetadata[method]?.isStreaming || false;
+    }
+    /**
+     * Get a streaming method handler
+     * @param method The method name
+     * @returns The streaming method handler or undefined if not found
+     */
+    getStreamingHandler(method) {
+        return this.streamingMethodRegistry[method];
+    }
+    /**
+     * Handle a service request
+     * @param controller The controller instance
+     * @param method The method name
+     * @param message The request message
+     * @returns The response message
+     */
+    async handleRequest(controller, method, message) {
+        const handler = this.methodRegistry[method];
+        if (!handler) {
+            if (this.isStreamingMethod(method)) {
+                throw new Error(`Method ${method} is a streaming method and should be handled with handleStreamingRequest`);
+            }
+            throw new Error(`Unknown ${this.serviceName} method: ${method}`);
+        }
+        return handler(controller, message);
+    }
+    /**
+     * Handle a streaming service request
+     * @param controller The controller instance
+     * @param method The method name
+     * @param message The request message
+     * @param responseStream The streaming response handler
+     * @param requestId The request ID for correlation and cleanup
+     */
+    async handleStreamingRequest(controller, method, message, responseStream, requestId) {
+        const handler = this.streamingMethodRegistry[method];
+        if (!handler) {
+            if (this.methodRegistry[method]) {
+                throw new Error(`Method ${method} is not a streaming method and should be handled with handleRequest`);
+            }
+            throw new Error(`Unknown ${this.serviceName} streaming method: ${method}`);
+        }
+        await handler(controller, message, responseStream, requestId);
+    }
+}
+/**
+ * Create a service registry factory function
+ * @param serviceName The name of the service
+ * @returns An object with register and handle functions
+ */
+export function createServiceRegistry(serviceName) {
+    const registry = new ServiceRegistry(serviceName);
+    return {
+        registerMethod: (methodName, handler, metadata) => registry.registerMethod(methodName, handler, metadata),
+        handleRequest: (controller, method, message) => registry.handleRequest(controller, method, message),
+        handleStreamingRequest: (controller, method, message, responseStream, requestId) => registry.handleStreamingRequest(controller, method, message, responseStream, requestId),
+        isStreamingMethod: (method) => registry.isStreamingMethod(method),
+    };
+}
+//# sourceMappingURL=grpc-service.js.map

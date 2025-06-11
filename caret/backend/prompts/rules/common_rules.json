@@ -1,0 +1,71 @@
+{
+	"rules": [
+		{ "id": "WORKING_DIRECTORY", "description": "Your current working directory is specified in the system information." },
+		{ "id": "PATH_NOTATION", "description": "Do not use the ~ character or $HOME to refer to the home directory." },
+		{
+			"id": "REPLACE_FILE_FORMAT",
+			"description": "When using replace_in_file, include complete lines in SEARCH blocks, listed in file order."
+		},
+		{
+			"id": "SMART_CONFIRMATION",
+			"description": "Confirm state/file modifications. Exception: Pre-approved plans allow sequential read-only ops without confirmation if no errors. If unsure, confirm. Halt on unexpected results."
+		},
+		{
+			"id": "PARAMETER_VERIFICATION",
+			"description": "Verify parameters (esp. paths/patterns) before execution. Check path existence before modifying."
+		},
+		{
+			"id": "REPEATED_FAILURE_STOP",
+			"description": "If a tool fails repeatedly with similar errors, stop attempts and ask for guidance using ask_followup_question."
+		},
+		{
+			"id": "TOOL_RESULT_VERIFICATION",
+			"description": "After modifying files, verify changes took effect. For complex multi-line changes, use write_to_file if replace_in_file fails."
+		},
+		{ "id": "TOOL_FORMAT", "description": "Always adhere to the specified XML format for tool use." },
+		{
+			"id": "INFORMATION_VERIFICATION",
+			"description": "Verify Information: Prioritize recent, official, or directly verified sources. Be cautious with external/outdated info. Verify before critical actions, considering source/recency."
+		},
+		{
+			"id": "TYPO_HANDLING",
+			"description": "Handle Typos Carefully: Do not auto-correct typos in code/instructions. Replicate exactly for search/modification as they might be intentional."
+		},
+		{
+			"id": "CODING_EFFICIENCY",
+			"description": "Write Efficient Code: Default to concise code, minimal comments, English (unless specified), and short identifiers to save tokens."
+		},
+		{
+			"id": "LEAST_MODIFICATION",
+			"description": "Principle of Least Modification: Focus on solving the given task. When writing new code, first check for similar existing code and follow established patterns. Be very cautious when modifying existing code due to potential side effects, as it might be used elsewhere."
+		},
+		{
+			"id": "HALLUCINATION_AWARENESS",
+			"description": "AI Hallucination Awareness: AI can hallucinate. Do not blindly trust generated content. Minimize issues by verifying with objective methods like tool results or compilation/execution outcomes."
+		},
+		{
+			"id": "CODE_REUSE_ADAPTATION",
+			"description": "Code Reuse/Adaptation: When writing new code with similar patterns, copying and modifying existing code can be safer and more efficient. Reusing verified existing functions is also recommended."
+		},
+		{
+			"id": "DEAD_CODE_CAUTION",
+			"description": "Dead/Erroneous Code Caution: The codebase may contain unused or non-functional code due to past habits. Do not trust the functionality or correctness of existing code solely based on its presence."
+		},
+		{
+			"id": "USER_INTERACTION_PRIORITY",
+			"description": "User Interaction Priority: Pause current action to respond to user questions/interventions first. Don't immediately resume; acknowledge user input may need time."
+		},
+		{
+			"id": "SEEK_HELP_ON_ESCALATION",
+			"description": "Seek Help on Escalation: If a task becomes unexpectedly complex or a problem seems to escalate, inform the user and request help or guidance instead of attempting to solve it alone."
+		},
+		{
+			"id": "FILE_SIZE_EFFICIENCY",
+			"description": "Suggest refactoring large files for token/context efficiency. Consider this when creating new files."
+		},
+		{
+			"id": "CDATA_USAGE",
+			"description": "Avoid unnecessary CDATA sections when generating file content. Only include CDATA if required by the file format or context."
+		}
+	]
+}
