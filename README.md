@@ -91,8 +91,8 @@ npm install
 If you are on a Windows machine, you may encounter `protoc` build errors. This is a known issue with the current version of the `cline` dependency. To fix this, you need to copy the compatible build files into the `cline` subdirectory.
 
 1.  **Copy Files**:
-    *   Copy the file: `docs/development/resources/build-proto.js`
-    *   Copy the entire folder: `docs/development/resources/protoc-31.0-win64`
+    *   Copy the file: `src/patch/build-proto.js`
+    *   Copy the entire folder: `src/patch/protoc-31.0-win64`
 2.  **Paste Files**:
     *   Paste the copied file and folder into the `cline/proto/` directory, overwriting any existing files.
 

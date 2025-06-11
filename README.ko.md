@@ -91,8 +91,8 @@ npm install
 Windows 환경에서는 `protoc` 빌드 오류가 발생할 수 있습니다. 이는 `cline` 의존성의 현재 버전의 알려진 문제입니다. 이 문제를 해결하려면, 호환되는 빌드 파일을 `cline` 하위 디렉토리에 복사해야 합니다.
 
 1.  **파일 복사**:
-    *   파일 복사: `docs/development/resources/build-proto.js`
-    *   폴더 전체 복사: `docs/development/resources/protoc-31.0-win64`
+    *   파일 복사: `src/patch/build-proto.js`
+    *   폴더 전체 복사: `src/patch/protoc-31.0-win64`
 2.  **파일 붙여넣기**:
     *   복사한 파일과 폴더를 `cline/proto/` 디렉토리에 붙여넣어 기존 파일을 덮어씁니다.
 
