@@ -86,7 +86,19 @@ git clone https://github.com/cline/cline.git
 npm install
 ```
 
-### 3. 개발 빌드
+### 3. Windows 환경 설정 (조건부)
+
+Windows 환경에서는 `protoc` 빌드 오류가 발생할 수 있습니다. 이는 `cline` 의존성의 현재 버전의 알려진 문제입니다. 이 문제를 해결하려면, 호환되는 빌드 파일을 `cline` 하위 디렉토리에 복사해야 합니다.
+
+1.  **파일 복사**:
+    *   파일 복사: `docs/development/resources/build-proto.js`
+    *   폴더 전체 복사: `docs/development/resources/protoc-31.0-win64`
+2.  **파일 붙여넣기**:
+    *   복사한 파일과 폴더를 `cline/proto/` 디렉토리에 붙여넣어 기존 파일을 덮어씁니다.
+
+> **참고**: 이는 임시 해결책입니다. 향후 `cline` 업스트림 저장소에서 이 문제가 해결되면 이 단계는 더 이상 필요하지 않을 수 있습니다. 현재 버전에서는 Windows에서의 빌드 실패를 방지하기 위해 이 단계가 필수적입니다.
+
+### 4. 개발 빌드
 
 확장 프로그램의 TypeScript 코드를 컴파일합니다.
 
@@ -94,7 +106,7 @@ npm install
 npm run compile
 ```
 
-### 4. 개발 환경에서 실행
+### 5. 개발 환경에서 실행
 
 VS Code에서 `F5` 키를 눌러 디버깅 세션을 시작하면, 새로운 `[Extension Development Host]` 창에서 확장 프로그램을 테스트할 수 있습니다.
 

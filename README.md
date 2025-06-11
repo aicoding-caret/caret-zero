@@ -86,7 +86,27 @@ From the project root (`caret-zero`), install all necessary npm packages.
 npm install
 ```
 
-### 3. Development Build
+### 3. Windows Environment Setup (Conditional)
+
+If you are on a Windows machine, you may encounter `protoc` build errors. This is a known issue with the current version of the `cline` dependency. To fix this, you need to copy the compatible build files into the `cline` subdirectory.
+
+1.  **Copy Files**:
+    *   Copy the file: `docs/development/resources/build-proto.js`
+    *   Copy the entire folder: `docs/development/resources/protoc-31.0-win64`
+2.  **Paste Files**:
+    *   Paste the copied file and folder into the `cline/proto/` directory, overwriting any existing files.
+
+> **Note**: This is a temporary workaround. This step may no longer be necessary if the issue is resolved in a future version of the `cline` upstream repository. This step is crucial for preventing build failures on Windows with the current version.
+
+### 4. Build Proto Schemas
+
+Caret uses protocol buffers for communication between components. Generate the necessary TypeScript and JavaScript files from the `.proto` definitions.
+
+```bash
+npm run build-proto
+```
+
+### 5. Development Build
 
 Compile the TypeScript code for the extension.
 
@@ -94,7 +114,7 @@ Compile the TypeScript code for the extension.
 npm run compile
 ```
 
-### 4. Run for Development
+### 6. Run for Development
 
 Press `F5` in VS Code to run the extension in a new `[Extension Development Host]` window for testing and debugging.
 
