@@ -70,7 +70,7 @@ git clone https://github.com/aicoding-caret/caret-zero.git
 cd caret-zero
 
 # 3. 그 안에서 베이스 저장소(cline)를 클론합니다.
-git clone https://github.com/aicoding-caret/cline.git
+git clone https://github.com/cline/cline.git
 ```
 > **매우 중요:** `caret-zero` 폴더 바로 아래에 `cline` 폴더가 위치해야 빌드가 정상적으로 동작합니다.
 

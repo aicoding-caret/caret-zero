@@ -116,28 +116,48 @@ Caret은 지속적으로 발전해 나갈 것입니다. 주요 방향성은 다�
 
 ## 빌드 및 패키징 🛠️
 
-### 릴리즈 빌드
+로컬 개발 환경을 설정하고 확장 프로그램을 빌드하려면 다음 단계를 따르세요.
 
-```powershell
-# 기존 빌드 정리, 의존성 재설치, 프로덕션 빌드, VSIX 생성
-./clean-build-package.ps1
-# 생성 파일: caret-dev-[버전]-[타임스탬프].vsix
+### 1. 레파지토리 클론
+
+로컬 컴퓨터에 `caret-zero` 레파지토리를 클론합니다.
+
+```bash
+git clone https://github.com/aicoding-caret/caret-zero.git
+cd caret-zero
 ```
 
-### 디버그 빌드
+### 2. 의존성 설치
 
-```powershell
-# 디버그 빌드, VSIX 생성, 로그 설정
-./debug-log.ps1
-# 생성 파일: caret-dev-[버전]-[타임스탬프]-debug.vsix
+프로젝트 루트에서 필요한 모든 npm 패키지를 설치합니다. 이 한 번의 명령어로 `cline`과 `webview-ui` 워크스페이스를 포함한 전체 프로젝트의 의존성이 설치됩니다.
+
+```bash
+npm install
 ```
 
-로그는 `logs/cline-debug-[타임스탬프].log`에 저장됩니다. 실시간 로그 확인:
+### 3. 개발 빌드
+
+확장 프로그램의 TypeScript 코드를 컴파일합니다. `dist` 폴더에 필요한 JavaScript 파일이 생성됩니다.
+
+```bash
+npm run compile
+```
+
+### 4. 개발 환경에서 실행
+
+개발 빌드가 완료되면, 테스트 및 디버깅을 위해 새 VS Code 창에서 확장 프로그램을 실행할 수 있습니다.
+
+-   VS Code에서 `F5` 키를 누릅니다.
+
+### 5. 릴리즈 패키지 (.vsix) 생성
+
+공유 가능한 `.vsix` 설치 파일을 만들려면 릴리즈 빌드 스크립트를 실행하세요. 이 스크립트는 버전 관리, 패키징을 처리하고 최종 파일을 `/release` 디렉토리에 저장합니다.
 
 ```powershell
-# PowerShell에서 실시간 로그 확인
-Get-Content -Path "logs/cline-debug-[타임스탬프].log" -Wait
+# (루트 디렉토리에서)
+./build-release.ps1
 ```
+결과 파일명은 `release/caret-vVERSION-DATE.vsix` 형식입니다.
 
 ## 기여하기
 
@@ -145,15 +165,16 @@ Caret 프로젝트는 여러분의 기여를 환영합니다! 버그 리포트, 
 
 ## 문서
 
-더 자세한 정보는 [`caret-docs`](./caret-docs/) 디렉토리의 문서를 참고해주세요.
+더 자세한 정보는 [`docs`](./docs/) 디렉토리의 문서를 참고해주세요.
 
-*   [아키텍처 개요](./caret-docs/architecture/extension-architecture.mmd)
-*   [작업 로그](./caret-docs/work-logs/)
+*   [아키텍처 개요](./docs/architecture/extension-architecture.mmd)
+*   [신규 개발자 온보딩 가이드](./docs/development/new-developer-onboarding-guide.md)
+*   [작업 로그](./docs/work-logs/)
 *   ... (다른 중요한 문서 링크 추가)
 
-## License
+## 라이선스
 
-[Apache 2.0 © 2025 Cline Bot Inc.](./LICENSE)
+[Apache 2.0](./LICENSE) © 2024 [Caretive INC.](https://caretive.ai/)
 
 ## 지원 모델
 

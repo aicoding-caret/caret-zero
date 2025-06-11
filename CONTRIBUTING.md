@@ -1,22 +1,22 @@
-# Contributing to Cline
+# Contributing to Caret
 
-We're thrilled you're interested in contributing to Cline. Whether you're fixing a bug, adding a feature, or improving our docs, every contribution makes Cline smarter! To keep our community vibrant and welcoming, all members must adhere to our [Code of Conduct](CODE_OF_CONDUCT.md).
+We're thrilled you're interested in contributing to Caret. Whether you're fixing a bug, adding a feature, or improving our docs, every contribution makes Caret smarter! To keep our community vibrant and welcoming, all members must adhere to our [Code of Conduct](CODE_OF_CONDUCT.md).
 
 ## Reporting Bugs or Issues
 
-Bug reports help make Cline better for everyone! Before creating a new issue, please [search existing ones](https://github.com/cline/cline/issues) to avoid duplicates. When you're ready to report a bug, head over to our [issues page](https://github.com/cline/cline/issues/new/choose) where you'll find a template to help you with filling out the relevant information.
+Bug reports help make Caret better for everyone! Before creating a new issue, please [search existing ones](https://github.com/aicoding-caret/caret-zero/issues) to avoid duplicates. When you're ready to report a bug, head over to our [issues page](https://github.com/aicoding-caret/caret-zero/issues/new/choose) where you'll find a template to help you with filling out the relevant information.
 
 <blockquote class='warning-note'>
-     🔐 <b>Important:</b> If you discover a security vulnerability, please use the <a href="https://github.com/cline/cline/security/advisories/new">Github security tool to report it privately</a>.
+     🔐 <b>Important:</b> If you discover a security vulnerability, please use the <a href="https://github.com/aicoding-caret/caret-zero/security/advisories/new">Github security tool to report it privately</a>.
 </blockquote>
 
 ## Deciding What to Work On
 
-Looking for a good first contribution? Check out issues labeled ["good first issue"](https://github.com/cline/cline/labels/good%20first%20issue) or ["help wanted"](https://github.com/cline/cline/labels/help%20wanted). These are specifically curated for new contributors and areas where we'd love some help!
+Looking for a good first contribution? Check out issues labeled ["good first issue"](https://github.com/aicoding-caret/caret-zero/labels/good%20first%20issue) or ["help wanted"](https://github.com/aicoding-caret/caret-zero/labels/help%20wanted). These are specifically curated for new contributors and areas where we'd love some help!
 
-We also welcome contributions to our [documentation](https://github.com/cline/cline/tree/main/docs)! Whether it's fixing typos, improving existing guides, or creating new educational content - we'd love to build a community-driven repository of resources that helps everyone get the most out of Cline. You can start by diving into `/docs` and looking for areas that need improvement.
+We also welcome contributions to our [documentation](https://github.com/aicoding-caret/caret-zero/tree/main/docs)! Whether it's fixing typos, improving existing guides, or creating new educational content - we'd love to build a community-driven repository of resources that helps everyone get the most out of Caret. You can start by diving into `/docs` and looking for areas that need improvement.
 
-If you're planning to work on a bigger feature, please create a [feature request](https://github.com/cline/cline/discussions/categories/feature-requests?discussions_q=is%3Aopen+category%3A%22Feature+Requests%22+sort%3Atop) first so we can discuss whether it aligns with Cline's vision.
+If you're planning to work on a bigger feature, please create a [feature request](https://github.com/aicoding-caret/caret-zero/discussions/categories/feature-requests?discussions_q=is%3Aopen+category%3A%22Feature+Requests%22+sort%3Atop) first so we can discuss whether it aligns with Caret's vision.
 
 ## Development Setup
 
@@ -27,9 +27,9 @@ If you're planning to work on a bigger feature, please create a [feature request
     - If you dismissed the prompts, you can install them manually from the Extensions panel
 
 2. **Local Development**
-    - Run `npm run install:all` to install dependencies
+    - Run `npm install` to install dependencies
     - Run `npm run test` to run tests locally
-    - Before submitting PR, run `npm run format:fix` to format your code
+    - Before submitting a PR, run `npm run lint` and `npm run format:fix` to check and format your code
 
 3. **Linux-specific Setup**
     VS Code extension tests on Linux require the following system libraries:
@@ -63,7 +63,7 @@ If you're planning to work on a bigger feature, please create a [feature request
 
 ## Writing and Submitting Code
 
-Anyone can contribute code to Cline, but we ask that you follow these guidelines to ensure your contributions can be smoothly integrated:
+Anyone can contribute code to Caret, but we ask that you follow these guidelines to ensure your contributions can be smoothly integrated:
 
 1. **Keep Pull Requests Focused**
 
@@ -119,4 +119,4 @@ Anyone can contribute code to Cline, but we ask that you follow these guidelines
 
 By submitting a pull request, you agree that your contributions will be licensed under the same license as the project ([Apache 2.0](LICENSE)).
 
-Remember: Contributing to Cline isn't just about writing code - it's about being part of a community that's shaping the future of AI-assisted development. Let's build something amazing together! 🚀
+Remember: Contributing to Caret isn't just about writing code - it's about being part of a community that's shaping the future of AI-assisted development. Let's build something amazing together! 🚀

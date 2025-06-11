@@ -148,28 +148,48 @@ Your feedback and contributions will make Caret's roadmap even richer!
 
 ## Build & Packaging 🛠️
 
-### Release Build
+Follow these steps to set up your local development environment and build the extension.
 
-```powershell
-# Clean existing build, reinstall dependencies, production build, generate VSIX
-./clean-build-package.ps1
-# Generated file: caret-dev-[version]-[timestamp].vsix
+### 1. Clone the Repository
+
+Clone the `caret-zero` repository to your local machine.
+
+```bash
+git clone https://github.com/aicoding-caret/caret-zero.git
+cd caret-zero
 ```
 
-### Debug Build
+### 2. Install Dependencies
 
-```powershell
-# Debug build, generate VSIX, setup logging
-./debug-log.ps1
-# Generated file: caret-dev-[version]-[timestamp]-debug.vsix
+Install all necessary npm packages from the project root. This single command installs dependencies for the entire project, including the `cline` and `webview-ui` workspaces.
+
+```bash
+npm install
 ```
 
-Logs are saved to `logs/cline-debug-[timestamp].log`. To view logs in real-time:
+### 3. Development Build
+
+Compile the TypeScript code for the extension. This generates the necessary JavaScript files in the `dist` folder.
+
+```bash
+npm run compile
+```
+
+### 4. Run for Development
+
+Once the development build is complete, you can run the extension in a new VS Code window for testing and debugging.
+
+-   Press `F5` in VS Code.
+
+### 5. Create a Release Package (.vsix)
+
+To create a shareable `.vsix` installation file, run the release build script. This script will handle versioning, packaging, and place the final file in the `/release` directory.
 
 ```powershell
-# View real-time logs in PowerShell
-Get-Content -Path "logs/cline-debug-[timestamp].log" -Wait
+# (From the root directory)
+./build-release.ps1
 ```
+The output file will be named `release/caret-vVERSION-DATE.vsix`.
 
 ## Contributing
 
@@ -177,13 +197,13 @@ The Caret project welcomes your contributions! Whether it's bug reports, feature
 
 ## Documentation
 
-For more detailed information, please refer to the documents in the [`caret-docs`](./caret-docs/) directory.
+For more detailed information, please refer to the documents in the [`docs`](./docs/) directory.
 
-* [Architecture Overview](./caret-docs/architecture/extension-architecture.mmd)
-* [New Developer Onboarding Guide](./caret-docs/development/new-developer-onboarding-guide.md)
-* [Work Logs](./caret-docs/work-logs/)
+* [Architecture Overview](./docs/architecture/extension-architecture.mmd)
+* [New Developer Onboarding Guide](./docs/development/new-developer-onboarding-guide.md)
+* [Work Logs](./docs/work-logs/)
 * ... (additional important document links to be added)
 
 ## License
 
-[Apache 2.0 © 2025 Cline Bot Inc.](./LICENSE) 
+[Apache 2.0](./LICENSE) © 2024 [Caretive INC.](https://caretive.ai/) 
