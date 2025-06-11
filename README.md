@@ -64,19 +64,22 @@ Follow these steps to set up your local development environment and build the ex
 
 ### 1. Repository Setup
 
-This project uses a nested sub-repository structure. First, clone the main `caret-zero` repository, and then clone the `cline` repository inside it.
+This project uses a nested sub-repository structure. First, clone the main `caret-zero` repository. Then, clone the `cline` repository inside it and check out a specific, compatible version.
 
 ```bash
-# 1. Clone the main repository
+# 1. Clone the main Caret repository
 git clone https://github.com/aicoding-caret/caret-zero.git
-
-# 2. Change into the new directory
 cd caret-zero
 
-# 3. Clone the sub-repository
+# 2. Clone the Cline sub-repository
 git clone https://github.com/cline/cline.git
+
+# 3. Check out the tested compatible version of Cline
+cd cline
+git checkout 59a68c8d7adef6afb59990008d66d5bd74d30558
+cd ..
 ```
-> **Important:** The `cline` folder must be located directly inside the `caret-zero` folder for the build to work correctly.
+> **Important:** The `cline` sub-directory must be at this exact commit for the build to work as expected. Future or past commits may cause compatibility issues.
 
 ### 2. Install Dependencies
 
