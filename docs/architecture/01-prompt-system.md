@@ -31,21 +31,21 @@ graph TD
         A -->|"설정값 전달"| B
 
         subgraph "Cline 로직 (Bypassed / 미사용)"
-            C["(호출되지 않음)<br/>Cline의<br/>프롬프트 생성 함수"]
+            C["(호출되지 않음)<br/>Cline의 프롬프트 생성 함수"]
             style C fill:#f9f9f9,stroke:#ddd,stroke-dasharray: 5 5
         end
         
         subgraph "Caret 로직 (Active Override)"
-            D["<b>Caret의 PromptManager</b><br/>(src/core/prompts/system.ts)"]
-            E["1. .caretrules 로드"]
-            F["2. Persona 설정 로드"]
-            G["3. Section/Rule JSON 로드"]
-            H["<b>[ 최종 프롬프트 조립 ]</b>"]
+            D["Caret의 PromptManager<br/>(src/core/prompts/system.ts)"]
+            E[".caretrules 로드"]
+            F["Persona 설정 로드"]
+            G["Section/Rule JSON 로드"]
+            H["[ 최종 프롬프트 조립 ]"]
             D --> E & F & G --> H
             style D fill:#e6ffed,stroke:#008000
         end
         
-        B -->|"<b>Caret 독자 로직 호출</b>"| D
+        B -->|"Caret 독자 로직 호출"| D
     end
 
     subgraph "AI 모델 (LLM)"
