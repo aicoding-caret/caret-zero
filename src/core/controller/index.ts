@@ -302,8 +302,8 @@ export class Controller {
 
 		// Mode Rule 적용 계획 3.1: Controller에서 현재 모드의 rules 가져오기
 		// 이 변수는 다음 단계(제안 사항 2)에서 Task 생성자로 전달될 것입니다.
-		const currentModeForTask = this.availableModes.find(mode => mode.id === chatSettings.mode);
-		const modeRulesForTask = currentModeForTask?.rules;
+		const currentModeForTask = this.availableModes.find((mode) => mode.id === chatSettings.mode)
+		const modeRulesForTask = currentModeForTask?.rules
 
 		const NEW_USER_TASK_COUNT_THRESHOLD = 10
 
@@ -1948,7 +1948,7 @@ Here is the project's README to help you get started:\n\n${mcpDetails.readmeCont
 		const currentMode = this.availableModes.find((mode) => mode.id === chatSettings.mode)
 		// Mode Rule 적용 계획 3.1: Controller에서 현재 모드의 rules 가져오기
 		// 이 변수는 다음 단계(제안 사항 2)에서 Task 객체의 상태를 업데이트하는 데 사용될 수 있습니다.
-		const modeRulesFromCurrentMode = currentMode?.rules;
+		const modeRulesFromCurrentMode = currentMode?.rules
 
 		// 모드별 모델 설정 처리
 		if (currentMode?.model) {

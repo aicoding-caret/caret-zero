@@ -4,6 +4,7 @@
 - [ ] **Task #015:** ChatView/ChatRow 리팩토링 (분리, 중단상태, [014-1-chatview-refactoring.md](./014-1-chatview-refactoring.md))
 - [ ] **Task #028:** api.ts 파일 json 분리 및 리팩토링 ([018-02-01-action-checklist-persona-management.md](./018-02-01-action-checklist-persona-management.md))
 - [ ] **Task #029:** Cline Upstream 변경 사항 병합 ([029-01-plan-merge-cline-upstream.md](./029-01-plan-merge-cline-upstream.md))
+- [ ] **Task #030:** 오버레이 아키텍처 구현 ([030-01-plan-overlay-architecture-implementation.md](./030-01-plan-overlay-architecture-implementation.md), [030-02-action-checklist-overlay-architecture.md](./030-02-action-checklist-overlay-architecture.md))
 
 ## 대기 중인 태스크 (Pending)
 - [ ] **Task #027:** Caret Team 로그인 구현 ([027-caret-team-auth.md](./027-caret-team-auth.md))
