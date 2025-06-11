@@ -1,5 +1,5 @@
-import { Empty } from "@shared/proto/common";
-import { openFile as openFileIntegration } from "@integrations/misc/open-file";
+import { Empty } from "@shared/proto/common"
+import { openFile as openFileIntegration } from "@integrations/misc/open-file"
 /**
  * Opens a file in the editor
  * @param controller The controller instance
@@ -7,9 +7,9 @@ import { openFile as openFileIntegration } from "@integrations/misc/open-file";
  * @returns Empty response
  */
 export const openFile = async (controller, request) => {
-    if (request.value) {
-        openFileIntegration(request.value);
-    }
-    return Empty.create();
-};
+	if (request.value) {
+		openFileIntegration(request.value)
+	}
+	return Empty.create()
+}
 //# sourceMappingURL=openFile.js.map

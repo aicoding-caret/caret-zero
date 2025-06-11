@@ -1,5 +1,5 @@
-import * as vscode from "vscode";
-import { Empty } from "../../../shared/proto/common";
+import * as vscode from "vscode"
+import { Empty } from "../../../shared/proto/common"
 /**
  * Copies text to the system clipboard
  * @param controller The controller instance
@@ -7,14 +7,13 @@ import { Empty } from "../../../shared/proto/common";
  * @returns Empty response
  */
 export async function copyToClipboard(controller, request) {
-    try {
-        if (request.value) {
-            await vscode.env.clipboard.writeText(request.value);
-        }
-    }
-    catch (error) {
-        console.error("Error copying to clipboard:", error);
-    }
-    return Empty.create();
+	try {
+		if (request.value) {
+			await vscode.env.clipboard.writeText(request.value)
+		}
+	} catch (error) {
+		console.error("Error copying to clipboard:", error)
+	}
+	return Empty.create()
 }
 //# sourceMappingURL=copyToClipboard.js.map

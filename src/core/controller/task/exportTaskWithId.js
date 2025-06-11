@@ -1,4 +1,4 @@
-import { Empty } from "@shared/proto/common";
+import { Empty } from "@shared/proto/common"
 /**
  * Exports a task with the given ID to markdown
  * @param controller The controller instance
@@ -6,16 +6,15 @@ import { Empty } from "@shared/proto/common";
  * @returns Empty response
  */
 export const exportTaskWithId = async (controller, request) => {
-    try {
-        if (request.value) {
-            await controller.exportTaskWithId(request.value);
-        }
-        return Empty.create();
-    }
-    catch (error) {
-        // Log the error but allow it to propagate for proper gRPC error handling
-        console.error(`Error exporting task with ID ${request.value}:`, error);
-        throw error;
-    }
-};
+	try {
+		if (request.value) {
+			await controller.exportTaskWithId(request.value)
+		}
+		return Empty.create()
+	} catch (error) {
+		// Log the error but allow it to propagate for proper gRPC error handling
+		console.error(`Error exporting task with ID ${request.value}:`, error)
+		throw error
+	}
+}
 //# sourceMappingURL=exportTaskWithId.js.map

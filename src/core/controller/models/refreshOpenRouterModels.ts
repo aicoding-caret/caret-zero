@@ -141,6 +141,7 @@ export async function refreshOpenRouterModels(
 			cacheWritesPrice: model.cacheWritesPrice ?? 0,
 			cacheReadsPrice: model.cacheReadsPrice ?? 0,
 			description: model.description ?? "",
+			tiers: [],
 		}
 	}
 

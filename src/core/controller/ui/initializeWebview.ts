@@ -8,7 +8,7 @@ import { WebviewProvider } from "@core/webview"
  */
 export async function initializeWebview(controller: Controller, _webview: WebviewProvider): Promise<void> {
 	// Post the initial state to the webview
-					await controller.postStateToWebview()
+	await controller.postStateToWebview()
 
 	// Asynchronously refresh OpenRouter models without waiting
 	controller.refreshOpenRouterModels().catch((error) => {

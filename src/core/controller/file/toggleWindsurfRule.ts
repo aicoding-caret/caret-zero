@@ -10,10 +10,9 @@ import type { CaretRulesToggles } from "@shared/caret-rules"
  */
 export async function toggleWindsurfRule(controller: Controller, request: any): Promise<void> {
 	try {
-		const toggles =
-			((await getWorkspaceState(controller.context, "localWindsurfRulesToggles")) as CaretRulesToggles) || {}
+		const toggles = ((await getWorkspaceState(controller.context, "localWindsurfRulesToggles")) as CaretRulesToggles) || {}
 		toggles[request.rulePath] = request.enabled
-	await updateWorkspaceState(controller.context, "localWindsurfRulesToggles", toggles)
+		await updateWorkspaceState(controller.context, "localWindsurfRulesToggles", toggles)
 	} catch (error) {
 		console.error("Failed to toggle Windsurf rule:", error)
 		throw error

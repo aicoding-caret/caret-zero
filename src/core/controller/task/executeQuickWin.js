@@ -1,4 +1,4 @@
-import { Empty } from "@shared/proto/common";
+import { Empty } from "@shared/proto/common"
 /**
  * Executes a quick win task with command and title
  * @param controller The controller instance
@@ -20,15 +20,14 @@ import { Empty } from "@shared/proto/common";
  *   .catch(error => console.error("Failed to execute quick win:", error))
  */
 export async function executeQuickWin(controller, request) {
-    try {
-        const { command, title } = request;
-        console.log(`Received executeQuickWin: command='${command}', title='${title}'`);
-        await controller.initTask(title);
-        return Empty.create({});
-    }
-    catch (error) {
-        console.error("Failed to execute quick win:", error);
-        throw error;
-    }
+	try {
+		const { command, title } = request
+		console.log(`Received executeQuickWin: command='${command}', title='${title}'`)
+		await controller.initTask(title)
+		return Empty.create({})
+	} catch (error) {
+		console.error("Failed to execute quick win:", error)
+		throw error
+	}
 }
 //# sourceMappingURL=executeQuickWin.js.map

@@ -14,12 +14,11 @@ export async function toggleCaretRule(controller: Controller, request: any): Pro
 			const toggles = ((await getGlobalState(controller.context, "globalCaretRulesToggles")) as CaretRulesToggles) || {}
 			toggles[request.rulePath] = request.enabled
 			await updateGlobalState(controller.context, "globalCaretRulesToggles", toggles)
-	} else {
-			const toggles =
-				((await getWorkspaceState(controller.context, "localCaretRulesToggles")) as CaretRulesToggles) || {}
+		} else {
+			const toggles = ((await getWorkspaceState(controller.context, "localCaretRulesToggles")) as CaretRulesToggles) || {}
 			toggles[request.rulePath] = request.enabled
 			await updateWorkspaceState(controller.context, "localCaretRulesToggles", toggles)
-	}
+		}
 
 		// After toggling, we might want to inform the webview or other parts of the extension.
 		// For now, we just update the state.

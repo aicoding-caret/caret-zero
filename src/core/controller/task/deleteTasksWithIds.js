@@ -1,4 +1,4 @@
-import { Empty } from "../../../shared/proto/common";
+import { Empty } from "../../../shared/proto/common"
 /**
  * Deletes tasks with the specified IDs
  * @param controller The controller instance
@@ -7,10 +7,10 @@ import { Empty } from "../../../shared/proto/common";
  * @throws Error if operation fails
  */
 export const deleteTasksWithIds = async (controller, request) => {
-    if (!request.value || request.value.length === 0) {
-        throw new Error("Missing task IDs");
-    }
-    await Promise.all(request.value.map((value) => controller.deleteTaskWithId(value)));
-    return Empty.create();
-};
+	if (!request.value || request.value.length === 0) {
+		throw new Error("Missing task IDs")
+	}
+	await Promise.all(request.value.map((value) => controller.deleteTaskWithId(value)))
+	return Empty.create()
+}
 //# sourceMappingURL=deleteTasksWithIds.js.map

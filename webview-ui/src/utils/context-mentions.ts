@@ -1,6 +1,5 @@
 import { mentionRegex } from "@shared/context-mentions"
 import { Fzf } from "fzf"
-import * as path from "path"
 
 export interface SearchResult {
 	path: string
@@ -193,7 +192,7 @@ export function getContextMenuOptions(
 		const item = {
 			type: result.type === "folder" ? ContextMenuOptionType.Folder : ContextMenuOptionType.File,
 			value: formattedPath,
-			label: result.label || path.basename(result.path),
+			label: result.label || getClientSideBasename(result.path),
 			description: formattedPath,
 		}
 		return item
@@ -258,4 +257,15 @@ export function shouldShowContextMenu(text: string, position: number): boolean {
 
 	// Show the menu if there's just '@' or '@' followed by some text (but not a URL)
 	return true
+}
+
+// New helper function
+function getClientSideBasename(filePath: string): string {
+	if (!filePath) {
+		return '';
+	}
+	// Replace backslashes with forward slashes for consistency
+	const normalizedPath = filePath.replace(/\\/g, '/');
+	const lastSlashIndex = normalizedPath.lastIndexOf('/');
+	return normalizedPath.substring(lastSlashIndex + 1);
 }

@@ -11,8 +11,6 @@ import { getGlobalState } from "@core/storage/state"
  */
 export async function refreshMcpMarketplace(controller: Controller, _request: Empty): Promise<McpMarketplaceCatalog> {
 	await controller.silentlyRefreshMcpMarketplace()
-	const catalog = (await getGlobalState(controller.context, "mcpMarketplaceCatalog")) as
-		| McpMarketplaceCatalog
-		| undefined
+	const catalog = (await getGlobalState(controller.context, "mcpMarketplaceCatalog")) as McpMarketplaceCatalog | undefined
 	return catalog || { items: [] }
 }

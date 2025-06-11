@@ -9,6 +9,7 @@ import { getVsCodeLmModels } from "./getVsCodeLmModels"
 import { refreshOpenAiModels } from "./refreshOpenAiModels"
 import { refreshOpenRouterModels } from "./refreshOpenRouterModels"
 import { refreshRequestyModels } from "./refreshRequestyModels"
+import { subscribeToOpenRouterModels } from "./subscribeToOpenRouterModels"
 
 // Register all models service methods
 export function registerAllMethods(): void {
@@ -19,4 +20,5 @@ export function registerAllMethods(): void {
 	registerMethod("refreshOpenAiModels", refreshOpenAiModels)
 	registerMethod("refreshOpenRouterModels", refreshOpenRouterModels)
 	registerMethod("refreshRequestyModels", refreshRequestyModels)
+	registerMethod("subscribeToOpenRouterModels", subscribeToOpenRouterModels)
 }

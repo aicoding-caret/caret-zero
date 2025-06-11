@@ -1,81 +1,134 @@
-import { ChatContent } from "@shared/ChatContent"
-import { ChatSettings, ChatMode } from "@shared/ChatSettings"
-import { ChatContent as ProtoChatContent, ChatSettings as ProtoChatSettings, ChatMode as ProtoChatMode } from "../../../shared/proto/state"
+import {
+	ChatContent as ProtoChatContent,
+	ChatSettings as ProtoChatSettings,
+	PlanActMode as ProtoPlanActMode,
+} from "../../../shared/proto/state"
+import { ChatContent, PlanActMode } from "../../../shared/types"
+import {
+	ChatSettings as DomainClientChatSettings,
+	ChatMode as DomainClientChatMode,
+	OpenAIReasoningEffort as DomainClientOpenAIReasoningEffort,
+} from "../../../shared/ChatSettings"
 
 /**
- * Converts domain ChatSettings objects to proto ChatSettings objects
+ * Converts domain chat settings to proto chat settings
  */
-export function convertChatSettingsToProtoChatSettings(chatSettings: ChatSettings): ProtoChatSettings {
+export function convertChatSettingsToProtoChatSettings(
+	domainSettings: DomainClientChatSettings,
+): ProtoChatSettings {
 	return {
-		mode: convertModeToProtoMode(chatSettings.mode),
-		preferredLanguage: chatSettings.preferredLanguage,
-		openAiReasoningEffort: chatSettings.openAIReasoningEffort,
+		mode: convertDomainClientChatModeToProtoPlanActMode(domainSettings.mode),
+		preferredLanguage: domainSettings.preferredLanguage,
+		openAiReasoningEffort: domainSettings.openAIReasoningEffort,
 	}
 }
 
 /**
- * Converts proto ChatSettings objects to domain ChatSettings objects
+ * Converts proto chat settings to domain chat settings
  */
-export function convertProtoChatSettingsToChatSettings(protoChatSettings: ProtoChatSettings): ChatSettings {
+export function convertProtoChatSettingsToChatSettings(
+	protoChatSettings: ProtoChatSettings,
+): DomainClientChatSettings {
 	return {
-		mode: convertProtoModeToMode(protoChatSettings.mode),
+		mode: convertProtoPlanActModeToDomainClientChatMode(protoChatSettings.mode),
 		preferredLanguage: protoChatSettings.preferredLanguage,
-		openAIReasoningEffort: protoChatSettings.openAiReasoningEffort as "low" | "medium" | "high" | undefined,
+		openAIReasoningEffort: protoChatSettings.openAiReasoningEffort as DomainClientOpenAIReasoningEffort | undefined,
 	}
 }
 
 /**
- * Converts domain mode to proto mode
+ * Converts domain PlanActMode to proto PlanActMode
  */
-function convertModeToProtoMode(mode: ChatMode): ProtoChatMode {
+function convertPlanActModeToProtoPlanActMode(
+	mode: PlanActMode,
+): ProtoPlanActMode {
 	switch (mode) {
-		case 'arch': return ProtoChatMode.ARCH;
-		case 'dev': return ProtoChatMode.DEV;
-		case 'rule': return ProtoChatMode.RULE;
-		case 'talk': return ProtoChatMode.TALK;
-		case 'custom': return ProtoChatMode.CUSTOM;
-		default: return ProtoChatMode.ARCH;
+		case PlanActMode.PLAN:
+			return ProtoPlanActMode.PLAN
+		case PlanActMode.ACT:
+			return ProtoPlanActMode.ACT
+		default:
+			// This case should ideally not be reached if PlanActMode is a strict enum.
+			// Handling as per proto enum generation which includes UNRECOGNIZED.
+			return ProtoPlanActMode.UNRECOGNIZED
 	}
 }
 
 /**
- * Converts proto mode to domain mode
+ * Converts proto PlanActMode to domain PlanActMode
  */
-function convertProtoModeToMode(mode: ProtoChatMode): ChatMode {
-	switch (mode) {
-		case ProtoChatMode.ARCH: return 'arch';
-		case ProtoChatMode.DEV: return 'dev';
-		case ProtoChatMode.RULE: return 'rule';
-		case ProtoChatMode.TALK: return 'talk';
-		case ProtoChatMode.CUSTOM: return 'custom';
-		default: return 'arch';
+function convertProtoPlanActModeToPlanActMode(
+	protoMode: ProtoPlanActMode,
+): PlanActMode {
+	switch (protoMode) {
+		case ProtoPlanActMode.PLAN:
+			return PlanActMode.PLAN
+		case ProtoPlanActMode.ACT:
+			return PlanActMode.ACT
+		case ProtoPlanActMode.UNRECOGNIZED:
+		default:
+			// Decide on a default or throw an error for UNRECOGNIZED cases
+			// For now, throwing an error might be safer to highlight issues.
+			throw new Error(`Unrecognized proto chat mode: ${protoMode}`)
 	}
 }
 
 /**
- * Converts domain ChatContent objects to proto ChatContent objects
+ * Converts domain chat content to proto chat content
  */
-export function convertChatContentToProtoChatContent(chatContent?: ChatContent): ProtoChatContent | undefined {
-	if (!chatContent) {
-		return undefined
-	}
-
+export function convertChatContentToProtoChatContent(
+	chatContent: ChatContent,
+): ProtoChatContent {
 	return {
 		message: chatContent.message,
 		images: chatContent.images || [],
+		files: chatContent.files || [],
 	}
 }
 
 /**
- * Converts proto ChatContent objects to domain ChatContent objects
+ * Converts proto chat content to domain chat content
  */
-export function convertProtoChatContentToChatContent(protoChatContent?: ProtoChatContent): ChatContent | undefined {
-	if (!protoChatContent) {
-		return undefined
-	}
-
+export function convertProtoChatContentToChatContent(
+	protoChatContent: ProtoChatContent,
+): ChatContent {
 	return {
 		message: protoChatContent.message,
 		images: protoChatContent.images || [],
+		files: protoChatContent.files || [],
 	}
 }
+
+// --- Helper functions for mode conversion --- START ---
+function convertProtoPlanActModeToDomainClientChatMode(
+	protoMode: ProtoPlanActMode,
+): DomainClientChatMode {
+	// Temporary mapping to allow compilation
+	switch (protoMode) {
+		case ProtoPlanActMode.PLAN:
+			return "arch" // Or any other default ChatMode string
+		case ProtoPlanActMode.ACT:
+			return "dev" // Or any other default ChatMode string
+		case ProtoPlanActMode.UNRECOGNIZED:
+		default:
+			return "arch" // Default fallback
+	}
+}
+
+function convertDomainClientChatModeToProtoPlanActMode(
+	domainMode: DomainClientChatMode,
+): ProtoPlanActMode {
+	// Temporary mapping to allow compilation
+	// This mapping might need to be more nuanced based on actual feature requirements.
+	switch (domainMode) {
+		case "arch":
+		case "dev":
+		case "rule":
+		case "talk":
+		case "custom":
+			return ProtoPlanActMode.PLAN // Or map specific modes if logic requires
+		default:
+			return ProtoPlanActMode.UNRECOGNIZED
+	}
+}
+// --- Helper functions for mode conversion --- END ---

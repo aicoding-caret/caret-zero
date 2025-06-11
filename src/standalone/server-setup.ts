@@ -7,6 +7,7 @@ import { GrpcHandlerWrapper, GrpcStreamingResponseHandlerWrapper } from "./grpc-
 // Account Service
 import { accountLoginClicked } from "../core/controller/account/accountLoginClicked"
 import { accountLogoutClicked } from "../core/controller/account/accountLogoutClicked"
+import { subscribeToAuthCallback } from "../core/controller/account/subscribeToAuthCallback"
 
 // Browser Service
 import { getBrowserConnectionInfo } from "../core/controller/browser/getBrowserConnectionInfo"
@@ -14,6 +15,7 @@ import { testBrowserConnection } from "../core/controller/browser/testBrowserCon
 import { discoverBrowser } from "../core/controller/browser/discoverBrowser"
 import { getDetectedChromePath } from "../core/controller/browser/getDetectedChromePath"
 import { updateBrowserSettings } from "../core/controller/browser/updateBrowserSettings"
+import { relaunchChromeDebugMode } from "../core/controller/browser/relaunchChromeDebugMode"
 
 // Checkpoints Service
 import { checkpointDiff } from "../core/controller/checkpoints/checkpointDiff"
@@ -23,12 +25,21 @@ import { checkpointRestore } from "../core/controller/checkpoints/checkpointRest
 import { copyToClipboard } from "../core/controller/file/copyToClipboard"
 import { openFile } from "../core/controller/file/openFile"
 import { openImage } from "../core/controller/file/openImage"
+import { openMention } from "../core/controller/file/openMention"
 import { deleteRuleFile } from "../core/controller/file/deleteRuleFile"
 import { createRuleFile } from "../core/controller/file/createRuleFile"
 import { searchCommits } from "../core/controller/file/searchCommits"
 import { selectImages } from "../core/controller/file/selectImages"
+import { selectFiles } from "../core/controller/file/selectFiles"
 import { getRelativePaths } from "../core/controller/file/getRelativePaths"
 import { searchFiles } from "../core/controller/file/searchFiles"
+import { toggleClineRule } from "../core/controller/file/toggleClineRule"
+import { toggleCursorRule } from "../core/controller/file/toggleCursorRule"
+import { toggleWindsurfRule } from "../core/controller/file/toggleWindsurfRule"
+import { refreshRules } from "../core/controller/file/refreshRules"
+import { openTaskHistory } from "../core/controller/file/openTaskHistory"
+import { toggleWorkflow } from "../core/controller/file/toggleWorkflow"
+import { subscribeToWorkspaceUpdates } from "../core/controller/file/subscribeToWorkspaceUpdates"
 
 // Mcp Service
 import { toggleMcpServer } from "../core/controller/mcp/toggleMcpServer"
@@ -37,6 +48,12 @@ import { addRemoteMcpServer } from "../core/controller/mcp/addRemoteMcpServer"
 import { downloadMcp } from "../core/controller/mcp/downloadMcp"
 import { restartMcpServer } from "../core/controller/mcp/restartMcpServer"
 import { deleteMcpServer } from "../core/controller/mcp/deleteMcpServer"
+import { toggleToolAutoApprove } from "../core/controller/mcp/toggleToolAutoApprove"
+import { refreshMcpMarketplace } from "../core/controller/mcp/refreshMcpMarketplace"
+import { openMcpSettings } from "../core/controller/mcp/openMcpSettings"
+import { subscribeToMcpMarketplaceCatalog } from "../core/controller/mcp/subscribeToMcpMarketplaceCatalog"
+import { getLatestMcpServers } from "../core/controller/mcp/getLatestMcpServers"
+import { subscribeToMcpServers } from "../core/controller/mcp/subscribeToMcpServers"
 
 // Models Service
 import { getOllamaModels } from "../core/controller/models/getOllamaModels"
@@ -45,6 +62,7 @@ import { getVsCodeLmModels } from "../core/controller/models/getVsCodeLmModels"
 import { refreshOpenRouterModels } from "../core/controller/models/refreshOpenRouterModels"
 import { refreshOpenAiModels } from "../core/controller/models/refreshOpenAiModels"
 import { refreshRequestyModels } from "../core/controller/models/refreshRequestyModels"
+import { subscribeToOpenRouterModels } from "../core/controller/models/subscribeToOpenRouterModels"
 
 // Slash Service
 import { reportBug } from "../core/controller/slash/reportBug"
@@ -56,11 +74,14 @@ import { subscribeToState } from "../core/controller/state/subscribeToState"
 import { toggleFavoriteModel } from "../core/controller/state/toggleFavoriteModel"
 import { resetState } from "../core/controller/state/resetState"
 import { togglePlanActMode } from "../core/controller/state/togglePlanActMode"
-import { updateChatMode } from "../core/controller/state/updateChatMode"
+import { updateTerminalConnectionTimeout } from "../core/controller/state/updateTerminalConnectionTimeout"
+import { updateAutoApprovalSettings } from "../core/controller/state/updateAutoApprovalSettings"
+import { updateSettings } from "../core/controller/state/updateSettings"
 
 // Task Service
 import { cancelTask } from "../core/controller/task/cancelTask"
 import { clearTask } from "../core/controller/task/clearTask"
+import { getTotalTasksSize } from "../core/controller/task/getTotalTasksSize"
 import { deleteTasksWithIds } from "../core/controller/task/deleteTasksWithIds"
 import { newTask } from "../core/controller/task/newTask"
 import { showTaskWithId } from "../core/controller/task/showTaskWithId"
@@ -71,10 +92,27 @@ import { getTaskHistory } from "../core/controller/task/getTaskHistory"
 import { askResponse } from "../core/controller/task/askResponse"
 import { taskFeedback } from "../core/controller/task/taskFeedback"
 import { taskCompletionViewChanges } from "../core/controller/task/taskCompletionViewChanges"
+import { executeQuickWin } from "../core/controller/task/executeQuickWin"
+
+// Ui Service
+import { scrollToSettings } from "../core/controller/ui/scrollToSettings"
+import { onDidShowAnnouncement } from "../core/controller/ui/onDidShowAnnouncement"
+import { subscribeToAddToInput } from "../core/controller/ui/subscribeToAddToInput"
+import { subscribeToMcpButtonClicked } from "../core/controller/ui/subscribeToMcpButtonClicked"
+import { subscribeToHistoryButtonClicked } from "../core/controller/ui/subscribeToHistoryButtonClicked"
+import { subscribeToChatButtonClicked } from "../core/controller/ui/subscribeToChatButtonClicked"
+import { subscribeToAccountButtonClicked } from "../core/controller/ui/subscribeToAccountButtonClicked"
+import { subscribeToSettingsButtonClicked } from "../core/controller/ui/subscribeToSettingsButtonClicked"
+import { subscribeToPartialMessage } from "../core/controller/ui/subscribeToPartialMessage"
+import { subscribeToTheme } from "../core/controller/ui/subscribeToTheme"
+import { initializeWebview } from "../core/controller/ui/initializeWebview"
+import { subscribeToRelinquishControl } from "../core/controller/ui/subscribeToRelinquishControl"
+import { subscribeToFocusChatInput } from "../core/controller/ui/subscribeToFocusChatInput"
 
 // Web Service
 import { checkIsImageUrl } from "../core/controller/web/checkIsImageUrl"
 import { fetchOpenGraphData } from "../core/controller/web/fetchOpenGraphData"
+import { openInBrowser } from "../core/controller/web/openInBrowser"
 
 export function addServices(
 	server: grpc.Server,
@@ -84,79 +122,100 @@ export function addServices(
 	wrapStreamingResponse: GrpcStreamingResponseHandlerWrapper,
 ): void {
 	// Account Service
-	server.addService(proto.caret.AccountService.service, {
+	server.addService(proto.cline.AccountService.service, {
 		accountLoginClicked: wrapper(accountLoginClicked, controller),
 		accountLogoutClicked: wrapper(accountLogoutClicked, controller),
+		subscribeToAuthCallback: wrapStreamingResponse(subscribeToAuthCallback, controller),
 	})
 
 	// Browser Service
-	server.addService(proto.caret.BrowserService.service, {
+	server.addService(proto.cline.BrowserService.service, {
 		getBrowserConnectionInfo: wrapper(getBrowserConnectionInfo, controller),
 		testBrowserConnection: wrapper(testBrowserConnection, controller),
 		discoverBrowser: wrapper(discoverBrowser, controller),
 		getDetectedChromePath: wrapper(getDetectedChromePath, controller),
 		updateBrowserSettings: wrapper(updateBrowserSettings, controller),
+		relaunchChromeDebugMode: wrapper(relaunchChromeDebugMode, controller),
 	})
 
 	// Checkpoints Service
-	server.addService(proto.caret.CheckpointsService.service, {
+	server.addService(proto.cline.CheckpointsService.service, {
 		checkpointDiff: wrapper(checkpointDiff, controller),
 		checkpointRestore: wrapper(checkpointRestore, controller),
 	})
 
 	// File Service
-	server.addService(proto.caret.FileService.service, {
+	server.addService(proto.cline.FileService.service, {
 		copyToClipboard: wrapper(copyToClipboard, controller),
 		openFile: wrapper(openFile, controller),
 		openImage: wrapper(openImage, controller),
+		openMention: wrapper(openMention, controller),
 		deleteRuleFile: wrapper(deleteRuleFile, controller),
 		createRuleFile: wrapper(createRuleFile, controller),
 		searchCommits: wrapper(searchCommits, controller),
 		selectImages: wrapper(selectImages, controller),
+		selectFiles: wrapper(selectFiles, controller),
 		getRelativePaths: wrapper(getRelativePaths, controller),
 		searchFiles: wrapper(searchFiles, controller),
+		toggleClineRule: wrapper(toggleClineRule, controller),
+		toggleCursorRule: wrapper(toggleCursorRule, controller),
+		toggleWindsurfRule: wrapper(toggleWindsurfRule, controller),
+		refreshRules: wrapper(refreshRules, controller),
+		openTaskHistory: wrapper(openTaskHistory, controller),
+		toggleWorkflow: wrapper(toggleWorkflow, controller),
+		subscribeToWorkspaceUpdates: wrapStreamingResponse(subscribeToWorkspaceUpdates, controller),
 	})
 
 	// Mcp Service
-	server.addService(proto.caret.McpService.service, {
+	server.addService(proto.cline.McpService.service, {
 		toggleMcpServer: wrapper(toggleMcpServer, controller),
 		updateMcpTimeout: wrapper(updateMcpTimeout, controller),
 		addRemoteMcpServer: wrapper(addRemoteMcpServer, controller),
 		downloadMcp: wrapper(downloadMcp, controller),
 		restartMcpServer: wrapper(restartMcpServer, controller),
 		deleteMcpServer: wrapper(deleteMcpServer, controller),
+		toggleToolAutoApprove: wrapper(toggleToolAutoApprove, controller),
+		refreshMcpMarketplace: wrapper(refreshMcpMarketplace, controller),
+		openMcpSettings: wrapper(openMcpSettings, controller),
+		subscribeToMcpMarketplaceCatalog: wrapStreamingResponse(subscribeToMcpMarketplaceCatalog, controller),
+		getLatestMcpServers: wrapper(getLatestMcpServers, controller),
+		subscribeToMcpServers: wrapStreamingResponse(subscribeToMcpServers, controller),
 	})
 
 	// Models Service
-	server.addService(proto.caret.ModelsService.service, {
+	server.addService(proto.cline.ModelsService.service, {
 		getOllamaModels: wrapper(getOllamaModels, controller),
 		getLmStudioModels: wrapper(getLmStudioModels, controller),
 		getVsCodeLmModels: wrapper(getVsCodeLmModels, controller),
 		refreshOpenRouterModels: wrapper(refreshOpenRouterModels, controller),
 		refreshOpenAiModels: wrapper(refreshOpenAiModels, controller),
 		refreshRequestyModels: wrapper(refreshRequestyModels, controller),
+		subscribeToOpenRouterModels: wrapStreamingResponse(subscribeToOpenRouterModels, controller),
 	})
 
 	// Slash Service
-	server.addService(proto.caret.SlashService.service, {
+	server.addService(proto.cline.SlashService.service, {
 		reportBug: wrapper(reportBug, controller),
 		condense: wrapper(condense, controller),
 	})
 
 	// State Service
-	server.addService(proto.caret.StateService.service, {
+	server.addService(proto.cline.StateService.service, {
 		getLatestState: wrapper(getLatestState, controller),
 		subscribeToState: wrapStreamingResponse(subscribeToState, controller),
 		toggleFavoriteModel: wrapper(toggleFavoriteModel, controller),
 		resetState: wrapper(resetState, controller),
 		togglePlanActMode: wrapper(togglePlanActMode, controller),
-		updateChatMode: wrapper(updateChatMode, controller),
+		updateTerminalConnectionTimeout: wrapper(updateTerminalConnectionTimeout, controller),
+		updateAutoApprovalSettings: wrapper(updateAutoApprovalSettings, controller),
+		updateSettings: wrapper(updateSettings, controller),
 	})
 
 	// Task Service
-	server.addService(proto.caret.TaskService.service, {
+	server.addService(proto.cline.TaskService.service, {
 		cancelTask: wrapper(cancelTask, controller),
 		clearTask: wrapper(clearTask, controller),
+		getTotalTasksSize: wrapper(getTotalTasksSize, controller),
 		deleteTasksWithIds: wrapper(deleteTasksWithIds, controller),
 		newTask: wrapper(newTask, controller),
 		showTaskWithId: wrapper(showTaskWithId, controller),
@@ -167,11 +226,30 @@ export function addServices(
 		askResponse: wrapper(askResponse, controller),
 		taskFeedback: wrapper(taskFeedback, controller),
 		taskCompletionViewChanges: wrapper(taskCompletionViewChanges, controller),
+		executeQuickWin: wrapper(executeQuickWin, controller),
+	})
+
+	// Ui Service
+	server.addService(proto.cline.UiService.service, {
+		scrollToSettings: wrapper(scrollToSettings, controller),
+		onDidShowAnnouncement: wrapper(onDidShowAnnouncement, controller),
+		subscribeToAddToInput: wrapStreamingResponse(subscribeToAddToInput, controller),
+		subscribeToMcpButtonClicked: wrapStreamingResponse(subscribeToMcpButtonClicked, controller),
+		subscribeToHistoryButtonClicked: wrapStreamingResponse(subscribeToHistoryButtonClicked, controller),
+		subscribeToChatButtonClicked: wrapStreamingResponse(subscribeToChatButtonClicked, controller),
+		subscribeToAccountButtonClicked: wrapStreamingResponse(subscribeToAccountButtonClicked, controller),
+		subscribeToSettingsButtonClicked: wrapStreamingResponse(subscribeToSettingsButtonClicked, controller),
+		subscribeToPartialMessage: wrapStreamingResponse(subscribeToPartialMessage, controller),
+		subscribeToTheme: wrapStreamingResponse(subscribeToTheme, controller),
+		initializeWebview: wrapper(initializeWebview, controller),
+		subscribeToRelinquishControl: wrapStreamingResponse(subscribeToRelinquishControl, controller),
+		subscribeToFocusChatInput: wrapStreamingResponse(subscribeToFocusChatInput, controller),
 	})
 
 	// Web Service
-	server.addService(proto.caret.WebService.service, {
+	server.addService(proto.cline.WebService.service, {
 		checkIsImageUrl: wrapper(checkIsImageUrl, controller),
 		fetchOpenGraphData: wrapper(fetchOpenGraphData, controller),
+		openInBrowser: wrapper(openInBrowser, controller),
 	})
 }

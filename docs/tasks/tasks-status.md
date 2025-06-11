@@ -3,8 +3,7 @@
 ## 진행 중인 태스크 (Pending)
 - [ ] **Task #015:** ChatView/ChatRow 리팩토링 (분리, 중단상태, [014-1-chatview-refactoring.md](./014-1-chatview-refactoring.md))
 - [ ] **Task #028:** api.ts 파일 json 분리 및 리팩토링 ([018-02-01-action-checklist-persona-management.md](./018-02-01-action-checklist-persona-management.md))
-- [ ] **Task #029:** Cline Upstream 변경 사항 병합 ([029-01-plan-merge-cline.md](./029-01-plan-merge-cline.md))
-- [ ] **Task #030:** 오버레이 아키텍처 구현 ([030-01-plan-overlay-architecture-implementation.md](./030-01-plan-overlay-architecture-implementation.md), [030-02-action-checklist-overlay-architecture.md](./030-02-action-checklist-overlay-architecture.md))
+- [ ] **Task #032:** 머징 완료 후 사이드 이펙트 디버깅 ([032-01-plan-merging-side-effects-debug.md](./032-01-plan-merging-side-effects-debug.md))
 
 ## 대기 중인 태스크 (Pending)
 - [ ] **Task #027:** Caret Team 로그인 구현 ([027-caret-team-auth.md](./027-caret-team-auth.md))
@@ -37,8 +36,9 @@
   * 퍼소나 관리 시스템 설계 및 구현 계획 ([018-01-01-plan-persona-management.md](./018-01-01-plan-persona-management.md))
   * 템플릿/캐릭터 정책 및 최신 설계 ([018-01-02-plan-template-character-policy-and-design-latest.md](./018-01-02-plan-template-character-policy-and-design-latest.md))
   * 퍼소나 관리 액션 체크리스트 ([018-02-01-action-checklist-persona-management.md](./018-02-01-action-checklist-persona-management.md))
+- [x] **Task #030:** 오버레이 아키텍처 구현 ([complete/030-01-plan-overlay-architecture-implementation.md](./complete/030-01-plan-overlay-architecture-implementation.md), [complete/030-02-action-checklist-overlay-architecture.md](./complete/030-02-action-checklist-overlay-architecture.md), [complete/030-03-report-overlay-architecture.md](./complete/030-03-report-overlay-architecture.md))
+- [x] **Task #031:** 빌드 실패 수정 (오버레이 아키텍처) ([complete/031-01-plan-overlay-architecture-build-fix.md](./complete/031-01-plan-overlay-architecture-build-fix.md), [complete/031-02-action-checklist-build-fix.md](./complete/031-02-action-checklist-build-fix.md), [complete/031-03-report-overlay-architecture-build-fix.md](./complete/031-03-report-overlay-architecture-build-fix.md))
 
-| 29 | `Enhance overall project documentation and examples` | `queued` | `2025-05-24` | |
 | 30 | `Overlay Architecture PoC: Preliminary Implementation` | `completed` | `2025-05-25` | `2025-05-27` |
 | 31 | `Fix Build Failures in Overlay Architecture` | `completed` | `2025-05-26` | `2025-05-27` |
-| 32 | `Docs & Build Process Overhaul` | `in-progress` | `2025-05-27` | |
+| 32 | `머징 완료 후 사이드 이펙트 디버깅` | `in-progress` | `2025-05-27` | |

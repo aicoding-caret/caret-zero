@@ -9,3 +9,4 @@ export const firebaseConfig = {
     measurementId: "G-MDPRELSCD1",
 };
 //# sourceMappingURL=config.js.map
+

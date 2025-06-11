@@ -7,13 +7,13 @@
 /* eslint-disable */
 import { Empty, EmptyRequest, String } from "./common"
 
-export const protobufPackage = "caret"
+export const protobufPackage = "cline"
 
 /** Service for account-related operations */
 export type AccountServiceDefinition = typeof AccountServiceDefinition
 export const AccountServiceDefinition = {
 	name: "AccountService",
-	fullName: "caret.AccountService",
+	fullName: "cline.AccountService",
 	methods: {
 		/**
 		 * Handles the user clicking the login link in the UI.
@@ -38,6 +38,15 @@ export const AccountServiceDefinition = {
 			requestStream: false,
 			responseType: Empty,
 			responseStream: false,
+			options: {},
+		},
+		/** Subscribe to auth callback events (when authentication tokens are received) */
+		subscribeToAuthCallback: {
+			name: "subscribeToAuthCallback",
+			requestType: EmptyRequest,
+			requestStream: false,
+			responseType: String,
+			responseStream: true,
 			options: {},
 		},
 	},

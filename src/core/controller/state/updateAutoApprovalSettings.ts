@@ -7,15 +7,12 @@ import { updateGlobalState } from "@core/storage/state"
  * @param controller The controller instance
  * @param request The request containing the new settings
  */
-export async function updateAutoApprovalSettings(
-	controller: Controller,
-	request: AutoApprovalSettings,
-): Promise<void> {
+export async function updateAutoApprovalSettings(controller: Controller, request: AutoApprovalSettings): Promise<void> {
 	await updateGlobalState(controller.context, "autoApprovalSettings", request)
 
-		if (controller.task) {
+	if (controller.task) {
 		controller.task.autoApprovalSettings = request
-		}
+	}
 
-		await controller.postStateToWebview()
+	await controller.postStateToWebview()
 }

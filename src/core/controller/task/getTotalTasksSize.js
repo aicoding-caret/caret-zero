@@ -1,5 +1,5 @@
-import { Int64 } from "../../../shared/proto/common";
-import { getTotalTasksSize as calculateTotalTasksSize } from "../../../utils/storage";
+import { Int64 } from "../../../shared/proto/common"
+import { getTotalTasksSize as calculateTotalTasksSize } from "../../../utils/storage"
 /**
  * Gets the total size of all tasks including task data and checkpoints
  * @param controller The controller instance
@@ -7,7 +7,7 @@ import { getTotalTasksSize as calculateTotalTasksSize } from "../../../utils/sto
  * @returns The total size as an Int64 value
  */
 export async function getTotalTasksSize(controller, _request) {
-    const totalSize = await calculateTotalTasksSize(controller.context.globalStorageUri.fsPath);
-    return Int64.create({ value: totalSize || 0 });
+	const totalSize = await calculateTotalTasksSize(controller.context.globalStorageUri.fsPath)
+	return Int64.create({ value: totalSize || 0 })
 }
 //# sourceMappingURL=getTotalTasksSize.js.map

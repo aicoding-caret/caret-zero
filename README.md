@@ -121,6 +121,10 @@ npm run compile
 
 Press `F5` in VS Code to run the extension in a new `[Extension Development Host]` window for testing and debugging.
 
+**How to Run Caret:**
+*   Once the extension is running, a **Caret icon** will be added to the **Primary Sidebar** in VS Code.
+*   Click this icon to open the Caret webview and start using it.
+
 ## Contributing
 
 The Caret project welcomes your contributions! Please refer to the `CONTRIBUTING.md` file for details.

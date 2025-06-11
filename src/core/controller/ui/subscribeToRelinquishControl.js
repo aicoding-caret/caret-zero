@@ -1,7 +1,7 @@
-import { Empty } from "@shared/proto/common";
-import { getRequestRegistry } from "../grpc-handler";
+import { Empty } from "@shared/proto/common"
+import { getRequestRegistry } from "../grpc-handler"
 // Keep track of active subscriptions
-const activeRelinquishControlSubscriptions = new Set();
+const activeRelinquishControlSubscriptions = new Set()
 /**
  * Subscribe to relinquish control events
  * @param controller The controller instance
@@ -10,33 +10,32 @@ const activeRelinquishControlSubscriptions = new Set();
  * @param requestId The ID of the request (passed by the gRPC handler)
  */
 export async function subscribeToRelinquishControl(controller, request, responseStream, requestId) {
-    // Add this subscription to the active subscriptions
-    activeRelinquishControlSubscriptions.add(responseStream);
-    // Register cleanup when the connection is closed
-    const cleanup = () => {
-        activeRelinquishControlSubscriptions.delete(responseStream);
-    };
-    // Register the cleanup function with the request registry if we have a requestId
-    if (requestId) {
-        getRequestRegistry().registerRequest(requestId, cleanup, { type: "relinquish_control_subscription" }, responseStream);
-    }
+	// Add this subscription to the active subscriptions
+	activeRelinquishControlSubscriptions.add(responseStream)
+	// Register cleanup when the connection is closed
+	const cleanup = () => {
+		activeRelinquishControlSubscriptions.delete(responseStream)
+	}
+	// Register the cleanup function with the request registry if we have a requestId
+	if (requestId) {
+		getRequestRegistry().registerRequest(requestId, cleanup, { type: "relinquish_control_subscription" }, responseStream)
+	}
 }
 /**
  * Send a relinquish control event to all active subscribers
  */
 export async function sendRelinquishControlEvent() {
-    // Send the event to all active subscribers
-    const promises = Array.from(activeRelinquishControlSubscriptions).map(async (responseStream) => {
-        try {
-            const event = Empty.create({});
-            await responseStream(event, false);
-        }
-        catch (error) {
-            console.error("Error sending relinquish control event:", error);
-            // Remove the subscription if there was an error
-            activeRelinquishControlSubscriptions.delete(responseStream);
-        }
-    });
-    await Promise.all(promises);
+	// Send the event to all active subscribers
+	const promises = Array.from(activeRelinquishControlSubscriptions).map(async (responseStream) => {
+		try {
+			const event = Empty.create({})
+			await responseStream(event, false)
+		} catch (error) {
+			console.error("Error sending relinquish control event:", error)
+			// Remove the subscription if there was an error
+			activeRelinquishControlSubscriptions.delete(responseStream)
+		}
+	})
+	await Promise.all(promises)
 }
 //# sourceMappingURL=subscribeToRelinquishControl.js.map

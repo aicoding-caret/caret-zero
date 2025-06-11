@@ -3,84 +3,83 @@
  * This class provides a centralized way to track active requests and their cleanup functions
  */
 export class GrpcRequestRegistry {
-    /**
-     * Map of request IDs to request information
-     */
-    activeRequests = new Map();
-    /**
-     * Register a new request with its cleanup function
-     * @param requestId The unique ID of the request
-     * @param cleanup Function to clean up resources when the request is cancelled
-     * @param metadata Optional metadata about the request
-     * @param responseStream Optional streaming response handler
-     */
-    registerRequest(requestId, cleanup, metadata, responseStream) {
-        this.activeRequests.set(requestId, {
-            cleanup,
-            metadata,
-            timestamp: new Date(),
-            responseStream,
-        });
-        console.log(`[DEBUG] Registered request: ${requestId}`);
-    }
-    /**
-     * Cancel a request and clean up its resources
-     * @param requestId The ID of the request to cancel
-     * @returns True if the request was found and cancelled, false otherwise
-     */
-    cancelRequest(requestId) {
-        const requestInfo = this.activeRequests.get(requestId);
-        if (requestInfo) {
-            try {
-                requestInfo.cleanup();
-                console.log(`[DEBUG] Cleaned up request: ${requestId}`);
-            }
-            catch (error) {
-                console.error(`Error cleaning up request ${requestId}:`, error);
-            }
-            this.activeRequests.delete(requestId);
-            return true;
-        }
-        return false;
-    }
-    /**
-     * Get information about a request
-     * @param requestId The ID of the request
-     * @returns The request information, or undefined if not found
-     */
-    getRequestInfo(requestId) {
-        return this.activeRequests.get(requestId);
-    }
-    /**
-     * Check if a request exists in the registry
-     * @param requestId The ID of the request
-     * @returns True if the request exists, false otherwise
-     */
-    hasRequest(requestId) {
-        return this.activeRequests.has(requestId);
-    }
-    /**
-     * Get all active requests
-     * @returns An array of [requestId, requestInfo] pairs
-     */
-    getAllRequests() {
-        return Array.from(this.activeRequests.entries());
-    }
-    /**
-     * Clean up stale requests that have been active for too long
-     * @param maxAgeMs Maximum age in milliseconds before a request is considered stale
-     * @returns The number of requests that were cleaned up
-     */
-    cleanupStaleRequests(maxAgeMs) {
-        const now = new Date();
-        let cleanedCount = 0;
-        for (const [requestId, info] of this.activeRequests.entries()) {
-            if (now.getTime() - info.timestamp.getTime() > maxAgeMs) {
-                this.cancelRequest(requestId);
-                cleanedCount++;
-            }
-        }
-        return cleanedCount;
-    }
+	/**
+	 * Map of request IDs to request information
+	 */
+	activeRequests = new Map()
+	/**
+	 * Register a new request with its cleanup function
+	 * @param requestId The unique ID of the request
+	 * @param cleanup Function to clean up resources when the request is cancelled
+	 * @param metadata Optional metadata about the request
+	 * @param responseStream Optional streaming response handler
+	 */
+	registerRequest(requestId, cleanup, metadata, responseStream) {
+		this.activeRequests.set(requestId, {
+			cleanup,
+			metadata,
+			timestamp: new Date(),
+			responseStream,
+		})
+		console.log(`[DEBUG] Registered request: ${requestId}`)
+	}
+	/**
+	 * Cancel a request and clean up its resources
+	 * @param requestId The ID of the request to cancel
+	 * @returns True if the request was found and cancelled, false otherwise
+	 */
+	cancelRequest(requestId) {
+		const requestInfo = this.activeRequests.get(requestId)
+		if (requestInfo) {
+			try {
+				requestInfo.cleanup()
+				console.log(`[DEBUG] Cleaned up request: ${requestId}`)
+			} catch (error) {
+				console.error(`Error cleaning up request ${requestId}:`, error)
+			}
+			this.activeRequests.delete(requestId)
+			return true
+		}
+		return false
+	}
+	/**
+	 * Get information about a request
+	 * @param requestId The ID of the request
+	 * @returns The request information, or undefined if not found
+	 */
+	getRequestInfo(requestId) {
+		return this.activeRequests.get(requestId)
+	}
+	/**
+	 * Check if a request exists in the registry
+	 * @param requestId The ID of the request
+	 * @returns True if the request exists, false otherwise
+	 */
+	hasRequest(requestId) {
+		return this.activeRequests.has(requestId)
+	}
+	/**
+	 * Get all active requests
+	 * @returns An array of [requestId, requestInfo] pairs
+	 */
+	getAllRequests() {
+		return Array.from(this.activeRequests.entries())
+	}
+	/**
+	 * Clean up stale requests that have been active for too long
+	 * @param maxAgeMs Maximum age in milliseconds before a request is considered stale
+	 * @returns The number of requests that were cleaned up
+	 */
+	cleanupStaleRequests(maxAgeMs) {
+		const now = new Date()
+		let cleanedCount = 0
+		for (const [requestId, info] of this.activeRequests.entries()) {
+			if (now.getTime() - info.timestamp.getTime() > maxAgeMs) {
+				this.cancelRequest(requestId)
+				cleanedCount++
+			}
+		}
+		return cleanedCount
+	}
 }
 //# sourceMappingURL=grpc-request-registry.js.map

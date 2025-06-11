@@ -1,5 +1,5 @@
-import { Int64 } from "../../../shared/proto/common";
-import { updateGlobalState } from "../../storage/state";
+import { Int64 } from "../../../shared/proto/common"
+import { updateGlobalState } from "../../storage/state"
 /**
  * Updates the terminal connection timeout setting
  * @param controller The controller instance
@@ -7,21 +7,19 @@ import { updateGlobalState } from "../../storage/state";
  * @returns The updated timeout value
  */
 export async function updateTerminalConnectionTimeout(controller, request) {
-    try {
-        const timeout = request.value;
-        if (typeof timeout === "number" && !isNaN(timeout) && timeout > 0) {
-            // Update the global state directly
-            await updateGlobalState(controller.context, "shellIntegrationTimeout", timeout);
-            return Int64.create({ value: timeout });
-        }
-        else {
-            console.warn(`Invalid shell integration timeout value received: ${timeout}. Expected a positive number.`);
-            throw new Error("Invalid timeout value. Expected a positive number.");
-        }
-    }
-    catch (error) {
-        console.error(`Failed to update terminal connection timeout: ${error}`);
-        throw error;
-    }
+	try {
+		const timeout = request.value
+		if (typeof timeout === "number" && !isNaN(timeout) && timeout > 0) {
+			// Update the global state directly
+			await updateGlobalState(controller.context, "shellIntegrationTimeout", timeout)
+			return Int64.create({ value: timeout })
+		} else {
+			console.warn(`Invalid shell integration timeout value received: ${timeout}. Expected a positive number.`)
+			throw new Error("Invalid timeout value. Expected a positive number.")
+		}
+	} catch (error) {
+		console.error(`Failed to update terminal connection timeout: ${error}`)
+		throw error
+	}
 }
 //# sourceMappingURL=updateTerminalConnectionTimeout.js.map

@@ -10,8 +10,7 @@ import type { CaretRulesToggles } from "@shared/caret-rules"
  */
 export async function toggleCursorRule(controller: Controller, request: any): Promise<void> {
 	try {
-		const toggles =
-			((await getWorkspaceState(controller.context, "localCursorRulesToggles")) as CaretRulesToggles) || {}
+		const toggles = ((await getWorkspaceState(controller.context, "localCursorRulesToggles")) as CaretRulesToggles) || {}
 		toggles[request.rulePath] = request.enabled
 		await updateWorkspaceState(controller.context, "localCursorRulesToggles", toggles)
 	} catch (error) {

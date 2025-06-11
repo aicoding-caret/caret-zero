@@ -6,9 +6,28 @@
 
 /* eslint-disable */
 import { BinaryReader, BinaryWriter } from "@bufbuild/protobuf/wire"
-import { Empty, EmptyRequest, Metadata, StringArray, StringRequest } from "./common"
+import { BooleanRequest, Empty, EmptyRequest, Metadata, StringArray, StringArrays, StringRequest } from "./common"
 
-export const protobufPackage = "caret"
+export const protobufPackage = "cline"
+
+/** Response for refreshRules operation */
+export interface RefreshedRules {
+	globalClineRulesToggles?: ClineRulesToggles | undefined
+	localClineRulesToggles?: ClineRulesToggles | undefined
+	localCursorRulesToggles?: ClineRulesToggles | undefined
+	localWindsurfRulesToggles?: ClineRulesToggles | undefined
+	localWorkflowToggles?: ClineRulesToggles | undefined
+	globalWorkflowToggles?: ClineRulesToggles | undefined
+}
+
+/** Request to toggle a Windsurf rule */
+export interface ToggleWindsurfRuleRequest {
+	metadata?: Metadata | undefined
+	/** Path to the rule file */
+	rulePath: string
+	/** Whether to enable or disable the rule */
+	enabled: boolean
+}
 
 /** Request to convert a list of URIs to relative paths */
 export interface RelativePathsRequest {
@@ -85,6 +104,320 @@ export interface RuleFile {
 	displayName: string
 	/** For createRuleFile, indicates if file already existed */
 	alreadyExists: boolean
+}
+
+/** Request to toggle a Cline rule */
+export interface ToggleClineRuleRequest {
+	metadata?: Metadata | undefined
+	/** Whether this is a global rule or workspace rule */
+	isGlobal: boolean
+	/** Path to the rule file */
+	rulePath: string
+	/** Whether to enable or disable the rule */
+	enabled: boolean
+}
+
+/** Maps from filepath to enabled/disabled status, matching app's ClineRulesToggles type */
+export interface ClineRulesToggles {
+	toggles: { [key: string]: boolean }
+}
+
+export interface ClineRulesToggles_TogglesEntry {
+	key: string
+	value: boolean
+}
+
+/** Response for toggleClineRule operation */
+export interface ToggleClineRules {
+	globalClineRulesToggles?: ClineRulesToggles | undefined
+	localClineRulesToggles?: ClineRulesToggles | undefined
+}
+
+/** Request to toggle a Cursor rule */
+export interface ToggleCursorRuleRequest {
+	metadata?: Metadata | undefined
+	/** Path to the rule file */
+	rulePath: string
+	/** Whether to enable or disable the rule */
+	enabled: boolean
+}
+
+/** Request to toggle a workflow on or off */
+export interface ToggleWorkflowRequest {
+	metadata?: Metadata | undefined
+	workflowPath: string
+	enabled: boolean
+	isGlobal: boolean
+}
+
+function createBaseRefreshedRules(): RefreshedRules {
+	return {
+		globalClineRulesToggles: undefined,
+		localClineRulesToggles: undefined,
+		localCursorRulesToggles: undefined,
+		localWindsurfRulesToggles: undefined,
+		localWorkflowToggles: undefined,
+		globalWorkflowToggles: undefined,
+	}
+}
+
+export const RefreshedRules: MessageFns<RefreshedRules> = {
+	encode(message: RefreshedRules, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+		if (message.globalClineRulesToggles !== undefined) {
+			ClineRulesToggles.encode(message.globalClineRulesToggles, writer.uint32(10).fork()).join()
+		}
+		if (message.localClineRulesToggles !== undefined) {
+			ClineRulesToggles.encode(message.localClineRulesToggles, writer.uint32(18).fork()).join()
+		}
+		if (message.localCursorRulesToggles !== undefined) {
+			ClineRulesToggles.encode(message.localCursorRulesToggles, writer.uint32(26).fork()).join()
+		}
+		if (message.localWindsurfRulesToggles !== undefined) {
+			ClineRulesToggles.encode(message.localWindsurfRulesToggles, writer.uint32(34).fork()).join()
+		}
+		if (message.localWorkflowToggles !== undefined) {
+			ClineRulesToggles.encode(message.localWorkflowToggles, writer.uint32(42).fork()).join()
+		}
+		if (message.globalWorkflowToggles !== undefined) {
+			ClineRulesToggles.encode(message.globalWorkflowToggles, writer.uint32(50).fork()).join()
+		}
+		return writer
+	},
+
+	decode(input: BinaryReader | Uint8Array, length?: number): RefreshedRules {
+		const reader = input instanceof BinaryReader ? input : new BinaryReader(input)
+		let end = length === undefined ? reader.len : reader.pos + length
+		const message = createBaseRefreshedRules()
+		while (reader.pos < end) {
+			const tag = reader.uint32()
+			switch (tag >>> 3) {
+				case 1: {
+					if (tag !== 10) {
+						break
+					}
+
+					message.globalClineRulesToggles = ClineRulesToggles.decode(reader, reader.uint32())
+					continue
+				}
+				case 2: {
+					if (tag !== 18) {
+						break
+					}
+
+					message.localClineRulesToggles = ClineRulesToggles.decode(reader, reader.uint32())
+					continue
+				}
+				case 3: {
+					if (tag !== 26) {
+						break
+					}
+
+					message.localCursorRulesToggles = ClineRulesToggles.decode(reader, reader.uint32())
+					continue
+				}
+				case 4: {
+					if (tag !== 34) {
+						break
+					}
+
+					message.localWindsurfRulesToggles = ClineRulesToggles.decode(reader, reader.uint32())
+					continue
+				}
+				case 5: {
+					if (tag !== 42) {
+						break
+					}
+
+					message.localWorkflowToggles = ClineRulesToggles.decode(reader, reader.uint32())
+					continue
+				}
+				case 6: {
+					if (tag !== 50) {
+						break
+					}
+
+					message.globalWorkflowToggles = ClineRulesToggles.decode(reader, reader.uint32())
+					continue
+				}
+			}
+			if ((tag & 7) === 4 || tag === 0) {
+				break
+			}
+			reader.skip(tag & 7)
+		}
+		return message
+	},
+
+	fromJSON(object: any): RefreshedRules {
+		return {
+			globalClineRulesToggles: isSet(object.globalClineRulesToggles)
+				? ClineRulesToggles.fromJSON(object.globalClineRulesToggles)
+				: undefined,
+			localClineRulesToggles: isSet(object.localClineRulesToggles)
+				? ClineRulesToggles.fromJSON(object.localClineRulesToggles)
+				: undefined,
+			localCursorRulesToggles: isSet(object.localCursorRulesToggles)
+				? ClineRulesToggles.fromJSON(object.localCursorRulesToggles)
+				: undefined,
+			localWindsurfRulesToggles: isSet(object.localWindsurfRulesToggles)
+				? ClineRulesToggles.fromJSON(object.localWindsurfRulesToggles)
+				: undefined,
+			localWorkflowToggles: isSet(object.localWorkflowToggles)
+				? ClineRulesToggles.fromJSON(object.localWorkflowToggles)
+				: undefined,
+			globalWorkflowToggles: isSet(object.globalWorkflowToggles)
+				? ClineRulesToggles.fromJSON(object.globalWorkflowToggles)
+				: undefined,
+		}
+	},
+
+	toJSON(message: RefreshedRules): unknown {
+		const obj: any = {}
+		if (message.globalClineRulesToggles !== undefined) {
+			obj.globalClineRulesToggles = ClineRulesToggles.toJSON(message.globalClineRulesToggles)
+		}
+		if (message.localClineRulesToggles !== undefined) {
+			obj.localClineRulesToggles = ClineRulesToggles.toJSON(message.localClineRulesToggles)
+		}
+		if (message.localCursorRulesToggles !== undefined) {
+			obj.localCursorRulesToggles = ClineRulesToggles.toJSON(message.localCursorRulesToggles)
+		}
+		if (message.localWindsurfRulesToggles !== undefined) {
+			obj.localWindsurfRulesToggles = ClineRulesToggles.toJSON(message.localWindsurfRulesToggles)
+		}
+		if (message.localWorkflowToggles !== undefined) {
+			obj.localWorkflowToggles = ClineRulesToggles.toJSON(message.localWorkflowToggles)
+		}
+		if (message.globalWorkflowToggles !== undefined) {
+			obj.globalWorkflowToggles = ClineRulesToggles.toJSON(message.globalWorkflowToggles)
+		}
+		return obj
+	},
+
+	create<I extends Exact<DeepPartial<RefreshedRules>, I>>(base?: I): RefreshedRules {
+		return RefreshedRules.fromPartial(base ?? ({} as any))
+	},
+	fromPartial<I extends Exact<DeepPartial<RefreshedRules>, I>>(object: I): RefreshedRules {
+		const message = createBaseRefreshedRules()
+		message.globalClineRulesToggles =
+			object.globalClineRulesToggles !== undefined && object.globalClineRulesToggles !== null
+				? ClineRulesToggles.fromPartial(object.globalClineRulesToggles)
+				: undefined
+		message.localClineRulesToggles =
+			object.localClineRulesToggles !== undefined && object.localClineRulesToggles !== null
+				? ClineRulesToggles.fromPartial(object.localClineRulesToggles)
+				: undefined
+		message.localCursorRulesToggles =
+			object.localCursorRulesToggles !== undefined && object.localCursorRulesToggles !== null
+				? ClineRulesToggles.fromPartial(object.localCursorRulesToggles)
+				: undefined
+		message.localWindsurfRulesToggles =
+			object.localWindsurfRulesToggles !== undefined && object.localWindsurfRulesToggles !== null
+				? ClineRulesToggles.fromPartial(object.localWindsurfRulesToggles)
+				: undefined
+		message.localWorkflowToggles =
+			object.localWorkflowToggles !== undefined && object.localWorkflowToggles !== null
+				? ClineRulesToggles.fromPartial(object.localWorkflowToggles)
+				: undefined
+		message.globalWorkflowToggles =
+			object.globalWorkflowToggles !== undefined && object.globalWorkflowToggles !== null
+				? ClineRulesToggles.fromPartial(object.globalWorkflowToggles)
+				: undefined
+		return message
+	},
+}
+
+function createBaseToggleWindsurfRuleRequest(): ToggleWindsurfRuleRequest {
+	return { metadata: undefined, rulePath: "", enabled: false }
+}
+
+export const ToggleWindsurfRuleRequest: MessageFns<ToggleWindsurfRuleRequest> = {
+	encode(message: ToggleWindsurfRuleRequest, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+		if (message.metadata !== undefined) {
+			Metadata.encode(message.metadata, writer.uint32(10).fork()).join()
+		}
+		if (message.rulePath !== "") {
+			writer.uint32(18).string(message.rulePath)
+		}
+		if (message.enabled !== false) {
+			writer.uint32(24).bool(message.enabled)
+		}
+		return writer
+	},
+
+	decode(input: BinaryReader | Uint8Array, length?: number): ToggleWindsurfRuleRequest {
+		const reader = input instanceof BinaryReader ? input : new BinaryReader(input)
+		let end = length === undefined ? reader.len : reader.pos + length
+		const message = createBaseToggleWindsurfRuleRequest()
+		while (reader.pos < end) {
+			const tag = reader.uint32()
+			switch (tag >>> 3) {
+				case 1: {
+					if (tag !== 10) {
+						break
+					}
+
+					message.metadata = Metadata.decode(reader, reader.uint32())
+					continue
+				}
+				case 2: {
+					if (tag !== 18) {
+						break
+					}
+
+					message.rulePath = reader.string()
+					continue
+				}
+				case 3: {
+					if (tag !== 24) {
+						break
+					}
+
+					message.enabled = reader.bool()
+					continue
+				}
+			}
+			if ((tag & 7) === 4 || tag === 0) {
+				break
+			}
+			reader.skip(tag & 7)
+		}
+		return message
+	},
+
+	fromJSON(object: any): ToggleWindsurfRuleRequest {
+		return {
+			metadata: isSet(object.metadata) ? Metadata.fromJSON(object.metadata) : undefined,
+			rulePath: isSet(object.rulePath) ? globalThis.String(object.rulePath) : "",
+			enabled: isSet(object.enabled) ? globalThis.Boolean(object.enabled) : false,
+		}
+	},
+
+	toJSON(message: ToggleWindsurfRuleRequest): unknown {
+		const obj: any = {}
+		if (message.metadata !== undefined) {
+			obj.metadata = Metadata.toJSON(message.metadata)
+		}
+		if (message.rulePath !== "") {
+			obj.rulePath = message.rulePath
+		}
+		if (message.enabled !== false) {
+			obj.enabled = message.enabled
+		}
+		return obj
+	},
+
+	create<I extends Exact<DeepPartial<ToggleWindsurfRuleRequest>, I>>(base?: I): ToggleWindsurfRuleRequest {
+		return ToggleWindsurfRuleRequest.fromPartial(base ?? ({} as any))
+	},
+	fromPartial<I extends Exact<DeepPartial<ToggleWindsurfRuleRequest>, I>>(object: I): ToggleWindsurfRuleRequest {
+		const message = createBaseToggleWindsurfRuleRequest()
+		message.metadata =
+			object.metadata !== undefined && object.metadata !== null ? Metadata.fromPartial(object.metadata) : undefined
+		message.rulePath = object.rulePath ?? ""
+		message.enabled = object.enabled ?? false
+		return message
+	},
 }
 
 function createBaseRelativePathsRequest(): RelativePathsRequest {
@@ -900,11 +1233,563 @@ export const RuleFile: MessageFns<RuleFile> = {
 	},
 }
 
+function createBaseToggleClineRuleRequest(): ToggleClineRuleRequest {
+	return { metadata: undefined, isGlobal: false, rulePath: "", enabled: false }
+}
+
+export const ToggleClineRuleRequest: MessageFns<ToggleClineRuleRequest> = {
+	encode(message: ToggleClineRuleRequest, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+		if (message.metadata !== undefined) {
+			Metadata.encode(message.metadata, writer.uint32(10).fork()).join()
+		}
+		if (message.isGlobal !== false) {
+			writer.uint32(16).bool(message.isGlobal)
+		}
+		if (message.rulePath !== "") {
+			writer.uint32(26).string(message.rulePath)
+		}
+		if (message.enabled !== false) {
+			writer.uint32(32).bool(message.enabled)
+		}
+		return writer
+	},
+
+	decode(input: BinaryReader | Uint8Array, length?: number): ToggleClineRuleRequest {
+		const reader = input instanceof BinaryReader ? input : new BinaryReader(input)
+		let end = length === undefined ? reader.len : reader.pos + length
+		const message = createBaseToggleClineRuleRequest()
+		while (reader.pos < end) {
+			const tag = reader.uint32()
+			switch (tag >>> 3) {
+				case 1: {
+					if (tag !== 10) {
+						break
+					}
+
+					message.metadata = Metadata.decode(reader, reader.uint32())
+					continue
+				}
+				case 2: {
+					if (tag !== 16) {
+						break
+					}
+
+					message.isGlobal = reader.bool()
+					continue
+				}
+				case 3: {
+					if (tag !== 26) {
+						break
+					}
+
+					message.rulePath = reader.string()
+					continue
+				}
+				case 4: {
+					if (tag !== 32) {
+						break
+					}
+
+					message.enabled = reader.bool()
+					continue
+				}
+			}
+			if ((tag & 7) === 4 || tag === 0) {
+				break
+			}
+			reader.skip(tag & 7)
+		}
+		return message
+	},
+
+	fromJSON(object: any): ToggleClineRuleRequest {
+		return {
+			metadata: isSet(object.metadata) ? Metadata.fromJSON(object.metadata) : undefined,
+			isGlobal: isSet(object.isGlobal) ? globalThis.Boolean(object.isGlobal) : false,
+			rulePath: isSet(object.rulePath) ? globalThis.String(object.rulePath) : "",
+			enabled: isSet(object.enabled) ? globalThis.Boolean(object.enabled) : false,
+		}
+	},
+
+	toJSON(message: ToggleClineRuleRequest): unknown {
+		const obj: any = {}
+		if (message.metadata !== undefined) {
+			obj.metadata = Metadata.toJSON(message.metadata)
+		}
+		if (message.isGlobal !== false) {
+			obj.isGlobal = message.isGlobal
+		}
+		if (message.rulePath !== "") {
+			obj.rulePath = message.rulePath
+		}
+		if (message.enabled !== false) {
+			obj.enabled = message.enabled
+		}
+		return obj
+	},
+
+	create<I extends Exact<DeepPartial<ToggleClineRuleRequest>, I>>(base?: I): ToggleClineRuleRequest {
+		return ToggleClineRuleRequest.fromPartial(base ?? ({} as any))
+	},
+	fromPartial<I extends Exact<DeepPartial<ToggleClineRuleRequest>, I>>(object: I): ToggleClineRuleRequest {
+		const message = createBaseToggleClineRuleRequest()
+		message.metadata =
+			object.metadata !== undefined && object.metadata !== null ? Metadata.fromPartial(object.metadata) : undefined
+		message.isGlobal = object.isGlobal ?? false
+		message.rulePath = object.rulePath ?? ""
+		message.enabled = object.enabled ?? false
+		return message
+	},
+}
+
+function createBaseClineRulesToggles(): ClineRulesToggles {
+	return { toggles: {} }
+}
+
+export const ClineRulesToggles: MessageFns<ClineRulesToggles> = {
+	encode(message: ClineRulesToggles, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+		Object.entries(message.toggles).forEach(([key, value]) => {
+			ClineRulesToggles_TogglesEntry.encode({ key: key as any, value }, writer.uint32(10).fork()).join()
+		})
+		return writer
+	},
+
+	decode(input: BinaryReader | Uint8Array, length?: number): ClineRulesToggles {
+		const reader = input instanceof BinaryReader ? input : new BinaryReader(input)
+		let end = length === undefined ? reader.len : reader.pos + length
+		const message = createBaseClineRulesToggles()
+		while (reader.pos < end) {
+			const tag = reader.uint32()
+			switch (tag >>> 3) {
+				case 1: {
+					if (tag !== 10) {
+						break
+					}
+
+					const entry1 = ClineRulesToggles_TogglesEntry.decode(reader, reader.uint32())
+					if (entry1.value !== undefined) {
+						message.toggles[entry1.key] = entry1.value
+					}
+					continue
+				}
+			}
+			if ((tag & 7) === 4 || tag === 0) {
+				break
+			}
+			reader.skip(tag & 7)
+		}
+		return message
+	},
+
+	fromJSON(object: any): ClineRulesToggles {
+		return {
+			toggles: isObject(object.toggles)
+				? Object.entries(object.toggles).reduce<{ [key: string]: boolean }>((acc, [key, value]) => {
+						acc[key] = Boolean(value)
+						return acc
+					}, {})
+				: {},
+		}
+	},
+
+	toJSON(message: ClineRulesToggles): unknown {
+		const obj: any = {}
+		if (message.toggles) {
+			const entries = Object.entries(message.toggles)
+			if (entries.length > 0) {
+				obj.toggles = {}
+				entries.forEach(([k, v]) => {
+					obj.toggles[k] = v
+				})
+			}
+		}
+		return obj
+	},
+
+	create<I extends Exact<DeepPartial<ClineRulesToggles>, I>>(base?: I): ClineRulesToggles {
+		return ClineRulesToggles.fromPartial(base ?? ({} as any))
+	},
+	fromPartial<I extends Exact<DeepPartial<ClineRulesToggles>, I>>(object: I): ClineRulesToggles {
+		const message = createBaseClineRulesToggles()
+		message.toggles = Object.entries(object.toggles ?? {}).reduce<{ [key: string]: boolean }>((acc, [key, value]) => {
+			if (value !== undefined) {
+				acc[key] = globalThis.Boolean(value)
+			}
+			return acc
+		}, {})
+		return message
+	},
+}
+
+function createBaseClineRulesToggles_TogglesEntry(): ClineRulesToggles_TogglesEntry {
+	return { key: "", value: false }
+}
+
+export const ClineRulesToggles_TogglesEntry: MessageFns<ClineRulesToggles_TogglesEntry> = {
+	encode(message: ClineRulesToggles_TogglesEntry, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+		if (message.key !== "") {
+			writer.uint32(10).string(message.key)
+		}
+		if (message.value !== false) {
+			writer.uint32(16).bool(message.value)
+		}
+		return writer
+	},
+
+	decode(input: BinaryReader | Uint8Array, length?: number): ClineRulesToggles_TogglesEntry {
+		const reader = input instanceof BinaryReader ? input : new BinaryReader(input)
+		let end = length === undefined ? reader.len : reader.pos + length
+		const message = createBaseClineRulesToggles_TogglesEntry()
+		while (reader.pos < end) {
+			const tag = reader.uint32()
+			switch (tag >>> 3) {
+				case 1: {
+					if (tag !== 10) {
+						break
+					}
+
+					message.key = reader.string()
+					continue
+				}
+				case 2: {
+					if (tag !== 16) {
+						break
+					}
+
+					message.value = reader.bool()
+					continue
+				}
+			}
+			if ((tag & 7) === 4 || tag === 0) {
+				break
+			}
+			reader.skip(tag & 7)
+		}
+		return message
+	},
+
+	fromJSON(object: any): ClineRulesToggles_TogglesEntry {
+		return {
+			key: isSet(object.key) ? globalThis.String(object.key) : "",
+			value: isSet(object.value) ? globalThis.Boolean(object.value) : false,
+		}
+	},
+
+	toJSON(message: ClineRulesToggles_TogglesEntry): unknown {
+		const obj: any = {}
+		if (message.key !== "") {
+			obj.key = message.key
+		}
+		if (message.value !== false) {
+			obj.value = message.value
+		}
+		return obj
+	},
+
+	create<I extends Exact<DeepPartial<ClineRulesToggles_TogglesEntry>, I>>(base?: I): ClineRulesToggles_TogglesEntry {
+		return ClineRulesToggles_TogglesEntry.fromPartial(base ?? ({} as any))
+	},
+	fromPartial<I extends Exact<DeepPartial<ClineRulesToggles_TogglesEntry>, I>>(object: I): ClineRulesToggles_TogglesEntry {
+		const message = createBaseClineRulesToggles_TogglesEntry()
+		message.key = object.key ?? ""
+		message.value = object.value ?? false
+		return message
+	},
+}
+
+function createBaseToggleClineRules(): ToggleClineRules {
+	return { globalClineRulesToggles: undefined, localClineRulesToggles: undefined }
+}
+
+export const ToggleClineRules: MessageFns<ToggleClineRules> = {
+	encode(message: ToggleClineRules, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+		if (message.globalClineRulesToggles !== undefined) {
+			ClineRulesToggles.encode(message.globalClineRulesToggles, writer.uint32(10).fork()).join()
+		}
+		if (message.localClineRulesToggles !== undefined) {
+			ClineRulesToggles.encode(message.localClineRulesToggles, writer.uint32(18).fork()).join()
+		}
+		return writer
+	},
+
+	decode(input: BinaryReader | Uint8Array, length?: number): ToggleClineRules {
+		const reader = input instanceof BinaryReader ? input : new BinaryReader(input)
+		let end = length === undefined ? reader.len : reader.pos + length
+		const message = createBaseToggleClineRules()
+		while (reader.pos < end) {
+			const tag = reader.uint32()
+			switch (tag >>> 3) {
+				case 1: {
+					if (tag !== 10) {
+						break
+					}
+
+					message.globalClineRulesToggles = ClineRulesToggles.decode(reader, reader.uint32())
+					continue
+				}
+				case 2: {
+					if (tag !== 18) {
+						break
+					}
+
+					message.localClineRulesToggles = ClineRulesToggles.decode(reader, reader.uint32())
+					continue
+				}
+			}
+			if ((tag & 7) === 4 || tag === 0) {
+				break
+			}
+			reader.skip(tag & 7)
+		}
+		return message
+	},
+
+	fromJSON(object: any): ToggleClineRules {
+		return {
+			globalClineRulesToggles: isSet(object.globalClineRulesToggles)
+				? ClineRulesToggles.fromJSON(object.globalClineRulesToggles)
+				: undefined,
+			localClineRulesToggles: isSet(object.localClineRulesToggles)
+				? ClineRulesToggles.fromJSON(object.localClineRulesToggles)
+				: undefined,
+		}
+	},
+
+	toJSON(message: ToggleClineRules): unknown {
+		const obj: any = {}
+		if (message.globalClineRulesToggles !== undefined) {
+			obj.globalClineRulesToggles = ClineRulesToggles.toJSON(message.globalClineRulesToggles)
+		}
+		if (message.localClineRulesToggles !== undefined) {
+			obj.localClineRulesToggles = ClineRulesToggles.toJSON(message.localClineRulesToggles)
+		}
+		return obj
+	},
+
+	create<I extends Exact<DeepPartial<ToggleClineRules>, I>>(base?: I): ToggleClineRules {
+		return ToggleClineRules.fromPartial(base ?? ({} as any))
+	},
+	fromPartial<I extends Exact<DeepPartial<ToggleClineRules>, I>>(object: I): ToggleClineRules {
+		const message = createBaseToggleClineRules()
+		message.globalClineRulesToggles =
+			object.globalClineRulesToggles !== undefined && object.globalClineRulesToggles !== null
+				? ClineRulesToggles.fromPartial(object.globalClineRulesToggles)
+				: undefined
+		message.localClineRulesToggles =
+			object.localClineRulesToggles !== undefined && object.localClineRulesToggles !== null
+				? ClineRulesToggles.fromPartial(object.localClineRulesToggles)
+				: undefined
+		return message
+	},
+}
+
+function createBaseToggleCursorRuleRequest(): ToggleCursorRuleRequest {
+	return { metadata: undefined, rulePath: "", enabled: false }
+}
+
+export const ToggleCursorRuleRequest: MessageFns<ToggleCursorRuleRequest> = {
+	encode(message: ToggleCursorRuleRequest, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+		if (message.metadata !== undefined) {
+			Metadata.encode(message.metadata, writer.uint32(10).fork()).join()
+		}
+		if (message.rulePath !== "") {
+			writer.uint32(18).string(message.rulePath)
+		}
+		if (message.enabled !== false) {
+			writer.uint32(24).bool(message.enabled)
+		}
+		return writer
+	},
+
+	decode(input: BinaryReader | Uint8Array, length?: number): ToggleCursorRuleRequest {
+		const reader = input instanceof BinaryReader ? input : new BinaryReader(input)
+		let end = length === undefined ? reader.len : reader.pos + length
+		const message = createBaseToggleCursorRuleRequest()
+		while (reader.pos < end) {
+			const tag = reader.uint32()
+			switch (tag >>> 3) {
+				case 1: {
+					if (tag !== 10) {
+						break
+					}
+
+					message.metadata = Metadata.decode(reader, reader.uint32())
+					continue
+				}
+				case 2: {
+					if (tag !== 18) {
+						break
+					}
+
+					message.rulePath = reader.string()
+					continue
+				}
+				case 3: {
+					if (tag !== 24) {
+						break
+					}
+
+					message.enabled = reader.bool()
+					continue
+				}
+			}
+			if ((tag & 7) === 4 || tag === 0) {
+				break
+			}
+			reader.skip(tag & 7)
+		}
+		return message
+	},
+
+	fromJSON(object: any): ToggleCursorRuleRequest {
+		return {
+			metadata: isSet(object.metadata) ? Metadata.fromJSON(object.metadata) : undefined,
+			rulePath: isSet(object.rulePath) ? globalThis.String(object.rulePath) : "",
+			enabled: isSet(object.enabled) ? globalThis.Boolean(object.enabled) : false,
+		}
+	},
+
+	toJSON(message: ToggleCursorRuleRequest): unknown {
+		const obj: any = {}
+		if (message.metadata !== undefined) {
+			obj.metadata = Metadata.toJSON(message.metadata)
+		}
+		if (message.rulePath !== "") {
+			obj.rulePath = message.rulePath
+		}
+		if (message.enabled !== false) {
+			obj.enabled = message.enabled
+		}
+		return obj
+	},
+
+	create<I extends Exact<DeepPartial<ToggleCursorRuleRequest>, I>>(base?: I): ToggleCursorRuleRequest {
+		return ToggleCursorRuleRequest.fromPartial(base ?? ({} as any))
+	},
+	fromPartial<I extends Exact<DeepPartial<ToggleCursorRuleRequest>, I>>(object: I): ToggleCursorRuleRequest {
+		const message = createBaseToggleCursorRuleRequest()
+		message.metadata =
+			object.metadata !== undefined && object.metadata !== null ? Metadata.fromPartial(object.metadata) : undefined
+		message.rulePath = object.rulePath ?? ""
+		message.enabled = object.enabled ?? false
+		return message
+	},
+}
+
+function createBaseToggleWorkflowRequest(): ToggleWorkflowRequest {
+	return { metadata: undefined, workflowPath: "", enabled: false, isGlobal: false }
+}
+
+export const ToggleWorkflowRequest: MessageFns<ToggleWorkflowRequest> = {
+	encode(message: ToggleWorkflowRequest, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+		if (message.metadata !== undefined) {
+			Metadata.encode(message.metadata, writer.uint32(10).fork()).join()
+		}
+		if (message.workflowPath !== "") {
+			writer.uint32(18).string(message.workflowPath)
+		}
+		if (message.enabled !== false) {
+			writer.uint32(24).bool(message.enabled)
+		}
+		if (message.isGlobal !== false) {
+			writer.uint32(32).bool(message.isGlobal)
+		}
+		return writer
+	},
+
+	decode(input: BinaryReader | Uint8Array, length?: number): ToggleWorkflowRequest {
+		const reader = input instanceof BinaryReader ? input : new BinaryReader(input)
+		let end = length === undefined ? reader.len : reader.pos + length
+		const message = createBaseToggleWorkflowRequest()
+		while (reader.pos < end) {
+			const tag = reader.uint32()
+			switch (tag >>> 3) {
+				case 1: {
+					if (tag !== 10) {
+						break
+					}
+
+					message.metadata = Metadata.decode(reader, reader.uint32())
+					continue
+				}
+				case 2: {
+					if (tag !== 18) {
+						break
+					}
+
+					message.workflowPath = reader.string()
+					continue
+				}
+				case 3: {
+					if (tag !== 24) {
+						break
+					}
+
+					message.enabled = reader.bool()
+					continue
+				}
+				case 4: {
+					if (tag !== 32) {
+						break
+					}
+
+					message.isGlobal = reader.bool()
+					continue
+				}
+			}
+			if ((tag & 7) === 4 || tag === 0) {
+				break
+			}
+			reader.skip(tag & 7)
+		}
+		return message
+	},
+
+	fromJSON(object: any): ToggleWorkflowRequest {
+		return {
+			metadata: isSet(object.metadata) ? Metadata.fromJSON(object.metadata) : undefined,
+			workflowPath: isSet(object.workflowPath) ? globalThis.String(object.workflowPath) : "",
+			enabled: isSet(object.enabled) ? globalThis.Boolean(object.enabled) : false,
+			isGlobal: isSet(object.isGlobal) ? globalThis.Boolean(object.isGlobal) : false,
+		}
+	},
+
+	toJSON(message: ToggleWorkflowRequest): unknown {
+		const obj: any = {}
+		if (message.metadata !== undefined) {
+			obj.metadata = Metadata.toJSON(message.metadata)
+		}
+		if (message.workflowPath !== "") {
+			obj.workflowPath = message.workflowPath
+		}
+		if (message.enabled !== false) {
+			obj.enabled = message.enabled
+		}
+		if (message.isGlobal !== false) {
+			obj.isGlobal = message.isGlobal
+		}
+		return obj
+	},
+
+	create<I extends Exact<DeepPartial<ToggleWorkflowRequest>, I>>(base?: I): ToggleWorkflowRequest {
+		return ToggleWorkflowRequest.fromPartial(base ?? ({} as any))
+	},
+	fromPartial<I extends Exact<DeepPartial<ToggleWorkflowRequest>, I>>(object: I): ToggleWorkflowRequest {
+		const message = createBaseToggleWorkflowRequest()
+		message.metadata =
+			object.metadata !== undefined && object.metadata !== null ? Metadata.fromPartial(object.metadata) : undefined
+		message.workflowPath = object.workflowPath ?? ""
+		message.enabled = object.enabled ?? false
+		message.isGlobal = object.isGlobal ?? false
+		return message
+	},
+}
+
 /** Service for file-related operations */
 export type FileServiceDefinition = typeof FileServiceDefinition
 export const FileServiceDefinition = {
 	name: "FileService",
-	fullName: "caret.FileService",
+	fullName: "cline.FileService",
 	methods: {
 		/** Copies text to clipboard */
 		copyToClipboard: {
@@ -927,6 +1812,15 @@ export const FileServiceDefinition = {
 		/** Opens an image in the system viewer */
 		openImage: {
 			name: "openImage",
+			requestType: StringRequest,
+			requestStream: false,
+			responseType: Empty,
+			responseStream: false,
+			options: {},
+		},
+		/** Opens a mention (file, path, git commit, problem, terminal, or URL) */
+		openMention: {
+			name: "openMention",
 			requestType: StringRequest,
 			requestStream: false,
 			responseType: Empty,
@@ -969,6 +1863,15 @@ export const FileServiceDefinition = {
 			responseStream: false,
 			options: {},
 		},
+		/** Select images and other files from the file system and returns as data URLs & paths respectively */
+		selectFiles: {
+			name: "selectFiles",
+			requestType: BooleanRequest,
+			requestStream: false,
+			responseType: StringArrays,
+			responseStream: false,
+			options: {},
+		},
 		/** Convert URIs to workspace-relative paths */
 		getRelativePaths: {
 			name: "getRelativePaths",
@@ -985,6 +1888,69 @@ export const FileServiceDefinition = {
 			requestStream: false,
 			responseType: FileSearchResults,
 			responseStream: false,
+			options: {},
+		},
+		/** Toggle a Cline rule (enable or disable) */
+		toggleClineRule: {
+			name: "toggleClineRule",
+			requestType: ToggleClineRuleRequest,
+			requestStream: false,
+			responseType: ToggleClineRules,
+			responseStream: false,
+			options: {},
+		},
+		/** Toggle a Cursor rule (enable or disable) */
+		toggleCursorRule: {
+			name: "toggleCursorRule",
+			requestType: ToggleCursorRuleRequest,
+			requestStream: false,
+			responseType: ClineRulesToggles,
+			responseStream: false,
+			options: {},
+		},
+		/** Toggle a Windsurf rule (enable or disable) */
+		toggleWindsurfRule: {
+			name: "toggleWindsurfRule",
+			requestType: ToggleWindsurfRuleRequest,
+			requestStream: false,
+			responseType: ClineRulesToggles,
+			responseStream: false,
+			options: {},
+		},
+		/** Refreshes all rule toggles (Cline, External, and Workflows) */
+		refreshRules: {
+			name: "refreshRules",
+			requestType: EmptyRequest,
+			requestStream: false,
+			responseType: RefreshedRules,
+			responseStream: false,
+			options: {},
+		},
+		/** Opens a task's conversation history file on disk */
+		openTaskHistory: {
+			name: "openTaskHistory",
+			requestType: StringRequest,
+			requestStream: false,
+			responseType: Empty,
+			responseStream: false,
+			options: {},
+		},
+		/** Toggles a workflow on or off */
+		toggleWorkflow: {
+			name: "toggleWorkflow",
+			requestType: ToggleWorkflowRequest,
+			requestStream: false,
+			responseType: ClineRulesToggles,
+			responseStream: false,
+			options: {},
+		},
+		/** Subscribe to workspace file updates */
+		subscribeToWorkspaceUpdates: {
+			name: "subscribeToWorkspaceUpdates",
+			requestType: EmptyRequest,
+			requestStream: false,
+			responseType: StringArray,
+			responseStream: true,
 			options: {},
 		},
 	},
@@ -1006,6 +1972,10 @@ type KeysOfUnion<T> = T extends T ? keyof T : never
 export type Exact<P, I extends P> = P extends Builtin
 	? P
 	: P & { [K in keyof P]: Exact<P[K], I[K]> } & { [K in Exclude<keyof I, KeysOfUnion<P>>]: never }
+
+function isObject(value: any): boolean {
+	return typeof value === "object" && value !== null
+}
 
 function isSet(value: any): boolean {
 	return value !== null && value !== undefined

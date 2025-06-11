@@ -7,7 +7,7 @@
 /* eslint-disable */
 import { BinaryReader, BinaryWriter } from "@bufbuild/protobuf/wire"
 
-export const protobufPackage = "caret"
+export const protobufPackage = "cline"
 
 export interface Metadata {}
 
@@ -60,6 +60,16 @@ export interface Boolean {
 
 export interface StringArray {
 	values: string[]
+}
+
+export interface StringArrays {
+	values1: string[]
+	values2: string[]
+}
+
+export interface KeyValuePair {
+	key: string
+	value: string
 }
 
 function createBaseMetadata(): Metadata {
@@ -880,6 +890,158 @@ export const StringArray: MessageFns<StringArray> = {
 	fromPartial<I extends Exact<DeepPartial<StringArray>, I>>(object: I): StringArray {
 		const message = createBaseStringArray()
 		message.values = object.values?.map((e) => e) || []
+		return message
+	},
+}
+
+function createBaseStringArrays(): StringArrays {
+	return { values1: [], values2: [] }
+}
+
+export const StringArrays: MessageFns<StringArrays> = {
+	encode(message: StringArrays, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+		for (const v of message.values1) {
+			writer.uint32(10).string(v!)
+		}
+		for (const v of message.values2) {
+			writer.uint32(18).string(v!)
+		}
+		return writer
+	},
+
+	decode(input: BinaryReader | Uint8Array, length?: number): StringArrays {
+		const reader = input instanceof BinaryReader ? input : new BinaryReader(input)
+		let end = length === undefined ? reader.len : reader.pos + length
+		const message = createBaseStringArrays()
+		while (reader.pos < end) {
+			const tag = reader.uint32()
+			switch (tag >>> 3) {
+				case 1: {
+					if (tag !== 10) {
+						break
+					}
+
+					message.values1.push(reader.string())
+					continue
+				}
+				case 2: {
+					if (tag !== 18) {
+						break
+					}
+
+					message.values2.push(reader.string())
+					continue
+				}
+			}
+			if ((tag & 7) === 4 || tag === 0) {
+				break
+			}
+			reader.skip(tag & 7)
+		}
+		return message
+	},
+
+	fromJSON(object: any): StringArrays {
+		return {
+			values1: globalThis.Array.isArray(object?.values1) ? object.values1.map((e: any) => globalThis.String(e)) : [],
+			values2: globalThis.Array.isArray(object?.values2) ? object.values2.map((e: any) => globalThis.String(e)) : [],
+		}
+	},
+
+	toJSON(message: StringArrays): unknown {
+		const obj: any = {}
+		if (message.values1?.length) {
+			obj.values1 = message.values1
+		}
+		if (message.values2?.length) {
+			obj.values2 = message.values2
+		}
+		return obj
+	},
+
+	create<I extends Exact<DeepPartial<StringArrays>, I>>(base?: I): StringArrays {
+		return StringArrays.fromPartial(base ?? ({} as any))
+	},
+	fromPartial<I extends Exact<DeepPartial<StringArrays>, I>>(object: I): StringArrays {
+		const message = createBaseStringArrays()
+		message.values1 = object.values1?.map((e) => e) || []
+		message.values2 = object.values2?.map((e) => e) || []
+		return message
+	},
+}
+
+function createBaseKeyValuePair(): KeyValuePair {
+	return { key: "", value: "" }
+}
+
+export const KeyValuePair: MessageFns<KeyValuePair> = {
+	encode(message: KeyValuePair, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+		if (message.key !== "") {
+			writer.uint32(10).string(message.key)
+		}
+		if (message.value !== "") {
+			writer.uint32(18).string(message.value)
+		}
+		return writer
+	},
+
+	decode(input: BinaryReader | Uint8Array, length?: number): KeyValuePair {
+		const reader = input instanceof BinaryReader ? input : new BinaryReader(input)
+		let end = length === undefined ? reader.len : reader.pos + length
+		const message = createBaseKeyValuePair()
+		while (reader.pos < end) {
+			const tag = reader.uint32()
+			switch (tag >>> 3) {
+				case 1: {
+					if (tag !== 10) {
+						break
+					}
+
+					message.key = reader.string()
+					continue
+				}
+				case 2: {
+					if (tag !== 18) {
+						break
+					}
+
+					message.value = reader.string()
+					continue
+				}
+			}
+			if ((tag & 7) === 4 || tag === 0) {
+				break
+			}
+			reader.skip(tag & 7)
+		}
+		return message
+	},
+
+	fromJSON(object: any): KeyValuePair {
+		return {
+			key: isSet(object.key) ? globalThis.String(object.key) : "",
+			value: isSet(object.value) ? globalThis.String(object.value) : "",
+		}
+	},
+
+	toJSON(message: KeyValuePair): unknown {
+		const obj: any = {}
+		if (message.key !== "") {
+			obj.key = message.key
+		}
+		if (message.value !== "") {
+			obj.value = message.value
+		}
+		return obj
+	},
+
+	create<I extends Exact<DeepPartial<KeyValuePair>, I>>(base?: I): KeyValuePair {
+		return KeyValuePair.fromPartial(base ?? ({} as any))
+	},
+	fromPartial<I extends Exact<DeepPartial<KeyValuePair>, I>>(object: I): KeyValuePair {
+		const message = createBaseKeyValuePair()
+		message.key = object.key ?? ""
+		message.value = object.value ?? ""
 		return message
 	},
 }

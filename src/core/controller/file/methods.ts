@@ -9,9 +9,19 @@ import { deleteRuleFile } from "./deleteRuleFile"
 import { getRelativePaths } from "./getRelativePaths"
 import { openFile } from "./openFile"
 import { openImage } from "./openImage"
+import { openMention } from "./openMention"
+import { openTaskHistory } from "./openTaskHistory"
+import { refreshRules } from "./refreshRules"
 import { searchCommits } from "./searchCommits"
 import { searchFiles } from "./searchFiles"
+import { selectFiles } from "./selectFiles"
 import { selectImages } from "./selectImages"
+import { subscribeToWorkspaceUpdates } from "./subscribeToWorkspaceUpdates"
+import { toggleCaretRule } from "./toggleCaretRule"
+import { toggleClineRule } from "./toggleClineRule"
+import { toggleCursorRule } from "./toggleCursorRule"
+import { toggleWindsurfRule } from "./toggleWindsurfRule"
+import { toggleWorkflow } from "./toggleWorkflow"
 
 // Register all file service methods
 export function registerAllMethods(): void {
@@ -22,7 +32,17 @@ export function registerAllMethods(): void {
 	registerMethod("getRelativePaths", getRelativePaths)
 	registerMethod("openFile", openFile)
 	registerMethod("openImage", openImage)
+	registerMethod("openMention", openMention)
+	registerMethod("openTaskHistory", openTaskHistory)
+	registerMethod("refreshRules", refreshRules)
 	registerMethod("searchCommits", searchCommits)
 	registerMethod("searchFiles", searchFiles)
+	registerMethod("selectFiles", selectFiles)
 	registerMethod("selectImages", selectImages)
+	registerMethod("subscribeToWorkspaceUpdates", subscribeToWorkspaceUpdates)
+	registerMethod("toggleCaretRule", toggleCaretRule)
+	registerMethod("toggleClineRule", toggleClineRule)
+	registerMethod("toggleCursorRule", toggleCursorRule)
+	registerMethod("toggleWindsurfRule", toggleWindsurfRule)
+	registerMethod("toggleWorkflow", toggleWorkflow)
 }

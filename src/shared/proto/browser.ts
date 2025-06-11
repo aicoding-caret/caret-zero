@@ -6,9 +6,9 @@
 
 /* eslint-disable */
 import { BinaryReader, BinaryWriter } from "@bufbuild/protobuf/wire"
-import { Boolean, EmptyRequest, Metadata, StringRequest } from "./common"
+import { Boolean, EmptyRequest, Metadata, String, StringRequest } from "./common"
 
-export const protobufPackage = "caret"
+export const protobufPackage = "cline"
 
 export interface BrowserConnectionInfo {
 	isConnected: boolean
@@ -672,7 +672,7 @@ export const UpdateBrowserSettingsRequest: MessageFns<UpdateBrowserSettingsReque
 export type BrowserServiceDefinition = typeof BrowserServiceDefinition
 export const BrowserServiceDefinition = {
 	name: "BrowserService",
-	fullName: "caret.BrowserService",
+	fullName: "cline.BrowserService",
 	methods: {
 		getBrowserConnectionInfo: {
 			name: "getBrowserConnectionInfo",
@@ -711,6 +711,14 @@ export const BrowserServiceDefinition = {
 			requestType: UpdateBrowserSettingsRequest,
 			requestStream: false,
 			responseType: Boolean,
+			responseStream: false,
+			options: {},
+		},
+		relaunchChromeDebugMode: {
+			name: "relaunchChromeDebugMode",
+			requestType: EmptyRequest,
+			requestStream: false,
+			responseType: String,
 			responseStream: false,
 			options: {},
 		},

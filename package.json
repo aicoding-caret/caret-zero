@@ -49,18 +49,18 @@
 		"viewsContainers": {
 			"activitybar": [
 				{
-					"id": "claude-dev-ActivityBar",
+					"id": "caret-ActivityBar",
 					"title": "Caret",
 					"icon": "assets/icons/icon.svg"
 				}
 			]
 		},
 		"views": {
-			"claude-dev-ActivityBar": [
+			"caret-ActivityBar": [
 				{
 					"icon": "assets/icons/icon.svg",
 					"type": "webview",
-					"id": "claude-dev.SidebarProvider",
+					"id": "caret.SidebarProvider",
 					"name": ""
 				}
 			]
@@ -148,64 +148,64 @@
 				{
 					"command": "caret.plusButtonClicked",
 					"group": "navigation@1",
-					"when": "view == claude-dev.SidebarProvider"
+					"when": "view == caret.SidebarProvider"
 				},
 				{
 					"command": "caret.mcpButtonClicked",
 					"group": "navigation@2",
-					"when": "view == claude-dev.SidebarProvider"
+					"when": "view == caret.SidebarProvider"
 				},
 				{
 					"command": "caret.historyButtonClicked",
 					"group": "navigation@3",
-					"when": "view == claude-dev.SidebarProvider"
+					"when": "view == caret.SidebarProvider"
 				},
 				{
 					"command": "caret.popoutButtonClicked",
 					"group": "navigation@4",
-					"when": "view == claude-dev.SidebarProvider"
+					"when": "view == caret.SidebarProvider"
 				},
 				{
 					"command": "caret.accountButtonClicked",
 					"group": "navigation@5",
-					"when": "view == claude-dev.SidebarProvider"
+					"when": "view == caret.SidebarProvider"
 				},
 				{
 					"command": "caret.settingsButtonClicked",
 					"group": "navigation@6",
-					"when": "view == claude-dev.SidebarProvider"
+					"when": "view == caret.SidebarProvider"
 				}
 			],
 			"editor/title": [
 				{
 					"command": "caret.plusButtonClicked",
 					"group": "navigation@1",
-					"when": "activeWebviewPanelId == claude-dev.TabPanelProvider"
+					"when": "activeWebviewPanelId == caret.TabPanelProvider"
 				},
 				{
 					"command": "caret.mcpButtonClicked",
 					"group": "navigation@2",
-					"when": "activeWebviewPanelId == claude-dev.TabPanelProvider"
+					"when": "activeWebviewPanelId == caret.TabPanelProvider"
 				},
 				{
 					"command": "caret.historyButtonClicked",
 					"group": "navigation@3",
-					"when": "activeWebviewPanelId == claude-dev.TabPanelProvider"
+					"when": "activeWebviewPanelId == caret.TabPanelProvider"
 				},
 				{
 					"command": "caret.popoutButtonClicked",
 					"group": "navigation@4",
-					"when": "activeWebviewPanelId == claude-dev.TabPanelProvider"
+					"when": "activeWebviewPanelId == caret.TabPanelProvider"
 				},
 				{
 					"command": "caret.accountButtonClicked",
 					"group": "navigation@5",
-					"when": "activeWebviewPanelId == claude-dev.TabPanelProvider"
+					"when": "activeWebviewPanelId == caret.TabPanelProvider"
 				},
 				{
 					"command": "caret.settingsButtonClicked",
 					"group": "navigation@6",
-					"when": "activeWebviewPanelId == claude-dev.TabPanelProvider"
+					"when": "activeWebviewPanelId == caret.TabPanelProvider"
 				}
 			],
 			"editor/context": [

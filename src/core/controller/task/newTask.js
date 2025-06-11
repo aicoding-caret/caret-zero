@@ -1,4 +1,4 @@
-import { Empty } from "../../../shared/proto/common";
+import { Empty } from "../../../shared/proto/common"
 /**
  * Creates a new task with the given text and optional images
  * @param controller The controller instance
@@ -6,7 +6,7 @@ import { Empty } from "../../../shared/proto/common";
  * @returns Empty response
  */
 export async function newTask(controller, request) {
-    await controller.initTask(request.text, request.images, request.files);
-    return Empty.create();
+	await controller.initTask(request.text, request.images, request.files)
+	return Empty.create()
 }
 //# sourceMappingURL=newTask.js.map

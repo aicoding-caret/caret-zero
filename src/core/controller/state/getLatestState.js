@@ -1,4 +1,4 @@
-import { State } from "../../../shared/proto/state";
+import { State } from "../../../shared/proto/state"
 /**
  * Get the latest extension state
  * @param controller The controller instance
@@ -6,13 +6,13 @@ import { State } from "../../../shared/proto/state";
  * @returns The current extension state
  */
 export async function getLatestState(controller, _) {
-    // Get the state using the existing method
-    const state = await controller.getStateToPostToWebview();
-    // Convert the state to a JSON string
-    const stateJson = JSON.stringify(state);
-    // Return the state as a JSON string
-    return State.create({
-        stateJson,
-    });
+	// Get the state using the existing method
+	const state = await controller.getStateToPostToWebview()
+	// Convert the state to a JSON string
+	const stateJson = JSON.stringify(state)
+	// Return the state as a JSON string
+	return State.create({
+		stateJson,
+	})
 }
 //# sourceMappingURL=getLatestState.js.map

@@ -113,6 +113,10 @@ npm run compile
 
 VS Code에서 `F5` 키를 눌러 디버깅 세션을 시작하면, 새로운 `[Extension Development Host]` 창에서 확장 프로그램을 테스트할 수 있습니다.
 
+**Caret 실행 방법:**
+*   확장 프로그램이 실행되면 VS Code의 **Primary Sidebar**에 **Caret 아이콘**이 추가됩니다.
+*   이 아이콘을 클릭하여 Caret 웹뷰를 열고 사용을 시작할 수 있습니다.
+
 ## 기여하기
 
 Caret 프로젝트는 여러분의 기여를 환영합니다! 자세한 내용은 `CONTRIBUTING.md` 파일을 참고해주세요.

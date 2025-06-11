@@ -1,4 +1,4 @@
-import { Empty } from "../../../shared/proto/common";
+import { Empty } from "../../../shared/proto/common"
 /**
  * Handles the account logout action
  * @param controller The controller instance
@@ -6,7 +6,7 @@ import { Empty } from "../../../shared/proto/common";
  * @returns Empty response
  */
 export async function accountLogoutClicked(controller, _request) {
-    await controller.handleSignOut();
-    return Empty.create({});
+	await controller.handleSignOut()
+	return Empty.create({})
 }
 //# sourceMappingURL=accountLogoutClicked.js.map

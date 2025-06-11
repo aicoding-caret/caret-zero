@@ -1,18 +1,19 @@
 import { Controller } from ".."
 import { Empty } from "../../../shared/proto/common"
-import { UpdateChatModeRequest } from "../../../shared/proto/state"
+import { TogglePlanActModeRequest } from "../../../shared/proto/state"
 import {
 	convertProtoChatContentToChatContent,
 	convertProtoChatSettingsToChatSettings,
-} from "@shared/proto-conversions/state/chat-settings-conversion"
+} from "../../../shared/proto-conversions/state/chat-settings-conversion"
 
 /**
- * Toggles between Plan and Act modes
- * @param controller The controller instance
- * @param request The request containing the chat settings and optional chat content
+ * Toggles the plan/act mode and updates chat settings.
+ *
+ * @param controller The main controller instance.
+ * @param request The request containing new chat settings and content.
  * @returns An empty response
  */
-export async function updateChatMode(controller: Controller, request: UpdateChatModeRequest): Promise<Empty> {
+export async function updateChatMode(controller: Controller, request: TogglePlanActModeRequest): Promise<Empty> {
 	try {
 		if (!request.chatSettings) {
 			throw new Error("Chat settings are required")
@@ -26,7 +27,7 @@ export async function updateChatMode(controller: Controller, request: UpdateChat
 
 		return Empty.create()
 	} catch (error) {
-		console.error("Failed to toggle updateChatMode mode:", error)
+		console.error("Failed to update chat mode:", error)
 		throw error
 	}
 }
