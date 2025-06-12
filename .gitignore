@@ -30,3 +30,6 @@ coverage
 !.github/scripts/coverage/
 
 *evals.env
+
+# Generated protobuf files
+src/shared/proto/

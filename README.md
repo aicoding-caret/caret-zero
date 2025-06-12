@@ -83,11 +83,35 @@ cd ..
 
 ### 2. Install Dependencies
 
-From the project root (`caret-zero`), install all necessary npm packages.
+Since the project has a nested structure, dependencies need to be installed in two locations:
 
+1. Install main dependencies in the project root (`caret-zero`):
 ```bash
 npm install
 ```
+
+2. Install frontend dependencies in the webview-ui directory:
+```bash
+cd webview-ui
+npm install
+```
+
+> **Important**: Skipping the webview-ui dependency installation may result in TypeScript type definition errors during the build process.
+
+#### Quick Setup for Windows
+
+For Windows users, we provide an automated setup script that handles all the necessary steps:
+
+```powershell
+# Run the setup script from the project root
+.\scripts\project_first_setting_for_windows.ps1
+```
+
+This script will:
+- Clone the Cline sub-repository
+- Install all dependencies (both main and webview-ui)
+- Set up Windows-specific protoc files
+- Verify the setup process
 
 ### 3. Windows Environment Setup (Conditional)
 

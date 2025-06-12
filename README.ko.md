@@ -83,11 +83,35 @@ cd ..
 
 ### 2. 의존성 설치
 
-프로젝트 루트(`caret-zero`)에서 필요한 모든 npm 패키지를 설치합니다.
+프로젝트는 중첩된 구조이므로, 두 곳에서 의존성 설치가 필요합니다:
 
+1. 프로젝트 루트(`caret-zero`)에서 메인 의존성 설치:
 ```bash
 npm install
 ```
+
+2. webview-ui 디렉토리에서 프론트엔드 의존성 설치:
+```bash
+cd webview-ui
+npm install
+```
+
+> **중요**: webview-ui의 의존성 설치를 건너뛰면 빌드 과정에서 TypeScript 타입 정의 오류가 발생할 수 있습니다.
+
+#### Windows 환경 빠른 설정
+
+Windows 사용자를 위한 자동화된 설정 스크립트를 제공합니다:
+
+```powershell
+# 프로젝트 루트에서 스크립트 실행
+.\scripts\project_first_setting_for_windows.ps1
+```
+
+이 스크립트는 다음 작업을 자동으로 수행합니다:
+- Cline 서브 레파지토리 클론
+- 모든 의존성 설치 (메인 및 webview-ui)
+- Windows 전용 protoc 파일 설정
+- 설정 과정 검증
 
 ### 3. Windows 환경 설정 (조건부)
 
@@ -99,7 +123,7 @@ Windows 환경에서는 `protoc` 빌드 오류가 발생할 수 있습니다. �
 2.  **파일 붙여넣기**:
     *   복사한 파일과 폴더를 `cline/proto/` 디렉토리에 붙여넣어 기존 파일을 덮어씁니다.
 
-> **참고**: 이는 임시 해결책입니다. 향후 `cline` 업스트림 저장소에서 이 문제가 해결되면 이 단계는 더 이상 필요하지 않을 수 있습니다. 현재 버전에서는 Windows에서의 빌드 실패를 방지하기 위해 이 단계가 필수적입니다.
+> **참고**: 이는 임시 해결책입니다. 향후 `cline` 업스트림 저장소에서 이 문제가 해결되면 이 단계는 더 이상 필요하지 않을 수 있습니다. 현재 버전에서는 Windows에서의 빌드 실패를 방지하기 위해 이 단계가 필수적입니다. 참고로 Copiolot Cursor등 AI에게 이 3번 섹션을 복붙해서 해달라고하면 잘 덮어줍니다.
 
 ### 4. 개발 빌드
 
@@ -119,16 +143,4 @@ VS Code에서 `F5` 키를 눌러 디버깅 세션을 시작하면, 새로운 `[E
 
 ## 기여하기
 
-Caret 프로젝트는 여러분의 기여를 환영합니다! 자세한 내용은 `CONTRIBUTING.md` 파일을 참고해주세요.
-
-## 문서
-
-더 자세한 정보는 [`docs`](./docs/) 디렉토리의 문서를 참고해주세요.
-
-*   [아키텍처 개요](./docs/architecture/extension-architecture.mmd)
-*   [신규 개발자 온보딩 가이드](./docs/development/new-developer-onboarding-guide.md)
-*   [업스트림 병합 가이드](./docs/development/cline-merging-guide.md)
-
-## 라이선스
-
-[Apache 2.0](./LICENSE) © 2024 [Caretive INC.](https://caretive.ai/)
+Caret 프로젝트는 여러분의 기여를 환영합니다! 자세한 내용은 `
