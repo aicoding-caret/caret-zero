@@ -29,7 +29,12 @@
 			"@shared/*": ["src/shared/*"],
 			"@utils/*": ["src/utils/*"],
 			"@packages/*": ["src/packages/*"]
-		}
+		},
+		"declaration": true,
+		"declarationMap": true,
+		"emitDeclarationOnly": false,
+		"allowJs": true,
+		"checkJs": true
 	},
 	"include": ["src/**/*"],
 	"exclude": ["node_modules", ".vscode-test", "webview-ui"]

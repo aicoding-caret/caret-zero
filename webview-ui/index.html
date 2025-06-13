@@ -8,5 +8,30 @@
 	<body>
 		<div id="root"></div>
 		<script type="module" src="/src/main.tsx"></script>
+		<script>
+			// DOM 요소 초기화 전에 안전하게 처리
+			window.addEventListener('DOMContentLoaded', () => {
+				const root = document.getElementById('root');
+				if (!root) {
+					console.warn('[Webview] Root element not found, creating one');
+					const newRoot = document.createElement('div');
+					newRoot.id = 'root';
+					document.body.appendChild(newRoot);
+				}
+			});
+
+			// 서비스 워커 등록
+			if ('serviceWorker' in navigator) {
+				window.addEventListener('load', () => {
+					navigator.serviceWorker.register('/service-worker.js')
+						.then(registration => {
+							console.log('[Webview] ServiceWorker registration successful');
+						})
+						.catch(error => {
+							console.warn('[Webview] ServiceWorker registration failed:', error);
+						});
+				});
+			}
+		</script>
 	</body>
 </html>

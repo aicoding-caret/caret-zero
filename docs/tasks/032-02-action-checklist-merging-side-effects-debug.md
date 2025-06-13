@@ -32,7 +32,7 @@
 
 ## 2. 상태 관리 개선
 
-### 2.1 gRPC 상태 구독 복구
+### 2.1 gRPC 상태 구독 복구c
 - [x] 주석 처리된 gRPC 상태 구독 코드 검토
   - `ExtensionStateContext.tsx`의 구독 로직 분석
 - [x] 상태 구독 로직 재구현

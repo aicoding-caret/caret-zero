@@ -415,29 +415,21 @@ export const ExtensionStateContextProvider: React.FC<{
 
 	// gRPC 상태 구독
 	useEffect(() => {
-		if (!state) return
-
-		// gRPC 상태 구독 설정
-		const subscription = state.subscribeToStateUpdates((update) => {
-			try {
-				// 상태 업데이트 처리
-				if (update.type === "state") {
-					const newState = JSON.parse(update.state)
-					setState((prevState) => ({
-						...prevState,
-						...newState,
-					}))
-				}
-			} catch (error) {
-				console.error("Error processing state update:", error)
-			}
-		})
-
-		// 클린업
-		return () => {
-			subscription.unsubscribe()
+		if (!state) {
+			console.warn('[Webview Context] State is not initialized yet');
+			return;
 		}
-	}, [state])
+
+		// Restore gRPC state subscription
+		if (typeof state.subscribeToStateUpdates === 'function') {
+			const unsubscribe = state.subscribeToStateUpdates((newState) => {
+				setState(newState);
+			});
+			return () => unsubscribe();
+		} else {
+			console.warn('[Webview Context] subscribeToStateUpdates is not available');
+		}
+	}, [state]);
 
 	// 메시지 핸들러
 	useEffect(() => {

@@ -826,9 +826,9 @@ const ChatView = ({ isHidden, showAnnouncement, hideAnnouncement, showHistoryVie
 						case "focusChatInput":
 							if (textAreaRef.current) {
 								textAreaRef.current.focus()
-								if (isHidden) {
-									// Send message back to extension to show chat view
-									vscode.postMessage({ type: "showChatView" })
+							if (isHidden) {
+								// Send message back to extension to show chat view
+								vscode.postMessage({ type: "showChatView" })
 								}
 							}
 							break
@@ -1122,8 +1122,8 @@ const ChatView = ({ isHidden, showAnnouncement, hideAnnouncement, showHistoryVie
 	const handleWheel = useCallback((event: Event) => {
 		const wheelEvent = event as WheelEvent
 		if (wheelEvent.deltaY && wheelEvent.deltaY < 0 && scrollContainerRef.current?.contains(wheelEvent.target as Node)) {
-			// user scrolled up
-			disableAutoScrollRef.current = true
+				// user scrolled up
+				disableAutoScrollRef.current = true
 		}
 	}, [])
 	useEvent("wheel", handleWheel, window, { passive: true }) // passive improves scrolling performance
